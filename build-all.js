@@ -18,27 +18,27 @@ fs.mkdirSync(distDir);
 
 // 1. Build User Website (Root)
 console.log('--- Building User Website ---');
-runCommand('npm run build', path.join(rootDir, 'user-website'));
+runCommand('npm run build', path.join(rootDir, 'frontend', 'user-website'));
 // Copy to dist root
 console.log('Copying User Website to dist root...');
-fs.cpSync(path.join(rootDir, 'user-website', 'dist'), distDir, { recursive: true });
+fs.cpSync(path.join(rootDir, 'frontend', 'user-website', 'dist'), distDir, { recursive: true });
 
 // 2. Build Vendor Dashboard
 console.log('--- Building Vendor Dashboard ---');
-runCommand('npm run build', path.join(rootDir, 'vendor-dashboard'));
+runCommand('npm run build', path.join(rootDir, 'frontend', 'vendor-dashboard'));
 // Copy to dist/vendor
 const vendorDist = path.join(distDir, 'vendor');
 fs.mkdirSync(vendorDist);
 console.log('Copying Vendor Dashboard to dist/vendor...');
-fs.cpSync(path.join(rootDir, 'vendor-dashboard', 'dist'), vendorDist, { recursive: true });
+fs.cpSync(path.join(rootDir, 'frontend', 'vendor-dashboard', 'dist'), vendorDist, { recursive: true });
 
 // 3. Build Admin Panel
 console.log('--- Building Admin Panel ---');
-runCommand('npm run build', path.join(rootDir, 'admin-panel'));
+runCommand('npm run build', path.join(rootDir, 'frontend', 'admin-panel'));
 // Copy to dist/admin
 const adminDist = path.join(distDir, 'admin');
 fs.mkdirSync(adminDist);
 console.log('Copying Admin Panel to dist/admin...');
-fs.cpSync(path.join(rootDir, 'admin-panel', 'dist'), adminDist, { recursive: true });
+fs.cpSync(path.join(rootDir, 'frontend', 'admin-panel', 'dist'), adminDist, { recursive: true });
 
 console.log('--- ALL BUILDS COMPLETE ---');

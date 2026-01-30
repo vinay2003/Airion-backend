@@ -1,4 +1,5 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -17,14 +18,34 @@ export class AuthController {
 
     @Post('admin/login')
     @HttpCode(HttpStatus.OK)
-    async adminLogin(@Body() loginDto: LoginDto) {
-        return this.authService.adminLogin(loginDto);
+    async adminLogin(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+        const result = await this.authService.adminLogin(loginDto);
+        if (result.access_token) {
+            res.cookie('token', result.access_token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+        }
+        return result;
     }
 
     @Post('login/verify-otp')
     @HttpCode(HttpStatus.OK)
-    async verifyLoginOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-        return this.authService.verifyLoginOtp(verifyOtpDto);
+    async verifyLoginOtp(@Body() verifyOtpDto: VerifyOtpDto, @Res({ passthrough: true }) res: Response) {
+        const result = await this.authService.verifyLoginOtp(verifyOtpDto);
+        if (result.access_token) {
+            res.cookie('token', result.access_token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+        }
+        return result;
     }
 
     // SIGNUP FLOW
@@ -36,7 +57,17 @@ export class AuthController {
 
     @Post('signup/verify-otp')
     @HttpCode(HttpStatus.CREATED)
-    async verifySignupOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-        return this.authService.verifySignupOtp(verifyOtpDto);
+    async verifySignupOtp(@Body() verifyOtpDto: VerifyOtpDto, @Res({ passthrough: true }) res: Response) {
+        const result = await this.authService.verifySignupOtp(verifyOtpDto);
+        if (result.access_token) {
+            res.cookie('token', result.access_token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+        }
+        return result;
     }
 }

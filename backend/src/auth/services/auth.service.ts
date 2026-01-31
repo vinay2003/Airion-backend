@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserRole } from '../entities/user.entity';
 import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
+import { SignupDto } from '../dto/signup.dto';
 
 // Simple in-memory OTP storage (use Redis in production)
 const otpStore = new Map<string, { otp: string; expiresAt: number }>();
@@ -205,5 +206,32 @@ export class AuthService {
 
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;
+    }
+
+    // Direct password-based signup
+    async signup(dto: SignupDto): Promise<{ access_token: string; user: Partial<User> }> {
+        const existingUser = await this.userRepository.findOne({
+            where: { email: dto.email },
+        });
+
+        if (existingUser) {
+            throw new ConflictException('User already exists with this email');
+        }
+
+        const user = this.userRepository.create({
+            name: dto.name,
+            email: dto.email,
+            phoneNumber: dto.phoneNumber,
+            password: dto.password,
+            role: dto.role || UserRole.USER,
+        });
+
+        await this.userRepository.save(user);
+
+        const payload = { sub: user.id, email: user.email, role: user.role };
+        const access_token = this.jwtService.sign(payload);
+
+        const { password, ...userWithoutPassword } = user;
+        return { access_token, user: userWithoutPassword };
     }
 }

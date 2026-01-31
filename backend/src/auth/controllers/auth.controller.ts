@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
+import { SignupDto } from '../dto/signup.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('auth')
@@ -11,6 +12,12 @@ export class AuthController {
     @Post('signup/send-otp')
     async sendSignupOTP(@Body() dto: SendOtpDto) {
         return this.authService.sendSignupOTP(dto);
+    }
+
+    // Direct Password Signup
+    @Post('signup')
+    async signup(@Body() dto: SignupDto) {
+        return this.authService.signup(dto);
     }
 
     // Verify OTP and create account

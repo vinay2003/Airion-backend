@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, MessageSquare, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import api from '../lib/api';
 
 const Dashboard: React.FC = () => {
     const [activities, setActivities] = useState<any[]>([]);
@@ -12,19 +13,12 @@ const Dashboard: React.FC = () => {
         const fetchData = async () => {
             try {
                 const [activitiesResponse, eventsResponse] = await Promise.all([
-                    fetch('http://localhost:3001/activities'),
-                    fetch('http://localhost:3001/events')
+                    api.get('/activities'),
+                    api.get('/events')
                 ]);
 
-                if (!activitiesResponse.ok || !eventsResponse.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-
-                const activitiesData = await activitiesResponse.json();
-                const eventsData = await eventsResponse.json();
-
-                setActivities(activitiesData);
-                setEvents(eventsData);
+                setActivities(activitiesResponse.data);
+                setEvents(eventsResponse.data);
             } catch (error: any) {
                 setError(error.message);
             } finally {

@@ -1,0 +1,113 @@
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../lib/api';
+
+interface User {
+    id: string;
+    email: string;
+    role: string;
+    name?: string;
+}
+
+interface AuthContextType {
+    user: User | null;
+    loading: boolean;
+    backendAvailable: boolean;
+    login: (token: string) => void;
+    logout: () => void;
+    checkAuth: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [backendAvailable, setBackendAvailable] = useState(false);
+    const navigate = useNavigate();
+
+    const checkAuth = async () => {
+        console.log('[Admin AuthContext] Starting checkAuth...');
+        try {
+            // Check backend health
+            console.log('[Admin AuthContext] Checking backend health...');
+            await api.get('/health');
+            setBackendAvailable(true);
+            console.log('[Admin AuthContext] Backend is available');
+
+            // Check authentication
+            try {
+                console.log('[Admin AuthContext] Checking authentication...');
+                const response = await api.get('/auth/me');
+
+                // Verify user has admin role
+                if (response.data.role === 'admin') {
+                    setUser(response.data);
+                    console.log('[Admin AuthContext] Admin authenticated:', response.data);
+                } else {
+                    console.warn('[Admin AuthContext] User is not an admin');
+                    setUser(null);
+                    localStorage.removeItem('token');
+                }
+            } catch (authError: any) {
+                if (authError.response?.status === 401) {
+                    console.log('[Admin AuthContext] User not authenticated (401)');
+                    setUser(null);
+                } else if (authError.response?.status === 503) {
+                    console.warn('[Admin AuthContext] Database unavailable (503)');
+                    setUser(null);
+                } else {
+                    console.error('[Admin AuthContext] Auth error:', authError);
+                    setUser(null);
+                }
+                localStorage.removeItem('token');
+            }
+        } catch (healthError: any) {
+            console.error('[Admin AuthContext] Backend unavailable:', healthError.message);
+            setBackendAvailable(false);
+            setUser(null);
+        } finally {
+            console.log('[Admin AuthContext] Setting loading to false');
+            setLoading(false);
+        }
+    };
+
+    const login = (token: string) => {
+        localStorage.setItem('token', token);
+        checkAuth();
+    };
+
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout');
+        } catch (error) {
+            if (import.meta.env.DEV) {
+                console.debug('Logout request failed (may be offline)');
+            }
+        }
+
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate('/login');
+    };
+
+    useEffect(() => {
+        checkAuth();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return (
+        <AuthContext.Provider value={{ user, loading, backendAvailable, login, logout, checkAuth }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};

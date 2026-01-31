@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MoreHorizontal, Mail, Phone, Calendar } from 'lucide-react';
+import api from '../lib/api';
 
 interface User {
     id: number;
@@ -19,12 +20,8 @@ const Users: React.FC = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch('http://localhost:3001/users');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch users');
-                }
-                const data = await response.json();
-                setUsers(data);
+                const response = await api.get('/users');
+                setUsers(response.data);
             } catch (error: any) {
                 setError(error.message);
             } finally {
@@ -78,8 +75,8 @@ const Users: React.FC = () => {
                                 <div>
                                     <h3 className="font-bold text-gray-900 dark:text-white">{user.name}</h3>
                                     <span className={`text-xs px-2 py-0.5 rounded-full ${user.status === 'Active'
-                                            ? 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400'
-                                            : 'bg-gray-100 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400'
+                                        ? 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400'
+                                        : 'bg-gray-100 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400'
                                         }`}>
                                         {user.status}
                                     </span>

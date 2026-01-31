@@ -1,13 +1,13 @@
 import { registerAs } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export default registerAs('database', () => ({
+export default registerAs('database', (): TypeOrmModuleOptions => ({
     type: 'postgres',
-    host: process.env.PGHOST,
-    port: 5432,
-    username: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-    ssl: process.env.PGSSLMODE === 'require',
-    autoLoadEntities: true,
-    synchronize: true, // Auto-create tables (dev only)
+    url: process.env.DATABASE_URL,
+    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    synchronize: process.env.NODE_ENV !== 'production',
+    logging: process.env.NODE_ENV === 'development',
+    ssl: {
+        rejectUnauthorized: false,
+    },
 }));

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MoreVertical, Check, X, Eye } from 'lucide-react';
+import api from '../lib/api';
 
 interface Vendor {
     id: number;
@@ -19,12 +20,8 @@ const Vendors: React.FC = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                const response = await fetch('http://localhost:3001/vendors');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch vendors');
-                }
-                const data = await response.json();
-                setVendors(data);
+                const response = await api.get('/vendors');
+                setVendors(response.data);
             } catch (error: any) {
                 setError(error.message);
             } finally {

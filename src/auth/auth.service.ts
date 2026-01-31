@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
@@ -13,6 +13,8 @@ import { Role } from '../common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(Otp) private otpRepository: Repository<Otp>,
@@ -33,12 +35,19 @@ export class AuthService {
         const otp = this.generateOtp();
         await this.saveOtp(phone, otp);
 
-        // MOCK SMS SENDING
-        console.log(`📨 [MOCK SMS] Login OTP for ${phone}: ${otp}`);
+        // MOCK SMS SENDING - Enhanced console output
+        console.log('\n' + '='.repeat(60));
+        console.log('📨 [LOGIN OTP SENT]');
+        console.log('Phone:', phone);
+        console.log('OTP:', otp);
+        console.log('='.repeat(60) + '\n');
+
+        this.logger.log(`Login OTP for ${phone}: ${otp}`);
 
         return {
-            message: 'OTP sent (check server console)',
-            otp: otp // TEMPORARY: Returing OTP to frontend for dev convenience
+            message: 'OTP sent successfully. Check server console for OTP.',
+            otp: otp, // TEMPORARY: Return OTP to frontend for dev convenience
+            phone: phone
         };
     }
 
@@ -70,7 +79,7 @@ export class AuthService {
 
     // 3. Send Signup OTP
     async sendSignupOtp(sendOtpDto: SendOtpDto) {
-        const { phone } = sendOtpDto;
+        const { phone, email } = sendOtpDto;
 
         // Check if user already exists
         const existingUser = await this.userRepository.findOneBy({ phone, isVerified: true });
@@ -82,12 +91,20 @@ export class AuthService {
         const otp = this.generateOtp();
         await this.saveOtp(phone, otp);
 
-        // MOCK SMS SENDING
-        console.log(`📨 [MOCK SMS] Signup OTP for ${phone}: ${otp}`);
+        // MOCK SMS SENDING - Enhanced console output
+        console.log('\n' + '='.repeat(60));
+        console.log('📨 [SIGNUP OTP SENT]');
+        console.log('Phone:', phone);
+        console.log('Email:', email || 'N/A');
+        console.log('OTP:', otp);
+        console.log('='.repeat(60) + '\n');
+
+        this.logger.log(`Signup OTP for ${phone}: ${otp}`);
 
         return {
-            message: 'OTP sent (check server console)',
-            otp: otp // TEMPORARY: Returing OTP to frontend for dev convenience
+            message: 'OTP sent successfully. Check server console for OTP.',
+            otp: otp, // TEMPORARY: Return OTP to frontend for dev convenience
+            phone: phone
         };
     }
 

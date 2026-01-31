@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
+import api from '../lib/api';
 
 const Listings: React.FC = () => {
     const [listings, setListings] = useState<any[]>([]);
@@ -9,12 +10,8 @@ const Listings: React.FC = () => {
     useEffect(() => {
         const fetchListings = async () => {
             try {
-                const response = await fetch('http://localhost:3001/events');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch listings');
-                }
-                const data = await response.json();
-                setListings(data);
+                const response = await api.get('/events');
+                setListings(response.data);
             } catch (error: any) {
                 setError(error.message);
             } finally {

@@ -1,26 +1,143 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Phone, Shield, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '../context/AuthContext';
+import api from '../lib/api';
 
 const VendorLogin: React.FC = () => {
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const { login } = useAuth();
+    const [step, setStep] = useState<'phone' | 'otp'>('phone');
+    const [phone, setPhone] = useState('');
+    const [otp, setOtp] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement actual login logic
-        console.log('Vendor login attempt:', formData);
-        // For now, just navigate to dashboard
-        navigate('/');
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await api.post('/auth/login/send-otp', { phone });
+
+            // Dev: Show OTP in alert and console
+            if (response.data.otp) {
+                console.log('\n' + '='.repeat(60));
+                console.log('🔑 LOGIN OTP');
+                console.log('Phone:', phone);
+                console.log('OTP:', response.data.otp);
+                console.log('='.repeat(60) + '\n');
+                alert(`🔑 Your login OTP: ${response.data.otp}\n\n(Development only)`);
+            }
+
+            setStep('otp');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+            console.error('Send OTP Error:', err);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    const handleVerifyOTP = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await api.post('/auth/login/verify-otp', { phone, otp });
+
+            console.log('✅ Login successful, authenticating user...');
+            login(response.data.access_token); // Updates AuthContext
+            navigate('/dashboard');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
+            console.error('Verify OTP Error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (step === 'otp') {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
+                <Card className="w-full max-w-md shadow-2xl">
+                    <CardHeader className="text-center">
+                        <div className="flex items-center justify-center mb-4">
+                            <div className="bg-red-500 text-white p-3 rounded-xl">
+                                <Shield size={32} />
+                            </div>
+                        </div>
+                        <CardTitle className="text-2xl font-bold">Verify OTP</CardTitle>
+                        <CardDescription>
+                            Enter the code sent to <br />
+                            <span className="font-semibold text-gray-900 dark:text-white">{phone}</span>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleVerifyOTP} className="space-y-4">
+                            {error && (
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="space-y-2">
+                                <Label htmlFor="otp">Enter OTP</Label>
+                                <Input
+                                    id="otp"
+                                    type="text"
+                                    maxLength={6}
+                                    value={otp}
+                                    onChange={(e) => {
+                                        setOtp(e.target.value.replace(/\D/g, ''));
+                                        setError('');
+                                    }}
+                                    placeholder="000000"
+                                    className="text-center text-2xl tracking-widest font-bold h-14"
+                                    autoFocus
+                                    required
+                                />
+                            </div>
+
+                            <Button
+                                type="submit"
+                                className="w-full bg-red-500 hover:bg-red-600"
+                                disabled={loading || otp.length !== 6}
+                            >
+                                {loading ? (
+                                    <span className="flex items-center gap-2">
+                                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                                        Verifying...
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-2">
+                                        Verify & Sign In <ArrowRight size={20} />
+                                    </span>
+                                )}
+                            </Button>
+
+                            <div className="text-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setStep('phone')}
+                                    className="text-sm text-gray-600 dark:text-gray-400 hover:underline flex items-center gap-1 mx-auto"
+                                >
+                                    <ArrowLeft size={16} />
+                                    Change phone number
+                                </button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
@@ -33,65 +150,52 @@ const VendorLogin: React.FC = () => {
                     </div>
                     <CardTitle className="text-2xl font-bold text-center">Vendor Portal</CardTitle>
                     <CardDescription className="text-center">
-                        Sign in to manage your listings and bookings
+                        Sign in with OTP to manage your business
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSendOTP} className="space-y-4">
+                        {error && (
+                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="phone">Phone Number</Label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                 <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="vendor@example.com"
+                                    id="phone"
+                                    type="tel"
+                                    placeholder="+91 98765 43210"
                                     className="pl-10"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    value={phone}
+                                    onChange={(e) => {
+                                        setPhone(e.target.value);
+                                        setError('');
+                                    }}
                                     required
                                 />
                             </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                We'll send you a one-time password
+                            </p>
                         </div>
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label htmlFor="password">Password</Label>
-                                <a href="#" className="text-sm text-red-500 hover:underline">
-                                    Forgot password?
-                                </a>
-                            </div>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                <Input
-                                    id="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="••••••••"
-                                    className="pl-10 pr-10"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                >
-                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                id="remember"
-                                className="rounded border-gray-300 text-red-500 focus:ring-red-500"
-                            />
-                            <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400">
-                                Remember me for 30 days
-                            </label>
-                        </div>
-                        <Button type="submit" className="w-full bg-red-500 hover:bg-red-600">
-                            Sign In to Dashboard
+
+                        <Button
+                            type="submit"
+                            className="w-full bg-red-500 hover:bg-red-600"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                                    Sending OTP...
+                                </span>
+                            ) : (
+                                'Send OTP'
+                            )}
                         </Button>
                     </form>
                 </CardContent>
@@ -105,24 +209,14 @@ const VendorLogin: React.FC = () => {
                     <div className="text-xs text-center text-gray-500">
                         <p>Looking for different access?</p>
                         <div className="flex items-center justify-center gap-3 mt-2">
-                            <a href="http://localhost:5173/login" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:underline">
+                            <a href="/login" className="text-red-500 hover:underline">
                                 User Login
                             </a>
                             <span>•</span>
-                            <a href="http://localhost:5175/login" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:underline">
+                            <a href="/admin/login" className="text-red-500 hover:underline">
                                 Admin Login
                             </a>
                         </div>
-                    </div>
-                    <div className="text-xs text-center text-gray-500">
-                        By signing in, you agree to our{' '}
-                        <a href="#" className="underline">
-                            Terms of Service
-                        </a>{' '}
-                        and{' '}
-                        <a href="#" className="underline">
-                            Privacy Policy
-                        </a>
                     </div>
                 </CardFooter>
             </Card>

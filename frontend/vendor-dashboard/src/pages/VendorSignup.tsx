@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     Building,
     User,
@@ -20,19 +20,23 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
+import api from '../lib/api';
 
-const VendorSignup: React.FC = () => {
+const VendorSignupForm: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const basicDetails = location.state?.basicDetails;
+
     const [formData, setFormData] = useState({
-        // Section 1: Basic Information
-        businessName: '',
-        ownerName: '',
+        // Section 1: Basic Information (pre-filled from basicDetails)
+        businessName: basicDetails?.businessName || '',
+        ownerName: basicDetails ? `${basicDetails.firstName} ${basicDetails.lastName}` : '',
         businessType: '',
         otherBusinessType: '',
         businessAddress: '',
-        city: '',
-        contactNumber: '',
-        email: '',
+        city: basicDetails?.city || '',
+        contactNumber: basicDetails?.phone || '',
+        email: basicDetails?.email || '',
         yearsInBusiness: '',
 
         // Section 2: Vendor Operations
@@ -45,7 +49,10 @@ const VendorSignup: React.FC = () => {
         // Section 3: Challenges & Pain Points
         challenges: [] as string[],
         useDigitalTools: '',
-        mobileAppHelp: '',
+        currentBookingManagement: '',
+        lookingForSolution: '',
+        otherChallenges: '',
+        mobileAppHelp: '', // Additional field from form
 
         // Section 4: Platform Interest
         joinLikelihood: '',
@@ -63,6 +70,8 @@ const VendorSignup: React.FC = () => {
         comments: ''
     });
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -88,39 +97,23 @@ const VendorSignup: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
 
         try {
-            // Get JWT token from localStorage (assuming user is already authenticated)
-            const token = localStorage.getItem('token');
+            // Create vendor profile (user is already authenticated, token sent via api interceptor)
+            const response = await api.post('/vendors', formData);
 
-            if (!token) {
-                alert('Please login first to create a vendor profile');
-                navigate('/vendor/login');
-                return;
-            }
-
-            // Submit to backend API - using /api path
-            const response = await fetch('/api/vendors', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                credentials: 'include',  // Send cookies
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to create vendor profile');
-            }
-
-            alert('Vendor registration successful!');
-            navigate('/vendor/dashboard');
-        } catch (error) {
-            console.error('Vendor registration error:', error);
-            alert(error instanceof Error ? error.message : 'Failed to register vendor profile. Please try again.');
+            console.log('✅ Vendor profile created:', response.data);
+            alert('Vendor profile created successfully! Welcome to Airion.');
+            navigate('/dashboard');
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || 'Failed to create vendor profile. Please try again.';
+            setError(errorMessage);
+            console.error('Vendor Profile Creation Error:', err);
+            alert(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -485,4 +478,4 @@ const VendorSignup: React.FC = () => {
     );
 };
 
-export default VendorSignup;
+export default VendorSignupForm;

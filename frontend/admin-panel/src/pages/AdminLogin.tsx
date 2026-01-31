@@ -5,22 +5,43 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '../context/AuthContext';
+import api from '../lib/api';
 
 const AdminLogin: React.FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         twoFactorCode: '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement actual admin login logic with 2FA
-        console.log('Admin login attempt:', formData);
-        // For now, just navigate to dashboard
-        navigate('/');
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await api.post('/auth/admin/login', {
+                email: formData.email,
+                password: formData.password,
+                twoFactorCode: formData.twoFactorCode || undefined
+            });
+
+            console.log('✅ Admin login successful');
+            login(response.data.access_token);
+            navigate('/');
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || 'Invalid credentials. Please try again.';
+            setError(errorMessage);
+            console.error('Admin Login Error:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -39,6 +60,12 @@ const AdminLogin: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {error && (
+                            <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+
                         <div className="space-y-2">
                             <Label htmlFor="email">Admin Email</Label>
                             <div className="relative">
@@ -49,8 +76,12 @@ const AdminLogin: React.FC = () => {
                                     placeholder="admin@airion.com"
                                     className="pl-10"
                                     value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, email: e.target.value });
+                                        setError('');
+                                    }}
                                     required
+                                    disabled={loading}
                                 />
                             </div>
                         </div>
@@ -64,8 +95,12 @@ const AdminLogin: React.FC = () => {
                                     placeholder="••••••••"
                                     className="pl-10 pr-10"
                                     value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, password: e.target.value });
+                                        setError('');
+                                    }}
                                     required
+                                    disabled={loading}
                                 />
                                 <button
                                     type="button"
@@ -86,14 +121,28 @@ const AdminLogin: React.FC = () => {
                                 className="text-center text-lg tracking-widest"
                                 value={formData.twoFactorCode}
                                 onChange={(e) => setFormData({ ...formData, twoFactorCode: e.target.value.replace(/\D/g, '') })}
+                                disabled={loading}
                             />
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Enter the 6-digit code from your authenticator app
                             </p>
                         </div>
-                        <Button type="submit" className="w-full bg-red-500 hover:bg-red-600">
-                            <Shield className="mr-2 h-4 w-4" />
-                            Secure Sign In
+                        <Button
+                            type="submit"
+                            className="w-full bg-red-500 hover:bg-red-600"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                                    Authenticating...
+                                </span>
+                            ) : (
+                                <span className="flex items-center gap-2">
+                                    <Shield className="h-4 w-4" />
+                                    Secure Sign In
+                                </span>
+                            )}
                         </Button>
                     </form>
                 </CardContent>
@@ -104,11 +153,11 @@ const AdminLogin: React.FC = () => {
                     <div className="text-xs text-center text-gray-500">
                         <p>Looking for different access?</p>
                         <div className="flex items-center justify-center gap-3 mt-2">
-                            <a href="http://localhost:5173/login" target="_blank" rel="noopener noreferrer" className="text-red-400 hover:underline">
+                            <a href="/login" className="text-red-400 hover:underline">
                                 User Login
                             </a>
                             <span>•</span>
-                            <a href="http://localhost:5174/login" target="_blank" rel="noopener noreferrer" className="text-red-400 hover:underline">
+                            <a href="/vendor/login" className="text-red-400 hover:underline">
                                 Vendor Login
                             </a>
                         </div>

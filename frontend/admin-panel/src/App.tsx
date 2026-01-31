@@ -20,8 +20,8 @@ const PageLoader = () => (
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <Router basename="/admin">
+      <Router basename="/admin">
+        <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/login" element={<AdminLogin />} />
@@ -34,8 +34,8 @@ const App: React.FC = () => {
               </Route>
             </Routes>
           </Suspense>
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </Router>
     </ErrorBoundary>
   );
 };

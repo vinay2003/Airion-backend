@@ -1,0 +1,54 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: airion-backend
+    env: node
+    region: oregon  # Choose: oregon, frankfurt, singapore, ohio
+    plan: free
+    rootDirectory: backend
+    buildCommand: cd .. && npm install && npm run backend:build
+    startCommand: cd .. && npm run start
+    healthCheckPath: /api/health
+    
+    # Environment Variables (Add your actual values in Render Dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: PORT
+        value: 10000
+      
+      # Database - UPDATE THIS with your actual connection string
+      - key: DATABASE_URL
+        sync: false  # Mark as secret, set manually in dashboard
+      
+      # JWT Configuration - UPDATE THIS
+      - key: JWT_SECRET
+        sync: false  # Mark as secret, set manually in dashboard
+      
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      
+      # Frontend URLs for CORS - UPDATE THESE with your actual URLs
+      - key: FRONTEND_URL
+        value: https://your-frontend.vercel.app
+      
+      - key: VENDOR_URL
+        value: https://your-vendor.vercel.app
+      
+      - key: ADMIN_URL
+        value: https://your-admin.vercel.app
+      
+      # Optional: Cloudinary (uncomment and update if using)
+      # - key: CLOUDINARY_CLOUD_NAME
+      #   value: your_cloud_name
+      # - key: CLOUDINARY_API_KEY
+      #   sync: false
+      # - key: CLOUDINARY_API_SECRET
+      #   sync: false
+      
+      # Optional: Razorpay (uncomment and update if using)
+      # - key: RAZORPAY_KEY_ID
+      #   value: your_key_id
+      # - key: RAZORPAY_KEY_SECRET
+      #   sync: false

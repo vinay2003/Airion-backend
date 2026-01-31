@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan } from 'typeorm';
+import { Repository, LessThan, IsNull } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 import { Session } from '../entities/session.entity';
 import * as bcrypt from 'bcrypt';
@@ -42,7 +42,7 @@ export class SessionService {
     async verifySession(refreshToken: string): Promise<Session | null> {
         const sessions = await this.sessionRepository.find({
             where: {
-                revokedAt: null,
+                revokedAt: IsNull(),
             },
         });
 
@@ -66,7 +66,7 @@ export class SessionService {
         return await this.sessionRepository.find({
             where: {
                 userId,
-                revokedAt: null,
+                revokedAt: IsNull(),
             },
             order: {
                 lastUsedAt: 'DESC',
@@ -89,7 +89,7 @@ export class SessionService {
      */
     async revokeAllUserSessions(userId: string): Promise<void> {
         await this.sessionRepository.update(
-            { userId, revokedAt: null },
+            { userId, revokedAt: IsNull() },
             { revokedAt: new Date() },
         );
     }

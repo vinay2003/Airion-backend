@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { VendorsModule } from './vendors/vendors.module';
@@ -36,5 +37,6 @@ import { NotificationsModule } from './notifications/notifications.module';
         PaymentsModule,
         NotificationsModule,
     ],
+    controllers: [AppController],
 })
 export class AppModule { }

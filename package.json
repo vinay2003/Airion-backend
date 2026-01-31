@@ -4,7 +4,7 @@
     "scripts": {
         "build": "node build-all.js",
         "dev": "ts-node backend/src/main.ts",
-        "start": "node dist/backend/src/main.js",
+        "start": "node dist/main.js",
         "backend:dev": "ts-node-dev --respawn --transpile-only backend/src/main.ts",
         "backend:build": "tsc -p tsconfig.build.json"
     },

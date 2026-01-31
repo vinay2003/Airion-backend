@@ -17,13 +17,15 @@ import { NotificationsModule } from './notifications/notifications.module';
         }),
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '5432', 10),
-            username: process.env.DB_USERNAME || 'postgres',
-            password: process.env.DB_PASSWORD || 'postgres',
-            database: process.env.DB_NAME || 'airion',
+            url: process.env.DATABASE_URL, // Auto-detects if provided (Render/Neon)
+            host: process.env.DB_HOST,
+            port: parseInt(process.env.DB_PORT || '5432'),
+            username: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false, // Required for Neon/Render Postgres
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            synchronize: process.env.NODE_ENV !== 'production', // Auto-sync in development
+            synchronize: true, // Use carefully in production
         }),
         AuthModule,
         VendorsModule,

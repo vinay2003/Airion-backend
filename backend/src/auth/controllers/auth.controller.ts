@@ -54,4 +54,16 @@ export class AuthController {
     async logout() {
         return { message: 'Logged out successfully' };
     }
+
+    @Post('forgot-password')
+    @HttpCode(HttpStatus.OK)
+    async forgotPassword(@Body() dto: { email: string }) {
+        return this.authService.forgotPassword(dto.email);
+    }
+
+    @Post('reset-password')
+    @HttpCode(HttpStatus.OK)
+    async resetPassword(@Body() dto: any) { // using any for simplicity or import DTO
+        return this.authService.resetPassword(dto);
+    }
 }

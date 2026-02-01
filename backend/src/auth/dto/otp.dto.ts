@@ -24,8 +24,9 @@ export class VerifySignupOtpDto {
     @MinLength(6)
     otp: string;
 
+    @IsOptional()
     @IsString()
-    name: string;
+    name?: string;
 
     @IsOptional()
     @IsString()
@@ -48,4 +49,21 @@ export class VerifyLoginOtpDto {
     @IsString()
     @MinLength(6)
     otp: string;
+}
+
+export class ForgotPasswordDto {
+    @IsEmail()
+    email: string;
+}
+
+export class ResetPasswordDto {
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    token: string;
+
+    @IsString()
+    @MinLength(6)
+    newPassword: string;
 }

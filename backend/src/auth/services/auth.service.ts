@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserRole } from '../entities/user.entity';
-import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
+import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto, ResetPasswordDto } from '../dto/otp.dto';
 import { SignupDto } from '../dto/signup.dto';
 
 // Simple in-memory OTP storage (use Redis in production)
@@ -85,10 +85,10 @@ export class AuthService {
 
         // Create new user
         const user = this.userRepository.create({
-            name: dto.name,
+            name: dto.name || `User ${dto.phone || dto.email}`, // Default name if not provided
             email: dto.email,
             phoneNumber: dto.phone,
-            password: dto.password || 'otp-auth', // Placeholder for OTP-only users
+            password: dto.password || 'otp-auth-user', // Placeholder for OTP-only users
             role: dto.role || UserRole.USER,
             emailVerified: !!dto.email, // Auto-verify if using email
         });
@@ -208,7 +208,6 @@ export class AuthService {
         return userWithoutPassword;
     }
 
-    // Direct password-based signup
     async signup(dto: SignupDto): Promise<{ access_token: string; user: Partial<User> }> {
         const existingUser = await this.userRepository.findOne({
             where: { email: dto.email },
@@ -233,5 +232,64 @@ export class AuthService {
 
         const { password, ...userWithoutPassword } = user;
         return { access_token, user: userWithoutPassword };
+    }
+
+    // Forgot Password
+    async forgotPassword(email: string): Promise<{ message: string; link?: string }> {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new BadRequestException('User with this email does not exist');
+        }
+
+        // Generate reset token
+        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        // Store in memory
+        otpStore.set('reset_' + email, {
+            otp: token,
+            expiresAt: Date.now() + 15 * 60 * 1000, // 15 mins
+        });
+
+        // Simulate sending email
+        const resetLink = 'http://localhost:5173/reset-password?token=' + token + '&email=' + email;
+        console.log('📧 Password Reset Link for ' + email + ': ' + resetLink);
+
+        return {
+            message: 'Password reset link sent to your email',
+            ...(process.env.NODE_ENV === 'development' && { link: resetLink })
+        };
+    }
+
+    // Reset Password
+    async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
+        const { email, token, newPassword } = dto;
+        const storedData = otpStore.get('reset_' + email);
+
+        if (!storedData) {
+            throw new BadRequestException('Invalid or expired reset token');
+        }
+
+        if (storedData.expiresAt < Date.now()) {
+            otpStore.delete('reset_' + email);
+            throw new BadRequestException('Reset token expired');
+        }
+
+        if (storedData.otp !== token) {
+            throw new BadRequestException('Invalid reset token');
+        }
+
+        // Update password
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        user.password = newPassword;
+        await this.userRepository.save(user);
+
+        // Clear token
+        otpStore.delete('reset_' + email);
+
+        return { message: 'Password reset successfully' };
     }
 }

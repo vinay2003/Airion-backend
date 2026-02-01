@@ -35,8 +35,13 @@ const VendorSignupBasic: React.FC = () => {
 
         setLoading(true);
         try {
-            await api.post('/auth/signup/send-otp', { phoneNumber: phone });
-            setSuccess('OTP sent successfully! Please check your phone.');
+            const response = await api.post('/auth/signup/send-otp', { phoneNumber: phone });
+
+            if (response.data.otp) {
+                setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
+            } else {
+                setSuccess('OTP sent successfully! Please check your phone.');
+            }
             setStep('otp');
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to send OTP. Please try again.';
@@ -92,8 +97,13 @@ const VendorSignupBasic: React.FC = () => {
         setLoading(true);
 
         try {
-            await api.post('/auth/signup/send-otp', { phoneNumber: phone });
-            setSuccess('OTP resent successfully!');
+            const response = await api.post('/auth/signup/send-otp', { phoneNumber: phone });
+
+            if (response.data.otp) {
+                setSuccess(`OTP resent! Your code is: ${response.data.otp}`);
+            } else {
+                setSuccess('OTP resent successfully!');
+            }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to resend OTP';
             setError(errorMessage);

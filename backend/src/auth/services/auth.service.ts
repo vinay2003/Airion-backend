@@ -1,19 +1,19 @@
 import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserRole } from '../entities/user.entity';
+import { Otp } from '../entities/otp.entity';
 import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto, ResetPasswordDto } from '../dto/otp.dto';
 import { SignupDto } from '../dto/signup.dto';
-
-// Simple in-memory OTP storage (use Redis in production)
-const otpStore = new Map<string, { otp: string; expiresAt: number }>();
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(Otp)
+        private otpRepository: Repository<Otp>,
         private jwtService: JwtService,
     ) { }
 
@@ -40,19 +40,26 @@ export class AuthService {
         }
 
         // Generate and store OTP
-        const otp = this.generateOTP();
-        otpStore.set(identifier, {
-            otp,
-            expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+        const otpCode = this.generateOTP();
+        const expiresAt = (Date.now() + 10 * 60 * 1000).toString(); // 10 minutes
+
+        // Delete existing OTPs for this identifier
+        await this.otpRepository.delete({ identifier });
+
+        const otp = this.otpRepository.create({
+            identifier,
+            otp: otpCode,
+            expiresAt,
         });
+        await this.otpRepository.save(otp);
 
         // TODO: Send OTP via SMS/Email service
-        console.log(`📱 OTP for ${identifier}: ${otp}`);
+        console.log(`📱 OTP for ${identifier}: ${otpCode}`);
 
         // Return OTP in development mode
         return {
             message: 'OTP sent successfully',
-            ...(process.env.NODE_ENV === 'development' && { otp }),
+            ...(process.env.NODE_ENV === 'development' && { otp: otpCode }),
         };
     }
 
@@ -65,23 +72,26 @@ export class AuthService {
         }
 
         // Validate OTP
-        const storedData = otpStore.get(identifier);
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
 
-        if (!storedData) {
+        if (!otpRecord) {
             throw new UnauthorizedException('OTP not found or expired');
         }
 
-        if (storedData.expiresAt < Date.now()) {
-            otpStore.delete(identifier);
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
             throw new UnauthorizedException('OTP expired');
         }
 
-        if (storedData.otp !== dto.otp) {
+        if (otpRecord.otp !== dto.otp) {
             throw new UnauthorizedException('Invalid OTP');
         }
 
         // Clear OTP after successful verification
-        otpStore.delete(identifier);
+        await this.otpRepository.delete({ identifier });
 
         // Create new user
         const user = this.userRepository.create({
@@ -91,6 +101,7 @@ export class AuthService {
             password: dto.password || 'otp-auth-user', // Placeholder for OTP-only users
             role: dto.role || UserRole.USER,
             emailVerified: !!dto.email, // Auto-verify if using email
+            marketingConsent: dto.marketingConsent || false,
         });
 
         await this.userRepository.save(user);
@@ -126,19 +137,26 @@ export class AuthService {
         }
 
         // Generate and store OTP
-        const otp = this.generateOTP();
-        otpStore.set(identifier, {
-            otp,
-            expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+        const otpCode = this.generateOTP();
+        const expiresAt = (Date.now() + 10 * 60 * 1000).toString(); // 10 minutes
+
+        // Delete existing OTPs for this identifier
+        await this.otpRepository.delete({ identifier });
+
+        const otp = this.otpRepository.create({
+            identifier,
+            otp: otpCode,
+            expiresAt,
         });
+        await this.otpRepository.save(otp);
 
         // TODO: Send OTP via SMS/Email service
-        console.log(`📱 OTP for ${identifier}: ${otp}`);
+        console.log(`📱 OTP for ${identifier}: ${otpCode}`);
 
         // Return OTP in development mode
         return {
             message: 'OTP sent successfully',
-            ...(process.env.NODE_ENV === 'development' && { otp }),
+            ...(process.env.NODE_ENV === 'development' && { otp: otpCode }),
         };
     }
 
@@ -151,23 +169,26 @@ export class AuthService {
         }
 
         // Validate OTP
-        const storedData = otpStore.get(identifier);
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
 
-        if (!storedData) {
+        if (!otpRecord) {
             throw new UnauthorizedException('OTP not found or expired');
         }
 
-        if (storedData.expiresAt < Date.now()) {
-            otpStore.delete(identifier);
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
             throw new UnauthorizedException('OTP expired');
         }
 
-        if (storedData.otp !== dto.otp) {
+        if (otpRecord.otp !== dto.otp) {
             throw new UnauthorizedException('Invalid OTP');
         }
 
         // Clear OTP
-        otpStore.delete(identifier);
+        await this.otpRepository.delete({ identifier });
 
         // Get user
         const user = await this.userRepository.findOne({
@@ -223,6 +244,7 @@ export class AuthService {
             phoneNumber: dto.phoneNumber,
             password: dto.password,
             role: dto.role || UserRole.USER,
+            marketingConsent: true, // Direct signup assumes consent or handle via DTO
         });
 
         await this.userRepository.save(user);
@@ -243,12 +265,18 @@ export class AuthService {
 
         // Generate reset token
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const identifier = 'reset_' + email;
+        const expiresAt = (Date.now() + 15 * 60 * 1000).toString(); // 15 mins
 
-        // Store in memory
-        otpStore.set('reset_' + email, {
+        // Delete existing reset tokens
+        await this.otpRepository.delete({ identifier });
+
+        const otp = this.otpRepository.create({
+            identifier,
             otp: token,
-            expiresAt: Date.now() + 15 * 60 * 1000, // 15 mins
+            expiresAt,
         });
+        await this.otpRepository.save(otp);
 
         // Simulate sending email
         const resetLink = 'http://localhost:5173/reset-password?token=' + token + '&email=' + email;
@@ -263,18 +291,23 @@ export class AuthService {
     // Reset Password
     async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
         const { email, token, newPassword } = dto;
-        const storedData = otpStore.get('reset_' + email);
+        const identifier = 'reset_' + email;
 
-        if (!storedData) {
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
+
+        if (!otpRecord) {
             throw new BadRequestException('Invalid or expired reset token');
         }
 
-        if (storedData.expiresAt < Date.now()) {
-            otpStore.delete('reset_' + email);
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
             throw new BadRequestException('Reset token expired');
         }
 
-        if (storedData.otp !== token) {
+        if (otpRecord.otp !== token) {
             throw new BadRequestException('Invalid reset token');
         }
 
@@ -288,8 +321,18 @@ export class AuthService {
         await this.userRepository.save(user);
 
         // Clear token
-        otpStore.delete('reset_' + email);
+        await this.otpRepository.delete({ identifier });
 
         return { message: 'Password reset successfully' };
+    }
+
+    async updateProfile(userId: string, dto: any): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        Object.assign(user, dto);
+        return this.userRepository.save(user);
     }
 }

@@ -12,6 +12,34 @@ export class CreateVendorDto {
     @IsString()
     businessPhone: string;
 
+    @IsString()
+    @IsOptional()
+    city?: string;
+
+    @IsString()
+    @IsOptional()
+    yearsInBusiness?: string;
+
+    @IsString()
+    @IsOptional()
+    gstNumber?: string;
+
+    @IsArray()
+    @IsOptional()
+    acquisitionChannels?: string[];
+
+    @IsString()
+    @IsOptional()
+    monthlyEventVolume?: string;
+
+    @IsString()
+    @IsOptional()
+    averageBookingPrice?: string;
+
+    @IsArray()
+    @IsOptional()
+    painPoints?: string[];
+
     @IsObject()
     businessAddress: {
         street: string;

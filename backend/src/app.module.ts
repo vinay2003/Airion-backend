@@ -10,6 +10,9 @@ import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { LeadsModule } from './leads/leads.module';
+import { AdsModule } from './ads/ads.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
     imports: [
@@ -36,6 +39,9 @@ import { NotificationsModule } from './notifications/notifications.module';
         ReviewsModule,
         PaymentsModule,
         NotificationsModule,
+        LeadsModule,
+        AdsModule,
+        CouponsModule,
     ],
     controllers: [AppController],
 })

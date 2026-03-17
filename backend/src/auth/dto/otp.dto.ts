@@ -35,6 +35,9 @@ export class VerifySignupOtpDto {
     @IsEnum(UserRole)
     @IsOptional()
     role?: UserRole = UserRole.USER;
+
+    @IsOptional()
+    marketingConsent?: boolean = false;
 }
 
 export class VerifyLoginOtpDto {

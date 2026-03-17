@@ -2,14 +2,20 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vendor } from './entities/vendor.entity';
+import { Activity, ActivityType } from './entities/activity.entity';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { User } from '../auth/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class VendorsService {
     constructor(
         @InjectRepository(Vendor)
         private vendorRepository: Repository<Vendor>,
+        @InjectRepository(Activity)
+        private activityRepository: Repository<Activity>,
+        @InjectRepository(Category)
+        private categoryRepository: Repository<Category>,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: User): Promise<Vendor> {
@@ -25,9 +31,21 @@ export class VendorsService {
         const vendor = this.vendorRepository.create({
             ...createVendorDto,
             userId: user.id,
+            verificationStatus: 'pending',
+            isVerified: false,
         });
 
         return this.vendorRepository.save(vendor);
+    }
+
+    async trackActivity(userId: string, type: ActivityType, targetId?: string, metadata?: any): Promise<Activity> {
+        const activity = this.activityRepository.create({
+            userId,
+            type,
+            targetId,
+            metadata,
+        });
+        return this.activityRepository.save(activity);
     }
 
     async findOne(id: string): Promise<Vendor> {
@@ -75,5 +93,16 @@ export class VendorsService {
         }
 
         return query.getMany();
+    }
+
+    async updateStatus(id: string, status: string): Promise<Vendor> {
+        const vendor = await this.findOne(id);
+        vendor.verificationStatus = status;
+        if (status === 'approved') {
+            vendor.isVerified = true;
+        } else if (status === 'rejected') {
+            vendor.isVerified = false;
+        }
+        return this.vendorRepository.save(vendor);
     }
 }

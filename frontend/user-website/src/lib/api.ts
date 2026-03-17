@@ -19,7 +19,7 @@ const MOCK_EVENTS: Event[] = [
 
 // Create axios instance with base URL
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://airion-backend.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3000/api' : 'https://airion-backend.onrender.com/api'),
     headers: {
         'Content-Type': 'application/json',
     },
@@ -48,11 +48,8 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Unauthorized - clear token and redirect to login
+            // Unauthorized - clear token
             localStorage.removeItem('token');
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
-            }
         }
         return Promise.reject(error);
     }
@@ -76,3 +73,30 @@ export const fetchEventById = async (id: string): Promise<Event | undefined> => 
         }, 300);
     });
 };
+
+/**
+ * Booking API Helpers
+ */
+export const createBooking = async (bookingData: any) => {
+    const response = await api.post('/bookings', bookingData);
+    return response.data; // { success, booking }
+};
+
+export const fetchMyBookings = async () => {
+    const response = await api.get('/bookings/mine');
+    return response.data;
+};
+
+/**
+ * Payment API Helpers
+ */
+export const createPaymentOrder = async (amount: number, bookingId: string) => {
+    const response = await api.post('/payments/create-order', { amount, bookingId });
+    return response.data; // { success, orderId, amount, currency }
+};
+
+export const verifyPayment = async (verificationResponse: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }, bookingId: string) => {
+    const response = await api.post('/payments/verify', { ...verificationResponse, bookingId });
+    return response.data; // { success }
+};
+

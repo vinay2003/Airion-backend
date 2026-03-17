@@ -1,0 +1,8 @@
+{
+  "name": "airion-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx concurrently \"npm run dev --prefix user-website\" \"npm run dev --prefix vendor-dashboard\" \"npm run dev --prefix admin-panel\""
+  }
+}

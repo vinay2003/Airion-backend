@@ -65,7 +65,7 @@ const Signup: React.FC = () => {
             if (response.data.access_token) {
                 loginWithToken(response.data.access_token);
                 setSuccess('Account created successfully!');
-                setTimeout(() => navigate('/'), 1000);
+                setTimeout(() => navigate('/onboarding/interests'), 1000);
             }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid OTP. Please try again.');

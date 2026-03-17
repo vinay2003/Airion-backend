@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { X, Calendar, Clock, Users, CheckCircle, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { createBooking, createPaymentOrder, verifyPayment } from '../lib/api';
+
 interface BookingModalProps {
     isOpen: boolean;
     onClose: () => void;
     eventName: string;
     price: string;
+    vendorId: string; // Added vendor id needed for backend booking
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName, price }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName, price, vendorId }) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         date: '',
         time: '',
@@ -21,13 +25,68 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Simulate API call
-        setTimeout(() => {
-            navigate('/booking-confirmation', { state: { ...formData, eventName, price } });
-        }, 1000);
+    const handlePayment = async (order: any, bookingId: string) => {
+        const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_xxxx', // Fallback or dynamic fetch from backend is better
+            amount: order.amount,
+            currency: "INR",
+            name: "Airion Event Booking",
+            description: `Payment for ${eventName}`,
+            order_id: order.orderId,
+            handler: async (response: any) => {
+                setLoading(true);
+                try {
+                    await verifyPayment({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    }, bookingId);
+                    
+                    navigate('/booking-confirmation', { state: { ...formData, eventName, price } });
+                } catch (error) {
+                    alert('Payment Verification Failed');
+                } finally {
+                    setLoading(false);
+                }
+            },
+            prefill: {
+                name: "User",
+                email: "user@example.com",
+            },
+            theme: {
+                color: "#ef4444",
+            }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
     };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const numericPrice = parseFloat(price.replace(/[^\d.-]/g, ''));
+            const res = await createBooking({
+                vendorId,
+                totalAmount: numericPrice,
+                eventDate: formData.date ? new Date(`${formData.date}T${formData.time || '12:00'}`) : undefined,
+                specialRequirements: `Package: ${formData.package}. Standard Requirements.`
+            });
+
+            if (res.success && res.booking) {
+                // Now create payment order
+                const order = await createPaymentOrder(numericPrice, res.booking.id);
+                handlePayment(order, res.booking.id);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Failed to initiate booking or payment creation');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -132,8 +191,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                         </label>
                     </div>
 
-                    <button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                        Confirm Booking
+                    <button type="submit" disabled={loading} className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50">
+                        {loading ? 'Processing...' : 'Confirm Booking'}
                     </button>
                 </form>
             </div>

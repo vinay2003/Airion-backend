@@ -1,77 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     Building,
     User,
-    Mail,
-    Phone,
     MapPin,
     Briefcase,
     TrendingUp,
     AlertCircle,
-    Star,
     ShieldCheck,
-    MessageSquare
+    CheckCircle,
+    ArrowRight,
+    ArrowLeft,
+    Upload,
+    Plus,
+    X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import api from '../lib/api';
 
-const VendorSignupForm: React.FC = () => {
+const VendorSignupWizard: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const basicDetails = location.state?.basicDetails;
+    const basicDetails = location.state?.basicDetails || JSON.parse(localStorage.getItem('vendorBasicDetails') || '{}');
+
+    const [currentStep, setCurrentStep] = useState(2); // Start at Step 2 since Step 1 is basic signup
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const [formData, setFormData] = useState({
-        // Section 1: Basic Information (pre-filled from basicDetails)
+        // Step 2: Business Registration
         businessName: basicDetails?.businessName || '',
         ownerName: basicDetails ? `${basicDetails.firstName} ${basicDetails.lastName}` : '',
         businessType: '',
         otherBusinessType: '',
         businessAddress: '',
         city: basicDetails?.city || '',
-        contactNumber: basicDetails?.phone || '',
-        email: basicDetails?.email || '',
         yearsInBusiness: '',
+        gstNumber: '',
 
-        // Section 2: Vendor Operations
+        // Step 3: Business Intelligence
         acquisitionChannels: [] as string[],
-        otherAcquisitionChannel: '',
         monthlyEventVolume: '',
         averagePrice: '',
-        offerPackages: '',
+        painPoints: [] as string[],
 
-        // Section 3: Challenges & Pain Points
-        challenges: [] as string[],
-        useDigitalTools: '',
-        currentBookingManagement: '',
-        lookingForSolution: '',
-        otherChallenges: '',
-        mobileAppHelp: '', // Additional field from form
-
-        // Section 4: Platform Interest
-        joinLikelihood: '',
-        excitementFactors: [] as string[],
-        preferredPricing: '',
-        benefits: [] as string[],
-
-        // Section 5: Expectations & Risk Factors
-        leaveReasons: [] as string[],
-        expectedSupport: [] as string[],
-        joinTime: '',
-
-        // Section 6: Optional
-        joinEarlyCommunity: '',
-        comments: ''
+        // Step 4: Profile Completion
+        portfolioImages: [] as string[],
+        businessDescription: '',
     });
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -81,401 +63,263 @@ const VendorSignupForm: React.FC = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleCheckboxChange = (name: string, value: string, maxSelection?: number) => {
+    const handleCheckboxChange = (name: string, value: string) => {
         setFormData(prev => {
             const currentList = prev[name as keyof typeof prev] as string[];
             if (currentList.includes(value)) {
                 return { ...prev, [name]: currentList.filter(item => item !== value) };
             } else {
-                if (maxSelection && currentList.length >= maxSelection) {
-                    return prev; // Do not add if max limit reached
-                }
                 return { ...prev, [name]: [...currentList, value] };
             }
         });
     };
 
+    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
+    const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 2));
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (currentStep < 4) {
+            nextStep();
+            return;
+        }
+
         setLoading(true);
         setError('');
 
         try {
-            // Create vendor profile (user is already authenticated, token sent via api interceptor)
-            const response = await api.post('/vendors', formData);
+            // In a real app, images would be uploaded to Supabase here and URLs stored
+            const submissionData = {
+                ...formData,
+                businessEmail: basicDetails?.email,
+                businessPhone: basicDetails?.phone,
+                // Map the nested businessAddress for the backend DTO
+                businessAddress: {
+                    street: formData.businessAddress,
+                    city: formData.city,
+                    state: '', // Add state if needed
+                    country: 'India',
+                    zipCode: '',
+                }
+            };
 
-            console.log('✅ Vendor profile created:', response.data);
-            alert('Vendor profile created successfully! Welcome to Airion.');
+            await api.post('/vendors', submissionData);
+            alert('Congratulations! Your vendor profile is being reviewed.');
             navigate('/dashboard');
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Failed to create vendor profile. Please try again.';
-            setError(errorMessage);
-            console.error('Vendor Profile Creation Error:', err);
-            alert(errorMessage);
+            setError(err.response?.data?.message || 'Failed to complete registration.');
         } finally {
             setLoading(false);
         }
     };
 
-    const sectionTitleClass = "text-xl font-semibold mt-6 mb-4 flex items-center gap-2 text-primary";
+    const renderStepIndicator = () => (
+        <div className="flex items-center justify-between mb-8 max-w-2xl mx-auto">
+            {[1, 2, 3, 4].map((step) => (
+                <div key={step} className="flex flex-col items-center flex-1 relative">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 z-10 
+                        ${currentStep >= step ? 'bg-red-600 border-red-600 text-white' : 'bg-white border-gray-300 text-gray-400'}`}>
+                        {currentStep > step || step === 1 ? <CheckCircle size={20} /> : step}
+                    </div>
+                    <span className={`text-xs mt-2 font-medium ${currentStep >= step ? 'text-red-600' : 'text-gray-400'}`}>
+                        {step === 1 && "Basic"}
+                        {step === 2 && "Registration"}
+                        {step === 3 && "Intelligence"}
+                        {step === 4 && "Completion"}
+                    </span>
+                    {step < 4 && (
+                        <div className={`absolute top-5 left-1/2 w-full h-[2px] -z-0 
+                            ${currentStep > step ? 'bg-red-600' : 'bg-gray-200'}`}></div>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
-            <Card className="max-w-4xl mx-auto shadow-lg">
-                <CardHeader className="text-center border-b bg-white dark:bg-slate-900 rounded-t-xl sticky top-0 z-10">
-                    <div className="flex justify-center mb-2">
-                        <div className="bg-red-500 text-white p-2 rounded-lg">
-                            <span className="text-xl font-bold">Ai</span>
-                        </div>
-                    </div>
-                    <CardTitle className="text-3xl font-bold">Vendor Registration</CardTitle>
-                    <CardDescription>Join Airion Solutions - The Future of Event Management</CardDescription>
-                </CardHeader>
-                <CardContent className="p-6 md:p-10 space-y-8">
-                    <form onSubmit={handleSubmit}>
+            <div className="max-w-4xl mx-auto">
+                <header className="mb-8 text-center text-primary-content">
+                    <h1 className="text-3xl font-bold mb-2">Vendor Onboarding</h1>
+                    <p className="text-gray-500">Complete your profile to start receiving leads</p>
+                </header>
 
-                        {/* Section 1: Basic Information */}
-                        <div>
-                            <h3 className={sectionTitleClass}><User className="h-5 w-5" /> Section 1: Basic Information</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="businessName">1. Business Name</Label>
-                                    <Input id="businessName" name="businessName" placeholder="Enter business name" value={formData.businessName} onChange={handleTextChange} required />
+                {renderStepIndicator()}
+
+                <Card className="shadow-xl">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            {currentStep === 2 && <><Building className="text-red-600" /> Business Registration</>}
+                            {currentStep === 3 && <><TrendingUp className="text-red-600" /> Business Intelligence</>}
+                            {currentStep === 4 && <><ShieldCheck className="text-red-600" /> Profile Completion</>}
+                        </CardTitle>
+                        <CardDescription>
+                            {currentStep === 2 && "Tell us about your business entity"}
+                            {currentStep === 3 && "Help us understand your business better for targeted growth"}
+                            {currentStep === 4 && "Add finishing touches and verify your account"}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {error && (
+                                <div className="bg-red-50 text-red-700 p-3 rounded-md border border-red-200 text-sm">
+                                    {error}
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="ownerName">2. Owner's Full Name</Label>
-                                    <Input id="ownerName" name="ownerName" placeholder="Enter owner's name" value={formData.ownerName} onChange={handleTextChange} required />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label>3. Business Type</Label>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                        {[
-                                            "Venue (Banquet / Hotel / Resort)",
-                                            "Caterer",
-                                            "Photographer / Videographer",
-                                            "Florist / Decorator",
-                                            "Makeup Artist / Salon",
-                                            "Cake / Sweet Shop",
-                                            "Music / DJ / Band",
-                                            "Event Planner / Coordinator",
-                                            "Other"
-                                        ].map((type) => (
-                                            <div key={type} className="flex items-center space-x-2">
-                                                <input
-                                                    type="radio"
-                                                    name="businessType"
-                                                    value={type}
-                                                    checked={formData.businessType === type}
-                                                    onChange={(e) => handleRadioChange('businessType', e.target.value)}
-                                                    className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300"
-                                                />
-                                                <label className="text-sm font-medium">{type}</label>
-                                            </div>
-                                        ))}
+                            )}
+
+                            {currentStep === 2 && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label>Business Name</Label>
+                                        <Input name="businessName" value={formData.businessName} onChange={handleTextChange} required />
                                     </div>
-                                    {formData.businessType === 'Other' && (
-                                        <Input
-                                            name="otherBusinessType"
-                                            placeholder="Please specify"
-                                            value={formData.otherBusinessType}
+                                    <div className="space-y-2">
+                                        <Label>Business Type</Label>
+                                        <select
+                                            name="businessType"
+                                            value={formData.businessType}
+                                            onChange={(e) => handleRadioChange('businessType', e.target.value)}
+                                            className="w-full border rounded-md p-2 bg-background"
+                                            required
+                                        >
+                                            <option value="">Select Category</option>
+                                            <option value="venue">Venue / Hotel</option>
+                                            <option value="caterer">Caterer</option>
+                                            <option value="photography">Photography</option>
+                                            <option value="decor">Decor / Florist</option>
+                                            <option value="makeup">Makeup Artist</option>
+                                        </select>
+                                    </div>
+                                    <div className="md:col-span-2 space-y-2">
+                                        <Label>Business Address</Label>
+                                        <Input name="businessAddress" value={formData.businessAddress} onChange={handleTextChange} required />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>City</Label>
+                                        <Input name="city" value={formData.city} onChange={handleTextChange} required />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Years in Business</Label>
+                                        <Input name="yearsInBusiness" value={formData.yearsInBusiness} onChange={handleTextChange} placeholder="e.g. 5+ years" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>GST Number (Optional)</Label>
+                                        <Input name="gstNumber" value={formData.gstNumber} onChange={handleTextChange} placeholder="Enter 15-digit GSTIN" />
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentStep === 3 && (
+                                <div className="space-y-8">
+                                    <div className="space-y-4">
+                                        <Label className="text-base">How do you currently acquire customers?</Label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {["Social Media", "Word of Mouth", "Local Ads", "JustDial/Indiamart", "Direct Walk-ins"].map(channel => (
+                                                <div key={channel} className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id={channel}
+                                                        checked={formData.acquisitionChannels.includes(channel)}
+                                                        onCheckedChange={() => handleCheckboxChange('acquisitionChannels', channel)}
+                                                    />
+                                                    <Label htmlFor={channel}>{channel}</Label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label>Average Monthly Events</Label>
+                                            <Input name="monthlyEventVolume" value={formData.monthlyEventVolume} onChange={handleTextChange} placeholder="e.g. 5-10 events" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Average Booking Price (₹)</Label>
+                                            <Input name="averagePrice" value={formData.averagePrice} onChange={handleTextChange} placeholder="e.g. 50,000" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <Label className="text-base">What are your biggest pain points?</Label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {["Low Quality Leads", "High Commission", "Payment Delays", "Booking Management", "Visibility"].map(point => (
+                                                <div key={point} className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id={point}
+                                                        checked={formData.painPoints.includes(point)}
+                                                        onCheckedChange={() => handleCheckboxChange('painPoints', point)}
+                                                    />
+                                                    <Label htmlFor={point}>{point}</Label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentStep === 4 && (
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <Label>Tell Customers About Your Business</Label>
+                                        <Textarea
+                                            name="businessDescription"
+                                            value={formData.businessDescription}
                                             onChange={handleTextChange}
-                                            className="mt-2"
+                                            placeholder="Write a brief intro about your services, experience, and what makes you unique..."
+                                            className="h-32"
+                                            required
                                         />
-                                    )}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="businessAddress">4. Business Address</Label>
-                                    <Input id="businessAddress" name="businessAddress" placeholder="Full address" value={formData.businessAddress} onChange={handleTextChange} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="city">5. City / District</Label>
-                                    <Input id="city" name="city" placeholder="City" value={formData.city} onChange={handleTextChange} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="contactNumber">6. Contact Number</Label>
-                                    <Input id="contactNumber" name="contactNumber" type="tel" placeholder="+91..." value={formData.contactNumber} onChange={handleTextChange} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">7. Email (optional)</Label>
-                                    <Input id="email" name="email" type="email" placeholder="Email address" value={formData.email} onChange={handleTextChange} />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label>8. Years in Business</Label>
-                                    <div className="flex gap-4 flex-wrap">
-                                        {["<1", "1–3", "3–5", "5+"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="yearsInBusiness"
-                                                    value={opt}
-                                                    checked={formData.yearsInBusiness === opt}
-                                                    onChange={(e) => handleRadioChange("yearsInBusiness", e.target.value)}
-                                                    className="w-4 h-4 text-red-600"
-                                                />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* Section 2: Vendor Operations */}
-                        <div>
-                            <h3 className={sectionTitleClass}><Briefcase className="h-5 w-5" /> Section 2: Vendor Operations</h3>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>9. How do you currently get customers? (Select all)</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                        {["Word of mouth", "Social Media", "Online Listings", "Walk-ins", "Event Planners", "Other"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`acq-${opt}`}
-                                                    checked={formData.acquisitionChannels.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('acquisitionChannels', opt)}
-                                                />
-                                                <label htmlFor={`acq-${opt}`} className="text-sm cursor-pointer">{opt}</label>
+                                    <div className="space-y-4">
+                                        <Label className="text-base">Portfolio Showcase</Label>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div className="border-2 border-dashed rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-600 transition-colors cursor-pointer">
+                                                <Plus size={24} />
+                                                <span className="text-xs mt-2">Add Photo</span>
                                             </div>
-                                        ))}
+                                            {/* Preview slots can be added here */}
+                                        </div>
+                                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                                            <AlertCircle size={12} /> High-quality photos increase booking chances by 40%
+                                        </p>
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <Label>10. Monthly event volume</Label>
-                                    <div className="flex gap-4 flex-wrap">
-                                        {["1–5", "6–10", "11–20", "20+"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="monthlyEventVolume" value={opt} checked={formData.monthlyEventVolume === opt} onChange={(e) => handleRadioChange("monthlyEventVolume", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
+                                    <div className="p-4 bg-green-50 rounded-lg border border-green-100 flex items-start gap-4">
+                                        <div className="bg-green-100 p-2 rounded-full text-green-600">
+                                            <ShieldCheck size={20} />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold text-green-800">Verification in Progress</h4>
+                                            <p className="text-sm text-green-700">Once you submit, our team will verify your details within 24-48 hours. You'll receive a 'Verified' badge after approval.</p>
+                                        </div>
                                     </div>
                                 </div>
+                            )}
 
-                                <div className="space-y-2">
-                                    <Label>11. Average price per booking</Label>
-                                    <div className="flex gap-4 flex-wrap">
-                                        {["<₹5k", "₹5k–25k", "₹25k–1L", ">1L"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="averagePrice" value={opt} checked={formData.averagePrice === opt} onChange={(e) => handleRadioChange("averagePrice", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>12. Do you offer packages?</Label>
-                                    <div className="flex gap-4">
-                                        {["Yes", "No"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="offerPackages" value={opt} checked={formData.offerPackages === opt} onChange={(e) => handleRadioChange("offerPackages", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
+                            <div className="flex justify-between pt-6 border-t">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={prevStep}
+                                    disabled={currentStep === 2}
+                                >
+                                    <ArrowLeft className="mr-2" size={18} /> Back
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    className="bg-red-600 hover:bg-red-700 text-white min-w-[120px]"
+                                    disabled={loading}
+                                >
+                                    {loading ? "Saving..." : (currentStep === 4 ? "Complete Verification" : "Next Step")}
+                                    {currentStep < 4 && <ArrowRight className="ml-2" size={18} />}
+                                </Button>
                             </div>
-                        </div>
-
-                        {/* Section 3: Challenges & Pain Points */}
-                        <div>
-                            <h3 className={sectionTitleClass}><AlertCircle className="h-5 w-5" /> Section 3: Challenges & Pain Points</h3>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>13. Biggest challenges (Select up to 3)</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {["Low visibility", "Competition", "High ad cost", "Fake leads", "Payment delays", "Booking issues"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`chall-${opt}`}
-                                                    checked={formData.challenges.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('challenges', opt, 3)}
-                                                    disabled={!formData.challenges.includes(opt) && formData.challenges.length >= 3}
-                                                />
-                                                <label htmlFor={`chall-${opt}`} className="text-sm cursor-pointer">{opt}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>14. Do you use digital tools?</Label>
-                                    <div className="flex gap-4">
-                                        {["Yes", "No"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="useDigitalTools" value={opt} checked={formData.useDigitalTools === opt} onChange={(e) => handleRadioChange("useDigitalTools", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>15. Would a mobile booking app help you?</Label>
-                                    <div className="flex gap-4">
-                                        {["Yes", "Maybe", "No"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="mobileAppHelp" value={opt} checked={formData.mobileAppHelp === opt} onChange={(e) => handleRadioChange("mobileAppHelp", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 4: Platform Interest */}
-                        <div>
-                            <h3 className={sectionTitleClass}><TrendingUp className="h-5 w-5" /> Section 4: Platform Interest</h3>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>16. Likelihood to join Airion (1-5)</Label>
-                                    <div className="flex gap-6">
-                                        {[1, 2, 3, 4, 5].map(num => (
-                                            <label key={num} className="flex flex-col items-center cursor-pointer">
-                                                <span className="text-sm font-medium mb-1">{num}</span>
-                                                <input type="radio" name="joinLikelihood" value={num.toString()} checked={formData.joinLikelihood === num.toString()} onChange={(e) => handleRadioChange("joinLikelihood", e.target.value)} className="text-red-600" />
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>17. What excites you most? (Select 3)</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {["Free listing", "Genuine leads", "Local ads", "Vendor dashboard", "Training", "Payment security"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`em-${opt}`}
-                                                    checked={formData.excitementFactors.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('excitementFactors', opt, 3)}
-                                                    disabled={!formData.excitementFactors.includes(opt) && formData.excitementFactors.length >= 3}
-                                                />
-                                                <label htmlFor={`em-${opt}`} className="text-sm cursor-pointer">{opt}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>18. Preferred pricing model</Label>
-                                    <div className="flex gap-4 flex-wrap">
-                                        {["Free", "Monthly", "Yearly", "Commission"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="preferredPricing" value={opt} checked={formData.preferredPricing === opt} onChange={(e) => handleRadioChange("preferredPricing", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>19. What benefits matter most?</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {["Promotions", "Profile page", "Feedback system", "Packages access", "EMI support"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`benefit-${opt}`}
-                                                    checked={formData.benefits.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('benefits', opt)}
-                                                />
-                                                <label htmlFor={`benefit-${opt}`} className="text-sm cursor-pointer">{opt}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 5: Expectations & Risk Factors */}
-                        <div>
-                            <h3 className={sectionTitleClass}><ShieldCheck className="h-5 w-5" /> Section 5: Expectations & Risk Factors</h3>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>20. What may cause you to leave the platform?</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {["Hidden charges", "Poor support", "Fake leads", "Complex UI", "No growth", "Trust issues"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`leave-${opt}`}
-                                                    checked={formData.leaveReasons.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('leaveReasons', opt)}
-                                                />
-                                                <label htmlFor={`leave-${opt}`} className="text-sm cursor-pointer">{opt}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>21. What support do you expect?</Label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {["Marketing help", "Profile setup", "Booking assistance", "Technical training", "Insights"].map((opt) => (
-                                            <div key={opt} className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id={`sup-${opt}`}
-                                                    checked={formData.expectedSupport.includes(opt)}
-                                                    onCheckedChange={() => handleCheckboxChange('expectedSupport', opt)}
-                                                />
-                                                <label htmlFor={`sup-${opt}`} className="text-sm cursor-pointer">{opt}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label>22. When will you join Airion?</Label>
-                                    <div className="flex gap-4 flex-wrap">
-                                        {["Immediately", "Within 1 month", "After others join", "Not sure"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="joinTime" value={opt} checked={formData.joinTime === opt} onChange={(e) => handleRadioChange("joinTime", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 6: Optional */}
-                        <div>
-                            <h3 className={sectionTitleClass}><MessageSquare className="h-5 w-5" /> Section 6: Optional</h3>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>23. Join early vendor community?</Label>
-                                    <div className="flex gap-4">
-                                        {["Yes", "Maybe", "No"].map(opt => (
-                                            <label key={opt} className="flex items-center space-x-2 cursor-pointer">
-                                                <input type="radio" name="joinEarlyCommunity" value={opt} checked={formData.joinEarlyCommunity === opt} onChange={(e) => handleRadioChange("joinEarlyCommunity", e.target.value)} className="text-red-600" />
-                                                <span>{opt}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="comments">24. Additional comments</Label>
-                                    <Textarea
-                                        id="comments"
-                                        name="comments"
-                                        placeholder="Any other feedback or questions?"
-                                        value={formData.comments}
-                                        onChange={handleTextChange}
-                                        className="h-24"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="pt-6">
-                            <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-lg py-6">
-                                Submit Vendor Profile
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 };
 
-export default VendorSignupForm;
+export default VendorSignupWizard;

@@ -109,17 +109,21 @@ const Dashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Vendor Registrations</h2>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Pending Vendor Approvals</h2>
                     <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map((i) => (
+                        {[
+                            { name: 'Glow Makeup Studio', type: 'Makeup Artist', city: 'Mumbai' },
+                            { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
+                            { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
+                        ].map((vendor, i) => (
                             <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-700 flex items-center justify-center font-bold text-gray-500 dark:text-slate-400">
-                                        V
+                                    <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                                        {vendor.name[0]}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-gray-900 dark:text-white">New Vendor {i}</p>
-                                        <p className="text-xs text-gray-500 dark:text-slate-400">Wedding Venue • Mumbai</p>
+                                        <p className="font-bold text-gray-900 dark:text-white">{vendor.name}</p>
+                                        <p className="text-xs text-gray-500 dark:text-slate-400">{vendor.type} • {vendor.city}</p>
                                     </div>
                                 </div>
                                 <span className="text-xs font-medium bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded-full">Pending</span>
@@ -129,17 +133,23 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Platform Activity</h2>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Platform Activities</h2>
                     <div className="space-y-6">
-                        {[1, 2, 3, 4, 5].map((i) => (
+                        {[
+                            { user: 'Rahul S.', type: 'profile_view', target: 'Royal Palace', time: '10 mins ago' },
+                            { user: 'Priya K.', type: 'category_view', target: 'Photography', time: '25 mins ago' },
+                            { user: 'Amit M.', type: 'save_bookmark', target: 'Flash Moments', time: '1 hour ago' },
+                        ].map((activity, i) => (
                             <div key={i} className="flex gap-4">
                                 <div className="flex flex-col items-center">
-                                    <div className="w-2 h-2 bg-gray-300 dark:bg-slate-700 rounded-full"></div>
+                                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                                     <div className="w-0.5 h-full bg-gray-100 dark:bg-slate-800 my-1"></div>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-900 dark:text-slate-200"><span className="font-bold">User {i}</span> made a booking for ₹50,000</p>
-                                    <p className="text-xs text-gray-400 dark:text-slate-500">2 hours ago</p>
+                                    <p className="text-sm text-gray-900 dark:text-slate-200">
+                                        <span className="font-bold">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-red-600 font-medium">{activity.target}</span>
+                                    </p>
+                                    <p className="text-xs text-gray-400 dark:text-slate-500">{activity.time}</p>
                                 </div>
                             </div>
                         ))}

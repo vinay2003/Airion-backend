@@ -13,31 +13,27 @@ interface Booking {
     location: string;
 }
 
-const MyBookings: React.FC = () => {
-    const bookings: Booking[] = [
-        {
-            id: '1',
-            venueName: 'Grand Hotel Ballroom',
-            image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop',
-            date: '2025-12-15',
-            status: 'confirmed',
-            price: '₹1,50,000',
-            guests: 500,
-            location: 'Mumbai'
-        },
-        {
-            id: '2',
-            venueName: 'Sunset Cafe',
-            image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop',
-            date: '2025-11-20',
-            status: 'completed',
-            price: '₹25,000',
-            guests: 50,
-            location: 'Goa'
-        }
-    ];
+import { fetchMyBookings } from '../../lib/api';
 
-    const getStatusColor = (status: Booking['status']) => {
+const MyBookings: React.FC = () => {
+    const [bookings, setBookings] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const loadBookings = async () => {
+            try {
+                const data = await fetchMyBookings();
+                setBookings(data || []);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadBookings();
+    }, []);
+
+    const getStatusColor = (status: string) => {
         switch (status) {
             case 'confirmed': return 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400';
             case 'pending': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400';
@@ -60,12 +56,12 @@ const MyBookings: React.FC = () => {
                         className="bg-white dark:bg-slate-800 rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-6"
                     >
                         <div className="md:w-48 h-32 rounded-xl overflow-hidden flex-shrink-0">
-                            <img src={booking.image} alt={booking.venueName} className="w-full h-full object-cover" />
+                            <img src={booking.vendor?.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'} alt={booking.vendor?.businessName || 'Venue'} className="w-full h-full object-cover" />
                         </div>
 
                         <div className="flex-1">
                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{booking.venueName}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{booking.vendor?.businessName || 'Booked Venue'}</h3>
                                 <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${getStatusColor(booking.status)}`}>
                                     {booking.status}
                                 </span>
@@ -74,18 +70,18 @@ const MyBookings: React.FC = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-slate-400 mb-4">
                                 <div className="flex items-center gap-2">
                                     <Calendar size={16} className="text-red-500" />
-                                    <span>{booking.date}</span>
+                                    <span>{new Date(booking.eventDate).toLocaleDateString()}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <MapPin size={16} className="text-red-500" />
-                                    <span>{booking.location}</span>
+                                    <span>{booking.vendor?.city || 'N/A'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Clock size={16} className="text-red-500" />
-                                    <span>Guests: {booking.guests}</span>
+                                    <span>Booking Code: {booking.bookingCode}</span>
                                 </div>
                                 <div className="font-bold text-gray-900 dark:text-white">
-                                    Total: {booking.price}
+                                    Total: ₹{parseFloat(booking.totalAmount).toLocaleString()}
                                 </div>
                             </div>
 

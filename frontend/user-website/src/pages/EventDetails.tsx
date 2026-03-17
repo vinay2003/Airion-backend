@@ -356,6 +356,7 @@ const EventDetails: React.FC = () => {
                 onClose={() => setIsBookingOpen(false)}
                 eventName={event.title}
                 price={event.price}
+                vendorId={event.id}
             />
         </div>
     );

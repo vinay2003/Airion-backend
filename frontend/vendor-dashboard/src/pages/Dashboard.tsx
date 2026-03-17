@@ -4,6 +4,7 @@ import api from '../lib/api';
 
 const Dashboard = () => {
     const [vendor, setVendor] = useState<any>(null);
+    const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -15,6 +16,9 @@ const Dashboard = () => {
             const response = await api.get('/vendors/me');
             if (response.data && !response.data.message) {
                 setVendor(response.data);
+                // Now fetch bookings
+                const bookingsRes = await api.get('/bookings/vendor');
+                setBookings(bookingsRes.data || []);
             }
         } catch (error) {
             console.log('User is not yet a vendor');
@@ -22,6 +26,7 @@ const Dashboard = () => {
             setLoading(false);
         }
     };
+
 
     if (loading) {
         return <div className="p-8 text-center text-gray-500">Loading dashboard...</div>;
@@ -55,11 +60,13 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                     <h3 className="text-gray-500 text-sm font-medium uppercase">Total Bookings</h3>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">{bookings.length}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                     <h3 className="text-gray-500 text-sm font-medium uppercase">Total Revenue</h3>
-                    <p className="text-3xl font-bold text-green-600 mt-2">₹0.00</p>
+                    <p className="text-3xl font-bold text-green-600 mt-2">
+                        ₹{bookings.reduce((sum, b) => sum + parseFloat(b.totalAmount || 0), 0).toLocaleString()}
+                    </p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                     <h3 className="text-gray-500 text-sm font-medium uppercase">Average Rating</h3>

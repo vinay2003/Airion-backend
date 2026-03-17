@@ -17,6 +17,7 @@ import { Payments, GuestList, DigitalInvites, Support } from './pages/dashboard/
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'));
 const EventDetails = lazy(() => import('./pages/EventDetails'));
+const VendorDiscovery = lazy(() => import('./pages/VendorDiscovery'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const AboutUs = lazy(() => import('./pages/AboutUs'));
 const ContactUs = lazy(() => import('./pages/ContactUs'));
@@ -28,6 +29,7 @@ const PlanEvent = lazy(() => import('./pages/PlanEvent'));
 const TrendingWeddings = lazy(() => import('./pages/TrendingWeddings'));
 const Packages = lazy(() => import('./pages/Packages'));
 const BecomeVendor = lazy(() => import('./pages/BecomeVendor'));
+const InterestSelection = lazy(() => import('./pages/InterestSelection'));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -54,6 +56,11 @@ const App: React.FC = () => {
                   <Signup />
                 </Suspense>
               } />
+              <Route path="/onboarding/interests" element={
+                <Suspense fallback={<PageLoader />}>
+                  <InterestSelection />
+                </Suspense>
+              } />
 
               {/* Dashboard Routes */}
               <Route path="/dashboard" element={<DashboardLayout />}>
@@ -74,6 +81,7 @@ const App: React.FC = () => {
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/search" element={<VendorDiscovery />} />
                         <Route path="/event/:id" element={<EventDetails />} />
                         <Route path="/category/:category" element={<CategoryPage />} />
                         <Route path="/trending-weddings" element={<TrendingWeddings />} />

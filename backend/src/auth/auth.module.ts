@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
+import { Otp } from './entities/otp.entity';
 import { Session } from './entities/session.entity';
 import { AuditLog } from './entities/audit-log.entity';
 import { AuthService } from './services/auth.service';
@@ -13,11 +15,15 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Session, AuditLog]),
+        TypeOrmModule.forFeature([User, Otp, Session, AuditLog]),
         PassportModule,
-        JwtModule.register({
-            secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-            signOptions: { expiresIn: '7d' },
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET'),
+                signOptions: { expiresIn: '7d' },
+            }),
+            inject: [ConfigService],
         }),
     ],
     controllers: [AuthController],

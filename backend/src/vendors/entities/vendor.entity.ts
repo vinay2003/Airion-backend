@@ -24,6 +24,27 @@ export class Vendor {
     @Column({ name: 'business_phone', nullable: true })
     businessPhone: string;
 
+    @Column({ name: 'city', nullable: true })
+    city: string;
+
+    @Column({ name: 'years_in_business', nullable: true })
+    yearsInBusiness: string;
+
+    @Column({ name: 'gst_number', nullable: true })
+    gstNumber: string;
+
+    @Column('text', { name: 'acquisition_channels', array: true, nullable: true })
+    acquisitionChannels: string[];
+
+    @Column({ name: 'monthly_event_volume', nullable: true })
+    monthlyEventVolume: string;
+
+    @Column({ name: 'average_booking_price', nullable: true })
+    averageBookingPrice: string;
+
+    @Column('text', { name: 'pain_points', array: true, nullable: true })
+    painPoints: string[];
+
     @Column('jsonb', { name: 'business_address', nullable: true })
     businessAddress: {
         street: string;

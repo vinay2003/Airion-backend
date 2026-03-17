@@ -1,3 +1,5 @@
+/// <reference path="./env.d.ts" />
+
 /**
  * Shared Authentication API
  * Centralized API calls for authentication across all portals
@@ -257,4 +259,17 @@ export const handleAuthError = (error: unknown): string => {
     }
 
     return AUTH_ERRORS.NETWORK_ERROR;
+};
+
+/**
+ * Generic API Hooks for external usage (e.g. React Query)
+ */
+export const fetcher = async (url: string, params?: Record<string, any>) => {
+    const response = await authApi.get(url, { params });
+    return response.data;
+};
+
+export const poster = async (url: string, data?: Record<string, any>) => {
+    const response = await authApi.post(url, data);
+    return response.data;
 };

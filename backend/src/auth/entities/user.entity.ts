@@ -67,6 +67,12 @@ export class User {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
+    @Column('text', { array: true, nullable: true })
+    interests: string[];
+
+    @Column({ name: 'marketing_consent', type: 'boolean', default: false })
+    marketingConsent: boolean;
+
     @BeforeInsert()
     async hashPassword() {
         if (this.password) {

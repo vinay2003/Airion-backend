@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Put, UseGuards, Request, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Put, NotFoundException, BadRequestException } from '@nestjs/common';
 import { VendorsService } from './vendors.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ActivityType } from './entities/activity.entity';
 
 @Controller('vendors')
 export class VendorsController {
@@ -21,8 +22,15 @@ export class VendorsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.vendorsService.findOne(id);
+    async findOne(@Param('id') id: string, @Request() req: any) {
+        const vendor = await this.vendorsService.findOne(id);
+
+        // Track profile view if user is logged in
+        if (req.user) {
+            await this.vendorsService.trackActivity(req.user.userId, ActivityType.PROFILE_VIEW, id);
+        }
+
+        return vendor;
     }
 
     @Put('me')
@@ -35,5 +43,26 @@ export class VendorsController {
         }
 
         return this.vendorsService.update(vendor.id, updateVendorDto, req.user.userId);
+    }
+
+    /**
+     * Admin Endpoints: Get all vendors with status filter
+     */
+    @Get()
+    @UseGuards(JwtAuthGuard) // Optionally apply AdminGuard if you have one
+    async findAll(@Query('status') status?: string) {
+        return this.vendorsService.findAll(status);
+    }
+
+    /**
+     * Admin Endpoint: Update single vendor approval status
+     */
+    @Patch(':id/status')
+    @UseGuards(JwtAuthGuard)
+    async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+        if (!body.status) {
+            throw new BadRequestException('Status is required');
+        }
+        return this.vendorsService.updateStatus(id, body.status);
     }
 }

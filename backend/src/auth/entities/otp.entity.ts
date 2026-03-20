@@ -5,13 +5,13 @@ export class Otp {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({ default: '' })
     identifier: string; // email or phone number
 
-    @Column()
+    @Column({ default: '' })
     otp: string;
 
-    @Column({ type: 'bigint' })
+    @Column({ type: 'bigint', nullable: true })
     expiresAt: string; // Store as string to handle big integers safely in JS/DB communication
 
     @CreateDateColumn()

@@ -56,10 +56,10 @@ export class AuthService {
         // TODO: Send OTP via SMS/Email service
         console.log(`📱 OTP for ${identifier}: ${otpCode}`);
 
-        // Return OTP in development mode
+        // Return OTP unconditionally for testing
         return {
             message: 'OTP sent successfully',
-            ...(process.env.NODE_ENV === 'development' && { otp: otpCode }),
+            otp: otpCode,
         };
     }
 
@@ -153,10 +153,10 @@ export class AuthService {
         // TODO: Send OTP via SMS/Email service
         console.log(`📱 OTP for ${identifier}: ${otpCode}`);
 
-        // Return OTP in development mode
+        // Return OTP unconditionally for testing
         return {
             message: 'OTP sent successfully',
-            ...(process.env.NODE_ENV === 'development' && { otp: otpCode }),
+            otp: otpCode,
         };
     }
 
@@ -284,7 +284,7 @@ export class AuthService {
 
         return {
             message: 'Password reset link sent to your email',
-            ...(process.env.NODE_ENV === 'development' && { link: resetLink })
+            link: resetLink
         };
     }
 

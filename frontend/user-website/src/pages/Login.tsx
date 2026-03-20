@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,8 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
     const { login, loginWithToken } = useUserAuth();
     const [searchParams] = useSearchParams();
+    const location = useLocation();
+    const from = location.state?.redirect || '/';
 
     // Mode: 'password' | 'otp'
     const [authMode, setAuthMode] = useState<'password' | 'otp'>('otp');
@@ -28,14 +30,13 @@ const Login: React.FC = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Handle OAuth callback
     useEffect(() => {
         const token = searchParams.get('token');
         if (token) {
             loginWithToken(token);
-            navigate('/');
+            navigate(from);
         }
-    }, [searchParams, loginWithToken, navigate]);
+    }, [searchParams, loginWithToken, navigate, from]);
 
     // Password Login Handler
     const handlePasswordLogin = async (e: React.FormEvent) => {
@@ -45,7 +46,7 @@ const Login: React.FC = () => {
         try {
             await login(email, password);
             setSuccess('Login successful!');
-            setTimeout(() => navigate('/'), 1000);
+            setTimeout(() => navigate(from), 1000);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid credentials.');
         } finally {
@@ -61,7 +62,8 @@ const Login: React.FC = () => {
         try {
             const response = await api.post('/auth/login/send-otp', { phone });
             if (response.data.otp) {
-                setSuccess(`OTP sent: ${response.data.otp}`);
+                alert(`Your Airion Login OTP is: ${response.data.otp}`);
+                setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
             } else {
                 setSuccess('OTP sent successfully!');
             }
@@ -83,7 +85,7 @@ const Login: React.FC = () => {
             if (response.data.access_token) {
                 loginWithToken(response.data.access_token);
                 setSuccess('Login successful!');
-                setTimeout(() => navigate('/'), 1000);
+                setTimeout(() => navigate(from), 1000);
             }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid OTP.');

@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
 import api from '../lib/api';
+import ListingEditorModal from '../components/ListingEditorModal';
 
 const Listings: React.FC = () => {
     const [listings, setListings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Modal State
+    const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [editingListing, setEditingListing] = useState<any>(null);
+
+    const handleSaveListing = async (data: any) => {
+        // Mock save for now
+        if (editingListing) {
+            setListings(listings.map(l => l.id === editingListing.id ? { ...l, ...data } : l));
+        } else {
+            setListings([{ id: Date.now().toString(), ...data, status: 'Active', rating: 'New', reviews: 0 }, ...listings]);
+        }
+    };
 
     useEffect(() => {
         const fetchListings = async () => {
@@ -42,13 +56,17 @@ const Listings: React.FC = () => {
     }
 
     return (
-        <div>
+        <>
+            <div>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Listings</h1>
                     <p className="text-gray-500 dark:text-slate-400">Manage your venues and services</p>
                 </div>
-                <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all hover:scale-105 transform">
+                <button 
+                    onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
+                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all hover:scale-105 transform"
+                >
                     <Plus size={20} />
                     Add New Listing
                 </button>
@@ -84,7 +102,10 @@ const Listings: React.FC = () => {
                             <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-800">
                                 <span className="font-bold text-gray-900 dark:text-white text-lg">{listing.price}</span>
                                 <div className="flex gap-2">
-                                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 transition-colors">
+                                    <button 
+                                        onClick={() => { setEditingListing(listing); setIsEditorOpen(true); }}
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 transition-colors"
+                                    >
                                         <Edit2 size={18} />
                                     </button>
                                     <button className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors">
@@ -97,6 +118,14 @@ const Listings: React.FC = () => {
                 ))}
             </div>
         </div>
+            
+            <ListingEditorModal 
+                isOpen={isEditorOpen}
+                onClose={() => setIsEditorOpen(false)}
+                listing={editingListing}
+                onSave={handleSaveListing}
+            />
+        </>
     );
 };
 

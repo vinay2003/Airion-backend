@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Vendors = lazy(() => import('./pages/Vendors'));
 const Users = lazy(() => import('./pages/Users'));
+const Bookings = lazy(() => import('./pages/Bookings'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const Settings = lazy(() => import('./pages/Settings'));
 
@@ -29,6 +30,7 @@ const App: React.FC = () => {
                 <Route index element={<Dashboard />} />
                 <Route path="vendors" element={<Vendors />} />
                 <Route path="users" element={<Users />} />
+                <Route path="bookings" element={<Bookings />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="*" element={<div className="p-8 dark:text-white">Page not found</div>} />
               </Route>

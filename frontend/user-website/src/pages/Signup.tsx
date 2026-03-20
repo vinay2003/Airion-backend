@@ -34,6 +34,7 @@ const Signup: React.FC = () => {
             });
 
             if (response.data.otp) {
+                alert(`Your Airion Signup OTP is: ${response.data.otp}`);
                 setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
             } else {
                 setSuccess('OTP sent successfully to your phone!');

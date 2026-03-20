@@ -13,6 +13,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { LeadsModule } from './leads/leads.module';
 import { AdsModule } from './ads/ads.module';
 import { CouponsModule } from './coupons/coupons.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
 
 @Module({
     imports: [
@@ -42,6 +43,7 @@ import { CouponsModule } from './coupons/coupons.module';
         LeadsModule,
         AdsModule,
         CouponsModule,
+        WishlistsModule,
     ],
     controllers: [AppController],
 })

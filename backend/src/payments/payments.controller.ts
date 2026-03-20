@@ -1,5 +1,6 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Headers, BadRequestException, RawBodyRequest, Req } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
+import * as crypto from 'crypto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -31,5 +32,49 @@ export class PaymentsController {
 
         // Ideally, update the booking/ad status in the DB here
         return { success: true, message: 'Payment verified successfully' };
+    }
+
+    @Post('webhook')
+    async handleWebhook(
+        @Headers('x-razorpay-signature') signature: string,
+        @Body() body: any
+    ) {
+        if (!signature) {
+            throw new BadRequestException('Webhook signature is missing');
+        }
+
+        const secret = process.env.RAZORPAY_WEBHOOK_SECRET || 'dummy_webhook_secret';
+        
+        // Note: For true verification, the raw body buffer must be used.
+        // For demonstration, simulating stringification.
+        const stringifiedBody = JSON.stringify(body);
+        
+        const expectedSignature = crypto
+            .createHmac('sha256', secret)
+            .update(stringifiedBody)
+            .digest('hex');
+
+        if (expectedSignature !== signature) {
+            throw new BadRequestException('Invalid Webhook Signature');
+        }
+
+        const eventType = body.event;
+        console.log(`Received Razorpay Webhook Event: ${eventType}`);
+
+        switch (eventType) {
+            case 'payment.captured':
+            case 'order.paid':
+                // TODO: Update booking status to CONFIRMED
+                console.log('Payment was successful for order:', body.payload.payment.entity.order_id);
+                break;
+            case 'payment.failed':
+                // TODO: Update booking status to FAILED
+                console.log('Payment failed for order:', body.payload.payment.entity.order_id);
+                break;
+            default:
+                console.log(`Unhandled webhook event: ${eventType}`);
+        }
+
+        return { status: 'ok' };
     }
 }

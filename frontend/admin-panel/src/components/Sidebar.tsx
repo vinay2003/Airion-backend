@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X } from 'lucide-react';
+import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps {
@@ -15,6 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         { icon: Store, label: 'Vendors', path: '/vendors' },
         { icon: Users, label: 'Users', path: '/users' },
+        { icon: Calendar, label: 'Bookings', path: '/bookings' },
         { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 

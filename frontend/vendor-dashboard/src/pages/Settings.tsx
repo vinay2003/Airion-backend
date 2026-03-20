@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Lock, CreditCard, Globe, Moon, Sun, Save } from 'lucide-react';
+import { User, Bell, Lock, CreditCard, Globe, Moon, Sun, Save, ShieldCheck, Upload, CheckCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Settings: React.FC = () => {
@@ -11,6 +11,7 @@ const Settings: React.FC = () => {
         { id: 'notifications', label: 'Notifications', icon: Bell },
         { id: 'security', label: 'Security', icon: Lock },
         { id: 'billing', label: 'Billing', icon: CreditCard },
+        { id: 'verification', label: 'Verification (KYC)', icon: ShieldCheck },
         { id: 'preferences', label: 'Preferences', icon: Globe },
     ];
 
@@ -173,6 +174,49 @@ const Settings: React.FC = () => {
                                 </div>
                                 <button className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-md shadow-red-500/20">
                                     Manage Subscription
+                                </button>
+                            </div>
+                        )}
+
+                        {activeTab === 'verification' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Business Verification</h2>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Submit your official documents to get the "Verified Host" badge and boost your rankings.</p>
+                                </div>
+                                <div className="grid gap-6">
+                                    <div className="p-6 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white">Government ID</h3>
+                                                <p className="text-sm text-gray-500 dark:text-slate-400">Passport, Aadhar, or Driver's License</p>
+                                            </div>
+                                            <span className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                                <CheckCircle size={14} /> Verified
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-6 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white">Business Registration Proof</h3>
+                                                <p className="text-sm text-gray-500 dark:text-slate-400">GST Certificate, Trade License, or Incorporation Document</p>
+                                            </div>
+                                            <span className="bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                                Pending Action
+                                            </span>
+                                        </div>
+                                        <div className="mt-4 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl p-8 text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-colors group relative">
+                                            <Upload className="mx-auto text-gray-400 group-hover:text-red-500 transition-colors mb-2" size={32} />
+                                            <p className="font-bold text-gray-700 dark:text-slate-300">Click to upload document</p>
+                                            <p className="text-xs text-gray-500 mt-1">PDF, JPG, or PNG up to 10MB</p>
+                                            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-md shadow-red-500/20 w-full sm:w-auto">
+                                    Submit for Review
                                 </button>
                             </div>
                         )}

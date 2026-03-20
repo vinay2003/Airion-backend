@@ -23,7 +23,7 @@ import { getToken, setToken, removeToken, isTokenExpired } from './utils';
  */
 export const createAuthApi = (baseURL?: string): AxiosInstance => {
     const api = axios.create({
-        baseURL: baseURL || import.meta.env.VITE_API_URL || 'http://localhost:3000',
+        baseURL: baseURL || import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
         headers: {
             'Content-Type': 'application/json',
         },

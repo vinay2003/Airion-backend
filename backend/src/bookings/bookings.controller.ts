@@ -64,11 +64,11 @@ export class BookingsController {
      * Update booking status (e.g., cancelled, in-progress)
      */
     @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() body: { status: string; paymentId?: string }) {
+    async updateStatus(@Param('id') id: string, @Body() body: { status: 'pending' | 'confirmed' | 'completed' | 'canceled'; paymentId?: string; paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded' }) {
         if (!body.status) {
             throw new BadRequestException('Status is required');
         }
-        const updated = await this.bookingsService.updateStatus(id, body.status, body.paymentId);
+        const updated = await this.bookingsService.transitionState(id, body.status, body.paymentId, body.paymentStatus);
         return { success: true, booking: updated };
     }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { fetchEventById } from '../lib/api';
+import { useUserAuth } from '../contexts/AuthContext';
 import type { Event } from '../types';
 import {
     Star, MapPin, Users, Clock, Check, ArrowLeft, Share2, Heart,
@@ -11,12 +12,24 @@ import BookingModal from '../components/BookingModal';
 
 const EventDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { user } = useUserAuth();
+    
     const [event, setEvent] = useState<Event | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+
+    const handleBookingClick = () => {
+        if (!user) {
+            navigate('/login', { state: { redirect: location.pathname } });
+            return;
+        }
+        setIsBookingOpen(true);
+    };
 
     useEffect(() => {
         const loadEvent = async () => {
@@ -80,7 +93,7 @@ const EventDetails: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
                     <h2 className="font-bold text-gray-900 dark:text-white truncate max-w-[200px]">{event.title}</h2>
                     <button
-                        onClick={() => setIsBookingOpen(true)}
+                        onClick={handleBookingClick}
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md"
                     >
                         Book Now
@@ -219,6 +232,54 @@ const EventDetails: React.FC = () => {
 
                         <div className="h-px bg-gray-200 dark:bg-slate-800" />
 
+                        {/* Packages Section */}
+                        <section>
+                            <div className="flex justify-between items-center mb-6">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Pre-built Packages</h2>
+                                    <p className="text-gray-500 dark:text-slate-400 text-sm">Select a curated package designed for your convenience.</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {[
+                                    { title: 'Silver', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
+                                    { title: 'Gold', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
+                                    { title: 'Platinum', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
+                                ].map((pkg, idx) => (
+                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all cursor-pointer border-gray-100 hover:border-red-500 dark:border-slate-800 dark:hover:border-red-500 shadow-sm hover:shadow-xl relative overflow-hidden group">
+                                        {idx === 1 && (
+                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                                                Most Popular
+                                            </div>
+                                        )}
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{pkg.title}</h3>
+                                        <div className="items-baseline gap-1 mb-4 flex">
+                                            <span className="text-2xl font-bold text-red-500">{pkg.price}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 min-h-[40px] leading-relaxed">
+                                            {pkg.desc}
+                                        </p>
+                                        <ul className="space-y-3 mb-8">
+                                            {pkg.features.map((feature, fIdx) => (
+                                                <li key={fIdx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300">
+                                                    <Check size={16} className="text-green-500 shrink-0 mt-0.5" />
+                                                    <span>{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            onClick={handleBookingClick}
+                                            className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all"
+                                        >
+                                            Select Package
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <div className="h-px bg-gray-200 dark:bg-slate-800" />
+
                         {/* Location Section */}
                         <section>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Location</h2>
@@ -312,7 +373,7 @@ const EventDetails: React.FC = () => {
                                 </div>
 
                                 <button
-                                    onClick={() => setIsBookingOpen(true)}
+                                    onClick={handleBookingClick}
                                     className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     Check Availability
@@ -344,7 +405,7 @@ const EventDetails: React.FC = () => {
                     <p className="text-xs text-gray-500 dark:text-slate-400">Total before taxes</p>
                 </div>
                 <button
-                    onClick={() => setIsBookingOpen(true)}
+                    onClick={handleBookingClick}
                     className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-500/30"
                 >
                     Reserve
@@ -356,7 +417,7 @@ const EventDetails: React.FC = () => {
                 onClose={() => setIsBookingOpen(false)}
                 eventName={event.title}
                 price={event.price}
-                vendorId={event.id}
+                vendorId={event.vendorId || event.id}
             />
         </div>
     );

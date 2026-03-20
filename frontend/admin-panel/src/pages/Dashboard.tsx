@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrendingUp, Users, Store, DollarSign, ArrowUpRight } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 
 const Dashboard: React.FC = () => {
     const stats = [
@@ -25,6 +25,15 @@ const Dashboard: React.FC = () => {
         { name: 'Catering', value: 300 },
         { name: 'Decor', value: 300 },
         { name: 'Photo', value: 200 },
+    ];
+
+    const revenueData = [
+        { name: 'Jan', revenue: 1200000, commission: 120000 },
+        { name: 'Feb', revenue: 1500000, commission: 150000 },
+        { name: 'Mar', revenue: 2000000, commission: 200000 },
+        { name: 'Apr', revenue: 2200000, commission: 220000 },
+        { name: 'May', revenue: 1800000, commission: 180000 },
+        { name: 'Jun', revenue: 2800000, commission: 280000 },
     ];
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -104,6 +113,32 @@ const Dashboard: React.FC = () => {
                             ))}
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 mb-8">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Revenue & Platform Commission Trends</h3>
+                <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={revenueData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
+                            <YAxis 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fill: '#94a3b8' }}
+                                tickFormatter={(val) => `₹${val / 100000}L`}
+                            />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
+                                itemStyle={{ color: '#fff' }}
+                                formatter={(val: number) => `₹${val.toLocaleString()}`}
+                            />
+                            <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                            <Bar dataKey="revenue" name="Total Booking Volume" fill="#818cf8" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="commission" name="Platform Commission (10%)" fill="#34d399" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
 

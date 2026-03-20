@@ -66,17 +66,23 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
         e.preventDefault();
         setLoading(true);
         try {
-            const numericPrice = parseFloat(price.replace(/[^\d.-]/g, ''));
+            // Determine dynamic price based on package
+            let dynamicPrice = 0;
+            if (formData.package === 'Silver') dynamicPrice = 50000;
+            else if (formData.package === 'Gold') dynamicPrice = 100000;
+            else if (formData.package === 'Platinum') dynamicPrice = 200000;
+            else dynamicPrice = parseFloat(price.replace(/[^\d.-]/g, ''));
+
             const res = await createBooking({
                 vendorId,
-                totalAmount: numericPrice,
+                totalAmount: dynamicPrice,
                 eventDate: formData.date ? new Date(`${formData.date}T${formData.time || '12:00'}`) : undefined,
                 specialRequirements: `Package: ${formData.package}. Standard Requirements.`
             });
 
             if (res.success && res.booking) {
                 // Now create payment order
-                const order = await createPaymentOrder(numericPrice, res.booking.id);
+                const order = await createPaymentOrder(dynamicPrice, res.booking.id);
                 handlePayment(order, res.booking.id);
             }
         } catch (error) {

@@ -12,16 +12,16 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: '' })
     name: string;
 
-    @Column({ unique: true, type: 'varchar', length: 255 })
+    @Column({ unique: true, type: 'varchar', length: 255, nullable: true })
     email: string;
 
     @Column({ name: 'phone_number', type: 'varchar', length: 20, nullable: true })
     phoneNumber?: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     password: string;
 
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })

@@ -1,0 +1,251 @@
+import React, { useState, useEffect } from 'react';
+import { X, Upload, MapPin, IndianRupee, Users, Image as ImageIcon, Save, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface ListingEditorModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    listing?: any; // If null, means 'Add New'
+    onSave: (data: any) => Promise<void>;
+}
+
+const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose, listing, onSave }) => {
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        price: '',
+        location: '',
+        capacity: '',
+        category: 'Venue',
+        image: ''
+    });
+
+    useEffect(() => {
+        if (listing) {
+            setFormData({
+                title: listing.title || '',
+                description: listing.description || '',
+                price: listing.price || '',
+                location: listing.location || '',
+                capacity: listing.capacity || '',
+                category: listing.category || 'Venue',
+                image: listing.image || ''
+            });
+        } else {
+            setFormData({ title: '', description: '', price: '', location: '', capacity: '', category: 'Venue', image: '' });
+        }
+    }, [listing, isOpen]);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await onSave(formData);
+            setSuccess(true);
+            setTimeout(() => {
+                setSuccess(false);
+                onClose();
+            }, 1000);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save listing");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-sm">
+                <motion.div
+                    initial={{ x: '100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '100%' }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                    className="bg-white dark:bg-slate-950 w-full max-w-2xl h-full shadow-2xl flex flex-col border-l border-slate-200 dark:border-slate-800"
+                >
+                    {/* Header */}
+                    <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                {listing ? 'Edit Service Listing' : 'Create New Listing'}
+                            </h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">Fill out all the details to publish your service.</p>
+                        </div>
+                        <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                            <X size={24} className="text-slate-500" />
+                        </button>
+                    </div>
+
+                    {/* Scrollable Form */}
+                    <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                        <form id="listing-form" onSubmit={handleSubmit} className="space-y-8">
+                            
+                            {/* Image Uploader */}
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Cover Image</label>
+                                <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl h-64 flex flex-col items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-slate-900/50 group cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                    {formData.image ? (
+                                        <>
+                                            <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                                                <Upload size={32} className="mb-2" />
+                                                <span className="font-bold">Change Image</span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-center p-6">
+                                            <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full shadow-md flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform text-red-500">
+                                                <ImageIcon size={28} />
+                                            </div>
+                                            <p className="font-bold text-slate-700 dark:text-slate-300">Click to upload image</p>
+                                            <p className="text-xs text-slate-500 mt-1">PNG, JPG, WEBP up to 5MB</p>
+                                        </div>
+                                    )}
+                                    {/* Mock file input trigger */}
+                                    <input 
+                                        type="file" 
+                                        accept="image/*" 
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        onChange={(e) => {
+                                            // Mocking photo upload by injecting an unsplash string for demo
+                                            setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80' });
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Service Title</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="e.g. Grand Royal Banquet Hall"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Category</label>
+                                        <select
+                                            value={formData.category}
+                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white"
+                                        >
+                                            <option>Venue</option>
+                                            <option>Photography</option>
+                                            <option>Catering</option>
+                                            <option>Decor</option>
+                                            <option>Music/DJ</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Base Price (Per Event)</label>
+                                        <div className="relative">
+                                            <IndianRupee size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="number"
+                                                required
+                                                placeholder="e.g. 50000"
+                                                value={formData.price}
+                                                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Location</label>
+                                        <div className="relative">
+                                            <MapPin size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="City, State"
+                                                value={formData.location}
+                                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Max Capacity</label>
+                                        <div className="relative">
+                                            <Users size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 500"
+                                                value={formData.capacity}
+                                                onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+                                                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Detailed Description</label>
+                                    <textarea
+                                        required
+                                        rows={5}
+                                        placeholder="Describe your service offerings, packages, amenities, and specialties."
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-slate-900 dark:text-white resize-none"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 flex justify-end gap-3 shrink-0">
+                        <button 
+                            type="button" 
+                            onClick={onClose}
+                            className="px-6 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            form="listing-form"
+                            disabled={loading || success}
+                            className={`px-8 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center min-w-[140px] shadow-lg ${
+                                success 
+                                    ? 'bg-emerald-500 shadow-emerald-500/30' 
+                                    : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 hover:-translate-y-0.5'
+                            } disabled:opacity-70 disabled:hover:translate-y-0`}
+                        >
+                            {loading ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : success ? (
+                                <><CheckCircle size={20} className="mr-2"/> Saved!</>
+                            ) : (
+                                <><Save size={20} className="mr-2"/> Save Listing</>
+                            )}
+                        </button>
+                    </div>
+                </motion.div>
+            </div>
+            <style>{`
+                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+                .dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #334155; }
+            `}</style>
+        </AnimatePresence>
+    );
+};
+
+export default ListingEditorModal;

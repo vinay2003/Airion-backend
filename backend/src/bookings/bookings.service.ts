@@ -34,13 +34,33 @@ export class BookingsService {
         return booking;
     }
 
-    async updateStatus(id: string, status: string, paymentId?: string): Promise<Booking> {
+    async transitionState(id: string, nextStatus: 'pending' | 'confirmed' | 'completed' | 'canceled', paymentId?: string, paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'): Promise<Booking> {
         const booking = await this.findOne(id);
-        booking.status = status;
+        
+        // State Machine validation rules
+        if (booking.status === 'canceled') {
+            throw new Error('Cannot transition state of a canceled booking.');
+        }
+        if (booking.status === 'completed' && nextStatus !== 'completed') {
+            throw new Error('Cannot change status of a completed booking.');
+        }
+
+        booking.status = nextStatus;
+
+        if (paymentStatus) {
+            booking.paymentStatus = paymentStatus;
+        }
+
         if (paymentId) {
             booking.paymentId = paymentId;
-            booking.paymentStatus = 'paid'; // Set if verification is doing this
+            booking.paymentStatus = 'paid'; // Auto-assume paid if payment ID is attached successfully
+            
+            // Auto-confirm booking if payment is successful and currently pending
+            if (booking.status === 'pending') {
+                booking.status = 'confirmed';
+            }
         }
+        
         return this.bookingsRepository.save(booking);
     }
 

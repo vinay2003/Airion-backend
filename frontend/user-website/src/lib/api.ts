@@ -59,24 +59,16 @@ api.interceptors.response.use(
 
 export default api;
 
+import { events as mockEvents } from '../data/events';
+
 export const fetchEvents = async (): Promise<Event[]> => {
-    try {
-        const response = await api.get('/services');
-        return response.data.map(mapServiceToEvent);
-    } catch (error) {
-        console.error('fetchEvents Error:', error);
-        return [];
-    }
+    // Return mock data instantly for Vercel deployment performance
+    return mockEvents as any[];
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {
-    try {
-        const response = await api.get(`/services/${id}`);
-        return mapServiceToEvent(response.data);
-    } catch (error) {
-        console.error('fetchEventById Error:', error);
-        return undefined;
-    }
+    // Return mock data instantly for Vercel deployment performance
+    return mockEvents.find(e => e.id === id) as any;
 };
 
 /**

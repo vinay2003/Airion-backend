@@ -24,18 +24,9 @@ const Home: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadWrapper = async () => {
-            try {
-                const data = await fetchEvents();
-                setEvents(data && data.length > 0 ? data : (mockEvents as any[]));
-            } catch (err) {
-                setEvents(mockEvents as any[]); // Safe fallback on error
-            } finally {
-
-                setLoading(false);
-            }
-        };
-        loadWrapper();
+        // Load immediately using mock data for instant Vercel rendering
+        setEvents(mockEvents as any[]);
+        setLoading(false);
     }, []);
 
     const filteredEvents = activeCategory === 'all'

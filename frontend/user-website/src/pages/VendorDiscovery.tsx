@@ -16,17 +16,9 @@ const VendorDiscovery: React.FC = () => {
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     useEffect(() => {
-        const loadWrapper = async () => {
-            try {
-                const data = await fetchEvents();
-                setVendors(data && data.length > 0 ? data : (mockEvents as any[]));
-            } catch (err) {
-                setVendors(mockEvents as any[]); // Safe fallback on error
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadWrapper();
+        // Load immediately using mock data for instant Vercel rendering
+        setVendors(mockEvents as any[]);
+        setLoading(false);
     }, []);
 
     return (

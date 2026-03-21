@@ -245,5 +245,114 @@ export const events = [
         description: 'Affordable seminar packages with excellent catering options.',
         price: '₹50,000 onwards',
         capacity: '50-150 guests'
+    },
+
+    // Photography
+    {
+        id: 'p1',
+        category: 'Photography',
+        image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=600&auto=format&fit=crop',
+        title: 'Pixel Perfect Photography',
+        rating: 4.9,
+        reviews: 215,
+        location: 'Mumbai, MH',
+        description: 'Relive your special moments with cinematic candids and traditional framing sets.',
+        price: '₹85,000 onwards',
+        capacity: 'Full Day'
+    },
+    {
+        id: 'p2',
+        category: 'Photography',
+        image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop',
+        title: 'Candid Frames',
+        rating: 4.7,
+        reviews: 142,
+        location: 'Delhi, DL',
+        description: 'Specialists in candid and pre-wedding photo shoots.',
+        price: '₹60,000 onwards',
+        capacity: 'Full Day'
+    },
+
+    // Catering
+    {
+        id: 'c1',
+        category: 'Catering',
+        image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?q=80&w=600&auto=format&fit=crop',
+        title: 'Flavor Delight Caterers',
+        rating: 4.8,
+        reviews: 184,
+        location: 'Mumbai, MH',
+        description: 'Gourmet dining with customizable menus for up to 5000 guests.',
+        price: '₹1,500 / Plate',
+        capacity: 'Global Cuisines'
+    },
+    {
+        id: 'c2',
+        category: 'Catering',
+        image: 'https://images.unsplash.com/photo-1532635241-17e8206cc462?q=80&w=600&auto=format&fit=crop',
+        title: 'Nourish Buffets',
+        rating: 4.5,
+        reviews: 95,
+        location: 'Delhi, DL',
+        description: 'Exquisite multi-cuisine buffets for elegant gatherings.',
+        price: '₹1,200 / Plate',
+        capacity: 'Multi-cuisine'
+    },
+
+    // Decor
+    {
+        id: 'd1',
+        category: 'Decor',
+        image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop',
+        title: 'Elegance Decorators',
+        rating: 4.6,
+        reviews: 110,
+        location: 'Mumbai, MH',
+        description: 'Lush floral setups and themed lighting for a fairytale event landscape.',
+        price: '₹1,20,000 onwards',
+        capacity: 'All Themes'
+    },
+
+    // Music & DJs
+    {
+        id: 'm1',
+        category: 'Music',
+        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=600&auto=format&fit=crop',
+        title: 'DJ Rock & Sound',
+        rating: 4.8,
+        reviews: 310,
+        location: 'Mumbai, MH',
+        description: 'High-octane sound systems and lighting grids for maximum energy.',
+        price: '₹20,000 onwards',
+        capacity: 'Sound Setup'
+    },
+
+    // Makeup
+    {
+        id: 'mu1',
+        category: 'Makeup',
+        image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=600&auto=format&fit=crop',
+        title: 'Glow Up Bridal Studio',
+        rating: 4.9,
+        reviews: 188,
+        location: 'Mumbai, MH',
+        description: 'HD and Airbrush makeup specifically tailored for bridal luxury.',
+        price: '₹25,000 onwards',
+        capacity: 'Bridal & Party'
+    },
+
+    // Planning
+    {
+        id: 'pl1',
+        category: 'Planning',
+        image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=600&auto=format&fit=crop',
+        title: 'Vows to Forever Planners',
+        rating: 4.7,
+        reviews: 145,
+        location: 'Mumbai, MH',
+        description: 'Hassle-free event coordination and planning services for core memories.',
+        price: '₹1,50,000 onwards',
+        capacity: 'Full Service'
     }
 ];
+

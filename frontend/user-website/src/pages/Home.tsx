@@ -9,7 +9,9 @@ import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 
 import { fetchEvents } from '../lib/api';
+import { events as mockEvents } from '../data/events';
 import type { Event } from '../types';
+
 
 const Home: React.FC = () => {
     const { showToast } = useToast();
@@ -25,10 +27,11 @@ const Home: React.FC = () => {
         const loadWrapper = async () => {
             try {
                 const data = await fetchEvents();
-                setEvents(data);
+                setEvents(data && data.length > 0 ? data : (mockEvents as any[]));
             } catch (err) {
-                setError('Failed to load events');
+                setEvents(mockEvents as any[]); // Safe fallback on error
             } finally {
+
                 setLoading(false);
             }
         };
@@ -65,7 +68,7 @@ const Home: React.FC = () => {
 
             {activeCategory === 'all' ? (
                 <>
-                    {/* Shop by Category Grid */}
+                    {/* Explore Marketplace Categories */}
                     <motion.section
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -74,23 +77,31 @@ const Home: React.FC = () => {
                         className="max-w-7xl mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Find Your Perfect Venue</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Marketplace Categories</h2>
                             <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-                                Explore our curated collection of venues for every occasion, from intimate gatherings to grand celebrations.
+                                Discover everything you need to make your next event truly unforgettable.
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
                             {[
-                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop', link: '/?category=weddings' },
-                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop', link: '/?category=birthdays' },
-                                { title: 'Corporate Events', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop', link: '/?category=corporate' },
+                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop', link: '/?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
+                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop', link: '/?category=birthdays', class: 'col-span-1 h-64' },
+                                { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop', link: '/?category=corporate', class: 'col-span-1 h-64' },
+                                { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1000&auto=format&fit=crop', link: '/?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Photography', image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1000&auto=format&fit=crop', link: '/?category=photography', class: 'col-span-1 h-64' },
+                                { title: 'Catering', image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?q=80&w=1000&auto=format&fit=crop', link: '/?category=catering', class: 'col-span-1 h-64' },
+                                { title: 'Decor', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop', link: '/?category=decor', class: 'col-span-1 h-64' },
+                                { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop', link: '/?category=music', class: 'col-span-1 h-64' },
+                                { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop', link: '/?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1000&auto=format&fit=crop', link: '/?category=makeup', class: 'col-span-1 h-64' },
+                                { title: 'Planning', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=1000&auto=format&fit=crop', link: '/?category=planning', class: 'col-span-1 h-64' },
                             ].map((cat, idx) => (
-                                <Link key={idx} to={cat.link} className="group relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-slate-800">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                                <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
                                     <img src={cat.image} alt={cat.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                    <div className="absolute bottom-0 left-0 right-0 p-8 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                        <h3 className="text-white text-2xl font-bold tracking-wide mb-2">{cat.title}</h3>
-                                        <p className="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 flex items-center gap-1">
+                                    <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                                        <h3 className="text-white text-xl md:text-2xl font-bold tracking-wide mb-1">{cat.title}</h3>
+                                        <p className="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1 font-semibold">
                                             Explore <ArrowRight size={14} />
                                         </p>
                                     </div>
@@ -98,6 +109,7 @@ const Home: React.FC = () => {
                             ))}
                         </div>
                     </motion.section>
+
 
                     {/* Featured Listings (Top Placement) */}
                     <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
@@ -155,6 +167,10 @@ const Home: React.FC = () => {
                         <CategorySection title="Trending Weddings" items={weddingVenues.slice(0, 4)} />
                         <CategorySection title="Birthday Bashes" items={birthdayVenues.slice(0, 4)} />
                         
+                        <CategorySection title="Expert Photography" items={events.filter(e => e.category === 'Photography').slice(0, 4)} />
+                        <CategorySection title="Gourmet Catering" items={events.filter(e => e.category === 'Catering').slice(0, 4)} />
+                        <CategorySection title="Stunning Decor" items={events.filter(e => e.category === 'Decor').slice(0, 4)} />
+
                         <section className="max-w-7xl mx-auto px-4 md:px-8">
                             <div className="relative rounded-3xl overflow-hidden bg-red-500 text-white p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-red-500/20">
                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -172,7 +188,10 @@ const Home: React.FC = () => {
                         </section>
 
                         <CategorySection title="Corporate Events" items={corporateVenues.slice(0, 4)} />
+                        <CategorySection title="Bridal Makeup" items={events.filter(e => e.category === 'Makeup').slice(0, 4)} />
+                        <CategorySection title="Premium Event Planning" items={events.filter(e => e.category === 'Planning').slice(0, 4)} />
                     </div>
+
                 </>
             ) : (
                 <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">

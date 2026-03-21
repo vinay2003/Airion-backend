@@ -27,9 +27,10 @@ const Hero: React.FC = () => {
     }, []);
 
     return (
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Hero Container - Contained and Rounded */}
-            <div className="relative w-full h-[550px] md:h-[650px] rounded-[2.5rem] overflow-hidden shadow-2xl group border border-gray-100 dark:border-slate-800 bg-gray-900">
+        <div className="relative w-full">
+            {/* Hero Container - Full Width and Edge-To-Edge */}
+            <div className="relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 border-none">
+
                 {/* Carousel Background */}
                 <AnimatePresence>
                     <motion.div

@@ -20,46 +20,57 @@ const FilterSidebar: React.FC = () => {
             </div>
 
             {/* Search Filter */}
-            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Search size={18} className="text-red-500" />
-                    Search
-                </h3>
+            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Search venues..."
-                        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none text-sm text-gray-900 dark:text-white transition-all"
+                        placeholder="Search venues, decorators..."
+                        className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
                     />
                 </div>
             </div>
 
             {/* Price Filter */}
-            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Price Range</h3>
-                <div className="space-y-3">
-                    {['₹0 - ₹50,000', '₹50,000 - ₹1,00,000', '₹1,00,000 - ₹2,00,000', '₹2,00,000+'].map((range, idx) => (
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+                <h3 className="font-extrabold text-neutral-900 dark:text-white mb-4">Price Range</h3>
+                <div className="space-y-3.5">
+                    {['Under ₹50,000', '₹50,000 - ₹1,00,000', '₹1,00,000 - ₹2,00,000', '₹2,00,000+'].map((range, idx) => (
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
                             <div className="relative flex items-center">
-                                <input type="checkbox" className="peer h-5 w-5 rounded border-gray-300 text-red-500 focus:ring-red-500 transition-all" />
+                                <input type="checkbox" className="peer h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
                             </div>
-                            <span className="text-gray-600 dark:text-slate-400 text-sm group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{range}</span>
+                            <span className="text-neutral-600 dark:text-slate-300 text-sm group-hover:text-neutral-900 dark:group-hover:text-white transition-colors font-medium">{range}</span>
+                        </label>
+                    ))}
+                </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+                <h3 className="font-extrabold text-neutral-900 dark:text-white mb-4">Category</h3>
+                <div className="flex flex-wrap gap-2">
+                    {['Venues', 'Photography', 'Decor', 'Catering', 'Music', 'Makeup'].map((cat, idx) => (
+                        <label key={idx} className="cursor-pointer group">
+                            <input type="checkbox" className="hidden peer" />
+                            <span className="inline-block px-4 py-2 bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-slate-300 text-xs font-bold rounded-full peer-checked:bg-red-500 peer-checked:text-white transition-colors border border-transparent peer-checked:border-red-500 hover:bg-neutral-200 dark:hover:bg-slate-700">
+                                {cat}
+                            </span>
                         </label>
                     ))}
                 </div>
             </div>
 
             {/* Rating Filter */}
-            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Star Rating</h3>
-                <div className="space-y-3">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+                <h3 className="font-extrabold text-neutral-900 dark:text-white mb-4">Customer Rating</h3>
+                <div className="space-y-3.5">
                     {[5, 4, 3].map((rating) => (
                         <label key={rating} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-red-500 focus:ring-red-500 transition-all" />
-                            <span className="text-gray-600 dark:text-slate-400 text-sm flex items-center gap-1 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                                {rating} Stars
-                                <span className="text-yellow-400">★</span>
+                            <input type="checkbox" className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <span className="text-neutral-600 dark:text-slate-300 text-sm flex items-center gap-1.5 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors font-medium">
+                                {rating} & Up
+                                <span className="text-amber-500 text-base leading-none relative -top-[1px]">★</span>
                             </span>
                         </label>
                     ))}
@@ -67,13 +78,13 @@ const FilterSidebar: React.FC = () => {
             </div>
 
             {/* Amenities Filter */}
-            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Amenities</h3>
-                <div className="space-y-3">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+                <h3 className="font-extrabold text-neutral-900 dark:text-white mb-4">Amenities</h3>
+                <div className="space-y-3.5">
                     {['Wifi', 'Parking', 'AC', 'Pool', 'Bar', 'Catering', 'Decor'].map((amenity) => (
                         <label key={amenity} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-red-500 focus:ring-red-500 transition-all" />
-                            <span className="text-gray-600 dark:text-slate-400 text-sm group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{amenity}</span>
+                            <input type="checkbox" className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <span className="text-neutral-600 dark:text-slate-300 text-sm group-hover:text-neutral-900 dark:group-hover:text-white transition-colors font-medium">{amenity}</span>
                         </label>
                     ))}
                 </div>
@@ -83,3 +94,4 @@ const FilterSidebar: React.FC = () => {
 };
 
 export default FilterSidebar;
+

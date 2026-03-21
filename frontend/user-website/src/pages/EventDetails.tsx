@@ -350,21 +350,22 @@ const EventDetails: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4 mb-6">
-                                    <div className="border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden">
-                                        <div className="grid grid-cols-2 border-b border-gray-200 dark:border-slate-700">
-                                            <div className="p-3 border-r border-gray-200 dark:border-slate-700">
-                                                <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase mb-1">Check-in</label>
-                                                <input type="date" className="w-full bg-transparent text-sm font-medium outline-none text-gray-900 dark:text-white" />
+                                    <div className="border border-neutral-200 dark:border-slate-700 rounded-xl overflow-hidden bg-transparent">
+                                        <div className="grid grid-cols-2 border-b border-neutral-200 dark:border-slate-700">
+                                            <div className="p-3 border-r border-neutral-200 dark:border-slate-700">
+                                                <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Event Date</label>
+                                                <input type="date" className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
                                             </div>
                                             <div className="p-3">
-                                                <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase mb-1">Check-out</label>
-                                                <input type="date" className="w-full bg-transparent text-sm font-medium outline-none text-gray-900 dark:text-white" />
+                                                <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Time</label>
+                                                <input type="time" className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
                                             </div>
                                         </div>
                                         <div className="p-3">
-                                            <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase mb-1">Guests</label>
-                                            <select className="w-full bg-transparent text-sm font-medium outline-none text-gray-900 dark:text-white">
-                                                <option>100-200 Guests</option>
+                                            <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Estimated Guests</label>
+                                            <select className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white appearance-none cursor-pointer">
+                                                <option>Up to 50 Guests</option>
+                                                <option>50-200 Guests</option>
                                                 <option>200-500 Guests</option>
                                                 <option>500+ Guests</option>
                                             </select>
@@ -374,7 +375,7 @@ const EventDetails: React.FC = () => {
 
                                 <button
                                     onClick={handleBookingClick}
-                                    className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                    className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-black py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-[0.98]"
                                 >
                                     Check Availability
                                 </button>

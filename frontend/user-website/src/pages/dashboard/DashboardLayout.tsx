@@ -17,7 +17,8 @@ import {
     Globe,
     Moon,
     Sun,
-    Search
+    Search,
+    Sparkles
 } from 'lucide-react';
 import { useDashboardStore } from '../../store/useDashboardStore';
 
@@ -49,6 +50,7 @@ const DashboardLayout: React.FC = () => {
         { icon: Mail, label: 'Inbox', path: '/dashboard/inbox', badge: unreadChats },
         { icon: CreditCard, label: 'Budget Planner', path: '/dashboard/budget' },
         { icon: Users, label: 'Guest List', path: '/dashboard/guests' },
+        { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
         { icon: HelpCircle, label: 'Support', path: '/dashboard/support' },
     ];
 
@@ -173,19 +175,35 @@ const DashboardLayout: React.FC = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                             transition={{ duration: 0.15 }}
-                                            className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl shadow-lg z-20 overflow-hidden"
+                                            className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-2xl shadow-xl z-20 overflow-hidden"
                                         >
-                                            <div className="p-3 border-b border-neutral-100 dark:border-slate-800 font-bold text-sm text-neutral-900 dark:text-white">
-                                                Notifications
+                                            <div className="p-4 border-b border-neutral-100 dark:border-slate-800 flex items-center justify-between">
+                                                <span className="font-bold text-neutral-900 dark:text-white">Notifications</span>
+                                                {unreadNotifications > 0 && (
+                                                    <button className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors">Mark all read</button>
+                                                )}
                                             </div>
-                                            <div className="max-h-60 overflow-y-auto">
-                                                {notifications.map(n => (
-                                                    <div key={n.id} className="p-3 border-b border-neutral-50 dark:border-slate-800/40 hover:bg-neutral-50 dark:hover:bg-slate-800/50 cursor-pointer">
-                                                        <p className={`text-xs font-semibold ${n.read ? 'text-neutral-500' : 'text-neutral-900 dark:text-neutral-200'}`}>{n.title}</p>
-                                                        <p className="text-xs text-neutral-500">{n.message}</p>
-                                                        <span className="text-[10px] text-neutral-400 mt-1 block">{n.date}</span>
+                                            <div className="max-h-80 overflow-y-auto">
+                                                {notifications.length === 0 ? (
+                                                    <div className="p-6 text-center text-sm text-neutral-500">No new notifications</div>
+                                                ) : notifications.map(n => (
+                                                    <div key={n.id} className="p-4 border-b border-neutral-50 dark:border-slate-800/40 hover:bg-neutral-50 dark:hover:bg-slate-800/50 cursor-pointer flex gap-3">
+                                                        <div className={`mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${n.type === 'offer' ? 'bg-green-100 text-green-600 dark:bg-green-500/20' : n.type === 'booking' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20' : n.type === 'reminder' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20' : 'bg-red-100 text-red-600 dark:bg-red-500/20'}`}>
+                                                            {n.type === 'offer' ? <Sparkles size={14} /> : n.type === 'booking' ? <Calendar size={14} /> : <Mail size={14} />}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="flex justify-between items-start">
+                                                                <p className={`text-sm font-bold ${n.read ? 'text-neutral-500 dark:text-slate-400' : 'text-neutral-900 dark:text-white'}`}>{n.title}</p>
+                                                                {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5" />}
+                                                            </div>
+                                                            <p className="text-xs text-neutral-500 dark:text-slate-400 line-clamp-2 mt-0.5">{n.message}</p>
+                                                            <span className="text-[10px] text-neutral-400 mt-1 block font-medium">{n.date}</span>
+                                                        </div>
                                                     </div>
                                                 ))}
+                                            </div>
+                                            <div className="p-3 border-t border-neutral-100 dark:border-slate-800 text-center">
+                                                <button className="text-sm font-bold text-neutral-600 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white transition-colors">View all</button>
                                             </div>
                                         </motion.div>
                                     </>

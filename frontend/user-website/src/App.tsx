@@ -14,7 +14,7 @@ import MyBookings from './pages/dashboard/MyBookings';
 import SavedVendors from './pages/dashboard/SavedVendors';
 import BudgetPlanner from './pages/dashboard/BudgetPlanner';
 import Inbox from './pages/dashboard/Inbox';
-
+import ProfileSettings from './pages/dashboard/ProfileSettings';
 
 import { Payments, GuestList, DigitalInvites, Support } from './pages/dashboard/Placeholders';
 
@@ -74,6 +74,7 @@ const App: React.FC = () => {
                 <Route path="inbox" element={<Inbox />} />
                 <Route path="budget" element={<BudgetPlanner />} />
                 <Route path="payments" element={<Payments />} />
+                <Route path="settings" element={<ProfileSettings />} />
 
                 <Route path="guests" element={<GuestList />} />
                 <Route path="invites" element={<DigitalInvites />} />

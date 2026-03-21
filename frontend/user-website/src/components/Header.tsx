@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { User, Menu, X, Globe, Moon, Sun, ChevronDown, Sparkles } from 'lucide-react';
+import { User, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { events } from '../data/events';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const { theme, toggleTheme } = useTheme();
     const location = useLocation();
@@ -15,19 +18,21 @@ const Header: React.FC = () => {
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
+            if (window.scrollY > 20 && isSearchOpen) setIsSearchOpen(false);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [isSearchOpen]);
 
     // Close mobile menu on route change
     useEffect(() => {
         setIsMenuOpen(false);
+        setIsSearchOpen(false);
     }, [location]);
 
     // Prevent body scroll when mobile menu is open
     useEffect(() => {
-        if (isMenuOpen) {
+        if (isMenuOpen || isSearchOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -35,77 +40,46 @@ const Header: React.FC = () => {
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isMenuOpen]);
+    }, [isMenuOpen, isSearchOpen]);
 
     const isActivePath = (path: string) => location.pathname === path;
 
+    const featuredVendors = events.slice(0, 3);
+
     return (
         <header
-            className={`w-full py-3 md:py-4 px-4 md:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled
+            className={`w-full py-4 px-4 md:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled || isSearchOpen
                 ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
                 : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
         >
+            {/* Backdrop for Mega Menu Search */}
+            <AnimatePresence>
+                {isSearchOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 top-[72px] bg-black/40 backdrop-blur-sm z-40 hidden lg:block"
+                        onClick={() => setIsSearchOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Logo */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-bold text-red-500 font-cursive z-50 hover:scale-105 transition-transform flex items-center gap-2"
+                className="text-2xl md:text-3xl font-bold text-red-500 font-cursive z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <Sparkles size={24} className="text-red-500" />
+                <Sparkles size={24} className="text-red-500 hidden sm:block" />
                 aayojan
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8 text-sm font-medium absolute left-1/2 transform -translate-x-1/2">
-                <Link
-                    to="/category/weddings"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/category/weddings') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    Wedding
-                </Link>
-                <Link
-                    to="/category/parties"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/category/parties') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    Parties
-                </Link>
-                <Link
-                    to="/category/meetups"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/category/meetups') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    Meetups
-                </Link>
-                <Link
-                    to="/category/seminars"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/category/seminars') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    Seminars
-                </Link>
-                <Link
-                    to="/about"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/about') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    About Us
-                </Link>
-                <Link
-                    to="/contact"
-                    className={`hover:text-red-500 dark:hover:text-red-400 transition-colors ${isActivePath('/contact') ? 'text-red-500 dark:text-red-400' : 'text-gray-700 dark:text-slate-300'
-                        }`}
-                >
-                    Contact Us
-                </Link>
-            </nav>
-
             {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
                 <Link
                     to="/plan-event"
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg hover:scale-105"
+                    className="text-sm font-medium text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-slate-800 px-4 py-2.5 rounded-full transition-all"
                 >
                     Plan Your Event
                 </Link>

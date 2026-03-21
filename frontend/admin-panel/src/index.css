@@ -16,7 +16,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem;
+  --radius: 1rem; /* Updated to 16px for Airbnb style */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -194,5 +194,17 @@ body {
   a {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+@layer utilities {
+  .shadow-airbnb {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+  .shadow-airbnb-hover {
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  }
+  .shadow-soft {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08);
   }
 }

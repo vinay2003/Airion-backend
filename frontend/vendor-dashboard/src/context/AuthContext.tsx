@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import { initiateSocketConnection, disconnectSocket } from '../../../shared/auth/socket';
+
 
 interface User {
     id: string;
@@ -41,6 +43,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 console.log('[AuthContext] Checking authentication...');
                 const response = await api.get('/auth/me');
                 setUser(response.data);
+                if (response.data?.id) {
+                    initiateSocketConnection(response.data.id);
+                }
                 console.log('[AuthContext] User authenticated:', response.data);
             } catch (authError: any) {
                 // Handle auth-specific errors
@@ -57,6 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     console.error('[AuthContext] Auth error:', authError);
                     setUser(null);
                 }
+                disconnectSocket();
                 localStorage.removeItem('token');
             }
         } catch (healthError: any) {
@@ -87,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         localStorage.removeItem('token');
         setUser(null);
+        disconnectSocket();
         navigate('/login');
     };
 

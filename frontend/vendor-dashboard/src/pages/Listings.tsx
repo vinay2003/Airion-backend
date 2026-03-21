@@ -24,8 +24,20 @@ const Listings: React.FC = () => {
     useEffect(() => {
         const fetchListings = async () => {
             try {
-                const response = await api.get('/events');
-                setListings(response.data);
+                const response = await api.get('/services');
+                
+                const mapped = response.data.map((service: any) => ({
+                    id: service.id,
+                    title: service.title,
+                    image: service.images?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80',
+                    location: service.availableLocations?.[0] || 'Mumbai',
+                    rating: service.vendor?.rating || 'New',
+                    reviews: service.vendor?.totalReviews || 0,
+                    price: `${service.currency || 'INR'} ${parseFloat(service.basePrice).toLocaleString()}`,
+                    status: service.isActive ? 'Active' : 'Inactive',
+                }));
+
+                setListings(mapped);
             } catch (error: any) {
                 setError(error.message);
             } finally {

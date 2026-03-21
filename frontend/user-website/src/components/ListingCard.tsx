@@ -127,8 +127,9 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     </Link>
                     <div className="flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white shrink-0">
                         <Star size={14} className="fill-gray-900 text-gray-900 dark:fill-white dark:text-white" />
-                        {rating.toFixed(1)}
+                        {Number(rating || 0).toFixed(1)}
                     </div>
+
                 </div>
 
                 <div className="text-sm text-gray-500 dark:text-slate-400 flex items-center gap-1">

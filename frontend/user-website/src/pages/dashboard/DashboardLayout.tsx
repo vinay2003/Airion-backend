@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Calendar,
     Heart,
@@ -10,76 +11,122 @@ import {
     LogOut,
     Menu,
     X,
-    LayoutDashboard
+    LayoutDashboard,
+    Bell,
+    Settings,
+    Globe,
+    Moon,
+    Sun,
+    Search
 } from 'lucide-react';
-import { useState } from 'react';
+import { useDashboardStore } from '../../store/useDashboardStore';
 
 const DashboardLayout: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const [isDark, setIsDark] = useState(false);
     const navigate = useNavigate();
+    
+    // Zustand
+    const { notifications, chatThreads } = useDashboardStore();
+    const unreadNotifications = notifications.filter(n => !n.read).length;
+    const unreadChats = chatThreads.filter(c => c.unread).length;
 
     const handleLogout = () => {
         // Mock logout logic
         navigate('/login');
     };
 
+    const toggleTheme = () => {
+        setIsDark(!isDark);
+        document.documentElement.classList.toggle('dark');
+    };
+
     const navItems = [
         { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
-        { icon: Calendar, label: 'My Bookings', path: '/dashboard/bookings' },
+        { icon: Calendar, label: 'My Bookings', path: '/dashboard/bookings', badge: 0 },
         { icon: Heart, label: 'Saved Vendors', path: '/dashboard/saved' },
-        { icon: CreditCard, label: 'Payments', path: '/dashboard/payments' },
+        { icon: Mail, label: 'Inbox', path: '/dashboard/inbox', badge: unreadChats },
+        { icon: CreditCard, label: 'Budget Planner', path: '/dashboard/budget' },
         { icon: Users, label: 'Guest List', path: '/dashboard/guests' },
-        { icon: Mail, label: 'Digital Invites', path: '/dashboard/invites' },
         { icon: HelpCircle, label: 'Support', path: '/dashboard/support' },
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex">
-            {/* Mobile Sidebar Toggle */}
-            <button
-                className="lg:hidden fixed bottom-4 right-4 z-50 bg-red-500 text-white p-3 rounded-full shadow-lg"
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-                {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+        <div className={`min-h-screen bg-neutral-50 dark:bg-slate-950 flex font-sans ${isDark ? 'dark' : ''}`}>
+            {/* Backdrop for mobile */}
+            <AnimatePresence>
+                {isSidebarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Sidebar */}
             <aside className={`
-                fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700
-                transform transition-transform duration-300 ease-in-out
+                fixed lg:sticky top-0 left-0 z-40 h-screen w-68 bg-white dark:bg-slate-900 border-r border-neutral-200/80 dark:border-slate-800
+                transform transition-all duration-300 ease-in-out flex flex-col
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
-                <div className="p-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span className="text-red-500">Airion</span> User
+                <div className="p-6 flex items-center justify-between border-b border-neutral-100 dark:border-slate-800">
+                    <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
+                        <span className="text-red-500">Airion</span>
                     </h2>
+                    <button className="lg:hidden text-neutral-500" onClick={() => setIsSidebarOpen(false)}>
+                        <X size={20} />
+                    </button>
                 </div>
 
-                <nav className="px-4 space-y-2 mt-4">
+                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}
                             to={item.path}
                             end={item.path === '/dashboard'}
                             className={({ isActive }) => `
-                                flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium
+                                flex items-center justify-between px-4 py-3.5 rounded-xl transition-all font-medium text-sm
                                 ${isActive
-                                    ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
-                                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white'
+                                    ? 'bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-semibold'
+                                    : 'text-neutral-600 dark:text-slate-400 hover:bg-neutral-100/80 dark:hover:bg-slate-800/80 hover:text-neutral-900 dark:hover:text-white'
                                 }
                             `}
                             onClick={() => setIsSidebarOpen(false)}
                         >
-                            <item.icon size={20} />
-                            {item.label}
+                            {({ isActive }) => (
+                                <>
+                                    <div className="flex items-center gap-3">
+                                        <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                                        <span>{item.label}</span>
+                                    </div>
+                                    {item.badge && item.badge > 0 ? (
+                                        <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                            {item.badge}
+                                        </span>
+                                    ) : null}
+                                </>
+                            )}
                         </NavLink>
                     ))}
+
                 </nav>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-slate-700">
+                <div className="p-4 border-t border-neutral-100 dark:border-slate-800 space-y-2">
+                    <button
+                        onClick={toggleTheme}
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-neutral-600 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-all font-medium text-sm"
+                    >
+                        {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                        {isDark ? 'Light Mode' : 'Dark Mode'}
+                    </button>
+                    
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all font-medium"
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-neutral-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all font-medium text-sm"
                     >
                         <LogOut size={20} />
                         Logout
@@ -87,20 +134,77 @@ const DashboardLayout: React.FC = () => {
                 </div>
             </aside>
 
-            {/* Backdrop for mobile */}
-            {isSidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
-            )}
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col min-w-0">
+                {/* Header Sub-Nav */}
+                <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-slate-800/60 h-16 flex items-center justify-between px-6">
+                    <button className="lg:hidden text-neutral-600" onClick={() => setIsSidebarOpen(true)}>
+                        <Menu size={24} />
+                    </button>
 
-            {/* Main Content */}
-            <main className="flex-1 min-w-0">
-                <div className="p-4 md:p-8 max-w-7xl mx-auto">
-                    <Outlet />
-                </div>
-            </main>
+                    <div className="hidden md:flex items-center gap-2 bg-neutral-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-64 border border-neutral-200/30 dark:border-slate-700/50">
+                        <Search size={16} className="text-neutral-400" />
+                        <input type="text" placeholder="Search budget list, vendors..." className="bg-transparent border-none outline-none text-sm text-neutral-700 dark:text-neutral-200 w-full" />
+                    </div>
+
+                    <div className="flex items-center gap-4 ml-auto">
+                        <button className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg transition">
+                            <Globe size={20} />
+                        </button>
+                        
+                        <div className="relative">
+                            <button 
+                                className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg transition relative"
+                                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                            >
+                                <Bell size={20} />
+                                {unreadNotifications > 0 && (
+                                    <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+                                )}
+                            </button>
+                            
+                            {/* Notifications Dropdown Drawer Dropdown */}
+                            <AnimatePresence>
+                                {isNotificationsOpen && (
+                                    <>
+                                        <div className="fixed inset-0 z-10" onClick={() => setIsNotificationsOpen(false)} />
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            transition={{ duration: 0.15 }}
+                                            className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl shadow-lg z-20 overflow-hidden"
+                                        >
+                                            <div className="p-3 border-b border-neutral-100 dark:border-slate-800 font-bold text-sm text-neutral-900 dark:text-white">
+                                                Notifications
+                                            </div>
+                                            <div className="max-h-60 overflow-y-auto">
+                                                {notifications.map(n => (
+                                                    <div key={n.id} className="p-3 border-b border-neutral-50 dark:border-slate-800/40 hover:bg-neutral-50 dark:hover:bg-slate-800/50 cursor-pointer">
+                                                        <p className={`text-xs font-semibold ${n.read ? 'text-neutral-500' : 'text-neutral-900 dark:text-neutral-200'}`}>{n.title}</p>
+                                                        <p className="text-xs text-neutral-500">{n.message}</p>
+                                                        <span className="text-[10px] text-neutral-400 mt-1 block">{n.date}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    </>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                        
+                        <div className="h-8 w-8 bg-neutral-200 dark:bg-slate-800 rounded-full flex items-center justify-center font-bold text-xs border border-neutral-300/40 dark:border-slate-700">
+                             D
+                        </div>
+                    </div>
+                </header>
+
+                <main className="flex-1 overflow-y-auto p-6 md:p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <Outlet />
+                    </div>
+                </main>
+            </div>
         </div>
     );
 };

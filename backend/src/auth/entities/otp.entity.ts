@@ -1,12 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from 'typeorm';
 
 @Entity('otps')
 export class Otp {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    @Index()
     @Column({ default: '' })
     identifier: string; // email or phone number
+
 
     @Column({ default: '' })
     otp: string;

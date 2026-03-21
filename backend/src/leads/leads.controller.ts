@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, UseGuards, Request, NotFoundException, BadRequestException } from '@nestjs/common';
 import { LeadsService } from './leads.service';
-import { CreateLeadDto } from './dto/create-lead.dto';
-import { UpdateLeadDto } from './dto/update-lead.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('leads')
+@UseGuards(JwtAuthGuard)
 export class LeadsController {
-  constructor(private readonly leadsService: LeadsService) {}
+    constructor(private readonly leadsService: LeadsService) {}
 
-  @Post()
-  create(@Body() createLeadDto: CreateLeadDto) {
-    return this.leadsService.create(createLeadDto);
-  }
+    @Post()
+    async create(@Body() body: { vendorId: string; serviceId?: string; eventDate: string; guestsCount?: number; budget?: number; notes?: string }, @Request() req: any) {
+        if (!body.vendorId || !body.eventDate) {
+            throw new BadRequestException('Vendor ID and Event Date are required');
+        }
 
-  @Get()
-  findAll() {
-    return this.leadsService.findAll();
-  }
+        return this.leadsService.create(req.user.id, body);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.leadsService.findOne(+id);
-  }
+    @Get('vendor')
+    async findByVendor(@Request() req: any) {
+        if (!req.user.vendorId) {
+             throw new BadRequestException('Log in as vendor to view leads profile');
+        }
+        return this.leadsService.findByVendor(req.user.vendorId);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto) {
-    return this.leadsService.update(+id, updateLeadDto);
-  }
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        return this.leadsService.findOne(id);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.leadsService.remove(+id);
-  }
+    @Patch(':id/status')
+    async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+        if (!body.status) {
+             throw new BadRequestException('Status is required');
+        }
+        return this.leadsService.updateStatus(id, body.status);
+    }
 }

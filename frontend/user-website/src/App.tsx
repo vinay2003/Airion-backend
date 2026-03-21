@@ -12,6 +12,10 @@ import DashboardLayout from './pages/dashboard/DashboardLayout';
 import DashboardOverview from './pages/dashboard/DashboardOverview';
 import MyBookings from './pages/dashboard/MyBookings';
 import SavedVendors from './pages/dashboard/SavedVendors';
+import BudgetPlanner from './pages/dashboard/BudgetPlanner';
+import Inbox from './pages/dashboard/Inbox';
+
+
 import { Payments, GuestList, DigitalInvites, Support } from './pages/dashboard/Placeholders';
 
 // Lazy load pages
@@ -67,11 +71,15 @@ const App: React.FC = () => {
                 <Route index element={<DashboardOverview />} />
                 <Route path="bookings" element={<MyBookings />} />
                 <Route path="saved" element={<SavedVendors />} />
+                <Route path="inbox" element={<Inbox />} />
+                <Route path="budget" element={<BudgetPlanner />} />
                 <Route path="payments" element={<Payments />} />
+
                 <Route path="guests" element={<GuestList />} />
                 <Route path="invites" element={<DigitalInvites />} />
                 <Route path="support" element={<Support />} />
               </Route>
+
 
               {/* Main Website Routes with Header/Footer */}
               <Route path="*" element={

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, Index } from 'typeorm';
+
 import * as bcrypt from 'bcrypt';
 
 export enum UserRole {
@@ -18,8 +19,10 @@ export class User {
     @Column({ unique: true, type: 'varchar', length: 255, nullable: true })
     email: string;
 
+    @Index()
     @Column({ name: 'phone_number', type: 'varchar', length: 20, nullable: true })
     phoneNumber?: string;
+
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     password: string;

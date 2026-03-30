@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, 
 import { VendorsService } from './vendors.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/guards/roles.decorator';
+import { UserRole } from '../auth/entities/user.entity';
 import { ActivityType } from './entities/activity.entity';
 
 @Controller('vendors')
@@ -49,7 +52,8 @@ export class VendorsController {
      * Admin Endpoints: Get all vendors with status filter
      */
     @Get()
-    @UseGuards(JwtAuthGuard) // Optionally apply AdminGuard if you have one
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
     async findAll(@Query('status') status?: string) {
         return this.vendorsService.findAll(status);
     }
@@ -58,7 +62,8 @@ export class VendorsController {
      * Admin Endpoint: Update single vendor approval status
      */
     @Patch(':id/status')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
     async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
         if (!body.status) {
             throw new BadRequestException('Status is required');

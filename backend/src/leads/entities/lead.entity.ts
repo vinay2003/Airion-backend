@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Vendor } from '../../vendors/entities/vendor.entity';
 import { Service } from '../../services/entities/service.entity';
@@ -12,6 +12,7 @@ export class Lead {
     @JoinColumn({ name: 'vendor_id' })
     vendor: Vendor;
 
+    @Index()
     @Column({ name: 'vendor_id' })
     vendorId: string;
 
@@ -19,6 +20,7 @@ export class Lead {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
+    @Index()
     @Column({ name: 'user_id' })
     userId: string;
 

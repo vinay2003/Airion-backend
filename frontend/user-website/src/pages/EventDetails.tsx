@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { fetchEventById } from '../lib/api';
-import { useUserAuth } from '../contexts/AuthContext';
+import { useAuth } from '@shared/auth';
 import type { Event } from '../types';
 import {
     Star, MapPin, Users, Clock, Check, ArrowLeft, Share2, Heart,
@@ -14,7 +14,7 @@ const EventDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const location = useLocation();
-    const { user } = useUserAuth();
+    const { user } = useAuth();
     
     const [event, setEvent] = useState<Event | undefined>(undefined);
     const [loading, setLoading] = useState(true);
@@ -23,10 +23,15 @@ const EventDetails: React.FC = () => {
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const handleBookingClick = () => {
+    const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined);
+
+    const handleBookingClick = (packageName?: string) => {
         if (!user) {
             navigate('/login', { state: { redirect: location.pathname } });
             return;
+        }
+        if (packageName) {
+            setSelectedPackage(packageName);
         }
         setIsBookingOpen(true);
     };
@@ -93,7 +98,7 @@ const EventDetails: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
                     <h2 className="font-bold text-gray-900 dark:text-white truncate max-w-[200px]">{event.title}</h2>
                     <button
-                        onClick={handleBookingClick}
+                        onClick={() => handleBookingClick()}
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md"
                     >
                         Book Now
@@ -268,7 +273,7 @@ const EventDetails: React.FC = () => {
                                             ))}
                                         </ul>
                                         <button 
-                                            onClick={handleBookingClick}
+                                            onClick={() => handleBookingClick(pkg.title)}
                                             className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all"
                                         >
                                             Select Package
@@ -374,7 +379,7 @@ const EventDetails: React.FC = () => {
                                 </div>
 
                                 <button
-                                    onClick={handleBookingClick}
+                                    onClick={() => handleBookingClick()}
                                     className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-black py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-[0.98]"
                                 >
                                     Check Availability
@@ -406,7 +411,7 @@ const EventDetails: React.FC = () => {
                     <p className="text-xs text-gray-500 dark:text-slate-400">Total before taxes</p>
                 </div>
                 <button
-                    onClick={handleBookingClick}
+                    onClick={() => handleBookingClick()}
                     className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-500/30"
                 >
                     Reserve
@@ -419,6 +424,7 @@ const EventDetails: React.FC = () => {
                 eventName={event.title}
                 price={event.price}
                 vendorId={event.vendorId || event.id}
+                initialPackage={selectedPackage}
             />
         </div>
     );

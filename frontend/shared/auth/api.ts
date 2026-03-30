@@ -15,8 +15,9 @@ import {
     User,
     ApiError
 } from './types';
-import { AUTH_ENDPOINTS, JWT_CONFIG, AUTH_ERRORS } from './constants';
-import { getToken, setToken, removeToken, isTokenExpired } from './utils';
+import { AUTH_ENDPOINTS, AUTH_ERRORS } from './constants';
+import { tokenService } from './tokenService';
+import { isTokenExpired } from './utils';
 
 /**
  * Create axios instance with base configuration
@@ -32,7 +33,7 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
     // Request interceptor - Add auth token
     api.interceptors.request.use(
         (config) => {
-            const token = getToken();
+            const token = tokenService.getAccessToken();
             if (token && !isTokenExpired(token)) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
@@ -58,8 +59,8 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
             if (error.response?.status === 401) {
                 // Prevent infinite loop
                 if (originalRequest._retry) {
-                    removeToken();
-                    window.location.href = '/login';
+                    tokenService.clearTokens();
+                    // Let the consumer handle redirects
                     return Promise.reject(error);
                 }
 
@@ -67,21 +68,20 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
 
                 // Try to refresh token
                 try {
-                    const refreshToken = localStorage.getItem(JWT_CONFIG.REFRESH_TOKEN_KEY);
+                    const refreshToken = tokenService.getRefreshToken();
                     if (refreshToken) {
                         const response = await api.post<AuthResponse>(AUTH_ENDPOINTS.REFRESH_TOKEN, {
                             refresh_token: refreshToken
                         });
 
-                        setToken(response.data.access_token);
+                        tokenService.setAccessToken(response.data.access_token);
 
                         // Retry original request
                         originalRequest.headers.Authorization = `Bearer ${response.data.access_token}`;
                         return api(originalRequest);
                     }
                 } catch (refreshError) {
-                    removeToken();
-                    window.location.href = '/login';
+                    tokenService.clearTokens();
                     return Promise.reject(refreshError);
                 }
             }
@@ -123,11 +123,11 @@ export const userAuth = {
 };
 
 /**
- * Vendor Authentication APIs (OTP-based)
+ * OTP-based Authentication APIs (Common for Users & Vendors)
  */
-export const vendorAuth = {
+export const otpAuth = {
     /**
-     * Send OTP for vendor login
+     * Send OTP for login
      */
     sendLoginOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string }> => {
         const response = await authApi.post(AUTH_ENDPOINTS.VENDOR_SEND_OTP, request);
@@ -135,7 +135,7 @@ export const vendorAuth = {
     },
 
     /**
-     * Verify OTP for vendor login
+     * Verify OTP for login
      */
     verifyLoginOTP: async (verification: OTPVerification): Promise<AuthResponse> => {
         const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.VENDOR_VERIFY_OTP, verification);
@@ -143,7 +143,7 @@ export const vendorAuth = {
     },
 
     /**
-     * Send OTP for vendor signup
+     * Send OTP for signup
      */
     sendSignupOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string }> => {
         const response = await authApi.post(AUTH_ENDPOINTS.VENDOR_SIGNUP_SEND_OTP, request);
@@ -151,7 +151,7 @@ export const vendorAuth = {
     },
 
     /**
-     * Verify OTP and complete vendor signup
+     * Verify OTP and complete signup
      */
     verifySignupOTP: async (verification: OTPVerification): Promise<AuthResponse> => {
         const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.VENDOR_SIGNUP_VERIFY_OTP, verification);
@@ -193,13 +193,21 @@ export const commonAuth = {
     },
 
     /**
+     * Common login with email and password
+     */
+    login: async (email: string, password: string): Promise<AuthResponse> => {
+        const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.USER_LOGIN, { email, password });
+        return response.data;
+    },
+
+    /**
      * Logout current user
      */
     logout: async (): Promise<void> => {
         try {
             await authApi.post(AUTH_ENDPOINTS.LOGOUT);
         } finally {
-            removeToken();
+            tokenService.clearTokens();
         }
     },
 

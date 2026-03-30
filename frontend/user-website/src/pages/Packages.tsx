@@ -119,9 +119,9 @@ const Packages: React.FC = () => {
                                                 ))}
                                             </ul>
 
-                                            <button className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02]">
+                                            <Link to={`/event/${pkg.id}`} className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02] flex items-center justify-center">
                                                 Details & Booking
-                                            </button>
+                                            </Link>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -163,7 +163,7 @@ const Packages: React.FC = () => {
                                             )}
                                         </ul>
 
-                                        <Link to={`/package/${pkg.id}`} className="mt-auto block text-center border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-2 rounded-xl font-bold transition-all">
+                                        <Link to={`/event/${pkg.id}`} className="mt-auto block text-center border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-2 rounded-xl font-bold transition-all">
                                             View Details
                                         </Link>
                                     </div>

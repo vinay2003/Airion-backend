@@ -17,7 +17,7 @@ export class BookingsController {
         }
 
         const booking = await this.bookingsService.create({
-            userId: req.user.id, // Current authenticated user
+            userId: req.user.userId, // Current authenticated user (fixed from req.user.id)
             vendorId: body.vendorId,
             serviceId: body.serviceId,
             packageId: body.packageId,
@@ -36,7 +36,7 @@ export class BookingsController {
      */
     @Get('mine')
     async getMyBookings(@Req() req: any) {
-        return this.bookingsService.findAllByUserId(req.user.id);
+        return this.bookingsService.findAllByUserId(req.user.userId);
     }
 
     /**
@@ -44,31 +44,30 @@ export class BookingsController {
      */
     @Get('vendor')
     async getVendorBookings(@Req() req: any) {
-        // Assume req.user has a vendorId attached if they are a vendor during login payload enrichment
-        // Or fetch their vendor record from the db first. Let's look for vendorId in payload
-        if (!req.user.vendorId) {
-             throw new BadRequestException('This user is not registered as a vendor');
+        if (req.user.role !== 'vendor') {
+             throw new BadRequestException('Access denied: You are not a vendor');
         }
-        return this.bookingsService.findAllByVendorId(req.user.vendorId);
+        // Service will find vendorId from userId internally or we pass userId
+        return this.bookingsService.findAllByVendorUserId(req.user.userId);
     }
 
     /**
      * Get single booking details
      */
     @Get(':id')
-    async findOne(@Param('id') id: string) {
-        return this.bookingsService.findOne(id);
+    async findOne(@Param('id') id: string, @Req() req: any) {
+        return this.bookingsService.findOne(id, req.user);
     }
 
     /**
      * Update booking status (e.g., cancelled, in-progress)
      */
     @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() body: { status: 'pending' | 'confirmed' | 'completed' | 'canceled'; paymentId?: string; paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded' }) {
+    async updateStatus(@Param('id') id: string, @Body() body: { status: 'pending' | 'confirmed' | 'completed' | 'canceled'; paymentId?: string; paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded' }, @Req() req: any) {
         if (!body.status) {
             throw new BadRequestException('Status is required');
         }
-        const updated = await this.bookingsService.transitionState(id, body.status, body.paymentId, body.paymentStatus);
+        const updated = await this.bookingsService.transitionState(id, body.status, req.user, body.paymentId, body.paymentStatus);
         return { success: true, booking: updated };
     }
 }

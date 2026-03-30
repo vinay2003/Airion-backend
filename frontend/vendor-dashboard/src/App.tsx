@@ -38,19 +38,25 @@ const App: React.FC = () => {
 
               {/* Protected routes */}
               <Route path="/" element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['vendor', 'admin']}>
                   <Layout />
                 </ProtectedRoute>
               }>
                 <Route index element={<Dashboard />} />
-                <Route path="listings" element={<Listings />} />
-                <Route path="inbox" element={<Inbox />} />
+                <Route path="events" element={<Listings />} />
+                <Route path="enquiries" element={<Inbox />} />
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
+                
+                {/* Placeholders for new pages to match Sidebar */}
+                <Route path="calendar" element={<div className="p-8 text-[var(--text-primary)]">Calendar View Placeholder</div>} />
+                <Route path="earnings" element={<div className="p-8 text-[var(--text-primary)]">Earnings & Financials Placeholder</div>} />
+                <Route path="products" element={<div className="p-8 text-[var(--text-primary)]">Products & Services Placeholder</div>} />
+
                 <Route path="plan-event" element={<EventPlanning />} />
                 <Route path="promotions" element={<Promotions />} />
-                <Route path="*" element={<div className="p-8 dark:text-white">Page not found</div>} />
+                <Route path="*" element={<div className="p-8 text-[var(--text-primary)]">Page not found</div>} />
               </Route>
             </Routes>
           </Suspense>

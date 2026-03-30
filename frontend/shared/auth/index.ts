@@ -16,5 +16,5 @@ export * from './cookieStorage';
 // API
 export * from './api';
 
-// Hooks
-export { useAuth } from './hooks/useAuth';
+// Context & Hooks
+export { AuthProvider, useAuth } from './AuthContext';

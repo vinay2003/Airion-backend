@@ -62,11 +62,12 @@ export interface TokenPayload {
 
 export interface AuthContextType {
     user: User | null;
-    loading: boolean;
-    backendAvailable: boolean;
-    login: (token: string) => void;
-    logout: () => void;
-    checkAuth: () => Promise<void>;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    login: (email: string, password: string) => Promise<void>;
+    loginWithToken: (token: string) => Promise<void>;
+    logout: () => Promise<void>;
+    refreshUser: () => Promise<void>;
 }
 
 export interface ApiError {

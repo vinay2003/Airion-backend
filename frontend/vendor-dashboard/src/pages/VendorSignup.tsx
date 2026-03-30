@@ -28,6 +28,8 @@ const VendorSignupWizard: React.FC = () => {
     const location = useLocation();
     const basicDetails = location.state?.basicDetails || JSON.parse(localStorage.getItem('vendorBasicDetails') || '{}');
 
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
     const [currentStep, setCurrentStep] = useState(2); // Start at Step 2 since Step 1 is basic signup
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -35,9 +37,6 @@ const VendorSignupWizard: React.FC = () => {
     const [formData, setFormData] = useState({
         // Step 2: Business Registration
         businessName: basicDetails?.businessName || '',
-        ownerName: basicDetails ? `${basicDetails.firstName} ${basicDetails.lastName}` : '',
-        businessType: '',
-        otherBusinessType: '',
         businessAddress: '',
         city: basicDetails?.city || '',
         yearsInBusiness: '',
@@ -46,7 +45,7 @@ const VendorSignupWizard: React.FC = () => {
         // Step 3: Business Intelligence
         acquisitionChannels: [] as string[],
         monthlyEventVolume: '',
-        averagePrice: '',
+        averageBookingPrice: '',
         painPoints: [] as string[],
 
         // Step 4: Profile Completion
@@ -72,6 +71,23 @@ const VendorSignupWizard: React.FC = () => {
                 return { ...prev, [name]: [...currentList, value] };
             }
         });
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const newImages = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+            setFormData(prev => ({
+                ...prev,
+                portfolioImages: [...prev.portfolioImages, ...newImages]
+            }));
+        }
+    };
+
+    const removeImage = (indexToRemove: number) => {
+        setFormData(prev => ({
+            ...prev,
+            portfolioImages: prev.portfolioImages.filter((_, index) => index !== indexToRemove)
+        }));
     };
 
     const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
@@ -100,6 +116,13 @@ const VendorSignupWizard: React.FC = () => {
                     state: '', // Add state if needed
                     country: 'India',
                     zipCode: '',
+                },
+                businessHours: {
+                    monday: { open: "09:00", close: "18:00" },
+                    tuesday: { open: "09:00", close: "18:00" },
+                    wednesday: { open: "09:00", close: "18:00" },
+                    thursday: { open: "09:00", close: "18:00" },
+                    friday: { open: "09:00", close: "18:00" }
                 }
             };
 
@@ -173,23 +196,6 @@ const VendorSignupWizard: React.FC = () => {
                                         <Label>Business Name</Label>
                                         <Input name="businessName" value={formData.businessName} onChange={handleTextChange} required />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label>Business Type</Label>
-                                        <select
-                                            name="businessType"
-                                            value={formData.businessType}
-                                            onChange={(e) => handleRadioChange('businessType', e.target.value)}
-                                            className="w-full border rounded-md p-2 bg-background"
-                                            required
-                                        >
-                                            <option value="">Select Category</option>
-                                            <option value="venue">Venue / Hotel</option>
-                                            <option value="caterer">Caterer</option>
-                                            <option value="photography">Photography</option>
-                                            <option value="decor">Decor / Florist</option>
-                                            <option value="makeup">Makeup Artist</option>
-                                        </select>
-                                    </div>
                                     <div className="md:col-span-2 space-y-2">
                                         <Label>Business Address</Label>
                                         <Input name="businessAddress" value={formData.businessAddress} onChange={handleTextChange} required />
@@ -234,7 +240,7 @@ const VendorSignupWizard: React.FC = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <Label>Average Booking Price (₹)</Label>
-                                            <Input name="averagePrice" value={formData.averagePrice} onChange={handleTextChange} placeholder="e.g. 50,000" />
+                                            <Input name="averageBookingPrice" value={formData.averageBookingPrice} onChange={handleTextChange} placeholder="e.g. 50000" />
                                         </div>
                                     </div>
 
@@ -264,8 +270,9 @@ const VendorSignupWizard: React.FC = () => {
                                             name="businessDescription"
                                             value={formData.businessDescription}
                                             onChange={handleTextChange}
-                                            placeholder="Write a brief intro about your services, experience, and what makes you unique..."
+                                            placeholder="Write a brief intro about your services, experience, and what makes you unique... (minimum 10 characters)"
                                             className="h-32"
+                                            minLength={10}
                                             required
                                         />
                                     </div>
@@ -273,11 +280,33 @@ const VendorSignupWizard: React.FC = () => {
                                     <div className="space-y-4">
                                         <Label className="text-base">Portfolio Showcase</Label>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                            <div className="border-2 border-dashed rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-600 transition-colors cursor-pointer">
+                                            {formData.portfolioImages.map((imgUrl, index) => (
+                                                <div key={index} className="relative rounded-lg h-32 border overflow-hidden group">
+                                                    <img src={imgUrl} alt={`Portfolio ${index + 1}`} className="w-full h-full object-cover" />
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => removeImage(index)}
+                                                        className="absolute top-2 right-2 bg-red-600 bg-opacity-90 text-white rounded-full p-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <X size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            <div 
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="border-2 border-dashed rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-600 transition-colors cursor-pointer"
+                                            >
                                                 <Plus size={24} />
                                                 <span className="text-xs mt-2">Add Photo</span>
                                             </div>
-                                            {/* Preview slots can be added here */}
+                                            <input 
+                                                type="file" 
+                                                ref={fileInputRef} 
+                                                onChange={handleImageUpload} 
+                                                accept="image/*" 
+                                                multiple 
+                                                className="hidden" 
+                                            />
                                         </div>
                                         <p className="text-xs text-gray-500 flex items-center gap-1">
                                             <AlertCircle size={12} /> High-quality photos increase booking chances by 40%

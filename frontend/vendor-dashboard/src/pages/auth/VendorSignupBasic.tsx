@@ -39,6 +39,7 @@ const VendorSignupBasic: React.FC = () => {
 
             if (response.data.otp) {
                 setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
+                alert(`Development Info:\n\n🔑 Your Signup OTP is: ${response.data.otp}`);
             } else {
                 setSuccess('OTP sent successfully! Please check your phone.');
             }
@@ -70,18 +71,26 @@ const VendorSignupBasic: React.FC = () => {
             });
 
             // Store token
-            localStorage.setItem('token', response.data.access_token);
+            const authData = response.data;
+            if (authData.access_token) {
+                localStorage.setItem('token', authData.access_token);
+            }
 
             setSuccess('OTP verified! Redirecting to complete your profile...');
 
-            // Redirect to profile form with basic details
+            // Redirect maintaining portal boundaries
             setTimeout(() => {
-                navigate('/vendor/signup-form', {
-                    state: {
-                        phone,
-                        token: response.data.access_token,
-                    },
-                });
+                const role = authData.user?.role || 'vendor';
+                if (role === 'admin') window.location.href = '/admin';
+                else if (role === 'user') window.location.href = '/user';
+                else {
+                    navigate('/vendor/signup-form', {
+                        state: {
+                            phone,
+                            token: authData.access_token,
+                        },
+                    });
+                }
             }, 1500);
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Invalid OTP. Please try again.';
@@ -101,6 +110,7 @@ const VendorSignupBasic: React.FC = () => {
 
             if (response.data.otp) {
                 setSuccess(`OTP resent! Your code is: ${response.data.otp}`);
+                alert(`Development Info:\n\n🔑 Your Resent OTP is: ${response.data.otp}`);
             } else {
                 setSuccess('OTP resent successfully!');
             }

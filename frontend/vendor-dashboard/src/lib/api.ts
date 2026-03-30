@@ -26,9 +26,20 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor for error handling
+// Response interceptor for error handling and standardizing wrapped API responses
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Automatically unwrap NestJS TransformInterceptor standardization { success, data, message }
+        if (response.data && response.data.success === true && response.data.data !== undefined) {
+            // Keep the success message accessible if it was an object
+            const originalData = response.data.data;
+            if (response.data.message && typeof originalData === 'object' && originalData !== null && !Array.isArray(originalData)) {
+                originalData.message = response.data.message;
+            }
+            response.data = originalData;
+        }
+        return response;
+    },
     (error) => {
         if (error.response?.status === 401) {
             // Unauthorized - clear local token

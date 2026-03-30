@@ -75,6 +75,14 @@ const Header: React.FC = () => {
                 aayojan
             </Link>
 
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-6">
+                <Link to="/" className={`text-sm font-medium transition-colors ${isActivePath('/') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Home</Link>
+                <Link to="/search" className={`text-sm font-medium transition-colors ${isActivePath('/search') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Marketplace</Link>
+                <Link to="/packages" className={`text-sm font-medium transition-colors ${isActivePath('/packages') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Packages</Link>
+                <Link to="/inspiration" className={`text-sm font-medium transition-colors ${isActivePath('/inspiration') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Inspiration</Link>
+            </nav>
+
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
                 <Link
@@ -159,6 +167,26 @@ const Header: React.FC = () => {
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
                             {/* Navigation Links */}
                             <nav className="space-y-3">
+                                <Link
+                                    to="/search"
+                                    onClick={toggleMenu}
+                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/search')
+                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
+                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                        }`}
+                                >
+                                    Marketplace
+                                </Link>
+                                <Link
+                                    to="/packages"
+                                    onClick={toggleMenu}
+                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/packages')
+                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
+                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                        }`}
+                                >
+                                    Packages
+                                </Link>
                                 <Link
                                     to="/plan-event"
                                     onClick={toggleMenu}

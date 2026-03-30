@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne, Index } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Vendor } from '../../vendors/entities/vendor.entity';
 import { Service } from '../../services/entities/service.entity';
@@ -20,6 +20,7 @@ export class Review {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
+    @Index()
     @Column({ name: 'user_id' })
     userId: string;
 
@@ -27,6 +28,7 @@ export class Review {
     @JoinColumn({ name: 'vendor_id' })
     vendor: Vendor;
 
+    @Index()
     @Column({ name: 'vendor_id' })
     vendorId: string;
 
@@ -34,6 +36,7 @@ export class Review {
     @JoinColumn({ name: 'service_id' })
     service: Service;
 
+    @Index()
     @Column({ name: 'service_id' })
     serviceId: string;
 

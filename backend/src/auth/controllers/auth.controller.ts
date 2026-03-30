@@ -3,6 +3,9 @@ import { AuthService } from '../services/auth.service';
 import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../guards/roles.decorator';
+import { UserRole } from '../entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -68,7 +71,8 @@ export class AuthController {
     }
 
     @Patch('profile')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.USER, UserRole.VENDOR, UserRole.ADMIN)
     async updateProfile(@Request() req: any, @Body() dto: any) {
         return this.authService.updateProfile(req.user.userId, dto);
     }

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { VendorsModule } from './vendors/vendors.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -20,17 +21,26 @@ import { WishlistsModule } from './wishlists/wishlists.module';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            url: process.env.DATABASE_URL, // Auto-detects if provided (Render/Neon)
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT || '5432'),
-            username: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false, // Required for Neon/Render Postgres
-            entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            synchronize: true, // Use carefully in production
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 10,
+        }]),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                type: 'postgres',
+                url: configService.get<string>('DATABASE_URL'),
+                host: configService.get<string>('DB_HOST'),
+                port: configService.get<number>('DB_PORT', 5432),
+                username: configService.get<string>('DB_USER'),
+                password: configService.get<string>('DB_PASSWORD'),
+                database: configService.get<string>('DB_NAME'),
+                ssl: configService.get<string>('DATABASE_URL') ? { rejectUnauthorized: false } : false,
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                synchronize: configService.get<string>('NODE_ENV') !== 'production', // Only sync in non-production
+                logging: configService.get<string>('NODE_ENV') !== 'production',
+            }),
         }),
         AuthModule,
         VendorsModule,

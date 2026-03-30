@@ -85,7 +85,7 @@ const VendorSignupBasic: React.FC = () => {
                 console.log('='.repeat(60) + '\n');
 
                 // Alert
-                alert(`🔑 Your OTP is: ${otpCode}\n\nPhone: ${basicDetails.phone}\n\n(This is for development testing only)`);
+                alert(`Development Info:\n\n🔑 Your OTP is: ${otpCode}\nPhone: ${basicDetails.phone}`);
             }
 
             setStep('otp');
@@ -119,17 +119,22 @@ const VendorSignupBasic: React.FC = () => {
             });
 
             // ✅ Properly authenticate user via AuthContext
-            if (response.data.access_token) {
-                login(response.data.access_token); // Updates AuthContext state
+            const authData = response.data;
+            if (authData.access_token) {
+                login(authData.access_token); // Updates AuthContext state
                 localStorage.setItem('vendorBasicDetails', JSON.stringify(basicDetails));
             }
 
-            console.log('✅ User authenticated, redirecting to vendor profile form...');
+            console.log('✅ User authenticated, redirecting to complete profile...');
 
             setStep('verified');
-            // Redirect to full vendor form after a short delay
+            
+            // Redirect to full vendor form maintaining portal routes
             setTimeout(() => {
-                navigate('/signup-form', { state: { basicDetails } });
+                const role = authData.user?.role || 'vendor';
+                if (role === 'admin') window.location.href = '/admin';
+                else if (role === 'user') window.location.href = '/user';
+                else navigate('/signup-form', { state: { basicDetails } }); // Continue vendor onboarding
             }, 1500);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
@@ -154,7 +159,7 @@ const VendorSignupBasic: React.FC = () => {
             if (response.data.otp) {
                 const otpCode = response.data.otp;
                 console.log('\n🔑 Resent OTP:', otpCode, '\n');
-                alert(`🔑 Your new OTP is: ${otpCode}\n\n(Sent to ${basicDetails.phone})`);
+                alert(`Development Info:\n\n🔑 Your new OTP is: ${otpCode}\n(Sent to ${basicDetails.phone})`);
             } else {
                 alert('OTP sent successfully!');
             }

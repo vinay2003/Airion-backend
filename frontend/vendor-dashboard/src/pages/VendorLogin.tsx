@@ -53,8 +53,21 @@ const VendorLogin: React.FC = () => {
             const response = await api.post('/auth/login/verify-otp', { phone, otp });
 
             console.log('✅ Login successful, authenticating user...');
-            login(response.data.access_token); // Updates AuthContext
-            navigate('/dashboard');
+            
+            // With API wrapper fixed, response.data holds auth payload
+            const { access_token, user } = response.data;
+            login(access_token); // Updates AuthContext
+
+            // 🔁 Role-Based Redirection Logic
+            const role = user?.role || 'user';
+            
+            if (role === 'admin') {
+                window.location.href = '/admin'; // Redirect to admin portal
+            } else if (role === 'vendor') {
+                window.location.href = '/vendor'; // Redirect to vendor portal
+            } else {
+                window.location.href = '/user'; // Redirect to user portal
+            }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
             console.error('Verify OTP Error:', err);

@@ -13,27 +13,27 @@ export class LeadsController {
             throw new BadRequestException('Vendor ID and Event Date are required');
         }
 
-        return this.leadsService.create(req.user.id, body);
+        return this.leadsService.create(req.user.userId, body); // Fixed req.user.id to req.user.userId
     }
 
     @Get('vendor')
     async findByVendor(@Request() req: any) {
-        if (!req.user.vendorId) {
+        if (req.user.role !== 'vendor') {
              throw new BadRequestException('Log in as vendor to view leads profile');
         }
-        return this.leadsService.findByVendor(req.user.vendorId);
+        return this.leadsService.findByVendorUserId(req.user.userId);
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string) {
-        return this.leadsService.findOne(id);
+    async findOne(@Param('id') id: string, @Request() req: any) {
+        return this.leadsService.findOne(id, req.user);
     }
 
     @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+    async updateStatus(@Param('id') id: string, @Body() body: { status: string }, @Request() req: any) {
         if (!body.status) {
              throw new BadRequestException('Status is required');
         }
-        return this.leadsService.updateStatus(id, body.status);
+        return this.leadsService.updateStatus(id, body.status, req.user);
     }
 }

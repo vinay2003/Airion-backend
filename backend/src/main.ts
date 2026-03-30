@@ -1,23 +1,57 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './infrastructure/filters/http-exception.filter';
+import { LoggingInterceptor } from './infrastructure/interceptors/logging.interceptor';
+import { TransformInterceptor } from './infrastructure/interceptors/transform.interceptor';
+import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import * as winston from 'winston';
+
+import helmet from 'helmet';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    // Determine JSON vs Pretty logging based on environment
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    const logger = WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            isProduction 
+                ? winston.format.json() 
+                : nestWinstonModuleUtilities.format.nestLike('Airion', { colors: true, prettyPrint: true }),
+          ),
+        }),
+      ],
+    });
 
-    // Enable CORS
+    const app = await NestFactory.create(AppModule, { logger });
+
+    // Security Headers
+    app.use(helmet());
+
+    // Enable CORS with dynamic origin
     app.enableCors({
-        origin: [
-            'http://localhost:5173',
-            'http://localhost:5174',
-            'http://localhost:5175',
-            'http://localhost:5176',
-            'http://localhost:5177',
-            'http://localhost:5178',
-            'http://localhost:5179',
-        ],
+        origin: (origin, callback) => {
+            const isLocal = !origin || origin.startsWith('http://localhost:');
+            if (isLocal || process.env.NODE_ENV !== 'production' || 
+                [
+                    'https://airion.vercel.app', 
+                    'https://admin.airion.vercel.app'
+                ].indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         credentials: true,
     });
+
+    // Global Filters & Interceptors
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.useGlobalInterceptors(new LoggingInterceptor(), new TransformInterceptor());
 
     // Global validation pipe
     app.useGlobalPipes(new ValidationPipe({

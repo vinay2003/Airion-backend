@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Loader, CheckCircle2, ArrowLeft, Phone } from 'lucide-react';
-import { useUserAuth } from '../contexts/AuthContext';
-import api from '../lib/apiClient';
+import { useAuth, otpAuth } from '@shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();
-    const { loginWithToken } = useUserAuth();
+    const { loginWithToken } = useAuth();
 
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const [phone, setPhone] = useState('');
@@ -22,10 +21,10 @@ const Signup: React.FC = () => {
         setError(''); setSuccess(''); setLoading(true);
 
         try {
-            const response = await api.post('/auth/signup/send-otp', { phone });
-
-            if (response.data.otp) {
-                setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
+            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
+            if (response.otp) {
+                setSuccess(`OTP sent! Your code is: ${response.otp}`);
             } else {
                 setSuccess('OTP sent successfully to your phone!');
             }
@@ -46,14 +45,15 @@ const Signup: React.FC = () => {
         setError(''); setLoading(true);
 
         try {
-            const response = await api.post('/auth/signup/verify-otp', {
-                phone: phone,
-                otp,
-                name: `User ${phone}`,
+            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            const response = await otpAuth.verifySignupOTP({
+                phone: sanitizedPhone,
+                otp: otp.trim(),
+                name: `User ${sanitizedPhone}`,
             });
 
-            if (response.data.access_token) {
-                loginWithToken(response.data.access_token);
+            if (response.access_token) {
+                loginWithToken(response.access_token);
                 setSuccess('Account created successfully! Redirecting...');
                 setTimeout(() => navigate('/onboarding/interests'), 1000);
             }
@@ -69,41 +69,41 @@ const Signup: React.FC = () => {
             {/* Left Side: Inspiration (Hidden on Mobile) */}
             <div className="hidden lg:flex w-1/2 relative flex-col justify-end p-12 overflow-hidden bg-neutral-900 border-r border-neutral-200 dark:border-slate-800">
                 <div className="absolute inset-0">
-                    <img 
-                        src="https://images.unsplash.com/photo-1519225468359-2996bc01c32c?q=80" 
-                        alt="Event Decor" 
+                    <img
+                        src="https://images.unsplash.com/photo-1519225468359-2996bc01c32c?q=80"
+                        alt="Event Decor"
                         className="w-full h-full object-cover opacity-60 mix-blend-overlay"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 </div>
-                
+
                 <div className="relative z-10 max-w-lg mb-8">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                         className="flex items-center gap-2 mb-6"
                     >
                         <Sparkles className="text-red-500" size={32} />
                         <span className="text-3xl font-black text-white tracking-tight font-cursive">Airion</span>
                     </motion.div>
-                    
-                    <motion.h1 
+
+                    <motion.h1
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                         className="text-4xl md:text-5xl font-black text-white mb-6 leading-[1.1]"
                     >
                         Discover the best vendors for your events.
                     </motion.h1>
-                    
-                    <motion.p 
+
+                    <motion.p
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
                         className="text-lg text-neutral-300 font-medium mb-12"
                     >
                         Create a free account to unlock exclusive pricing, customized itineraries, and secure online bookings with top-rated professionals.
                     </motion.p>
-                    
+
                     <div className="flex items-center gap-6">
                         <div className="flex -space-x-4">
-                            {[1,2,3,4].map(i => (
-                                <img key={i} src={`https://i.pravatar.cc/100?img=${i+20}`} alt="User" className="w-12 h-12 rounded-full border-2 border-black" />
+                            {[1, 2, 3, 4].map(i => (
+                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 20}`} alt="User" className="w-12 h-12 rounded-full border-2 border-black" />
                             ))}
                         </div>
                         <div className="text-sm font-bold text-white">

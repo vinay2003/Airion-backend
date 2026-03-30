@@ -11,9 +11,10 @@ interface BookingModalProps {
     eventName: string;
     price: string;
     vendorId: string;
+    initialPackage?: string;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName, price, vendorId }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName, price, vendorId, initialPackage }) => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
         date: '',
         time: '',
         guests: '',
-        package: 'Silver',
+        package: initialPackage || 'Silver',
         details: '',
         addons: [] as string[],
         isEmi: false,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, List, MessageSquare, Calendar, BarChart2, Settings, LogOut, Moon, Sun, PlusCircle, X } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X } from 'lucide-react';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -9,15 +8,16 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-    const { theme, toggleTheme } = useTheme();
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: List, label: 'Listings', path: '/listings' },
-        { icon: MessageSquare, label: 'Inbox', path: '/inbox' },
+        { icon: Ticket, label: 'Events', path: '/events' },
         { icon: Calendar, label: 'Bookings', path: '/bookings' },
+        { icon: CalendarDays, label: 'Calendar', path: '/calendar' },
+        { icon: DollarSign, label: 'Earnings', path: '/earnings' },
+        { icon: MessageSquare, label: 'Enquiries', path: '/enquiries' },
+        { icon: Package, label: 'Products', path: '/products' },
         { icon: BarChart2, label: 'Analytics', path: '/analytics' },
         { icon: Settings, label: 'Settings', path: '/settings' },
-        { icon: PlusCircle, label: 'Plan Event', path: '/plan-event' },
     ];
 
     return (
@@ -25,58 +25,65 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             {/* Mobile Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+                    className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
                     onClick={onClose}
                 />
             )}
 
             {/* Sidebar Container */}
             <aside className={`
-                fixed md:sticky top-0 left-0 z-50 h-screen w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 
+                fixed md:fixed top-0 left-0 z-50 h-screen w-[240px] bg-[var(--bg-sidebar)] border-r border-[var(--border-subtle)] 
                 flex flex-col transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             `}>
-                <div className="p-6 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-red-500 flex items-center gap-2">
-                        <span className="bg-red-500 text-white p-1 rounded-lg">Ai</span>
+                <div className="h-[70px] border-b border-[var(--border-subtle)] flex justify-between items-center px-6">
+                    <h1 className="text-xl font-display font-bold text-white flex items-center gap-2">
+                        <span className="bg-[var(--accent-primary)] text-white p-1 rounded-lg w-8 h-8 flex items-center justify-center">V</span>
                         Vendor
                     </h1>
-                    <button onClick={onClose} className="md:hidden text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-white">
+                    <button onClick={onClose} className="md:hidden text-[var(--text-muted)] hover:text-white">
                         <X size={24} />
                     </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}
                             to={item.path}
                             onClick={() => window.innerWidth < 768 && onClose()}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                    ? 'bg-red-50 dark:bg-red-500/10 text-red-500 font-medium shadow-sm'
-                                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200'
+                                `flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group relative ${isActive
+                                    ? 'bg-[rgba(108,99,255,0.12)] text-white font-medium pl-4'
+                                    : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.03)] hover:text-white'
                                 }`
                             }
                         >
-                            <item.icon size={20} />
-                            {item.label}
+                            {({ isActive }) => (
+                                <>
+                                    {isActive && (
+                                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-2/3 bg-[var(--accent-primary)] rounded-r-md"></div>
+                                    )}
+                                    <item.icon size={20} className={isActive ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors"} />
+                                    <span className={isActive ? "" : ""}>{item.label}</span>
+                                </>
+                            )}
                         </NavLink>
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-gray-200 dark:border-slate-800 space-y-2">
-                    <button
-                        onClick={toggleTheme}
-                        className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200 rounded-xl transition-colors"
-                    >
-                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                    </button>
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-500 rounded-xl transition-colors">
-                        <LogOut size={20} />
-                        Logout
-                    </button>
+                <div className="p-4 border-t border-[var(--border-subtle)]">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                        <img
+                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop"
+                            alt="User"
+                            className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">John Doe</p>
+                            <p className="text-xs text-[var(--text-secondary)] truncate">View Profile</p>
+                        </div>
+                    </div>
                 </div>
             </aside>
         </>

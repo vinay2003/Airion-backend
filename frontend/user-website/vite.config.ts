@@ -35,17 +35,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@shared': path.resolve(__dirname, '../shared'),
     },
   },
-  // Proxy disabled - API client now points directly to Render backend
-  // Uncomment for local backend development only
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'http://localhost:3000',
-  //       changeOrigin: true,
-  //       secure: false,
-  //     },
-  //   },
-  // },
+  server: {
+    port: 5173,
+    strictPort: true,
+    fs: {
+      allow: ['..'],
+    },
+  },
 })

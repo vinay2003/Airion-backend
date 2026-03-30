@@ -3,9 +3,10 @@ import { useAuth } from '../context/AuthContext';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
+    allowedRoles?: string[];
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     const { user, loading } = useAuth();
 
     // Show loading spinner while checking authentication
@@ -25,8 +26,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return <Navigate to="/login" replace />;
     }
 
-    // Check if user has vendor role
-    if (user.role !== 'vendor') {
+    // Check if user matches allowed roles
+    if (allowedRoles && !allowedRoles.includes(user.role)) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
                 <div className="text-center">

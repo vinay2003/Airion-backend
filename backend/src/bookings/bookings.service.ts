@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
@@ -22,7 +22,7 @@ export class BookingsService {
         return this.bookingsRepository.save(booking);
     }
 
-    async findOne(id: string): Promise<Booking> {
+    async findOne(id: string, user?: { userId: string, role: string }): Promise<Booking> {
         const booking = await this.bookingsRepository.findOne({
             where: { id },
             relations: ['user', 'vendor'], // Include relevant related data
@@ -31,11 +31,22 @@ export class BookingsService {
         if (!booking) {
             throw new NotFoundException(`Booking with ID ${id} not found`);
         }
+        
+        // Data Isolation Validation
+        if (user && user.role !== 'admin') {
+            if (user.role === 'user' && booking.userId !== user.userId) {
+                throw new ForbiddenException('You do not have permission to view this booking');
+            }
+            if (user.role === 'vendor' && booking.vendor?.userId !== user.userId) {
+                throw new ForbiddenException('You do not have permission to view this booking');
+            }
+        }
+        
         return booking;
     }
 
-    async transitionState(id: string, nextStatus: 'pending' | 'confirmed' | 'completed' | 'canceled', paymentId?: string, paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'): Promise<Booking> {
-        const booking = await this.findOne(id);
+    async transitionState(id: string, nextStatus: 'pending' | 'confirmed' | 'completed' | 'canceled', user?: { userId: string, role: string }, paymentId?: string, paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'): Promise<Booking> {
+        const booking = await this.findOne(id, user);
         
         // State Machine validation rules
         if (booking.status === 'canceled') {
@@ -76,6 +87,14 @@ export class BookingsService {
         return this.bookingsRepository.find({
             where: { vendorId },
             relations: ['user'],
+            order: { createdAt: 'DESC' },
+        });
+    }
+
+    async findAllByVendorUserId(userId: string): Promise<Booking[]> {
+        return this.bookingsRepository.find({
+            where: { vendor: { userId } },
+            relations: ['user', 'vendor'],
             order: { createdAt: 'DESC' },
         });
     }

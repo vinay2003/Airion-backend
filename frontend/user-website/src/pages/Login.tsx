@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useUserAuth } from '../contexts/AuthContext';
-import api from '../lib/apiClient';
+import { useAuth, otpAuth } from '@shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
-    const { login, loginWithToken } = useUserAuth();
+    const { login, loginWithToken } = useAuth();
     const [searchParams] = useSearchParams();
     const location = useLocation();
     const from = location.state?.redirect || '/';
 
     const [authMode, setAuthMode] = useState<'password' | 'otp'>('otp');
-    const [step, setStep] = useState<'phone' | 'otp'>('phone'); 
-    
+    const [step, setStep] = useState<'phone' | 'otp'>('phone');
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
@@ -51,9 +50,10 @@ const Login: React.FC = () => {
         e.preventDefault();
         setLoading(true); setError(''); setSuccess('');
         try {
-            const response = await api.post('/auth/login/send-otp', { phone });
-            if (response.data.otp) {
-                setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
+            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone });
+            if (response.otp) {
+                setSuccess(`OTP sent! Your code is: ${response.otp}`);
             } else {
                 setSuccess('OTP sent successfully!');
             }
@@ -69,9 +69,10 @@ const Login: React.FC = () => {
         e.preventDefault();
         setLoading(true); setError(''); setSuccess('');
         try {
-            const response = await api.post('/auth/login/verify-otp', { phone, otp });
-            if (response.data.access_token) {
-                loginWithToken(response.data.access_token);
+            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            const response = await otpAuth.verifyLoginOTP({ phone: sanitizedPhone, otp: otp.trim() });
+            if (response.access_token) {
+                loginWithToken(response.access_token);
                 setSuccess('Login successful! Redirecting...');
                 setTimeout(() => navigate(from), 1000);
             }
@@ -87,41 +88,41 @@ const Login: React.FC = () => {
             {/* Left Side: Inspiration (Hidden on Mobile) */}
             <div className="hidden lg:flex w-1/2 relative flex-col justify-end p-12 overflow-hidden bg-neutral-900">
                 <div className="absolute inset-0">
-                    <img 
-                        src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80" 
-                        alt="Event Setup" 
+                    <img
+                        src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80"
+                        alt="Event Setup"
                         className="w-full h-full object-cover opacity-60 mix-blend-overlay"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 </div>
-                
+
                 <div className="relative z-10 max-w-lg mb-8">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                         className="flex items-center gap-2 mb-6"
                     >
                         <Sparkles className="text-red-500" size={32} />
                         <span className="text-3xl font-black text-white tracking-tight font-cursive">Airion</span>
                     </motion.div>
-                    
-                    <motion.h1 
+
+                    <motion.h1
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                         className="text-4xl md:text-5xl font-black text-white mb-6 leading-[1.1]"
                     >
                         Your perfect event begins here.
                     </motion.h1>
-                    
-                    <motion.p 
+
+                    <motion.p
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
                         className="text-lg text-neutral-300 font-medium mb-12"
                     >
                         Join thousands of users planning remarkable weddings, corporate events, and parties with top-tier vendors.
                     </motion.p>
-                    
+
                     <div className="flex items-center gap-6">
                         <div className="flex -space-x-4">
-                            {[1,2,3,4].map(i => (
-                                <img key={i} src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" className="w-12 h-12 rounded-full border-2 border-black" />
+                            {[1, 2, 3, 4].map(i => (
+                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-12 h-12 rounded-full border-2 border-black" />
                             ))}
                         </div>
                         <div className="text-sm font-bold text-white">
@@ -164,10 +165,10 @@ const Login: React.FC = () => {
                     </AnimatePresence>
 
                     {authMode === 'password' ? (
-                        <motion.form 
+                        <motion.form
                             key="password-form"
                             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                            onSubmit={handlePasswordLogin} 
+                            onSubmit={handlePasswordLogin}
                             className="space-y-5"
                         >
                             <div className="space-y-2">
@@ -247,7 +248,7 @@ const Login: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); setError(''); }} 
+                        <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); setError(''); }}
                             className="w-full bg-white dark:bg-slate-900 border-2 border-neutral-200 dark:border-slate-800 hover:border-neutral-900 dark:hover:border-white text-neutral-900 dark:text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
                             {authMode === 'otp' ? <><Mail size={18} /> Login with Email Address</> : <><Phone size={18} /> Login via Mobile OTP</>}
                         </button>

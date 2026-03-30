@@ -5,7 +5,8 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import { ToastProvider } from './context/ToastContext';
 import ErrorBoundary from './components/ErrorBoundary';
-import { UserAuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from '@shared/auth/AuthContext';
+import ProtectedRoute from '@shared/components/ProtectedRoute';
 
 // Dashboard Components
 import DashboardLayout from './pages/dashboard/DashboardLayout';
@@ -46,7 +47,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <ToastProvider>
         <Router>
-          <UserAuthProvider>
+          <AuthProvider>
             <ScrollToTop />
             <Routes>
               {/* Auth Routes - No Header/Footer */}
@@ -67,7 +68,11 @@ const App: React.FC = () => {
               } />
 
               {/* Dashboard Routes */}
-              <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route path="/dashboard" element={
+                <ProtectedRoute allowedRoles={['user']}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
                 <Route index element={<DashboardOverview />} />
                 <Route path="bookings" element={<MyBookings />} />
                 <Route path="saved" element={<SavedVendors />} />
@@ -108,7 +113,7 @@ const App: React.FC = () => {
                 </div>
               } />
             </Routes>
-          </UserAuthProvider>
+          </AuthProvider>
         </Router>
       </ToastProvider>
     </ErrorBoundary>

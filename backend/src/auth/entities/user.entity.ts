@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Index } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
 
@@ -77,8 +77,10 @@ export class User {
     marketingConsent: boolean;
 
     @BeforeInsert()
+    @BeforeUpdate()
     async hashPassword() {
-        if (this.password) {
+        // Hash password only if it is set and not already hashed (bcrypt hashes start with $2b$ or $2a$)
+        if (this.password && !this.password.startsWith('$2')) {
             this.password = await bcrypt.hash(this.password, 10);
         }
     }

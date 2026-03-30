@@ -55,13 +55,16 @@ export class CreateVendorDto {
     businessDescription: string;
 
     @IsUUID()
-    categoryId: string;
+    @IsOptional()
+    categoryId?: string;
 
     @IsUUID()
-    subcategoryId: string;
+    @IsOptional()
+    subcategoryId?: string;
 
     @IsObject()
-    businessHours: {
+    @IsOptional()
+    businessHours?: {
         monday?: { open: string; close: string };
         tuesday?: { open: string; close: string };
         // ... other days

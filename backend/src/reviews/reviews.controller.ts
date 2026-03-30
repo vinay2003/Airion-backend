@@ -17,7 +17,7 @@ export class ReviewsController {
              throw new BadRequestException('Rating must be between 1 and 5');
         }
 
-        return this.reviewsService.create(req.user.id, body);
+        return this.reviewsService.create(req.user.userId, body);
     }
 
     @Get('service/:serviceId')
@@ -34,7 +34,7 @@ export class ReviewsController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
     async remove(@Param('id') id: string, @Request() req: any) {
-        const deleted = await this.reviewsService.delete(id, req.user.id);
+        const deleted = await this.reviewsService.delete(id, req.user.userId);
         if (!deleted) {
             throw new NotFoundException(`Review could not be deleted`);
         }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
@@ -81,24 +81,34 @@ export class LeadsService {
         return savedLead;
     }
 
-    async findByVendor(vendorId: string): Promise<Lead[]> {
+    async findByVendorUserId(userId: string): Promise<Lead[]> {
         return this.leadRepository.find({
-            where: { vendorId },
-            relations: ['user', 'service'],
+            where: { vendor: { userId } },
+            relations: ['user', 'service', 'vendor'],
             order: { aiScore: 'DESC', createdAt: 'DESC' }, // Sort Hot Leads first
         });
     }
 
-    async findOne(id: string): Promise<Lead> {
-        const lead = await this.leadRepository.findOne({ where: { id }, relations: ['user', 'service'] });
+    async findOne(id: string, user?: { userId: string, role: string }): Promise<Lead> {
+        const lead = await this.leadRepository.findOne({ where: { id }, relations: ['user', 'service', 'vendor'] });
         if (!lead) {
             throw new NotFoundException('Lead not found');
         }
+
+        if (user && user.role !== 'admin') {
+            if (user.role === 'user' && lead.userId !== user.userId) {
+                throw new ForbiddenException('You do not have permission to view this lead');
+            }
+            if (user.role === 'vendor' && lead.vendor?.userId !== user.userId) {
+                throw new ForbiddenException('You do not have permission to view this lead');
+            }
+        }
+
         return lead;
     }
 
-    async updateStatus(id: string, status: string): Promise<Lead> {
-        const lead = await this.findOne(id);
+    async updateStatus(id: string, status: string, user?: { userId: string, role: string }): Promise<Lead> {
+        const lead = await this.findOne(id, user);
         lead.status = status;
         return this.leadRepository.save(lead);
     }

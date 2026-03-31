@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
-// Assuming Vendor entity exists at vendors/entities/vendor.entity.ts
-// import { Vendor } from '../../vendors/entities/vendor.entity';
+import { Vendor } from '../../vendors/entities/vendor.entity';
 
 @Entity('wishlists')
 export class Wishlist {
@@ -17,11 +16,11 @@ export class Wishlist {
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @ManyToOne(() => User, user => (user as any).wishlists, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, user => user.wishlists, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    // @ManyToOne(() => Vendor, { onDelete: 'CASCADE' })
-    // @JoinColumn({ name: 'vendor_id' })
-    // vendor: Vendor;
+    @ManyToOne(() => Vendor, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'vendor_id' })
+    vendor: Vendor;
 }

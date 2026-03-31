@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import api from '../lib/api';
+import toast from 'react-hot-toast';
 
 const VendorSignupWizard: React.FC = () => {
     const navigate = useNavigate();
@@ -127,8 +128,8 @@ const VendorSignupWizard: React.FC = () => {
             };
 
             await api.post('/vendors', submissionData);
-            alert('Congratulations! Your vendor profile is being reviewed.');
-            navigate('/dashboard');
+            toast.success('Congratulations! Your vendor profile is being reviewed.');
+            setTimeout(() => navigate('/dashboard'), 1500);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to complete registration.');
         } finally {

@@ -1,18 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { User, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User as UserIcon, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronDown, LayoutDashboard, LogOut, Settings } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { events } from '../data/events';
+import { useAuth } from '@shared/auth';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
+    const { user, isAuthenticated, logout } = useAuth();
     const location = useLocation();
+    const userMenuRef = useRef<HTMLDivElement>(null);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    // Close dropdowns when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Handle scroll effect
     useEffect(() => {
@@ -28,6 +43,7 @@ const Header: React.FC = () => {
     useEffect(() => {
         setIsMenuOpen(false);
         setIsSearchOpen(false);
+        setIsUserMenuOpen(false);
     }, [location]);
 
     // Prevent body scroll when mobile menu is open
@@ -45,6 +61,65 @@ const Header: React.FC = () => {
     const isActivePath = (path: string) => location.pathname === path;
 
     const featuredVendors = events.slice(0, 3);
+
+    const UserProfileMenu = () => (
+        <div className="relative" ref={userMenuRef}>
+            <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+            >
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-sm">
+                    {user?.name?.[0] || <UserIcon size={20} />}
+                </div>
+                <div className="hidden xl:block text-left">
+                    <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">{user?.name}</p>
+                    <p className="text-[10px] text-gray-500 font-medium">Account</p>
+                </div>
+                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+                {isUserMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[60]"
+                    >
+                        <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">{user?.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email}</p>
+                        </div>
+                        <div className="p-2">
+                            <Link
+                                to="/user"
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                            >
+                                <LayoutDashboard size={18} />
+                                User Dashboard
+                            </Link>
+                            <Link
+                                to="/profile"
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-all"
+                            >
+                                <UserIcon size={18} />
+                                Profile Settings
+                            </Link>
+                        </div>
+                        <div className="p-2 border-t border-gray-100 dark:border-slate-800">
+                            <button
+                                onClick={logout}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                            >
+                                <LogOut size={18} />
+                                Log Out
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
 
     return (
         <header
@@ -91,12 +166,16 @@ const Header: React.FC = () => {
                 >
                     Plan Your Event
                 </Link>
-                <Link
-                    to="/login"
-                    className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
-                >
-                    <User size={24} />
-                </Link>
+                {isAuthenticated ? (
+                    <UserProfileMenu />
+                ) : (
+                    <Link
+                        to="/login"
+                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
+                    >
+                        <UserIcon size={24} />
+                    </Link>
+                )}
                 <button
                     onClick={toggleTheme}
                     className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
@@ -114,12 +193,18 @@ const Header: React.FC = () => {
                 >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
-                <Link
-                    to="/login"
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-red-500/20 flex items-center gap-2"
-                >
-                    <User size={16} />
-                </Link>
+                {isAuthenticated ? (
+                    <Link to="/user" className="w-9 h-9 rounded-full bg-red-500 flex items-center justify-center text-white font-bold shadow-lg shadow-red-500/20">
+                        {user?.name?.[0]}
+                    </Link>
+                ) : (
+                    <Link
+                        to="/login"
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-red-500/20 flex items-center gap-2"
+                    >
+                        <UserIcon size={16} />
+                    </Link>
+                )}
                 <button
                     onClick={toggleMenu}
                     className="p-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
@@ -128,6 +213,7 @@ const Header: React.FC = () => {
                     {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
+
 
             {/* Mobile Menu Button */}
             <button
@@ -285,20 +371,43 @@ const Header: React.FC = () => {
 
                         {/* Menu Footer */}
                         <div className="p-4 border-t border-gray-200 dark:border-slate-800 space-y-3">
-                            <Link
-                                to="/login"
-                                onClick={toggleMenu}
-                                className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-red-500/20 text-center block transition-all hover:shadow-red-500/30"
-                            >
-                                Login / Signup
-                            </Link>
-                            <Link
-                                to="/contact"
-                                onClick={toggleMenu}
-                                className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 rounded-xl font-bold text-base text-center block transition-colors"
-                            >
-                                List Your Business
-                            </Link>
+                            {isAuthenticated ? (
+                                <>
+                                    <Link
+                                        to="/user"
+                                        onClick={toggleMenu}
+                                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-red-500/20 text-center block transition-all"
+                                    >
+                                        My Dashboard
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                            toggleMenu();
+                                        }}
+                                        className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 rounded-xl font-bold text-base text-center block transition-colors"
+                                    >
+                                        Log Out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        to="/login"
+                                        onClick={toggleMenu}
+                                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-red-500/20 text-center block transition-all"
+                                    >
+                                        Login / Signup
+                                    </Link>
+                                    <Link
+                                        to="/contact"
+                                        onClick={toggleMenu}
+                                        className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 rounded-xl font-bold text-base text-center block transition-colors"
+                                    >
+                                        List Your Business
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </>

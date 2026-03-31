@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowRight, Star, Users, CheckCircle } from 'lucide-react';
 import SearchBar from './SearchBar';
+import { useAuth } from '@shared/auth';
 
 const HERO_IMAGES = [
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80",
@@ -15,6 +16,7 @@ const SEARCH_TABS = ["All", "Venues", "Services", "Experiences"];
 
 const Hero: React.FC = () => {
     const navigate = useNavigate();
+    const { user, isAuthenticated } = useAuth();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [activeTab, setActiveTab] = useState("All");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -59,15 +61,33 @@ const Hero: React.FC = () => {
                         transition={{ duration: 0.8 }}
                         className="space-y-6 max-w-4xl pt-8 md:pt-16"
                     >
+                        {isAuthenticated && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-white text-xs font-bold mb-2 shadow-xl"
+                            >
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                Welcome back, {user?.name.split(' ')[0]}!
+                            </motion.div>
+                        )}
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-lg leading-tight">
-                            Find the Perfect Vendor for Your <br className="hidden md:block" />
+                            {isAuthenticated ? 'Your Event Dashboard is' : 'Find the Perfect Vendor for Your'} <br className="hidden md:block" />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 font-cursive pr-2">
-                                Dream Event
+                                {isAuthenticated ? 'Waitng for You' : 'Dream Event'}
                             </span>
                         </h1>
                         <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed">
-                            Browse thousands of verified event vendors across India
+                            {isAuthenticated 
+                                ? 'Manage your bookings, view messages, and track event progress seamlessly.' 
+                                : 'Browse thousands of verified event vendors across India'}
                         </p>
+                        
+                        {isAuthenticated && (
+                            <Link to="/user" className="inline-flex items-center gap-2 bg-red-600 hover:bg-neutral-900 transition-all text-white px-8 py-3.5 rounded-full font-bold shadow-xl active:scale-95 group">
+                                Go to My Dashboard
+                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        )}
                     </motion.div>
                 </div>
 
@@ -79,11 +99,11 @@ const Hero: React.FC = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-6 py-3 flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-white/90 text-xs sm:text-sm font-medium shadow-xl"
                     >
-                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">600+</span> Events Listed</div>
+                        <div className="flex items-center gap-2"><CheckCircle size={16} className="text-green-400" /><span className="font-bold text-white text-sm sm:text-base">600+</span> Events Listed</div>
                         <div className="hidden sm:block text-white/30">•</div>
-                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">1,789</span> Bookings Made</div>
+                        <div className="flex items-center gap-2"><Users size={16} className="text-blue-400" /><span className="font-bold text-white text-sm sm:text-base">1,789+</span> Happy Users</div>
                         <div className="hidden sm:block text-white/30">•</div>
-                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">$32,045+</span> in Earnings Processed</div>
+                        <div className="flex items-center gap-2"><Star size={16} className="text-yellow-400" /><span className="font-bold text-white text-sm sm:text-base">4.9/5</span> Avg. Rating</div>
                     </motion.div>
                 </div>
 

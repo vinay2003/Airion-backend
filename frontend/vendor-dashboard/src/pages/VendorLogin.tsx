@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, Shield, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Phone, Shield, ArrowRight, ArrowLeft, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
+import toast from 'react-hot-toast';
+import OTPInput from '@shared/components/OTPInput';
 
 const VendorLogin: React.FC = () => {
     const navigate = useNavigate();
@@ -14,63 +16,70 @@ const VendorLogin: React.FC = () => {
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
+    const [resendTimer, setResendTimer] = useState(0);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSendOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (resendTimer > 0) {
+            const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendTimer]);
+
+    const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (resendTimer > 0) return;
+
         setLoading(true);
         setError('');
 
         try {
             const response = await api.post('/auth/login/send-otp', { phone });
 
-            // Dev: Show OTP in alert and console
-            if (response.data.otp) {
-                console.log('\n' + '='.repeat(60));
-                console.log('🔑 LOGIN OTP');
-                console.log('Phone:', phone);
-                console.log('OTP:', response.data.otp);
-                console.log('='.repeat(60) + '\n');
-                alert(`🔑 Your login OTP: ${response.data.otp}\n\n(Development only)`);
+            const devCode = (response.data as any)?._dev_otp || (response.data as any)?.data?._dev_otp;
+            if (import.meta.env.DEV && devCode) {
+                console.log('📱 Dev-Only OTP:', devCode);
+                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
             }
 
+            toast.success('Verification code sent');
             setStep('otp');
+            setResendTimer(60);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
-            console.error('Send OTP Error:', err);
+            toast.error(err.response?.data?.message || 'User not found or failed to send OTP.');
         } finally {
             setLoading(false);
         }
-    };
+    }, [phone, resendTimer]);
 
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleVerifyOTP = async (finalOtp?: string) => {
+        const otpValue = finalOtp || otp;
+        if (!otpValue.trim() || otpValue.length !== 6) {
+            toast.error('Please enter a valid 6-digit code');
+            return;
+        }
+
         setLoading(true);
         setError('');
 
         try {
-            const response = await api.post('/auth/login/verify-otp', { phone, otp });
+            const response = await api.post('/auth/login/verify-otp', { phone, otp: otpValue });
 
-            console.log('✅ Login successful, authenticating user...');
-            
-            // With API wrapper fixed, response.data holds auth payload
             const { access_token, user } = response.data;
-            login(access_token); // Updates AuthContext
+            login(access_token);
 
-            // 🔁 Role-Based Redirection Logic
-            const role = user?.role || 'user';
+            toast.success('Welcome back!');
             
-            if (role === 'admin') {
-                window.location.href = '/admin'; // Redirect to admin portal
-            } else if (role === 'vendor') {
-                window.location.href = '/vendor'; // Redirect to vendor portal
-            } else {
-                window.location.href = '/user'; // Redirect to user portal
-            }
+            const role = user?.role || 'user';
+            setTimeout(() => {
+                if (role === 'admin') window.location.href = '/admin';
+                else if (role === 'vendor') window.location.href = '/vendor';
+                else window.location.href = '/user';
+            }, 800);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
-            console.error('Verify OTP Error:', err);
+            toast.error(err.response?.data?.message || 'The code you entered is invalid.');
         } finally {
             setLoading(false);
         }
@@ -79,49 +88,36 @@ const VendorLogin: React.FC = () => {
     if (step === 'otp') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
-                <Card className="w-full max-w-md shadow-2xl">
+                <Card className="w-full max-w-md shadow-2xl transition-all duration-300">
                     <CardHeader className="text-center">
                         <div className="flex items-center justify-center mb-4">
-                            <div className="bg-red-500 text-white p-3 rounded-xl">
+                            <div className="bg-red-500 text-white p-3 rounded-xl shadow-lg shadow-red-500/20">
                                 <Shield size={32} />
                             </div>
                         </div>
                         <CardTitle className="text-2xl font-bold">Verify OTP</CardTitle>
-                        <CardDescription>
-                            Enter the code sent to <br />
-                            <span className="font-semibold text-gray-900 dark:text-white">{phone}</span>
+                        <CardDescription className="mt-2">
+                            Enter the 6-digit code sent to <br />
+                            <span className="font-bold text-gray-900 dark:text-white">{phone}</span>
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleVerifyOTP} className="space-y-4">
-                            {error && (
-                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-                                    {error}
-                                </div>
-                            )}
-
-                            <div className="space-y-2">
-                                <Label htmlFor="otp">Enter OTP</Label>
-                                <Input
-                                    id="otp"
-                                    type="text"
-                                    maxLength={6}
-                                    value={otp}
-                                    onChange={(e) => {
-                                        setOtp(e.target.value.replace(/\D/g, ''));
-                                        setError('');
-                                    }}
-                                    placeholder="000000"
-                                    className="text-center text-2xl tracking-widest font-bold h-14"
-                                    autoFocus
-                                    required
+                        <div className="space-y-8">
+                            <div className="text-center">
+                                <OTPInput 
+                                    length={6} 
+                                    onComplete={handleVerifyOTP} 
+                                    disabled={loading}
                                 />
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 font-medium">
+                                    Didn't receive it? Check your messages.
+                                </p>
                             </div>
 
                             <Button
-                                type="submit"
-                                className="w-full bg-red-500 hover:bg-red-600"
-                                disabled={loading || otp.length !== 6}
+                                onClick={() => handleVerifyOTP()}
+                                className="w-full bg-red-600 hover:bg-neutral-900 transition-all text-white h-12 text-base font-bold shadow-lg shadow-red-500/10 active:scale-[0.98]"
+                                disabled={loading}
                             >
                                 {loading ? (
                                     <span className="flex items-center gap-2">
@@ -129,23 +125,33 @@ const VendorLogin: React.FC = () => {
                                         Verifying...
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-2">
-                                        Verify & Sign In <ArrowRight size={20} />
-                                    </span>
+                                    'Verify & Sign In'
                                 )}
                             </Button>
 
-                            <div className="text-center">
+                            <div className="flex flex-col gap-4 text-center">
+                                <button
+                                    type="button"
+                                    onClick={() => handleSendOTP()}
+                                    disabled={loading || resendTimer > 0}
+                                    className={`text-sm font-bold flex items-center justify-center gap-2 ${resendTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 dark:text-red-400 hover:underline'}`}
+                                >
+                                    {resendTimer > 0 ? (
+                                        <><Clock size={16} /> Resend in {resendTimer}s</>
+                                    ) : (
+                                        'Resend code'
+                                    )}
+                                </button>
                                 <button
                                     type="button"
                                     onClick={() => setStep('phone')}
-                                    className="text-sm text-gray-600 dark:text-gray-400 hover:underline flex items-center gap-1 mx-auto"
+                                    disabled={loading}
+                                    className="text-gray-500 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
                                 >
-                                    <ArrowLeft size={16} />
                                     Change phone number
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
@@ -154,82 +160,72 @@ const VendorLogin: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
-            <Card className="w-full max-w-md shadow-2xl">
+            <Card className="w-full max-w-md shadow-2xl transition-all duration-300">
                 <CardHeader className="space-y-1">
                     <div className="flex items-center justify-center mb-4">
-                        <div className="bg-red-500 text-white p-3 rounded-xl">
+                        <div className="bg-red-500 text-white p-3 rounded-xl shadow-lg shadow-red-500/20">
                             <span className="text-2xl font-bold">Ai</span>
                         </div>
                     </div>
                     <CardTitle className="text-2xl font-bold text-center">Vendor Portal</CardTitle>
-                    <CardDescription className="text-center">
-                        Sign in with OTP to manage your business
+                    <CardDescription className="text-center font-medium">
+                        Welcome back! manage your business leads.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSendOTP} className="space-y-4">
-                        {error && (
-                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-                                {error}
-                            </div>
-                        )}
-
+                    <form onSubmit={handleSendOTP} className="space-y-5">
                         <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number</Label>
+                            <Label htmlFor="phone" className="font-bold text-sm text-gray-700 dark:text-slate-300">Phone Number</Label>
                             <div className="relative">
-                                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Phone className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
                                 <Input
                                     id="phone"
                                     type="tel"
                                     placeholder="+91 98765 43210"
-                                    className="pl-10"
+                                    className="pl-10 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl focus:ring-red-500"
                                     value={phone}
-                                    onChange={(e) => {
-                                        setPhone(e.target.value);
-                                        setError('');
-                                    }}
+                                    onChange={(e) => setPhone(e.target.value)}
                                     required
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                We'll send you a one-time password
-                            </p>
                         </div>
 
                         <Button
                             type="submit"
-                            className="w-full bg-red-500 hover:bg-red-600"
+                            className="w-full bg-red-600 hover:bg-neutral-900 py-6 rounded-xl font-bold transition-all shadow-lg shadow-red-500/10 active:scale-[0.98]"
                             disabled={loading}
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">
                                     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                                    Sending OTP...
+                                    Sending Code...
                                 </span>
                             ) : (
-                                'Send OTP'
+                                'Get Verification Code'
                             )}
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <div className="text-sm text-center text-gray-600 dark:text-gray-400">
-                        New vendor?{' '}
-                        <a href="/signup" className="text-red-500 hover:underline font-medium">
+                <CardFooter className="flex flex-col space-y-6 pt-2 pb-8">
+                    <div className="text-sm text-center font-medium text-gray-500">
+                        New to Airion?{' '}
+                        <a href="/signup" className="text-red-500 hover:text-red-600 font-bold underline-offset-4 hover:underline">
                             Register your business
                         </a>
                     </div>
-                    <div className="text-xs text-center text-gray-500">
-                        <p>Looking for different access?</p>
-                        <div className="flex items-center justify-center gap-3 mt-2">
-                            <a href="/login" className="text-red-500 hover:underline">
-                                User Login
-                            </a>
-                            <span>•</span>
-                            <a href="/admin/login" className="text-red-500 hover:underline">
-                                Admin Login
-                            </a>
+                    <div className="relative w-full">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100 dark:border-slate-800"></div></div>
+                        <div className="relative flex justify-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-300">
+                            <span className="bg-white dark:bg-slate-950 px-4">Other Access</span>
                         </div>
+                    </div>
+                    <div className="flex items-center justify-center gap-6">
+                        <a href="/login" className="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">
+                            User Login
+                        </a>
+                        <a href="/admin/login" className="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">
+                            Admin Login
+                        </a>
                     </div>
                 </CardFooter>
             </Card>
@@ -238,3 +234,4 @@ const VendorLogin: React.FC = () => {
 };
 
 export default VendorLogin;
+

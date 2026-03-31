@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Index, OneToMany, OneToOne } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
+import { Wishlist } from '../../wishlists/entities/wishlist.entity';
+import { Vendor } from '../../vendors/entities/vendor.entity';
 
 export enum UserRole {
     USER = 'user',
@@ -75,6 +77,12 @@ export class User {
 
     @Column({ name: 'marketing_consent', type: 'boolean', default: false })
     marketingConsent: boolean;
+
+    @OneToMany(() => Wishlist, wishlist => wishlist.user)
+    wishlists: Wishlist[];
+
+    @OneToOne(() => Vendor, vendor => vendor.user)
+    vendor: Vendor;
 
     @BeforeInsert()
     @BeforeUpdate()

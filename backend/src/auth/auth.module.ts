@@ -12,10 +12,11 @@ import { SessionService } from './services/session.service';
 import { AuditService } from './services/audit.service';
 import { AuthController } from './controllers/auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { Vendor } from '../vendors/entities/vendor.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Otp, Session, AuditLog]),
+        TypeOrmModule.forFeature([User, Otp, Session, AuditLog, Vendor]),
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],

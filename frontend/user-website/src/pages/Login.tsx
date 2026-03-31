@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, Clock } from 'lucide-react';
 import { useAuth, otpAuth } from '@shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
+import OTPInput from '@shared/components/OTPInput';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -18,11 +20,10 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
+    const [resendTimer, setResendTimer] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         const token = searchParams.get('token');
@@ -34,62 +35,68 @@ const Login: React.FC = () => {
 
     const handlePasswordLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true); setError(''); setSuccess('');
+        setLoading(true);
         try {
             await login(email, password);
-            setSuccess('Login successful! Redirecting...');
-            setTimeout(() => navigate(from), 1000);
+            toast.success('Welcome back!');
+            setTimeout(() => navigate(from), 800);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid credentials.');
+            toast.error(err.response?.data?.message || 'Invalid credentials.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSendOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true); setError(''); setSuccess('');
+    const startResendTimer = () => setResendTimer(60);
+
+    useEffect(() => {
+        if (resendTimer > 0) {
+            const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendTimer]);
+
+    const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (resendTimer > 0) return;
+        
+        setLoading(true);
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone });
-            const devCode = response?.devOtp || response?.otp || (response as any)?.data?.otp;
-            if (import.meta.env.DEV) {
-                console.log('OTP Response:', response);
-                if (devCode) console.log('DEVELOPMENT CODE:', devCode);
+            
+            // Handle dev-only code
+            const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
+            if (import.meta.env.DEV && devCode) {
+                console.log('📱 Dev-Only OTP:', devCode);
+                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
             }
 
-            if (devCode) {
-                window.alert(`DEVELOPMENT OTP: ${devCode}\n\nUse this code to verify your phone number.`);
-                setSuccess('OTP sent successfully!');
-            } else {
-                setSuccess('OTP sent successfully!');
-            }
+            toast.success('Verification code sent');
             setStep('otp');
-
-
+            startResendTimer();
         } catch (err: any) {
-            console.error('OTP Login Send Error:', err.response?.data || err.message);
-            setError(err.response?.data?.message || 'User not found or failed to send OTP.');
+            toast.error(err.response?.data?.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
+    }, [phone, resendTimer, navigate]);
 
-    };
+    const handleVerifyOTP = async (finalOtp?: string) => {
+        const otpValue = finalOtp || otp;
+        if (otpValue.length < 6) return;
 
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true); setError(''); setSuccess('');
+        setLoading(true);
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            const response = await otpAuth.verifyLoginOTP({ phone: sanitizedPhone, otp: otp.trim() });
+            const response = await otpAuth.verifyLoginOTP({ phone: sanitizedPhone, otp: otpValue.trim() });
             if (response.access_token) {
                 loginWithToken(response.access_token);
-                setSuccess('Login successful! Redirecting...');
-                setTimeout(() => navigate(from), 1000);
+                toast.success('Verified successfully');
+                setTimeout(() => navigate(from), 800);
             }
         } catch (err: any) {
-            console.error('OTP Verify Error:', err.response?.data || err.message);
-            setError(err.response?.data?.message || 'Invalid OTP.');
+            toast.error(err.response?.data?.message || 'The code you entered is incorrect.');
         } finally {
             setLoading(false);
         }
@@ -163,18 +170,9 @@ const Login: React.FC = () => {
                         {authMode === 'otp' ? 'Login seamlessly with your phone number.' : 'Login with your email and password.'}
                     </p>
 
-                    <AnimatePresence mode="wait">
-                        {error && (
-                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold border border-red-100 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
-                                {error}
-                            </motion.div>
-                        )}
-                        {success && (
-                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="bg-green-50 text-green-600 p-4 rounded-xl mb-6 text-sm font-bold border border-green-100 dark:bg-green-500/10 dark:border-green-500/20 dark:text-green-400 flex items-center gap-2">
-                                <CheckCircle2 size={18} /> {success}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <div className="mb-4 h-6">
+                        {/* Space for layout stability */}
+                    </div>
 
                     {authMode === 'password' ? (
                         <motion.form
@@ -204,7 +202,7 @@ const Login: React.FC = () => {
                                         className="w-full pl-11 pr-12 py-3.5 bg-neutral-50 dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition-all font-medium text-neutral-900 dark:text-white placeholder:text-neutral-400"
                                         placeholder="••••••••"
                                     />
-                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors">
+                                    <button type="button" onClick={() => setShowPassword(prev => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors focus:outline-none">
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -232,22 +230,52 @@ const Login: React.FC = () => {
                                     </button>
                                 </form>
                             ) : (
-                                <form onSubmit={handleVerifyOTP} className="space-y-5">
-                                    <div className="space-y-2 text-center">
-                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 mb-2 block">Enter the 6-digit OTP sent to {phone}</label>
-                                        <input type="text" required value={otp} onChange={e => setOtp(e.target.value)} maxLength={6}
-                                            className="w-full text-center py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition-all font-black text-3xl tracking-[0.5em] text-neutral-900 dark:text-white uppercase"
-                                            placeholder="000000"
+                                <div className="space-y-6">
+                                    <div className="space-y-4 text-center">
+                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 block">Verification Code</label>
+                                        <p className="text-xs text-neutral-500 font-medium">We've sent a 6-digit code to <span className="font-bold text-neutral-900 dark:text-white">{phone}</span></p>
+                                        
+                                        <OTPInput 
+                                            length={6} 
+                                            onComplete={setOtp} 
+                                            disabled={loading}
                                         />
                                     </div>
-                                    <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg active:scale-[0.98] mt-2">
-                                        {loading ? <Loader className="animate-spin" /> : 'Verify & Login'}
+
+                                    <button 
+                                        type="button"
+                                        onClick={() => handleVerifyOTP()}
+                                        disabled={loading || otp.length < 6} 
+                                        className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {loading ? <Loader className="animate-spin" /> : 'Confirm & Sign In'}
                                     </button>
-                                    <div className="flex justify-between items-center px-2">
-                                        <button type="button" onClick={() => setStep('phone')} disabled={loading} className="text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:hover:text-white">Back</button>
-                                        <button type="button" onClick={handleSendOTP as any} disabled={loading} className="text-sm font-bold text-red-500 hover:text-red-600">Resend Code</button>
+
+                                    <div className="flex flex-col gap-4 text-center">
+                                        <button 
+                                            type="button" 
+                                            onClick={() => {
+                                                if (resendTimer === 0) handleSendOTP();
+                                            }} 
+                                            disabled={loading || resendTimer > 0} 
+                                            className={`text-sm font-bold flex items-center justify-center gap-2 ${resendTimer > 0 ? 'text-neutral-400 cursor-not-allowed' : 'text-red-500 hover:text-red-600'}`}
+                                        >
+                                            {resendTimer > 0 ? (
+                                                <><Clock size={16} /> Resend code in {resendTimer}s</>
+                                            ) : (
+                                                'Didn\'t receive a code? Resend'
+                                            )}
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setStep('phone')} 
+                                            disabled={loading} 
+                                            className="text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                                        >
+                                            Change phone number
+                                        </button>
                                     </div>
-                                </form>
+                                </div>
                             )}
                         </motion.div>
                     )}
@@ -260,7 +288,7 @@ const Login: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); setError(''); }}
+                        <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); }}
                             className="w-full bg-white dark:bg-slate-900 border-2 border-neutral-200 dark:border-slate-800 hover:border-neutral-900 dark:hover:border-white text-neutral-900 dark:text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
                             {authMode === 'otp' ? <><Mail size={18} /> Login with Email Address</> : <><Phone size={18} /> Login via Mobile OTP</>}
                         </button>
@@ -276,3 +304,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+

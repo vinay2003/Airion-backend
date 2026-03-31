@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building, User, Mail, Phone, MapPin, Shield, ArrowRight, CheckCircle } from 'lucide-react';
+import { Building, User, Mail, Phone, MapPin, Shield, ArrowRight, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
+import toast from 'react-hot-toast';
+import OTPInput from '@shared/components/OTPInput';
 
 interface BasicDetails {
     firstName: string;
@@ -24,6 +26,7 @@ const VendorSignupBasic: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [otp, setOtp] = useState('');
+    const [resendTimer, setResendTimer] = useState(0);
 
     const [basicDetails, setBasicDetails] = useState<BasicDetails>({
         firstName: '',
@@ -33,6 +36,13 @@ const VendorSignupBasic: React.FC = () => {
         businessName: '',
         city: ''
     });
+
+    useEffect(() => {
+        if (resendTimer > 0) {
+            const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendTimer]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBasicDetails({
@@ -54,12 +64,13 @@ const VendorSignupBasic: React.FC = () => {
         return null;
     };
 
-    const handleSendOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (resendTimer > 0) return;
 
         const validationError = validateBasicDetails();
         if (validationError) {
-            setError(validationError);
+            toast.error(validationError);
             return;
         }
 
@@ -67,41 +78,31 @@ const VendorSignupBasic: React.FC = () => {
         setError('');
 
         try {
-            // Send OTP to phone number
             const response = await api.post('/auth/signup/send-otp', {
                 phone: basicDetails.phone,
                 email: basicDetails.email
             });
 
-            // Display OTP in alert and console for development
-            if (response.data.otp) {
-                const otpCode = response.data.otp;
-
-                // Console log
-                console.log('\n' + '='.repeat(60));
-                console.log('📱 OTP RECEIVED FROM BACKEND');
-                console.log('Phone:', basicDetails.phone);
-                console.log('OTP:', otpCode);
-                console.log('='.repeat(60) + '\n');
-
-                // Alert
-                alert(`Development Info:\n\n🔑 Your OTP is: ${otpCode}\nPhone: ${basicDetails.phone}`);
+            const devCode = (response.data as any)?._dev_otp || (response.data as any)?.data?._dev_otp;
+            if (import.meta.env.DEV && devCode) {
+                console.log('📱 Dev-Only OTP:', devCode);
+                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
             }
 
+            toast.success('Verification code sent');
             setStep('otp');
+            setResendTimer(60);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
-            console.error('OTP Error:', err);
+            toast.error(err.response?.data?.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
-    };
+    }, [basicDetails, resendTimer]);
 
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!otp.trim() || otp.length !== 6) {
-            setError('Please enter a valid 6-digit OTP');
+    const handleVerifyOTP = async (finalOtp?: string) => {
+        const otpValue = finalOtp || otp;
+        if (!otpValue.trim() || otpValue.length !== 6) {
+            toast.error('Please enter a valid 6-digit code');
             return;
         }
 
@@ -109,62 +110,31 @@ const VendorSignupBasic: React.FC = () => {
         setError('');
 
         try {
-            // Verify OTP and create user account with vendor role
             const response = await api.post('/auth/signup/verify-otp', {
                 phone: basicDetails.phone,
-                otp: otp,
+                otp: otpValue,
                 name: `${basicDetails.firstName} ${basicDetails.lastName}`,
                 email: basicDetails.email,
                 role: 'vendor'
             });
 
-            // ✅ Properly authenticate user via AuthContext
             const authData = response.data;
             if (authData.access_token) {
-                login(authData.access_token); // Updates AuthContext state
+                login(authData.access_token);
                 localStorage.setItem('vendorBasicDetails', JSON.stringify(basicDetails));
             }
 
-            console.log('✅ User authenticated, redirecting to complete profile...');
-
+            toast.success('Phone verified successfully!');
             setStep('verified');
             
-            // Redirect to full vendor form maintaining portal routes
             setTimeout(() => {
                 const role = authData.user?.role || 'vendor';
                 if (role === 'admin') window.location.href = '/admin';
                 else if (role === 'user') window.location.href = '/user';
-                else navigate('/signup-form', { state: { basicDetails } }); // Continue vendor onboarding
-            }, 1500);
+                else navigate('/signup-form', { state: { basicDetails } });
+            }, 1000);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
-            console.error('OTP Verification Error:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleResendOTP = async () => {
-        setLoading(true);
-        setError('');
-        setOtp('');
-
-        try {
-            const response = await api.post('/auth/signup/send-otp', {
-                phone: basicDetails.phone,
-                email: basicDetails.email
-            });
-
-            // Display OTP in alert and console
-            if (response.data.otp) {
-                const otpCode = response.data.otp;
-                console.log('\n🔑 Resent OTP:', otpCode, '\n');
-                alert(`Development Info:\n\n🔑 Your new OTP is: ${otpCode}\n(Sent to ${basicDetails.phone})`);
-            } else {
-                alert('OTP sent successfully!');
-            }
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to resend OTP');
+            toast.error(err.response?.data?.message || 'The code you entered is invalid.');
         } finally {
             setLoading(false);
         }
@@ -181,8 +151,8 @@ const VendorSignupBasic: React.FC = () => {
                             </div>
                         </div>
                         <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Phone Verified!</h2>
-                        <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            Redirecting to complete your vendor profile...
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 font-medium">
+                            Setting up your dashboard...
                         </p>
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-500 mx-auto"></div>
                     </CardContent>
@@ -202,43 +172,28 @@ const VendorSignupBasic: React.FC = () => {
                             </div>
                         </div>
                         <CardTitle className="text-3xl font-bold">Verify OTP</CardTitle>
-                        <CardDescription className="text-base">
+                        <CardDescription className="text-base mt-2">
                             We've sent a 6-digit code to <br />
-                            <span className="font-semibold text-gray-900 dark:text-white">{basicDetails.phone}</span>
+                            <span className="font-bold text-gray-900 dark:text-white">{basicDetails.phone}</span>
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleVerifyOTP} className="space-y-6">
-                            {error && (
-                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-                                    {error}
-                                </div>
-                            )}
-
-                            <div>
-                                <Label htmlFor="otp" className="text-base">Enter OTP</Label>
-                                <Input
-                                    id="otp"
-                                    type="text"
-                                    maxLength={6}
-                                    value={otp}
-                                    onChange={(e) => {
-                                        setOtp(e.target.value.replace(/\D/g, ''));
-                                        setError('');
-                                    }}
-                                    placeholder="000000"
-                                    className="mt-2 text-center text-2xl tracking-widest font-bold h-14"
-                                    autoFocus
+                        <div className="space-y-8">
+                            <div className="text-center">
+                                <OTPInput 
+                                    length={6} 
+                                    onComplete={handleVerifyOTP} 
+                                    disabled={loading}
                                 />
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                    Enter the 6-digit code sent to your phone
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 font-medium">
+                                    Please enter the 6-digit verification code.
                                 </p>
                             </div>
 
                             <Button
-                                type="submit"
-                                className="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-base font-semibold"
-                                disabled={loading || otp.length !== 6}
+                                onClick={() => handleVerifyOTP()}
+                                className="w-full bg-red-600 hover:bg-neutral-900 transition-all text-white h-12 text-base font-bold shadow-lg shadow-red-500/10 active:scale-[0.98]"
+                                disabled={loading}
                             >
                                 {loading ? (
                                     <span className="flex items-center gap-2">
@@ -246,33 +201,33 @@ const VendorSignupBasic: React.FC = () => {
                                         Verifying...
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-2">
-                                        Verify & Continue <ArrowRight size={20} />
-                                    </span>
+                                    'Confirm & Continue'
                                 )}
                             </Button>
 
-                            <div className="text-center">
+                            <div className="flex flex-col gap-4 text-center">
                                 <button
                                     type="button"
-                                    onClick={handleResendOTP}
-                                    disabled={loading}
-                                    className="text-red-600 dark:text-red-400 hover:underline text-sm font-medium"
+                                    onClick={() => handleSendOTP()}
+                                    disabled={loading || resendTimer > 0}
+                                    className={`text-sm font-bold flex items-center justify-center gap-2 ${resendTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 dark:text-red-400 hover:underline'}`}
                                 >
-                                    Resend OTP
+                                    {resendTimer > 0 ? (
+                                        <><Clock size={16} /> Resend in {resendTimer}s</>
+                                    ) : (
+                                        'Didn\'t receive a code? Resend'
+                                    )}
                                 </button>
-                            </div>
-
-                            <div className="text-center">
                                 <button
                                     type="button"
                                     onClick={() => setStep('details')}
-                                    className="text-gray-600 dark:text-gray-400 hover:underline text-sm"
+                                    disabled={loading}
+                                    className="text-gray-600 dark:text-gray-400 hover:underline text-sm font-medium"
                                 >
                                     Change phone number
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

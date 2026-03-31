@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import { ToastProvider } from './context/ToastContext';
+import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from '@shared/auth/AuthContext';
 import ProtectedRoute from '@shared/components/ProtectedRoute';
@@ -46,6 +47,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <ToastProvider>
+        <Toaster position="top-right" toastOptions={{ duration: 5000, style: { background: '#171717', color: '#fff', borderRadius: '12px' }, success: { iconTheme: { primary: '#dc2626', secondary: '#fff' } } }} />
         <Router>
           <AuthProvider>
             <ScrollToTop />

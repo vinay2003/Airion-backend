@@ -16,6 +16,10 @@ export default defineConfig({
   server: {
     port: 5175,
     strictPort: true,
+    host: true,
+    hmr: {
+      port: 5175,
+    },
     fs: {
       allow: ['..'],
     },

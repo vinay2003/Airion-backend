@@ -9,18 +9,18 @@ export class NotificationsController {
 
     @Get()
     async findAll(@Request() req: any) {
-        return this.notificationsService.findAllForUser(req.user.id);
+        return this.notificationsService.findAllForUser(req.user.userId);
     }
 
     @Patch(':id/read')
     async markAsRead(@Param('id') id: string, @Request() req: any) {
-        return this.notificationsService.markAsRead(id, req.user.id);
+        return this.notificationsService.markAsRead(id, req.user.userId);
     }
 
     @Post('read-all')
     @HttpCode(HttpStatus.OK)
     async markAllAsRead(@Request() req: any) {
-        await this.notificationsService.markAllAsRead(req.user.id);
+        await this.notificationsService.markAllAsRead(req.user.userId);
         return { success: true, message: 'All notifications marked as read' };
     }
 }

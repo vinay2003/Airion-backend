@@ -11,7 +11,7 @@ export class ServicesController {
     @UseGuards(JwtAuthGuard)
     async create(@Body() createDto: CreateServiceDto, @Request() req: any) {
         // Enforce Vendor ID from Auth Header payload or require absolute creation checks
-        const vendorId = req.user.vendorId || req.user.id; // Fallback if they do not hold separate profiles
+        const vendorId = req.user.vendorId || req.user.userId; // Fallback if they do not hold separate profiles
         return this.servicesService.create(createDto, vendorId);
     }
 

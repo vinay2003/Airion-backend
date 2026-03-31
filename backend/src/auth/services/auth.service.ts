@@ -48,24 +48,24 @@ export class AuthService {
             throw new ConflictException('User already exists with this phone or email');
         }
 
-        // Generate and store OTP
         const otpCode = this.generateOTP();
-        const expiresAt = (Date.now() + 10 * 60 * 1000).toString(); // 10 minutes
+        const hashedOtp = await bcrypt.hash(otpCode, 10);
+        const expiresAt = (Date.now() + 5 * 60 * 1000).toString(); // Standard 5 minute TTL
 
         const otp = this.otpRepository.create({
             identifier,
-            otp: otpCode,
+            otp: hashedOtp,
             expiresAt,
         });
         await this.otpRepository.save(otp);
 
-        // TODO: Send OTP via SMS/Email service
-        console.log(`📱 OTP for ${identifier}: ${otpCode}`);
+        // In a real production system, this is where we'd call an SMS/Email provider
+        console.log(`📱 [AUTH_SECURE] OTP for ${identifier}: ${otpCode}`);
 
-        // Return OTP unconditionally for testing
         return {
             message: 'OTP sent successfully',
-            otp: otpCode,
+            // Only expose code for development convenience (hidden from PRODUCTION environment)
+            ...(process.env.NODE_ENV !== 'production' && { _dev_otp: otpCode }),
         };
     }
 
@@ -78,28 +78,30 @@ export class AuthService {
         }
 
         // Validate OTP
-        if (this.configService.get('NODE_ENV') === 'production' || dto.otp !== '000000') {
-            const otpRecord = await this.otpRepository.findOne({
-                where: { identifier },
-                order: { createdAt: 'DESC' },
-            });
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
 
-            if (!otpRecord) {
-                throw new UnauthorizedException('OTP not found or expired');
-            }
-
-            if (Number(otpRecord.expiresAt) < Date.now()) {
-                await this.otpRepository.delete({ identifier });
-                throw new UnauthorizedException('OTP expired');
-            }
-
-            if (otpRecord.otp !== dto.otp) {
-                throw new UnauthorizedException('Invalid OTP');
-            }
-
-            // Clear OTP after successful verification
-            await this.otpRepository.delete({ identifier });
+        if (!otpRecord) {
+            throw new UnauthorizedException('OTP not found or expired');
         }
+
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
+            throw new UnauthorizedException('OTP expired');
+        }
+
+        // Compare using bcrypt for security
+        const isMatch = await bcrypt.compare(dto.otp, otpRecord.otp);
+        const isDummy = this.configService.get('NODE_ENV') !== 'production' && dto.otp === '000000';
+
+        if (!isMatch && !isDummy) {
+            throw new UnauthorizedException('Invalid OTP code');
+        }
+
+        // Clear OTP after successful verification
+        await this.otpRepository.delete({ identifier });
 
         // Create new user
         const user = this.userRepository.create({
@@ -115,7 +117,12 @@ export class AuthService {
         await this.userRepository.save(user);
 
         // Generate JWT token
-        const payload = { sub: user.id, email: user.email, role: user.role };
+        const payload = { 
+            sub: user.id, 
+            email: user.email, 
+            role: user.role,
+            vendorId: (user as any).vendor?.id 
+        };
         const access_token = this.jwtService.sign(payload);
 
         // Return user without password
@@ -147,24 +154,23 @@ export class AuthService {
         ]);
 
         const otpCode = this.generateOTP();
-        const expiresAt = (Date.now() + 10 * 60 * 1000).toString();
+        const hashedOtp = await bcrypt.hash(otpCode, 10);
+        const expiresAt = (Date.now() + 5 * 60 * 1000).toString(); // Standard 5 minute TTL
 
         const otp = this.otpRepository.create({
             identifier,
-            otp: otpCode,
+            otp: hashedOtp,
             expiresAt,
         });
 
         await this.otpRepository.save(otp);
 
+        console.log(`📱 [AUTH_SECURE] Login OTP for ${identifier}: ${otpCode}`);
 
-        // TODO: Send OTP via SMS/Email service
-        console.log(`📱 OTP for ${identifier}: ${otpCode}`);
-
-        // Return OTP unconditionally for testing
         return {
             message: 'OTP sent successfully',
-            otp: otpCode,
+            // Only expose code for development convenience (hidden in production)
+            ...(process.env.NODE_ENV !== 'production' && { _dev_otp: otpCode }),
         };
     }
 
@@ -177,28 +183,30 @@ export class AuthService {
         }
 
         // Validate OTP
-        if (this.configService.get('NODE_ENV') === 'production' || dto.otp !== '000000') {
-            const otpRecord = await this.otpRepository.findOne({
-                where: { identifier },
-                order: { createdAt: 'DESC' },
-            });
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
 
-            if (!otpRecord) {
-                throw new UnauthorizedException('OTP not found or expired');
-            }
-
-            if (Number(otpRecord.expiresAt) < Date.now()) {
-                await this.otpRepository.delete({ identifier });
-                throw new UnauthorizedException('OTP expired');
-            }
-
-            if (otpRecord.otp !== dto.otp) {
-                throw new UnauthorizedException('Invalid OTP');
-            }
-
-            // Clear OTP
-            await this.otpRepository.delete({ identifier });
+        if (!otpRecord) {
+            throw new UnauthorizedException('OTP not found or expired');
         }
+
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
+            throw new UnauthorizedException('OTP expired');
+        }
+
+        // Secure bcrypt check
+        const isMatch = await bcrypt.compare(dto.otp, otpRecord.otp);
+        const isDummy = this.configService.get('NODE_ENV') !== 'production' && dto.otp === '000000';
+
+        if (!isMatch && !isDummy) {
+            throw new UnauthorizedException('Invalid OTP code');
+        }
+
+        // Clear OTP
+        await this.otpRepository.delete({ identifier });
 
         // Get user
         const whereConditions: any[] = [];
@@ -207,6 +215,7 @@ export class AuthService {
 
         const user = await this.userRepository.findOne({
             where: whereConditions,
+            relations: ['vendor'],
         });
 
         let loggedInUser = user;
@@ -233,7 +242,12 @@ export class AuthService {
         await this.userRepository.save(loggedInUser);
 
         // Generate JWT token
-        const payload = { sub: loggedInUser.id, email: loggedInUser.email, role: loggedInUser.role };
+        const payload = { 
+            sub: loggedInUser.id, 
+            email: loggedInUser.email, 
+            role: loggedInUser.role,
+            vendorId: (loggedInUser as any).vendor?.id 
+        };
         const access_token = this.jwtService.sign(payload);
 
         // Return user without password
@@ -278,7 +292,12 @@ export class AuthService {
 
         await this.userRepository.save(user);
 
-        const payload = { sub: user.id, email: user.email, role: user.role };
+        const payload = { 
+            sub: user.id, 
+            email: user.email, 
+            role: user.role,
+            vendorId: (user as any).vendor?.id 
+        };
         const access_token = this.jwtService.sign(payload);
 
         const { password, ...userWithoutPassword } = user;

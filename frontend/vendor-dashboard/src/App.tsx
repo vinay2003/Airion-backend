@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 
 // Lazy load pages
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -27,6 +28,7 @@ const PageLoader = () => (
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
+      <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#0f172a', color: '#f8fafc', border: '1px solid #1e293b' } }} />
       <Router basename="/vendor">
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>

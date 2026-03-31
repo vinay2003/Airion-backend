@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, Loader, CheckCircle2, ArrowLeft, Phone } from 'lucide-react';
+import { Sparkles, ArrowRight, Loader, CheckCircle2, ArrowLeft, Phone, Clock } from 'lucide-react';
 import { useAuth, otpAuth } from '@shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
+import OTPInput from '@shared/components/OTPInput';
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();
@@ -11,63 +13,69 @@ const Signup: React.FC = () => {
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
+    const [resendTimer, setResendTimer] = useState(0);
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSendOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(''); setSuccess(''); setLoading(true);
+    const startResendTimer = () => setResendTimer(60);
 
+    useEffect(() => {
+        if (resendTimer > 0) {
+            const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendTimer]);
+
+    const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (resendTimer > 0) return;
+
+        setLoading(true);
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
-            const devCode = response?.devOtp || response?.otp || (response as any)?.data?.otp;
-            if (import.meta.env.DEV) {
-                console.log('OTP Response:', response);
-                if (devCode) console.log('DEVELOPMENT CODE:', devCode);
+            
+            const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
+            if (import.meta.env.DEV && devCode) {
+                console.log('📱 Dev-Only OTP:', devCode);
+                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
             }
 
-            if (devCode) {
-                window.alert(`DEVELOPMENT OTP: ${devCode}\n\nUse this code to verify your phone number.`);
-                setSuccess('OTP sent successfully to your phone!');
-            } else {
-                setSuccess('OTP sent successfully to your phone!');
-            }
+            toast.success('Verification code sent');
             setStep('otp');
+            startResendTimer();
         } catch (err: any) {
-            console.error('OTP Signup Send Error:', err.response?.data || err.message);
             if (err.response?.status === 409) {
-                setError('User already exists with this phone number. Please login.');
+                toast.error('Account already exists. Please login.');
+                setTimeout(() => navigate('/login'), 1500);
             } else {
-                setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+                toast.error(err.response?.data?.message || 'Failed to send verification code.');
             }
         } finally {
             setLoading(false);
         }
-    };
+    }, [phone, resendTimer, navigate]);
 
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(''); setLoading(true);
+    const handleVerifyOTP = async (finalOtp?: string) => {
+        const otpValue = finalOtp || otp;
+        if (otpValue.length < 6) return;
 
+        setLoading(true);
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const response = await otpAuth.verifySignupOTP({
                 phone: sanitizedPhone,
-                otp: otp.trim(),
+                otp: otpValue.trim(),
                 name: `User ${sanitizedPhone}`,
             });
 
             if (response.access_token) {
                 loginWithToken(response.access_token);
-                setSuccess('Account created successfully! Redirecting...');
-                setTimeout(() => navigate('/onboarding/interests'), 1000);
+                toast.success('Account created successfully!');
+                setTimeout(() => navigate('/onboarding/interests'), 800);
             }
         } catch (err: any) {
-            console.error('OTP Verify Error:', err.response?.data || err.message);
-            setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
+            toast.error(err.response?.data?.message || 'The code you entered is invalid.');
         } finally {
             setLoading(false);
         }
@@ -123,6 +131,7 @@ const Signup: React.FC = () => {
                 </div>
             </div>
 
+
             {/* Right Side: Auth Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative bg-white dark:bg-slate-950">
                 <Link to="/" className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center gap-2 text-neutral-500 hover:text-red-500 font-bold transition-colors group z-20">
@@ -141,18 +150,9 @@ const Signup: React.FC = () => {
                         {step === 'phone' ? 'Enter your phone number to get started.' : `Enter the 6-digit code sent to ${phone}.`}
                     </p>
 
-                    <AnimatePresence mode="wait">
-                        {error && (
-                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold border border-red-100 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
-                                {error}
-                            </motion.div>
-                        )}
-                        {success && (
-                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="bg-green-50 text-green-600 p-4 rounded-xl mb-6 text-sm font-bold border border-green-100 dark:bg-green-500/10 dark:border-green-500/20 dark:text-green-400 flex items-center gap-2">
-                                <CheckCircle2 size={18} /> {success}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <div className="mb-4 h-6">
+                        {/* Space for layout stability */}
+                    </div>
 
                     <motion.div key="signup-form" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         {step === 'phone' ? (
@@ -172,22 +172,52 @@ const Signup: React.FC = () => {
                                 </button>
                             </form>
                         ) : (
-                            <form onSubmit={handleVerifyOTP} className="space-y-5">
-                                <div className="space-y-2 text-center">
-                                    <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 mb-2 block">Enter the 6-digit OTP sent to {phone}</label>
-                                    <input type="text" required value={otp} onChange={e => setOtp(e.target.value)} maxLength={6}
-                                        className="w-full text-center py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition-all font-black text-3xl tracking-[0.5em] text-neutral-900 dark:text-white uppercase"
-                                        placeholder="000000"
+                            <div className="space-y-6">
+                                <div className="space-y-4 text-center">
+                                    <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 block">Verification Code</label>
+                                    <p className="text-xs text-neutral-500 font-medium">We've sent a 6-digit code to <span className="font-bold text-neutral-900 dark:text-white">{phone}</span></p>
+                                    
+                                    <OTPInput 
+                                        length={6} 
+                                        onComplete={setOtp} 
+                                        disabled={loading}
                                     />
                                 </div>
-                                <button type="submit" disabled={loading} className="w-full bg-green-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg shadow-green-500/20 active:scale-[0.98] mt-2">
+
+                                <button 
+                                    type="button"
+                                    onClick={() => handleVerifyOTP()}
+                                    disabled={loading || otp.length < 6}
+                                    className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
                                     {loading ? <Loader className="animate-spin" /> : 'Create Account & Join'}
                                 </button>
-                                <div className="flex justify-between items-center px-2">
-                                    <button type="button" onClick={() => setStep('phone')} disabled={loading} className="text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:hover:text-white">Back</button>
-                                    <button type="button" onClick={handleSendOTP as any} disabled={loading} className="text-sm font-bold text-red-500 hover:text-red-600">Resend Code</button>
+
+                                <div className="flex flex-col gap-4 text-center">
+                                    <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            if (resendTimer === 0) handleSendOTP();
+                                        }} 
+                                        disabled={loading || resendTimer > 0} 
+                                        className={`text-sm font-bold flex items-center justify-center gap-2 ${resendTimer > 0 ? 'text-neutral-400 cursor-not-allowed' : 'text-red-500 hover:text-red-600'}`}
+                                    >
+                                        {resendTimer > 0 ? (
+                                            <><Clock size={16} /> Resend code in {resendTimer}s</>
+                                        ) : (
+                                            'Didn\'t receive a code? Resend'
+                                        )}
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setStep('phone')} 
+                                        disabled={loading} 
+                                        className="text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                                    >
+                                        Change phone number
+                                    </button>
                                 </div>
-                            </form>
+                            </div>
                         )}
                     </motion.div>
 

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategorySlider from '../components/CategorySlider';
 import CategorySection from '../components/CategorySection';
 import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
+import { useAuth } from '@shared/auth';
 
 import { fetchEvents } from '../lib/api';
 import { events as mockEvents } from '../data/events';
@@ -16,6 +17,7 @@ import type { Event } from '../types';
 
 const Home: React.FC = () => {
     const { showToast } = useToast();
+    const { user, isAuthenticated } = useAuth();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const activeCategory = searchParams.get('category') || 'all';
@@ -57,7 +59,61 @@ const Home: React.FC = () => {
             <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
             <Hero />
 
+            {/* Dashboard Highlights for Logged-in Users */}
+            {isAuthenticated && activeCategory === 'all' && (
+                <motion.section 
+                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                    className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-16 relative z-40"
+                >
+                    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-red-500/10 border border-red-50 dark:border-slate-800 p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10">
+                        <div className="flex-1 w-full text-center lg:text-left">
+                            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Your Plan Hub</h2>
+                            <p className="text-gray-500 dark:text-slate-400 font-medium mb-8">Manage every detail of your dream event from your personalized dashboard.</p>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
+                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="p-2 bg-red-100/50 text-red-600 rounded-lg"><Clock size={18} /></div>
+                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
+                                    <p className="text-[11px] text-gray-500 font-medium mt-1">Due in 2 days</p>
+                                </div>
+                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="p-2 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={18} /></div>
+                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
+                                    <p className="text-[11px] text-gray-500 font-medium mt-1">22.5% of total budget</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-4">
+                            <Link to="/user" className="flex flex-col items-center justify-center p-6 bg-red-600 text-white rounded-3xl hover:bg-neutral-900 transition-all shadow-xl shadow-red-500/20 group">
+                                <LayoutDashboard size={28} className="mb-2 group-hover:scale-110 transition-transform" />
+                                <span className="text-sm font-bold">Overview</span>
+                            </Link>
+                            <Link to="/user/bookings" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
+                                <Calendar size={28} className="mb-2" />
+                                <span className="text-sm font-bold">Bookings</span>
+                            </Link>
+                            <Link to="/user/inbox" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
+                                <Search size={28} className="mb-2" />
+                                <span className="text-sm font-bold">Messages</span>
+                            </Link>
+                            <Link to="/user/budget" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
+                                <Star size={28} className="mb-2" />
+                                <span className="text-sm font-bold">Saved</span>
+                            </Link>
+                        </div>
+                    </div>
+                </motion.section>
+            )}
+
             <CategorySlider />
+
 
             {activeCategory === 'all' ? (
                 <>

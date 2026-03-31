@@ -8,7 +8,7 @@ export class Vendor {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @OneToOne(() => User)
+    @OneToOne(() => User, user => user.vendor)
     @JoinColumn({ name: 'user_id' })
     user: User;
 

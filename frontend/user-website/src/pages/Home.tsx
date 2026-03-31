@@ -7,6 +7,7 @@ import CategorySlider from '../components/CategorySlider';
 import CategorySection from '../components/CategorySection';
 import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
+import ListingCard from '../components/ListingCard';
 
 import { fetchEvents } from '../lib/api';
 import { events as mockEvents } from '../data/events';
@@ -22,6 +23,7 @@ const Home: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [marketplaceTab, setMarketplaceTab] = useState('All');
 
     useEffect(() => {
         // Load immediately using mock data for instant Vercel rendering
@@ -54,7 +56,7 @@ const Home: React.FC = () => {
         <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
             <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
             <Hero />
-            
+
             <CategorySlider />
 
             {activeCategory === 'all' ? (
@@ -102,15 +104,66 @@ const Home: React.FC = () => {
                     </motion.section>
 
 
-                    {/* Featured Listings (Top Placement) */}
+                    {/* Featured Events This Month */}
                     <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
                         <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Listings</h2>
-                            <Link to="/search" className="text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
-                                View All <ArrowRight size={16} />
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Events This Month</h2>
+                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
+                                View Marketplace <ArrowRight size={16} />
                             </Link>
                         </div>
-                        <CategorySection title="" items={weddingVenues.slice(0, 4)} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                            {weddingVenues.slice(0, 3).map((item, index) => (
+                                <ListingCard
+                                    key={index}
+                                    {...item}
+                                    marketplaceStatus="AVAILABLE"
+                                    spotsLeft={42}
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Marketplace Section (KEY Tabbed Layout) */}
+                    <section className="bg-gray-50 dark:bg-slate-900/50 py-16">
+                        <div className="max-w-7xl mx-auto px-4 md:px-8">
+                            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">What's Happening in the Marketplace</h2>
+                                <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 rounded-xl w-full md:w-auto overflow-x-auto shadow-sm border border-gray-100 dark:border-slate-700">
+                                    {['All', 'Available', 'Filling Fast', 'New Listings'].map(tab => (
+                                        <button
+                                            key={tab}
+                                            onClick={() => setMarketplaceTab(tab)}
+                                            className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${marketplaceTab === tab ? 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                                        >
+                                            {tab}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                                {events.slice(0, 6).map((item, index) => {
+                                    const statuses = ['AVAILABLE', 'FILLING_FAST', 'SOLD_OUT', 'COMING_SOON'] as const;
+                                    const status = statuses[index % 4];
+                                    const spots = status === 'SOLD_OUT' ? 0 : (status === 'FILLING_FAST' ? 8 : 42);
+
+                                    // Mock filtering for demonstration
+                                    if (marketplaceTab === 'Available' && status !== 'AVAILABLE') return null;
+                                    if (marketplaceTab === 'Filling Fast' && status !== 'FILLING_FAST') return null;
+
+                                    return (
+                                        <div key={item.id || index} className="animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${index * 100}ms` }}>
+                                            <ListingCard
+                                                {...item}
+                                                marketplaceStatus={status}
+                                                spotsLeft={spots}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </section>
 
                     {/* How It Works */}
@@ -119,7 +172,7 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="bg-gray-50 dark:bg-slate-900 py-20 transition-colors duration-300"
+                        className="bg-white dark:bg-slate-950 py-20 transition-colors duration-300"
                     >
                         <div className="max-w-7xl mx-auto px-4 md:px-8">
                             <div className="text-center mb-16">
@@ -130,9 +183,9 @@ const Home: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                                 {[
-                                    { icon: Search, title: 'Discover', desc: 'Browse through our extensive list of verified venues and services tailored to your needs.' },
-                                    { icon: Calendar, title: 'Book', desc: 'Check availability and book your preferred date instantly with our secure platform.' },
-                                    { icon: Star, title: 'Celebrate', desc: 'Enjoy your special day while we handle the coordination and details for you.' },
+                                    { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.' },
+                                    { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date, fill in your details, and checkout securely.' },
+                                    { icon: Star, title: 'Enjoy Your Event', desc: 'Relax and celebrate. Your chosen vendor will take care of absolutely everything else.' },
                                 ].map((step, idx) => (
                                     <motion.div
                                         key={idx}
@@ -152,37 +205,6 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                     </motion.section>
-
-                    {/* Grouped Feeds */}
-                    <div className="space-y-12 py-20">
-                        <CategorySection title="Trending Weddings" items={weddingVenues.slice(0, 4)} />
-                        <CategorySection title="Birthday Bashes" items={birthdayVenues.slice(0, 4)} />
-                        
-                        <CategorySection title="Expert Photography" items={events.filter(e => e.category === 'Photography').slice(0, 4)} />
-                        <CategorySection title="Gourmet Catering" items={events.filter(e => e.category === 'Catering').slice(0, 4)} />
-                        <CategorySection title="Stunning Decor" items={events.filter(e => e.category === 'Decor').slice(0, 4)} />
-
-                        <section className="max-w-7xl mx-auto px-4 md:px-8">
-                            <div className="relative rounded-3xl overflow-hidden bg-red-500 text-white p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-red-500/20">
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                                <div className="relative z-10 max-w-xl text-center md:text-left">
-                                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Plan Your Dream Event?</h2>
-                                    <p className="text-white/90 text-lg mb-8">Use our advanced planning wizard to customize every detail of your event in minutes.</p>
-                                    <Link to="/plan-event" className="inline-flex items-center gap-2 bg-white text-red-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 transition-colors shadow-lg">
-                                        Start Planning <ArrowRight size={20} />
-                                    </Link>
-                                </div>
-                                <div className="relative z-10 hidden md:block">
-                                    <Calendar size={120} className="text-white/20 rotate-12" />
-                                </div>
-                            </div>
-                        </section>
-
-                        <CategorySection title="Corporate Events" items={corporateVenues.slice(0, 4)} />
-                        <CategorySection title="Bridal Makeup" items={events.filter(e => e.category === 'Makeup').slice(0, 4)} />
-                        <CategorySection title="Premium Event Planning" items={events.filter(e => e.category === 'Planning').slice(0, 4)} />
-                    </div>
-
                 </>
             ) : (
                 <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">

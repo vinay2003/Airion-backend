@@ -26,9 +26,15 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor for error handling
+// Response interceptor for error handling and standardizing wrapped API responses
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Automatically unwrap NestJS standardization { success, data, message }
+        if (response.data && response.data.success === true && response.data.data !== undefined) {
+            response.data = response.data.data;
+        }
+        return response;
+    },
     (error) => {
         if (error.response?.status === 401) {
             // Unauthorized - clear token and redirect to login
@@ -40,5 +46,6 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 
 export default api;

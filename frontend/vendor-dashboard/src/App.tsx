@@ -48,7 +48,7 @@ const App: React.FC = () => {
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
-                
+
                 {/* Placeholders for new pages to match Sidebar */}
                 <Route path="calendar" element={<div className="p-8 text-[var(--text-primary)]">Calendar View Placeholder</div>} />
                 <Route path="earnings" element={<div className="p-8 text-[var(--text-primary)]">Earnings & Financials Placeholder</div>} />

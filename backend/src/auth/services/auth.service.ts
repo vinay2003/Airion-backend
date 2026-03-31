@@ -38,20 +38,19 @@ export class AuthService {
         if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
         if (dto.email) whereConditions.push({ email: dto.email });
 
-        const existingUser = await this.userRepository.findOne({
-            where: whereConditions,
-        });
+        // Run existence check and cleanup in parallel to reduce network latency
+        const [existingUser, _] = await Promise.all([
+            this.userRepository.findOne({ where: whereConditions }),
+            this.otpRepository.delete({ identifier })
+        ]);
 
         if (existingUser) {
-            throw new ConflictException('User already exists with this phone/email');
+            throw new ConflictException('User already exists with this phone or email');
         }
 
         // Generate and store OTP
         const otpCode = this.generateOTP();
         const expiresAt = (Date.now() + 10 * 60 * 1000).toString(); // 10 minutes
-
-        // Delete existing OTPs for this identifier
-        await this.otpRepository.delete({ identifier });
 
         const otp = this.otpRepository.create({
             identifier,
@@ -141,25 +140,23 @@ export class AuthService {
         if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
         if (dto.email) whereConditions.push({ email: dto.email });
 
-        const user = await this.userRepository.findOne({
-            where: whereConditions,
-        });
+        // Parallelize user check and OTP cleanup
+        const [user, _] = await Promise.all([
+            this.userRepository.findOne({ where: whereConditions }),
+            this.otpRepository.delete({ identifier })
+        ]);
 
-        // Proceed to generate OTP unconditionally to prevent account enumeration and support dummy flows
-
-        // Generate and store OTP
         const otpCode = this.generateOTP();
-        const expiresAt = (Date.now() + 10 * 60 * 1000).toString(); // 10 minutes
-
-        // Delete existing OTPs for this identifier
-        await this.otpRepository.delete({ identifier });
+        const expiresAt = (Date.now() + 10 * 60 * 1000).toString();
 
         const otp = this.otpRepository.create({
             identifier,
             otp: otpCode,
             expiresAt,
         });
+
         await this.otpRepository.save(otp);
+
 
         // TODO: Send OTP via SMS/Email service
         console.log(`📱 OTP for ${identifier}: ${otpCode}`);

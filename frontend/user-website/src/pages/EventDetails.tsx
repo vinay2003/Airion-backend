@@ -15,13 +15,18 @@ const EventDetails: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
-    
+
     const [event, setEvent] = useState<Event | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+
+    // Booking Widget State
+    const [bookingDate, setBookingDate] = useState('');
+    const [bookingTime, setBookingTime] = useState('');
+    const [guestMode, setGuestMode] = useState(1);
 
     const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined);
 
@@ -272,7 +277,7 @@ const EventDetails: React.FC = () => {
                                                 </li>
                                             ))}
                                         </ul>
-                                        <button 
+                                        <button
                                             onClick={() => handleBookingClick(pkg.title)}
                                             className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all"
                                         >
@@ -302,6 +307,34 @@ const EventDetails: React.FC = () => {
                                 <div className="absolute bottom-4 left-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-md flex items-center gap-2 pointer-events-none">
                                     <MapPin className="text-red-500" size={16} />
                                     <span className="font-bold text-sm text-gray-900 dark:text-white">{event.location}</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div className="h-px bg-gray-200 dark:bg-slate-800" />
+
+                        {/* Cancellation Policy */}
+                        <section>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Cancellation Policy</h2>
+                            <div className="bg-gray-50 dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 space-y-4 flex flex-col pt-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-red-100 dark:bg-red-500/10 p-2.5 rounded-full shrink-0">
+                                        <X size={20} className="text-red-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">Free cancellation for 48 hours</h4>
+                                        <p className="text-sm text-gray-600 dark:text-slate-400">Cancel within 48 hours of booking to get a full refund, as long as the event is at least 14 days away.</p>
+                                    </div>
+                                </div>
+                                <div className="h-px bg-gray-200 dark:bg-slate-800 my-2" />
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-orange-100 dark:bg-orange-500/10 p-2.5 rounded-full shrink-0">
+                                        <Calendar size={20} className="text-orange-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">Partial refund after 48 hours</h4>
+                                        <p className="text-sm text-gray-600 dark:text-slate-400">Cancel up to 7 days before the event for a 50% refund, minus service fees.</p>
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -359,20 +392,20 @@ const EventDetails: React.FC = () => {
                                         <div className="grid grid-cols-2 border-b border-neutral-200 dark:border-slate-700">
                                             <div className="p-3 border-r border-neutral-200 dark:border-slate-700">
                                                 <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Event Date</label>
-                                                <input type="date" className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
+                                                <input type="date" value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
                                             </div>
                                             <div className="p-3">
                                                 <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Time</label>
-                                                <input type="time" className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
+                                                <input type="time" value={bookingTime} onChange={(e) => setBookingTime(e.target.value)} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
                                             </div>
                                         </div>
                                         <div className="p-3">
                                             <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Estimated Guests</label>
-                                            <select className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white appearance-none cursor-pointer">
-                                                <option>Up to 50 Guests</option>
-                                                <option>50-200 Guests</option>
-                                                <option>200-500 Guests</option>
-                                                <option>500+ Guests</option>
+                                            <select value={guestMode} onChange={(e) => setGuestMode(Number(e.target.value))} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white appearance-none cursor-pointer">
+                                                <option value={1}>Up to 50 Guests (1x Multiplier)</option>
+                                                <option value={1.5}>50-200 Guests (1.5x Multiplier)</option>
+                                                <option value={2}>200-500 Guests (2x Multiplier)</option>
+                                                <option value={3}>500+ Guests (3x Multiplier)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -382,15 +415,26 @@ const EventDetails: React.FC = () => {
                                     onClick={() => handleBookingClick()}
                                     className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-black py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-[0.98]"
                                 >
-                                    Check Availability
+                                    Request to Book
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500 mt-4">You won't be charged yet</p>
+
+                                <div className="mt-6 flex justify-between text-sm text-gray-600 dark:text-slate-400">
+                                    <span className="underline decoration-dotted">{event.price} x {guestMode} base charge</span>
+                                    <span>₹{(parseInt(event.price.replace(/\D/g, '')) * guestMode || 0).toLocaleString()}</span>
+                                </div>
+                                <div className="mt-2 flex justify-between text-sm text-gray-600 dark:text-slate-400">
+                                    <span className="underline decoration-dotted">Airion Service Fee</span>
+                                    <span>₹{(parseInt(event.price.replace(/\D/g, '')) * guestMode * 0.1 || 0).toLocaleString()}</span>
+                                </div>
                             </div>
 
                             <div className="bg-gray-50 dark:bg-slate-800/50 p-4 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-slate-400 font-medium">Total Estimate</span>
-                                <span className="font-bold text-gray-900 dark:text-white">{event.price} + taxes</span>
+                                <span className="text-gray-900 dark:text-white font-bold">Total Estimate</span>
+                                <span className="font-bold text-gray-900 dark:text-white text-lg">
+                                    ₹{(parseInt(event.price.replace(/\D/g, '')) * guestMode * 1.1 || 0).toLocaleString()}
+                                </span>
                             </div>
                         </div>
 

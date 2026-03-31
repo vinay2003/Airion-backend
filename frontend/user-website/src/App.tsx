@@ -95,7 +95,7 @@ const App: React.FC = () => {
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/search" element={<VendorDiscovery />} />
+                        <Route path="/marketplace" element={<VendorDiscovery />} />
                         <Route path="/event/:id" element={<EventDetails />} />
                         <Route path="/category/:category" element={<CategoryPage />} />
                         <Route path="/trending-weddings" element={<TrendingWeddings />} />

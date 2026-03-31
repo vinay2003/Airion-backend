@@ -27,7 +27,7 @@ const DashboardLayout: React.FC = () => {
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [isDark, setIsDark] = useState(false);
     const navigate = useNavigate();
-    
+
     // Zustand
     const { notifications, chatThreads } = useDashboardStore();
     const unreadNotifications = notifications.filter(n => !n.read).length;
@@ -125,7 +125,7 @@ const DashboardLayout: React.FC = () => {
                         {isDark ? <Sun size={20} /> : <Moon size={20} />}
                         {isDark ? 'Light Mode' : 'Dark Mode'}
                     </button>
-                    
+
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-neutral-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all font-medium text-sm"
@@ -153,9 +153,9 @@ const DashboardLayout: React.FC = () => {
                         <button className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg transition">
                             <Globe size={20} />
                         </button>
-                        
+
                         <div className="relative">
-                            <button 
+                            <button
                                 className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg transition relative"
                                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                             >
@@ -164,7 +164,7 @@ const DashboardLayout: React.FC = () => {
                                     <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
                                 )}
                             </button>
-                            
+
                             {/* Notifications Dropdown Drawer Dropdown */}
                             <AnimatePresence>
                                 {isNotificationsOpen && (
@@ -210,9 +210,9 @@ const DashboardLayout: React.FC = () => {
                                 )}
                             </AnimatePresence>
                         </div>
-                        
+
                         <div className="h-8 w-8 bg-neutral-200 dark:bg-slate-800 rounded-full flex items-center justify-center font-bold text-xs border border-neutral-300/40 dark:border-slate-700">
-                             D
+                            D
                         </div>
                     </div>
                 </header>

@@ -24,7 +24,7 @@ const VendorDiscovery: React.FC = () => {
     return (
         <main className="min-h-screen bg-transparent dark:bg-slate-950 transition-colors duration-300 pt-24 pb-12">
             <SEO title="Explore Vendors" description="Discover the perfect vendors for your next event." />
-            
+
             <div className="max-w-[1440px] mx-auto px-4 md:px-8">
                 {/* Header Section */}
                 <div className="mb-0 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200/60 dark:border-slate-800 pb-6">
@@ -32,16 +32,16 @@ const VendorDiscovery: React.FC = () => {
                         <h1 className="text-3xl md:text-5xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Explore the Marketplace</h1>
                         <p className="text-neutral-500 dark:text-slate-400 font-medium">Over {vendors.length}+ premium vendors match your search.</p>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-3">
                         {/* Mobile Filter Toggle */}
-                        <button 
+                        <button
                             onClick={() => setShowMobileFilters(!showMobileFilters)}
                             className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 dark:border-slate-700 text-sm font-bold shadow-sm bg-white dark:bg-slate-900"
                         >
                             <SlidersHorizontal size={16} /> Filters
                         </button>
-                        
+
                         {/* Sort Dropdown */}
                         <button className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 dark:border-slate-700 text-sm font-bold shadow-sm bg-white dark:bg-slate-900 group transition">
                             <ArrowUpDown size={16} className="text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white" />
@@ -51,13 +51,13 @@ const VendorDiscovery: React.FC = () => {
 
                         {/* Map/List Toggle Airbnb style */}
                         <div className="flex bg-neutral-100 dark:bg-slate-800 p-1 rounded-full w-fit border border-neutral-200/50 dark:border-slate-700/50">
-                            <button 
+                            <button
                                 onClick={() => setIsMapView(false)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${!isMapView ? 'bg-white dark:bg-slate-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-slate-300'}`}
                             >
                                 <List size={16} /> List
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setIsMapView(true)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${isMapView ? 'bg-white dark:bg-slate-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-slate-300'}`}
                             >
@@ -116,7 +116,7 @@ const VendorDiscovery: React.FC = () => {
                                 </AnimatePresence>
                             </div>
                         )}
-                        
+
                         {!loading && vendors.length === 0 && (
                             <div className="text-center py-32 bg-neutral-50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-neutral-200 dark:border-slate-800">
                                 <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">No matching vendors</h3>

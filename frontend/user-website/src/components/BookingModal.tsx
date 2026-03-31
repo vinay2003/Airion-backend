@@ -18,7 +18,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    
+
     // Booking State
     const [formData, setFormData] = useState({
         occasion: '',
@@ -33,12 +33,12 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
 
     if (!isOpen) return null;
 
-    const basePrice = 
-        formData.package === 'Silver' ? 50000 : 
-        formData.package === 'Gold' ? 100000 : 
-        formData.package === 'Platinum' ? 200000 : 
-        parseFloat(price.replace(/[^\d.-]/g, '')) || 0;
-        
+    const basePrice =
+        formData.package === 'Silver' ? 50000 :
+            formData.package === 'Gold' ? 100000 :
+                formData.package === 'Platinum' ? 200000 :
+                    parseFloat(price.replace(/[^\d.-]/g, '')) || 0;
+
     const addonsTotal = formData.addons.length * 15000; // Flat ₹15k per addon for demo
     const dynamicPrice = basePrice + addonsTotal;
 
@@ -58,7 +58,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature
                     }, bookingId);
-                    
+
                     navigate('/booking-confirmation', { state: { ...formData, eventName, total: dynamicPrice } });
                 } catch (error) {
                     alert('Payment Verification Failed');
@@ -112,7 +112,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
             <div className="bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-neutral-200 dark:border-slate-800 flex flex-col max-h-[90vh]">
-                
+
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-neutral-100 dark:border-slate-800 shrink-0">
                     <div className="flex items-center gap-4">
@@ -155,7 +155,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                         {['Wedding', 'Birthday', 'Corporate Event', 'Anniversary', 'Social Gathering', 'Other'].map(occ => (
                                             <button
                                                 key={occ}
-                                                onClick={() => { setFormData({...formData, occasion: occ}); nextStep(); }}
+                                                onClick={() => { setFormData({ ...formData, occasion: occ }); nextStep(); }}
                                                 className={`p-4 rounded-2xl border-2 text-left transition-all ${formData.occasion === occ ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 font-bold' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300 text-neutral-700 dark:text-slate-300 font-medium'}`}
                                             >
                                                 {occ}
@@ -169,7 +169,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                             {step === 2 && (
                                 <div className="space-y-6">
                                     <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">When is it happening?</h3>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className="block text-sm font-bold text-neutral-700 dark:text-slate-300 mb-2">Event Date</label>
@@ -224,7 +224,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                         ].map(pkg => (
                                             <div
                                                 key={pkg.name}
-                                                onClick={() => setFormData({...formData, package: pkg.name})}
+                                                onClick={() => setFormData({ ...formData, package: pkg.name })}
                                                 className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.package === pkg.name ? 'border-red-500 bg-red-50/50 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300 dark:hover:border-slate-600'}`}
                                             >
                                                 {pkg.popular && (
@@ -263,18 +263,18 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                 <div className="space-y-6">
                                     <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Enhance your booking</h3>
                                     <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4 -mt-4">Select optional add-ons to make your event even more special.</p>
-                                    
+
                                     <div className="space-y-3">
                                         {addonsList.map(addon => {
                                             const isSelected = formData.addons.includes(addon.id);
                                             return (
-                                                <div 
+                                                <div
                                                     key={addon.id}
                                                     onClick={() => {
-                                                        const newAddons = isSelected 
+                                                        const newAddons = isSelected
                                                             ? formData.addons.filter(id => id !== addon.id)
                                                             : [...formData.addons, addon.id];
-                                                        setFormData({...formData, addons: newAddons});
+                                                        setFormData({ ...formData, addons: newAddons });
                                                     }}
                                                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isSelected ? 'border-red-500 bg-red-50/30 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300'}`}
                                                 >
@@ -301,7 +301,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                             {step === 6 && (
                                 <div className="space-y-6">
                                     <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Review & Pay</h3>
-                                    
+
                                     <div className="bg-neutral-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-neutral-200 dark:border-slate-700 space-y-4">
                                         <div className="flex justify-between items-center pb-4 border-b border-neutral-200 dark:border-slate-700">
                                             <div>
@@ -310,7 +310,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                             </div>
                                             <span className="font-bold">₹{basePrice.toLocaleString()}</span>
                                         </div>
-                                        
+
                                         {formData.addons.length > 0 && (
                                             <div className="pb-4 border-b border-neutral-200 dark:border-slate-700">
                                                 <p className="text-xs font-bold text-neutral-500 uppercase mb-2">Add-ons</p>
@@ -344,10 +344,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                                 <CreditCard size={16} className="text-neutral-400 group-hover:text-red-500 transition-colors" />
                                                 <span className="block font-bold text-neutral-900 dark:text-white">Pay with EMI</span>
                                             </div>
-                                            <span className="block text-xs text-neutral-500 dark:text-slate-400">Starting at ₹{(dynamicPrice / 12).toLocaleString(undefined, {maximumFractionDigits: 0})}/month with 0% interest</span>
+                                            <span className="block text-xs text-neutral-500 dark:text-slate-400">Starting at ₹{(dynamicPrice / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}/month with 0% interest</span>
                                         </label>
                                     </div>
-                                    
+
                                     <div className="flex items-start gap-3 text-xs text-neutral-500 dark:text-slate-400 p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl text-blue-700 dark:text-blue-300">
                                         <Shield size={16} className="shrink-0 mt-0.5" />
                                         <p>Secure payment protected by industry standard 256-bit encryption. Airion guarantees full refund on cancellations 14 days before the event.</p>
@@ -382,7 +382,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                         )}
                     </div>
                 </div>
-                
+
             </div>
         </div>
     );

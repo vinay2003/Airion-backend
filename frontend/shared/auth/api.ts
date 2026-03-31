@@ -51,8 +51,15 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
 
     // Response interceptor - Handle errors and token refresh
     api.interceptors.response.use(
-        (response) => response,
+        (response) => {
+            // Automatically unwrap NestJS standardization { success, data, message }
+            if (response.data && response.data.success === true && response.data.data !== undefined) {
+                return { ...response, data: response.data.data };
+            }
+            return response;
+        },
         async (error: AxiosError<ApiError>) => {
+
             const originalRequest = error.config as any;
 
             // Handle 401 Unauthorized
@@ -129,7 +136,7 @@ export const otpAuth = {
     /**
      * Send OTP for login
      */
-    sendLoginOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string }> => {
+    sendLoginOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string; devOtp?: string; data?: any }> => {
         const response = await authApi.post(AUTH_ENDPOINTS.VENDOR_SEND_OTP, request);
         return response.data;
     },
@@ -145,7 +152,7 @@ export const otpAuth = {
     /**
      * Send OTP for signup
      */
-    sendSignupOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string }> => {
+    sendSignupOTP: async (request: OTPRequest): Promise<{ message: string; otp?: string; devOtp?: string; data?: any }> => {
         const response = await authApi.post(AUTH_ENDPOINTS.VENDOR_SIGNUP_SEND_OTP, request);
         return response.data;
     },

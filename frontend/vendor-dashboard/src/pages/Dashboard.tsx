@@ -78,7 +78,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 const Dashboard = () => {
   return (
     <div className="animate-slideIn space-y-6">
-      
+
       {/* KPI Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Pending Bookings" {...VENDOR_DATA.stats.pendingBookings} />
@@ -103,8 +103,8 @@ const Dashboard = () => {
               <AreaChart data={CHART_DATA} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#6C63FF" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -123,26 +123,26 @@ const Dashboard = () => {
         <div className="card-premium flex flex-col justify-between">
           <div className="flex justify-between items-start">
             <h2 className="text-lg font-bold">Upcoming Event</h2>
-            <button className="text-[var(--text-muted)] hover:text-white"><MoreVertical size={20}/></button>
+            <button className="text-[var(--text-muted)] hover:text-white"><MoreVertical size={20} /></button>
           </div>
-          
+
           <div className="mt-4 p-5 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[var(--border-subtle)]">
             <div className="flex justify-between items-center mb-4">
-               <span className="badge badge-new">New Event</span>
-               {VENDOR_DATA.upcomingEvent.lastMonth && <span className="text-xs font-semibold text-[var(--accent-secondary)]">Last Month</span>}
+              <span className="badge badge-new">New Event</span>
+              {VENDOR_DATA.upcomingEvent.lastMonth && <span className="text-xs font-semibold text-[var(--accent-secondary)]">Last Month</span>}
             </div>
             <h3 className="text-xl font-display font-bold mb-2">{VENDOR_DATA.upcomingEvent.name}</h3>
             <div className="space-y-2 mb-6 text-sm text-[var(--text-secondary)]">
-              <div className="flex items-center gap-2"><CalendarIcon size={16}/> {VENDOR_DATA.upcomingEvent.date}</div>
-              <div className="flex items-center gap-2"><Clock size={16}/> {VENDOR_DATA.upcomingEvent.time}</div>
+              <div className="flex items-center gap-2"><CalendarIcon size={16} /> {VENDOR_DATA.upcomingEvent.date}</div>
+              <div className="flex items-center gap-2"><Clock size={16} /> {VENDOR_DATA.upcomingEvent.time}</div>
               <div className="flex items-center gap-2 mt-4 text-white font-semibold">
-                 Total Bookings: <span className="text-[var(--accent-primary)] ml-1">{VENDOR_DATA.upcomingEvent.bookings}</span>
+                Total Bookings: <span className="text-[var(--accent-primary)] ml-1">{VENDOR_DATA.upcomingEvent.bookings}</span>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <button className="flex-1 btn-outline text-xs py-2"><Edit size={14} className="mr-1"/> Edit</button>
-              <button className="flex-1 btn-primary text-xs py-2"><Users size={14} className="mr-1"/> View</button>
+              <button className="flex-1 btn-outline text-xs py-2"><Edit size={14} className="mr-1" /> Edit</button>
+              <button className="flex-1 btn-primary text-xs py-2"><Users size={14} className="mr-1" /> View</button>
               <button className="flex-1 btn-danger text-xs py-2">Pause</button>
             </div>
           </div>
@@ -150,42 +150,42 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Calendar UI */}
         <div className="card-premium">
-           <div className="flex justify-between items-center mb-6">
-             <h2 className="text-lg font-bold">January 2026</h2>
-             <div className="flex gap-2">
-               <button className="p-1 rounded bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-primary)] transition-colors"><ChevronLeft size={16}/></button>
-               <button className="p-1 rounded bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-primary)] transition-colors"><ChevronRight size={16}/></button>
-             </div>
-           </div>
-           
-           <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold text-[var(--text-muted)] mb-4">
-             {['S','M','T','W','T','F','S'].map((d,i) => <div key={i}>{d}</div>)}
-           </div>
-           
-           <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium">
-             {/* Mock Calendar Grid */}
-             {Array.from({length: 31}).map((_, i) => {
-                const date = i + 1;
-                const isSelected = date === 20;
-                const hasEvent = [5, 12, 20, 25].includes(date);
-                return (
-                  <div key={i} className={`h-8 w-8 mx-auto flex items-center justify-center rounded-full relative cursor-pointer
-                    ${isSelected ? 'bg-[var(--accent-primary)] text-white shadow-glow-custom' : 'text-white hover:bg-[rgba(255,255,255,0.1)]'}`}>
-                    {date}
-                    {hasEvent && !isSelected && <span className="absolute bottom-1 w-1 h-1 bg-[var(--accent-secondary)] rounded-full"></span>}
-                  </div>
-                )
-             })}
-           </div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold">January 2026</h2>
+            <div className="flex gap-2">
+              <button className="p-1 rounded bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-primary)] transition-colors"><ChevronLeft size={16} /></button>
+              <button className="p-1 rounded bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-primary)] transition-colors"><ChevronRight size={16} /></button>
+            </div>
+          </div>
 
-           <div className="flex justify-between items-center mt-6 pt-4 border-t border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
-             <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-green)]"></span> Confirmed</div>
-             <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-warm)]"></span> Cancelled</div>
-             <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-gold)]"></span> Pending</div>
-           </div>
+          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold text-[var(--text-muted)] mb-4">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i}>{d}</div>)}
+          </div>
+
+          <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium">
+            {/* Mock Calendar Grid */}
+            {Array.from({ length: 31 }).map((_, i) => {
+              const date = i + 1;
+              const isSelected = date === 20;
+              const hasEvent = [5, 12, 20, 25].includes(date);
+              return (
+                <div key={i} className={`h-8 w-8 mx-auto flex items-center justify-center rounded-full relative cursor-pointer
+                    ${isSelected ? 'bg-[var(--accent-primary)] text-white shadow-glow-custom' : 'text-white hover:bg-[rgba(255,255,255,0.1)]'}`}>
+                  {date}
+                  {hasEvent && !isSelected && <span className="absolute bottom-1 w-1 h-1 bg-[var(--accent-secondary)] rounded-full"></span>}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex justify-between items-center mt-6 pt-4 border-t border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-green)]"></span> Confirmed</div>
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-warm)]"></span> Cancelled</div>
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--accent-gold)]"></span> Pending</div>
+          </div>
         </div>
 
         {/* Recent Enquiries */}
@@ -194,7 +194,7 @@ const Dashboard = () => {
             <h2 className="text-lg font-bold">Recent Enquiries</h2>
             <button className="text-sm text-[var(--accent-primary)] hover:underline">View All</button>
           </div>
-          
+
           <div className="space-y-4">
             {VENDOR_DATA.enquiries.map((person, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 rounded-xl hover:bg-[rgba(255,255,255,0.03)] transition-colors cursor-pointer border border-transparent hover:border-[var(--border-subtle)]">
@@ -215,44 +215,44 @@ const Dashboard = () => {
 
         {/* Popular Events */}
         <div className="card-premium lg:col-span-1 flex flex-col justify-between">
-           <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold">Popular Events</h2>
-                <button className="text-[var(--text-muted)] hover:text-white"><MoreVertical size={20}/></button>
-              </div>
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold">Popular Events</h2>
+              <button className="text-[var(--text-muted)] hover:text-white"><MoreVertical size={20} /></button>
+            </div>
 
-              <div className="space-y-6">
-                {VENDOR_DATA.popularEvents.map((event, idx) => (
-                  <div key={idx}>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="flex -space-x-2">
-                        {event.images.map((img, i) => (
-                          <img key={i} src={img} className="w-8 h-8 rounded-full border-2 border-[var(--bg-surface)] object-cover" alt="Attendee" />
-                        ))}
-                      </div>
-                      <h4 className="font-semibold text-sm flex-1">{event.name}</h4>
-                      <span className="font-bold text-[var(--accent-primary)]">{event.percentage}%</span>
+            <div className="space-y-6">
+              {VENDOR_DATA.popularEvents.map((event, idx) => (
+                <div key={idx}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="flex -space-x-2">
+                      {event.images.map((img, i) => (
+                        <img key={i} src={img} className="w-8 h-8 rounded-full border-2 border-[var(--bg-surface)] object-cover" alt="Attendee" />
+                      ))}
                     </div>
-                    {/* Progress Bar */}
-                    <div className="h-2 w-full bg-[rgba(255,255,255,0.05)] rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full" 
-                        style={{ width: `${event.percentage}%` }}
-                      ></div>
-                    </div>
+                    <h4 className="font-semibold text-sm flex-1">{event.name}</h4>
+                    <span className="font-bold text-[var(--accent-primary)]">{event.percentage}%</span>
                   </div>
-                ))}
-              </div>
-           </div>
+                  {/* Progress Bar */}
+                  <div className="h-2 w-full bg-[rgba(255,255,255,0.05)] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full"
+                      style={{ width: `${event.percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-           {/* Order Pending Block inside Popular Events column, as seen in layout requests? Actually, an Order Pending Section is mentioned. I will add it here as a small card */}
-           <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-[rgba(255,209,102,0.1)] to-[rgba(255,209,102,0.05)] border border-[rgba(255,209,102,0.2)] flex justify-between items-center">
-             <div>
-               <h4 className="font-bold text-[var(--text-primary)]">Order Pending</h4>
-               <p className="text-xs text-[var(--text-secondary)] mt-1">You have 12 pending orders.</p>
-             </div>
-             <button className="btn-primary py-1.5 px-4 text-xs">Review</button>
-           </div>
+          {/* Order Pending Block inside Popular Events column, as seen in layout requests? Actually, an Order Pending Section is mentioned. I will add it here as a small card */}
+          <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-[rgba(255,209,102,0.1)] to-[rgba(255,209,102,0.05)] border border-[rgba(255,209,102,0.2)] flex justify-between items-center">
+            <div>
+              <h4 className="font-bold text-[var(--text-primary)]">Order Pending</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">You have 12 pending orders.</p>
+            </div>
+            <button className="btn-primary py-1.5 px-4 text-xs">Review</button>
+          </div>
         </div>
 
       </div>

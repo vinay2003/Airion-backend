@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ListingCardProps {
     id: string;
     images?: string[];
-    image?: string; 
+    image?: string;
     title: string;
     rating: number;
     reviews: number;
@@ -18,21 +18,25 @@ interface ListingCardProps {
     tags?: string[];
     highlights?: string[];
     isTrending?: boolean;
+    marketplaceStatus?: 'AVAILABLE' | 'FILLING_FAST' | 'SOLD_OUT' | 'COMING_SOON';
+    spotsLeft?: number;
 }
 
-const ListingCard: React.FC<ListingCardProps> = ({ 
-    id, images, image, title, rating, reviews, location, price, category, 
-    tags = ['Verified', 'Premium'], 
+const ListingCard: React.FC<ListingCardProps> = ({
+    id, images, image, title, rating, reviews, location, price, category,
+    tags = ['Verified', 'Premium'],
     highlights = ['500+ Events Completed', 'Fast Response Time'],
-    isTrending = true
+    isTrending = true,
+    marketplaceStatus = 'AVAILABLE',
+    spotsLeft = 42
 }) => {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isCompared, setIsCompared] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
 
-    const imageList = images && images.length > 0 
-        ? images 
+    const imageList = images && images.length > 0
+        ? images
         : [image || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'];
 
     const nextImage = (e: React.MouseEvent) => {
@@ -62,7 +66,17 @@ const ListingCard: React.FC<ListingCardProps> = ({
     const handleBookNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (marketplaceStatus === 'SOLD_OUT') return;
         navigate(`/event/${id}?booking=true`);
+    };
+
+    const getStatusConfig = (status: string) => {
+        switch (status) {
+            case 'SOLD_OUT': return { label: 'Sold Out', color: 'bg-red-500 text-white shadow-red-500/20' };
+            case 'FILLING_FAST': return { label: 'Filling Fast', color: 'bg-amber-500 text-white shadow-amber-500/20' };
+            case 'COMING_SOON': return { label: 'Coming Soon', color: 'bg-indigo-500 text-white shadow-indigo-500/20' };
+            case 'AVAILABLE': default: return { label: 'Available', color: 'bg-emerald-500 text-white shadow-emerald-500/20' };
+        }
     };
 
     return (
@@ -100,6 +114,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
                             {tag}
                         </span>
                     ))}
+                    {marketplaceStatus && (
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-md ${getStatusConfig(marketplaceStatus).color}`}>
+                            {marketplaceStatus === 'AVAILABLE' ? <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> : null}
+                            {getStatusConfig(marketplaceStatus).label}
+                        </span>
+                    )}
                     {isTrending && (
                         <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5 shadow-sm shadow-red-500/10">
                             <Sparkles size={11} /> Trending
@@ -108,19 +128,19 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 </div>
 
                 {/* Wishlist Button */}
-                <button 
+                <button
                     onClick={toggleWishlist}
                     className="absolute top-3 right-3 z-10 p-1.5 bg-white/90 backdrop-blur-sm dark:bg-slate-900/80 rounded-full shadow-sm"
                     aria-label="Add to wishlist"
                 >
-                    <Heart 
-                        size={18} 
-                        className={`transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500 scale-110' : 'text-neutral-500 hover:scale-105'}`} 
+                    <Heart
+                        size={18}
+                        className={`transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500 scale-110' : 'text-neutral-500 hover:scale-105'}`}
                     />
                 </button>
 
                 {/* Compare Button */}
-                <button 
+                <button
                     onClick={handleCompare}
                     className={`absolute top-14 right-3 z-10 p-1.5 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isCompared ? 'bg-red-500 text-white' : 'bg-white/90 dark:bg-slate-900/80 text-neutral-500'}`}
                     aria-label="Compare"
@@ -131,13 +151,13 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 {/* Carousel Arrows */}
                 {imageList.length > 1 && (
                     <>
-                        <button 
+                        <button
                             onClick={prevImage}
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity hover:scale-105 hover:bg-white z-10"
                         >
                             <ChevronLeft size={18} className="text-gray-900" />
                         </button>
-                        <button 
+                        <button
                             onClick={nextImage}
                             className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity hover:scale-105 hover:bg-white z-10"
                         >
@@ -150,8 +170,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 {imageList.length > 1 && (
                     <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
                         {imageList.map((_, idx) => (
-                            <div 
-                                key={idx} 
+                            <div
+                                key={idx}
                                 className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-3 bg-white' : 'w-1.5 bg-white/60'}`}
                             />
                         ))}
@@ -176,9 +196,16 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     </div>
                 </div>
 
-                <div className="text-xs text-neutral-500 dark:text-slate-400 flex items-center gap-1 mt-2">
-                    <MapPin size={12} className="text-neutral-400" />
-                    <span className="truncate">{location}</span>
+                <div className="flex justify-between items-end mt-2">
+                    <div className="text-xs text-neutral-500 dark:text-slate-400 flex items-center gap-1">
+                        <MapPin size={12} className="text-neutral-400" />
+                        <span className="truncate max-w-[120px]">{location}</span>
+                    </div>
+                    {spotsLeft !== undefined && marketplaceStatus !== 'SOLD_OUT' && (
+                        <div className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded text-right">
+                            👥 {spotsLeft} spots left
+                        </div>
+                    )}
                 </div>
 
                 {/* Highlights */}
@@ -198,11 +225,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
                             {price}
                         </p>
                     </div>
-                    <button 
+                    <button
                         onClick={handleBookNow}
-                        className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-red-500/10 hover:shadow-lg transition flex items-center gap-1"
+                        disabled={marketplaceStatus === 'SOLD_OUT'}
+                        className={`${marketplaceStatus === 'SOLD_OUT' ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/10 hover:shadow-lg'} text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1`}
                     >
-                        Book Now
+                        {marketplaceStatus === 'SOLD_OUT' ? 'Waitlist' : 'Book Now'}
                     </button>
                 </div>
             </div>

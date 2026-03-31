@@ -7,7 +7,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const DashboardOverview: React.FC = () => {
     const { bookings, budgetItems, totalBudget } = useDashboardStore();
-    
+
     const activeBookings = bookings.filter(b => b.status === 'Upcoming');
     const totalSpent = budgetItems.reduce((acc, item) => acc + item.spent, 0);
     const budgetStatus = totalSpent > totalBudget ? 'over' : 'under';
@@ -145,14 +145,14 @@ const DashboardOverview: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-                        
+
                         <Link to="/dashboard" className="w-full text-center text-sm font-semibold text-red-500 hover:opacity-80 mt-4 pt-3 border-t border-neutral-100 dark:border-slate-800">
-                             Manage Budget
+                            Manage Budget
                         </Link>
                     </div>
                 </div>
             </div>
-            
+
             {/* Quick Actions / Tips panel */}
             <div className="bg-red-50 dark:bg-red-500/5 rounded-2xl p-6 border border-red-100 dark:border-red-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>

@@ -12,19 +12,19 @@ import helmet from 'helmet';
 async function bootstrap() {
     // Determine JSON vs Pretty logging based on environment
     const isProduction = process.env.NODE_ENV === 'production';
-    
+
     const logger = WinstonModule.createLogger({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.ms(),
-            isProduction 
-                ? winston.format.json() 
-                : nestWinstonModuleUtilities.format.nestLike('Airion', { colors: true, prettyPrint: true }),
-          ),
-        }),
-      ],
+        transports: [
+            new winston.transports.Console({
+                format: winston.format.combine(
+                    winston.format.timestamp(),
+                    winston.format.ms(),
+                    isProduction
+                        ? winston.format.json()
+                        : nestWinstonModuleUtilities.format.nestLike('Airion', { colors: true, prettyPrint: true }),
+                ),
+            }),
+        ],
     });
 
     const app = await NestFactory.create(AppModule, { logger });
@@ -36,9 +36,9 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const isLocal = !origin || origin.startsWith('http://localhost:');
-            if (isLocal || process.env.NODE_ENV !== 'production' || 
+            if (isLocal || process.env.NODE_ENV !== 'production' ||
                 [
-                    'https://airion.vercel.app', 
+                    'https://airion.vercel.app',
                     'https://admin.airion.vercel.app'
                 ].indexOf(origin) !== -1) {
                 callback(null, true);
@@ -47,6 +47,7 @@ async function bootstrap() {
             }
         },
         credentials: true,
+        maxAge: 86400, // 24 hours preflight cache
     });
 
     // Global Filters & Interceptors

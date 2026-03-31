@@ -52,17 +52,28 @@ const Login: React.FC = () => {
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone });
-            if (response.otp) {
-                setSuccess(`OTP sent! Your code is: ${response.otp}`);
+            const devCode = response?.devOtp || response?.otp || (response as any)?.data?.otp;
+            if (import.meta.env.DEV) {
+                console.log('OTP Response:', response);
+                if (devCode) console.log('DEVELOPMENT CODE:', devCode);
+            }
+
+            if (devCode) {
+                window.alert(`DEVELOPMENT OTP: ${devCode}\n\nUse this code to verify your phone number.`);
+                setSuccess('OTP sent successfully!');
             } else {
                 setSuccess('OTP sent successfully!');
             }
             setStep('otp');
+
+
         } catch (err: any) {
+            console.error('OTP Login Send Error:', err.response?.data || err.message);
             setError(err.response?.data?.message || 'User not found or failed to send OTP.');
         } finally {
             setLoading(false);
         }
+
     };
 
     const handleVerifyOTP = async (e: React.FormEvent) => {
@@ -77,6 +88,7 @@ const Login: React.FC = () => {
                 setTimeout(() => navigate(from), 1000);
             }
         } catch (err: any) {
+            console.error('OTP Verify Error:', err.response?.data || err.message);
             setError(err.response?.data?.message || 'Invalid OTP.');
         } finally {
             setLoading(false);

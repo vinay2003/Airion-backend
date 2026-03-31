@@ -57,18 +57,33 @@ const Hero: React.FC = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="space-y-6 max-w-4xl"
+                        className="space-y-6 max-w-4xl pt-8 md:pt-16"
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight drop-shadow-lg leading-tight">
-                            Create Unforgettable <br className="hidden md:block" />
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-lg leading-tight">
+                            Find the Perfect Vendor for Your <br className="hidden md:block" />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 font-cursive pr-2">
-                                Moments
+                                Dream Event
                             </span>
-                            With Airion
                         </h1>
                         <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed">
-                            Discover the world's best venues and services for weddings, parties, and corporate events.
+                            Browse thousands of verified event vendors across India
                         </p>
+                    </motion.div>
+                </div>
+
+                {/* Stats Ticker */}
+                <div className="absolute bottom-16 left-0 right-0 z-20 flex justify-center w-full px-4 mb-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-6 py-3 flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-white/90 text-xs sm:text-sm font-medium shadow-xl"
+                    >
+                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">600+</span> Events Listed</div>
+                        <div className="hidden sm:block text-white/30">•</div>
+                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">1,789</span> Bookings Made</div>
+                        <div className="hidden sm:block text-white/30">•</div>
+                        <div className="flex items-center gap-2"><span className="font-bold text-white text-sm sm:text-base">$32,045+</span> in Earnings Processed</div>
                     </motion.div>
                 </div>
 

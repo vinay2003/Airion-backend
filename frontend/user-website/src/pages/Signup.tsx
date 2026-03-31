@@ -23,13 +23,21 @@ const Signup: React.FC = () => {
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
-            if (response.otp) {
-                setSuccess(`OTP sent! Your code is: ${response.otp}`);
+            const devCode = response?.devOtp || response?.otp || (response as any)?.data?.otp;
+            if (import.meta.env.DEV) {
+                console.log('OTP Response:', response);
+                if (devCode) console.log('DEVELOPMENT CODE:', devCode);
+            }
+
+            if (devCode) {
+                window.alert(`DEVELOPMENT OTP: ${devCode}\n\nUse this code to verify your phone number.`);
+                setSuccess('OTP sent successfully to your phone!');
             } else {
                 setSuccess('OTP sent successfully to your phone!');
             }
             setStep('otp');
         } catch (err: any) {
+            console.error('OTP Signup Send Error:', err.response?.data || err.message);
             if (err.response?.status === 409) {
                 setError('User already exists with this phone number. Please login.');
             } else {
@@ -58,6 +66,7 @@ const Signup: React.FC = () => {
                 setTimeout(() => navigate('/onboarding/interests'), 1000);
             }
         } catch (err: any) {
+            console.error('OTP Verify Error:', err.response?.data || err.message);
             setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
         } finally {
             setLoading(false);

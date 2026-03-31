@@ -44,7 +44,7 @@ const MyBookings: React.FC = () => {
                             totalAmount: '120000',
                             vendor: { businessName: 'Gourmet Catering Co.', city: 'Delhi', portfolioImages: ['https://images.unsplash.com/photo-1555244162-803834f70033?q=80'] }
                         },
-                         {
+                        {
                             id: '4',
                             bookingCode: 'AIRION-558291',
                             eventDate: new Date(Date.now() - 500000000).toISOString(),
@@ -102,11 +102,10 @@ const MyBookings: React.FC = () => {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
-                            activeTab === tab
-                            ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-md'
-                            : 'bg-transparent text-neutral-500 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 hover:text-neutral-900 dark:hover:text-white'
-                        }`}
+                        className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === tab
+                                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-md'
+                                : 'bg-transparent text-neutral-500 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 hover:text-neutral-900 dark:hover:text-white'
+                            }`}
                     >
                         {tab}
                     </button>
@@ -189,3 +188,4 @@ const MyBookings: React.FC = () => {
 };
 
 export default MyBookings;
+

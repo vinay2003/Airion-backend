@@ -29,19 +29,19 @@ const BookingConfirmation: React.FC = () => {
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-[100px] transform -translate-x-1/2 translate-y-1/2"></div>
             </div>
 
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="max-w-4xl w-full relative z-10"
             >
                 <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden border border-neutral-200 dark:border-slate-800 flex flex-col md:flex-row">
-                    
+
                     {/* Left Side: Celebration Hero */}
                     <div className="md:w-5/12 bg-neutral-900 dark:bg-slate-800 p-8 md:p-12 text-white flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
                         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
 
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}

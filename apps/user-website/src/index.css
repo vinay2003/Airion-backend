@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@600;700&display=swap');
+
+/**
+ * Airion User Website — Styles
+ *
+ * Imports the shared @airion/ui design system (tokens + Tailwind + base resets).
+ * Then applies LIGHT THEME surface overrides for the customer-facing portal.
+ */
+
+/* ── 1. Load Tailwind v4 and Share Design System ─────────── */
+@import "tailwindcss";
+@import "@airion/ui/globals.css";
+
+/* ── 2. Light Theme: activate for this portal ────────────── */
+:root {
+  color-scheme: light;
+
+  /* Override surfaces to light */
+  --airion-bg-base:        #FFFFFF;
+  --airion-bg-surface:     #F8F8FF;
+  --airion-bg-elevated:    #F0EFFE;
+  --airion-bg-sidebar:     #FAFAFA;
+
+  /* Text for light mode */
+  --airion-text-primary:   #1A1A2E;
+  --airion-text-secondary: #4A4A6A;
+  --airion-text-muted:     #9090AA;
+  --airion-text-inverted:  #FFFFFF;
+
+  /* Borders for light mode */
+  --airion-border-subtle:  rgba(0, 0, 0, 0.06);
+  --airion-border-base:    rgba(0, 0, 0, 0.12);
+
+  /* Shadows for light mode */
+  --airion-shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
+  --airion-shadow-md:  0 6px 16px rgba(0, 0, 0, 0.12);
+  --airion-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.16);
+  --airion-shadow-glow: 0 0 24px rgba(108, 99, 255, 0.12);
+
+  /* Tailwind semantic aliases (light) */
+  --background:  #FFFFFF;
+  --foreground:  #1A1A2E;
+  --card:        #F8F8FF;
+  --card-foreground: #1A1A2E;
+  --muted:       #F0EFFE;
+  --muted-foreground: #9090AA;
+  --border:      rgba(0, 0, 0, 0.06);
+  --input:       rgba(0, 0, 0, 0.10);
+  --secondary:   #F0EFFE;
+  --secondary-foreground: #4A4A6A;
+}
+
+/* ── 3. User Portal Specific Utilities ───────────────────── */
+@layer utilities {
+  /* Airbnb-style card shadow for event listing cards */
+  .shadow-listing      { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); }
+  .shadow-listing-hover { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16); }
+
+  /* Red accent grid for hero section */
+  .grid-bg {
+    background-color: #fff5f5;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}

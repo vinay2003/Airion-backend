@@ -1,0 +1,35 @@
+/**
+ * Airion Admin Panel — Styles
+ *
+ * Imports the shared @airion/ui design system (tokens + Tailwind + base resets).
+ * Dark theme is the DEFAULT. Admin has no portal-specific classes right now.
+ */
+
+/* ── 1. Shared Design System ─────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@600;700&display=swap');
+
+@import "tailwindcss";
+@import "@airion/ui/globals.css";
+
+/* ── 2. Admin-Specific Overrides ─────────────────────────── */
+:root {
+  /* Admin uses a slightly deeper background for clear hierarchy */
+  --airion-bg-base:    #0A0C12;
+  --airion-bg-sidebar: #0F1117;
+
+  /* Update Tailwind semantic aliases to match */
+  --background: #0A0C12;
+  --sidebar:    #0F1117;
+}
+
+/* ── 3. Admin Component Classes ──────────────────────────── */
+@layer components {
+  /* Data table rows */
+  .table-row-hover {
+    @apply transition-colors hover:bg-[var(--airion-bg-elevated)] cursor-pointer;
+  }
+  /* Admin stat card */
+  .admin-stat-card {
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:border-[var(--airion-brand-primary)]/30;
+  }
+}

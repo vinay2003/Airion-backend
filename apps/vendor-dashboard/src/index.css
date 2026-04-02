@@ -1,0 +1,38 @@
+/**
+ * Airion Vendor Dashboard — Styles
+ *
+ * Imports the shared @airion/ui design system (tokens + Tailwind + base resets).
+ * Dark theme is the DEFAULT — no overrides needed for surfaces.
+ * Vendor-specific component classes are preserved below.
+ */
+
+/* ── 1. Shared Design System ─────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@600;700&display=swap');
+
+@import "tailwindcss";
+@import "@airion/ui/globals.css";
+
+/* ── 2. Google Fonts for Vendor Dashboard ────────────────── */
+/* (DM Sans is already in tokens.css; this ensures it's loaded) */
+
+/* ── 3. Vendor Dashboard Custom Components ───────────────── */
+@layer components {
+  /* Premium card with hover lift — preserved from original design */
+  .card-premium {
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl p-6 transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_4px_24px_rgba(0,0,0,0.3)];
+  }
+
+  /* Glass panel — used in sidebar and dropdowns */
+  .glass-panel {
+    background: var(--airion-bg-surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--airion-border-subtle);
+  }
+}
+
+/* ── 4. Vendor-Specific Utilities ────────────────────────── */
+@layer utilities {
+  .shadow-card-custom  { box-shadow: var(--airion-shadow-md); }
+  .shadow-glow-custom  { box-shadow: var(--airion-shadow-glow); }
+}

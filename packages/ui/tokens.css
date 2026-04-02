@@ -1,0 +1,192 @@
+/**
+ * Airion Design System — Token Definitions
+ *
+ * Single source of truth for all design tokens across:
+ *   - User Website (light mode surfaces)
+ *   - Vendor Dashboard (dark mode)
+ *   - Admin Panel (dark mode)
+ *
+ * Strategy: CSS custom properties in :root, with a [data-theme="light"]
+ * override for the user-facing portal.
+ */
+
+/* ─────────────────────────────────────────────
+   DARK THEME (default — Vendor & Admin portals)
+───────────────────────────────────────────── */
+:root {
+  /* ── Brand Palette ── */
+  --airion-brand-primary:    #6C63FF;   /* Purple */
+  --airion-brand-secondary:  #4ECDC4;   /* Teal */
+  --airion-brand-danger:     #FF6B6B;   /* Coral Red */
+  --airion-brand-gold:       #FFD166;   /* Gold */
+  --airion-brand-green:      #06D6A0;   /* Emerald */
+
+  /* ── Surface Layers ── */
+  --airion-bg-base:          #0F1117;   /* Page background */
+  --airion-bg-surface:       #1A1D2E;   /* Cards, modals */
+  --airion-bg-elevated:      #242740;   /* Dropdowns, popovers */
+  --airion-bg-sidebar:       #13151F;   /* Fixed navigation */
+  --airion-bg-overlay:       rgba(0, 0, 0, 0.6);
+
+  /* ── Text ── */
+  --airion-text-primary:     #FFFFFF;
+  --airion-text-secondary:   #A0A3B1;
+  --airion-text-muted:       #5C5F73;
+  --airion-text-inverted:    #0F1117;
+
+  /* ── Borders ── */
+  --airion-border-subtle:    rgba(255, 255, 255, 0.06);
+  --airion-border-base:      rgba(255, 255, 255, 0.12);
+  --airion-border-active:    rgba(108, 99, 255, 0.4);
+  --airion-border-brand:     #6C63FF;
+
+  /* ── Shadows ── */
+  --airion-shadow-sm:        0 2px 8px rgba(0, 0, 0, 0.25);
+  --airion-shadow-md:        0 4px 24px rgba(0, 0, 0, 0.3);
+  --airion-shadow-lg:        0 8px 40px rgba(0, 0, 0, 0.45);
+  --airion-shadow-glow:      0 0 30px rgba(108, 99, 255, 0.2);
+  --airion-shadow-glow-teal: 0 0 30px rgba(78, 205, 196, 0.2);
+  --airion-shadow-glow-red:  0 0 30px rgba(255, 107, 107, 0.2);
+
+  /* ── Status Colors ── */
+  --airion-status-confirmed:   #06D6A0;
+  --airion-status-pending:     #FFD166;
+  --airion-status-cancelled:   #FF6B6B;
+  --airion-status-new:         #6C63FF;
+  --airion-status-inprogress:  #4ECDC4;
+  --airion-status-verified:    #06D6A0;
+
+  /* ── Status Backgrounds (15% alpha) ── */
+  --airion-status-confirmed-bg:   rgba(6, 214, 160, 0.15);
+  --airion-status-pending-bg:     rgba(255, 209, 102, 0.15);
+  --airion-status-cancelled-bg:   rgba(255, 107, 107, 0.15);
+  --airion-status-new-bg:         rgba(108, 99, 255, 0.15);
+  --airion-status-inprogress-bg:  rgba(78, 205, 196, 0.15);
+
+  /* ── Radius ── */
+  --airion-radius-xs:   4px;
+  --airion-radius-sm:   8px;
+  --airion-radius-md:   12px;
+  --airion-radius-lg:   16px;
+  --airion-radius-xl:   24px;
+  --airion-radius-2xl:  32px;
+  --airion-radius-full: 9999px;
+
+  /* ── Typography ── */
+  --airion-font-sans:    'DM Sans', 'Inter', system-ui, sans-serif;
+  --airion-font-display: 'Inter', 'DM Sans', system-ui, sans-serif;
+  --airion-font-serif:   'Playfair Display', Georgia, serif;
+  --airion-font-cursive: 'Dancing Script', cursive;
+  --airion-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Type Scale ── */
+  --airion-text-xs:   0.75rem;    /* 12px */
+  --airion-text-sm:   0.875rem;   /* 14px */
+  --airion-text-base: 1rem;       /* 16px */
+  --airion-text-lg:   1.125rem;   /* 18px */
+  --airion-text-xl:   1.25rem;    /* 20px */
+  --airion-text-2xl:  1.5rem;     /* 24px */
+  --airion-text-3xl:  1.875rem;   /* 30px */
+  --airion-text-4xl:  2.25rem;    /* 36px */
+  --airion-text-5xl:  3rem;       /* 48px */
+
+  /* ── Animations ── */
+  --airion-duration-fast:   150ms;
+  --airion-duration-base:   200ms;
+  --airion-duration-slow:   350ms;
+  --airion-ease-smooth:     cubic-bezier(0.4, 0, 0.2, 1);
+  --airion-ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Spacing ── */
+  --airion-space-1: 0.25rem;
+  --airion-space-2: 0.5rem;
+  --airion-space-3: 0.75rem;
+  --airion-space-4: 1rem;
+  --airion-space-5: 1.25rem;
+  --airion-space-6: 1.5rem;
+  --airion-space-8: 2rem;
+  --airion-space-10: 2.5rem;
+  --airion-space-12: 3rem;
+  --airion-space-16: 4rem;
+
+  /* ── Tailwind Semantic Aliases (used by @theme) ── */
+  --background:    var(--airion-bg-base);
+  --foreground:    var(--airion-text-primary);
+  --card:          var(--airion-bg-surface);
+  --card-foreground: var(--airion-text-primary);
+  --primary:       var(--airion-brand-primary);
+  --primary-foreground: #FFFFFF;
+  --secondary:     var(--airion-bg-elevated);
+  --secondary-foreground: var(--airion-text-secondary);
+  --muted:         var(--airion-bg-elevated);
+  --muted-foreground: var(--airion-text-muted);
+  --accent:        var(--airion-brand-secondary);
+  --accent-foreground: var(--airion-text-inverted);
+  --destructive:   var(--airion-brand-danger);
+  --border:        var(--airion-border-subtle);
+  --input:         var(--airion-border-base);
+  --ring:          var(--airion-brand-primary);
+  --radius:        var(--airion-radius-lg);
+
+  /* Chart tokens */
+  --chart-1: var(--airion-brand-primary);
+  --chart-2: var(--airion-brand-secondary);
+  --chart-3: var(--airion-brand-gold);
+  --chart-4: var(--airion-brand-green);
+  --chart-5: var(--airion-brand-danger);
+
+  /* Sidebar tokens */
+  --sidebar:          var(--airion-bg-sidebar);
+  --sidebar-foreground: var(--airion-text-primary);
+  --sidebar-primary:  var(--airion-brand-primary);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:   var(--airion-bg-elevated);
+  --sidebar-accent-foreground: var(--airion-text-secondary);
+  --sidebar-border:   var(--airion-border-subtle);
+  --sidebar-ring:     var(--airion-brand-primary);
+}
+
+/* ─────────────────────────────────────────────
+   LIGHT THEME (User-facing portal)
+   Apply via: <html data-theme="light"> or .light on <body>
+───────────────────────────────────────────── */
+[data-theme="light"],
+.light {
+  color-scheme: light;
+
+  /* ── Surface Layers (Light) ── */
+  --airion-bg-base:          #FFFFFF;
+  --airion-bg-surface:       #F8F8FF;
+  --airion-bg-elevated:      #F0EFFE;
+  --airion-bg-sidebar:       #FAFAFA;
+
+  /* ── Text (Light) ── */
+  --airion-text-primary:     #1A1A2E;
+  --airion-text-secondary:   #4A4A6A;
+  --airion-text-muted:       #9090AA;
+  --airion-text-inverted:    #FFFFFF;
+
+  /* ── Borders (Light) ── */
+  --airion-border-subtle:    rgba(0, 0, 0, 0.06);
+  --airion-border-base:      rgba(0, 0, 0, 0.12);
+  --airion-border-active:    rgba(108, 99, 255, 0.35);
+
+  /* ── Shadows (Light) ── */
+  --airion-shadow-sm:        0 2px 8px rgba(0, 0, 0, 0.07);
+  --airion-shadow-md:        0 6px 16px rgba(0, 0, 0, 0.12);
+  --airion-shadow-lg:        0 10px 24px rgba(0, 0, 0, 0.16);
+  --airion-shadow-glow:      0 0 24px rgba(108, 99, 255, 0.12);
+
+  /* ── Tailwind Semantic Aliases (Light Override) ── */
+  --background:    var(--airion-bg-base);
+  --foreground:    var(--airion-text-primary);
+  --card:          var(--airion-bg-surface);
+  --card-foreground: var(--airion-text-primary);
+  --secondary:     var(--airion-bg-elevated);
+  --secondary-foreground: var(--airion-text-secondary);
+  --muted:         var(--airion-bg-elevated);
+  --muted-foreground: var(--airion-text-muted);
+  --border:        var(--airion-border-subtle);
+  --input:         var(--airion-border-base);
+  --sidebar:       var(--airion-bg-sidebar);
+}

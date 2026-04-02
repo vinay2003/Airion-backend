@@ -1,0 +1,290 @@
+/**
+ * Airion Design System — Global Base Styles
+ *
+ * Import this file into each portal's index.css:
+ *   @import "@airion/ui/globals.css";
+ *
+ * Then add portal-specific overrides below.
+ */
+
+/* 1. Load all design tokens */
+@import "./tokens.css";
+
+/* 2. Load Tailwind v4 and Animations */
+@import "tw-animate-css";
+
+/* 3. Dark/light variant support */
+@custom-variant dark (&:is(.dark *));
+
+/* ─────────────────────────────────────────────
+   TAILWIND v4 THEME REGISTRATION
+───────────────────────────────────────────── */
+@theme inline {
+  /* Fonts */
+  --font-sans:    var(--airion-font-sans);
+  --font-display: var(--airion-font-display);
+  --font-serif:   var(--airion-font-serif);
+  --font-cursive: var(--airion-font-cursive);
+  --font-mono:    var(--airion-font-mono);
+
+  /* Radii mapped from tokens */
+  --radius-xs:   var(--airion-radius-xs);
+  --radius-sm:   var(--airion-radius-sm);
+  --radius-md:   var(--airion-radius-md);
+  --radius-lg:   var(--airion-radius-lg);
+  --radius-xl:   var(--airion-radius-xl);
+  --radius-2xl:  var(--airion-radius-2xl);
+  --radius-full: var(--airion-radius-full);
+
+  /* Semantic Tailwind color mappings */
+  --color-background:                var(--background);
+  --color-foreground:                var(--foreground);
+  --color-card:                      var(--card);
+  --color-card-foreground:           var(--card-foreground);
+  --color-primary:                   var(--primary);
+  --color-primary-foreground:        var(--primary-foreground);
+  --color-secondary:                 var(--secondary);
+  --color-secondary-foreground:      var(--secondary-foreground);
+  --color-muted:                     var(--muted);
+  --color-muted-foreground:          var(--muted-foreground);
+  --color-accent:                    var(--accent);
+  --color-accent-foreground:         var(--accent-foreground);
+  --color-destructive:               var(--destructive);
+  --color-border:                    var(--border);
+  --color-input:                     var(--input);
+  --color-ring:                      var(--ring);
+  --color-chart-1:                   var(--chart-1);
+  --color-chart-2:                   var(--chart-2);
+  --color-chart-3:                   var(--chart-3);
+  --color-chart-4:                   var(--chart-4);
+  --color-chart-5:                   var(--chart-5);
+  --color-sidebar:                   var(--sidebar);
+  --color-sidebar-foreground:        var(--sidebar-foreground);
+  --color-sidebar-primary:           var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:            var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:            var(--sidebar-border);
+  --color-sidebar-ring:              var(--sidebar-ring);
+
+  /* Direct brand color access via Tailwind (e.g. bg-airion-brand-primary) */
+  --color-airion-brand-primary:   var(--airion-brand-primary);
+  --color-airion-brand-secondary: var(--airion-brand-secondary);
+  --color-airion-brand-danger:    var(--airion-brand-danger);
+  --color-airion-brand-gold:      var(--airion-brand-gold);
+  --color-airion-brand-green:     var(--airion-brand-green);
+}
+
+/* ─────────────────────────────────────────────
+   BASE RESETS
+───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    font-family: var(--airion-font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--airion-font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* Touch-friendly minimum targets (WCAG 2.5.5) */
+  @media (max-width: 768px) {
+    button, a { min-height: 44px; }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--airion-border-base); border-radius: var(--airion-radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--airion-text-muted); }
+
+/* ─────────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────────── */
+@keyframes airion-slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes airion-slide-in-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes airion-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes airion-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(108, 99, 255, 0.25); }
+}
+
+/* ─────────────────────────────────────────────
+   SHARED UTILITY CLASSES
+───────────────────────────────────────────── */
+  /* Shadows */
+  @utility shadow-airion-sm  { box-shadow: var(--airion-shadow-sm);  }
+  @utility shadow-airion-md  { box-shadow: var(--airion-shadow-md);  }
+  @utility shadow-airion-lg  { box-shadow: var(--airion-shadow-lg);  }
+  @utility shadow-airion-glow { box-shadow: var(--airion-shadow-glow); }
+
+  /* Legacy compat aliases (preserves existing vendor dashboard classes) */
+  @utility shadow-airbnb      { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); }
+  @utility shadow-airbnb-hover { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16); }
+  @utility shadow-soft        { box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08); }
+  @utility shadow-card-custom { box-shadow: var(--airion-shadow-md); }
+  @utility shadow-glow-custom { box-shadow: var(--airion-shadow-glow); }
+
+  /* Glassmorphism */
+  @utility glass-panel {
+    background: var(--airion-bg-surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--airion-border-subtle);
+  }
+  @utility glass-light {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Grid Background */
+  @utility grid-bg-dark {
+    background-color: var(--airion-bg-base);
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  @utility grid-bg-light {
+    background-color: #fff5f5;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Scrollbar hide */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Animations */
+  .animate-slide-in-left { animation: airion-slide-in-left var(--airion-duration-slow) var(--airion-ease-smooth) forwards; }
+  .animate-slide-in-up   { animation: airion-slide-in-up   var(--airion-duration-slow) var(--airion-ease-spring) forwards; }
+  .animate-fade-in       { animation: airion-fade-in       var(--airion-duration-base) var(--airion-ease-smooth) forwards; }
+  .animate-slideIn       { animation: airion-slide-in-left 0.3s ease-out; } /* legacy compat */
+  .animate-pulse-glow    { animation: airion-pulse-glow 2s ease-in-out infinite; }
+
+  /* Typography helpers */
+  .font-display  { font-family: var(--airion-font-display); }
+  .font-serif    { font-family: var(--airion-font-serif); }
+  .font-cursive  { font-family: var(--airion-font-cursive); }
+  .text-gradient-brand {
+    background: linear-gradient(135deg, var(--airion-brand-primary), var(--airion-brand-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+/* ─────────────────────────────────────────────
+   SHARED COMPONENT CLASSES
+   (Design System — use React components where possible,
+    but CSS classes are provided for CSS-only fallback)
+───────────────────────────────────────────── */
+  /* ── Buttons ── */
+  @utility btn-base {
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] px-5 py-2.5 font-semibold text-sm transition-all duration-200 cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  @utility btn-primary {
+    @apply btn-base bg-[var(--airion-brand-primary)] text-white hover:-translate-y-[2px] hover:shadow-[0_0_20px_rgba(108,99,255,0.35)] active:translate-y-0;
+  }
+  .btn-secondary {
+    @apply btn-base bg-[var(--airion-bg-elevated)] text-[var(--airion-text-secondary)] hover:text-[var(--airion-text-primary)] hover:bg-[var(--airion-border-base)];
+  }
+  .btn-outline {
+    @apply btn-base border border-[var(--airion-border-active)] text-[var(--airion-brand-primary)] hover:bg-[rgba(108,99,255,0.08)];
+  }
+  .btn-ghost {
+    @apply btn-base bg-[rgba(255,255,255,0.05)] text-[var(--airion-text-secondary)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[var(--airion-text-primary)];
+  }
+  .btn-danger {
+    @apply btn-base border border-[var(--airion-brand-danger)] text-[var(--airion-brand-danger)] bg-[rgba(255,107,107,0.08)] hover:bg-[rgba(255,107,107,0.18)];
+  }
+  .btn-gradient {
+    @apply btn-base bg-gradient-to-br from-[#6C63FF] to-[#4ECDC4] text-white hover:-translate-y-[2px] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] active:translate-y-0;
+  }
+
+  /* Light mode button variants */
+  .light .btn-primary, [data-theme="light"] .btn-primary {
+    @apply shadow-[0_4px_14px_rgba(108,99,255,0.25)] hover:shadow-[0_6px_20px_rgba(108,99,255,0.35)];
+  }
+
+  /* ── Cards ── */
+  @utility card-base {
+    @apply rounded-2xl border transition-all duration-300;
+  }
+  @utility card-surface {
+    @apply card-base bg-[var(--airion-bg-surface)] border-[var(--airion-border-subtle)] p-6;
+  }
+  .card-elevated {
+    @apply card-base bg-[var(--airion-bg-elevated)] border-[var(--airion-border-base)] p-6 hover:-translate-y-[2px] hover:shadow-[var(--airion-shadow-md)];
+  }
+  .card-glass {
+    @apply card-base glass-panel p-6;
+  }
+  /* Legacy compat */
+  .card-premium {
+    @apply card-surface hover:-translate-y-[2px] hover:shadow-[0_4px_24px_rgba(0,0,0,0.3)];
+  }
+
+  /* ── Badges ── */
+  @utility badge {
+    @apply px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide uppercase inline-flex items-center gap-1;
+  }
+  .badge-confirmed   { @apply bg-[var(--airion-status-confirmed-bg)]  text-[var(--airion-status-confirmed)];  }
+  .badge-pending     { @apply bg-[var(--airion-status-pending-bg)]    text-[var(--airion-status-pending)];    }
+  .badge-cancelled   { @apply bg-[var(--airion-status-cancelled-bg)]  text-[var(--airion-status-cancelled)];  }
+  .badge-new         { @apply bg-[var(--airion-status-new-bg)]        text-[var(--airion-status-new)];        }
+  .badge-inprogress  { @apply bg-[var(--airion-status-inprogress-bg)] text-[var(--airion-status-inprogress)]; }
+  .badge-verified    { @apply bg-[var(--airion-status-confirmed-bg)]  text-[var(--airion-status-verified)];   }
+
+  /* ── Form Inputs ── */
+  @utility input-base {
+    @apply w-full rounded-xl border border-[var(--airion-border-base)] bg-[var(--airion-bg-surface)]
+           px-4 py-3 text-[var(--airion-text-primary)] text-sm
+           placeholder:text-[var(--airion-text-muted)]
+           outline-none transition-all duration-200
+           focus:border-[var(--airion-brand-primary)] focus:ring-4 focus:ring-[rgba(108,99,255,0.08)]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .input-error {
+    @apply border-[var(--airion-brand-danger)] focus:ring-[rgba(255,107,107,0.12)];
+  }
+  .label-base {
+    @apply block text-xs font-bold text-[var(--airion-text-muted)] uppercase tracking-widest mb-2 pl-1;
+  }

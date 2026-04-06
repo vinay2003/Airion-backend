@@ -81,7 +81,16 @@ const UnifiedAuth: React.FC = () => {
             setStep('otp');
             setResendTimer(60);
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to send OTP.');
+            const status = err.response?.status;
+            const message = err.response?.data?.message || err.message;
+            
+            if (status === 409) {
+                toast.error('Account already exists. Try logging in instead.', { duration: 5000 });
+                // We could auto-switch to login mode here
+                setMode('login');
+            } else {
+                toast.error(message || 'Failed to send OTP.');
+            }
         } finally {
             setLoading(false);
         }

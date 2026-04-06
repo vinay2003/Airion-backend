@@ -20,8 +20,24 @@ export class VendorsController {
     @Get('me')
     @UseGuards(JwtAuthGuard)
     async getMyProfile(@Request() req: any) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
-        return vendor || { message: 'No vendor profile found', isVendor: false };
+        try {
+            // Guard against unauthorized or malformed data
+            if (!req || !req.user) return null;
+
+            // Normalize UserId (some payloads use .sub, others use .userId)
+            const userId = req.user.userId || (req.user as any).sub;
+            if (!userId) {
+                console.warn('[VendorsController] User authenticated but no ID found in payload');
+                return null;
+            }
+
+            const vendor = await this.vendorsService.findByUserId(userId);
+            return vendor || null;
+        } catch (error) {
+            console.error('[VendorsController] Failed to resolve vendor profile:', error);
+            // We return null to maintain stable UX even on unexpected internal errors
+            return null;
+        }
     }
 
     @Get(':id')
@@ -69,5 +85,11 @@ export class VendorsController {
             throw new BadRequestException('Status is required');
         }
         return this.vendorsService.updateStatus(id, body.status);
+    }
+
+    @Get(':id/stats/bookings')
+    @UseGuards(JwtAuthGuard)
+    async getStats(@Param('id') id: string) {
+        return this.vendorsService.getVendorStats(id);
     }
 }

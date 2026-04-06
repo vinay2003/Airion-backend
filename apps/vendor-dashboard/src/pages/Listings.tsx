@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
 import api from '../lib/api';
 import ListingEditorModal from '../components/ListingEditorModal';
+import { Button, Badge, Spinner } from '@airion/ui';
 
 const Listings: React.FC = () => {
     const [listings, setListings] = useState<any[]>([]);
@@ -24,7 +25,7 @@ const Listings: React.FC = () => {
     useEffect(() => {
         const fetchListings = async () => {
             try {
-                const response = await api.get('/services');
+                const response: any = await api.get('/services');
 
                 const mapped = response.data.map((service: any) => ({
                     id: service.id,
@@ -60,7 +61,11 @@ const Listings: React.FC = () => {
     };
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return (
+            <div className="flex justify-center items-center h-full min-h-[400px]">
+                <Spinner size="lg" className="text-[var(--airion-brand-primary)]" />
+            </div>
+        );
     }
 
     if (error) {
@@ -72,21 +77,22 @@ const Listings: React.FC = () => {
             <div>
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Listings</h1>
-                        <p className="text-gray-500 dark:text-slate-400">Manage your venues and services</p>
+                        <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">My Listings</h1>
+                        <p className="text-[var(--airion-text-muted)]">Manage your venues and services</p>
                     </div>
-                    <button
+                    <Button
                         onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
-                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all hover:scale-105 transform"
+                        variant="primary"
+                        className="font-bold shadow-[var(--airion-shadow-md)]"
+                        leftIcon={<Plus size={20} />}
                     >
-                        <Plus size={20} />
                         Add New Listing
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {listings.map((listing) => (
-                        <div key={listing.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800 group hover:shadow-lg transition-all hover:-translate-y-1 transform duration-300">
+                        <div key={listing.id} className="bg-[var(--airion-bg-base)] rounded-3xl overflow-hidden border border-[var(--airion-border-subtle)] group hover:border-indigo-100 hover:shadow-[0_12px_32px_-8px_rgba(15,23,42,0.04),_0_4px_12px_-4px_rgba(15,23,42,0.02)] transition-all duration-400 ease-out hover:-translate-y-1">
                             <div className="relative h-48 overflow-hidden">
                                 <img
                                     src={listing.image}
@@ -94,33 +100,35 @@ const Listings: React.FC = () => {
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                <div className={`absolute top-4 right-4 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold shadow-md ${getStatusColor(listing.status || 'Active')}`}>
-                                    {listing.status || 'Active'}
+                                <div className="absolute top-4 right-4">
+                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : listing.status === 'Under Review' ? 'pending' : 'default'} className="shadow-md">
+                                        {listing.status || 'Active'}
+                                    </Badge>
                                 </div>
                             </div>
                             <div className="p-6">
                                 <div className="flex justify-between items-start mb-2">
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors">{listing.title}</h3>
+                                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors">{listing.title}</h3>
                                     <div className="flex items-center gap-1 text-sm">
                                         <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                                        <span className="font-bold text-gray-900 dark:text-white">{listing.rating}</span>
+                                        <span className="font-bold text-[var(--airion-text-primary)]">{listing.rating}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1 text-gray-500 dark:text-slate-400 text-sm mb-1">
+                                <div className="flex items-center gap-1 text-[var(--airion-text-secondary)] text-sm mb-1">
                                     <MapPin size={16} />
                                     {listing.location}
                                 </div>
-                                <p className="text-xs text-gray-400 dark:text-slate-500 mb-4">{listing.reviews} reviews</p>
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-800">
-                                    <span className="font-bold text-gray-900 dark:text-white text-lg">{listing.price}</span>
+                                <p className="text-xs text-[var(--airion-text-muted)] mb-4">{listing.reviews} reviews</p>
+                                <div className="flex items-center justify-between pt-4 border-t border-[var(--airion-border-subtle)]">
+                                    <span className="font-bold text-[var(--airion-text-primary)] text-lg">{listing.price}</span>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => { setEditingListing(listing); setIsEditorOpen(true); }}
-                                            className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 transition-colors"
+                                            className="p-2 hover:bg-[rgba(108,99,255,0.05)] rounded-lg text-[var(--airion-text-secondary)] hover:text-[var(--airion-brand-primary)] transition-colors"
                                         >
                                             <Edit2 size={18} />
                                         </button>
-                                        <button className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors">
+                                        <button className="p-2 hover:bg-[rgba(255,107,107,0.05)] rounded-lg text-red-500 hover:text-[var(--airion-brand-danger)] transition-colors">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>

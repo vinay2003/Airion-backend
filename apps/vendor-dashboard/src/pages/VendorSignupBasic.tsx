@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@airion/shared';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 import OTPInput from '@shared/components/OTPInput';
@@ -21,7 +21,7 @@ interface BasicDetails {
 
 const VendorSignupBasic: React.FC = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { loginWithToken } = useAuth();
     const [step, setStep] = useState<'details' | 'otp' | 'verified'>('details');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -83,7 +83,8 @@ const VendorSignupBasic: React.FC = () => {
                 email: basicDetails.email
             });
 
-            const devCode = (response.data as any)?._dev_otp || (response.data as any)?.data?._dev_otp;
+            const responseData = response as any;
+            const devCode = responseData?._dev_otp || responseData?.data?._dev_otp;
             if (import.meta.env.DEV && devCode) {
                 console.log('📱 Dev-Only OTP:', devCode);
                 toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
@@ -118,9 +119,9 @@ const VendorSignupBasic: React.FC = () => {
                 role: 'vendor'
             });
 
-            const authData = response.data;
+            const authData = response as any;
             if (authData.access_token) {
-                login(authData.access_token);
+                await loginWithToken(authData.access_token);
                 localStorage.setItem('vendorBasicDetails', JSON.stringify(basicDetails));
             }
 

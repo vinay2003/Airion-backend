@@ -1,14 +1,19 @@
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Users, Store, DollarSign, ArrowUpRight } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
+import { Skeleton, SkeletonText } from '@airion/ui/components/Skeleton';
 
 const Dashboard: React.FC = () => {
-    const stats = [
-        { label: 'Total Revenue', value: '₹45.2L', change: '+12%', icon: DollarSign, color: 'green' },
-        { label: 'Active Vendors', value: '1,240', change: '+8%', icon: Store, color: 'blue' },
-        { label: 'Total Users', value: '85.4k', change: '+24%', icon: Users, color: 'purple' },
-        { label: 'Growth Rate', value: '18.2%', change: '+2%', icon: TrendingUp, color: 'red' },
-    ];
+    const { data: stats, isLoading: statsLoading } = useQuery<any[]>({
+        queryKey: ['admin-stats'],
+        queryFn: () => Promise.resolve([
+            { label: 'Total Revenue', value: '₹45.2L', change: '+12%', icon: DollarSign, color: 'emerald' },
+            { label: 'Active Vendors', value: '1,240', change: '+8%', icon: Store, color: 'blue' },
+            { label: 'Total Users', value: '85.4k', change: '+24%', icon: Users, color: 'purple' },
+            { label: 'Growth Rate', value: '18.2%', change: '+2%', icon: TrendingUp, color: 'rose' },
+        ]).then(d => new Promise(resolve => setTimeout(() => resolve(d), 1000))) // Mock delay
+    });
 
     const growthData = [
         { name: 'Jan', users: 4000, vendors: 240 },
@@ -36,51 +41,60 @@ const Dashboard: React.FC = () => {
         { name: 'Jun', revenue: 2800000, commission: 280000 },
     ];
 
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Platform Overview</h1>
+        <div className="animate-in fade-in duration-500 pb-12">
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Platform Intel</h1>
+                <div className="text-xs font-bold text-[var(--airion-text-muted)] bg-[var(--airion-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--airion-border-subtle)] uppercase tracking-wider">Live System Status: Normal</div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 hover:shadow-lg hover:-translate-y-1 transform transition-all duration-300">
+                {statsLoading ? (
+                    Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="card-premium h-[160px] flex flex-col justify-center gap-4">
+                            <Skeleton variant="circle" width={48} height={48} />
+                            <SkeletonText lines={2} />
+                        </div>
+                    ))
+                ) : stats?.map((stat, idx) => (
+                    <div key={idx} className="card-premium">
                         <div className="flex justify-between items-start mb-4">
-                            <div className={`p-3 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400`}>
+                            <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600 border border-${stat.color}-100`}>
                                 <stat.icon size={24} />
                             </div>
-                            <span className="flex items-center text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
+                            <span className="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
                                 {stat.change} <ArrowUpRight size={14} />
                             </span>
                         </div>
-                        <p className="text-gray-500 dark:text-slate-400 text-sm mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</h3>
+                        <p className="text-[var(--airion-text-secondary)] text-sm font-medium mb-1">{stat.label}</p>
+                        <h3 className="text-3xl font-bold text-[var(--airion-text-primary)] tracking-tight">{stat.value}</h3>
                     </div>
                 ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">User & Vendor Growth</h3>
+                <div className="lg:col-span-2 card-premium">
+                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Network Growth</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={growthData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.03)" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                                    itemStyle={{ color: '#fff' }}
+                                    contentStyle={{ backgroundColor: '#fff', border: '1px solid #f1f5f9', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                                 />
-                                <Line type="monotone" dataKey="users" stroke="#8884d8" strokeWidth={2} />
-                                <Line type="monotone" dataKey="vendors" stroke="#82ca9d" strokeWidth={2} />
+                                <Line type="monotone" dataKey="users" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, fill: '#6366f1' }} activeDot={{ r: 6 }} />
+                                <Line type="monotone" dataKey="vendors" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} activeDot={{ r: 6 }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Vendor Distribution</h3>
+                <div className="card-premium">
+                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Market Share</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -88,26 +102,22 @@ const Dashboard: React.FC = () => {
                                     data={categoryData}
                                     cx="50%"
                                     cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    fill="#8884d8"
-                                    paddingAngle={5}
+                                    innerRadius={70}
+                                    outerRadius={90}
+                                    paddingAngle={8}
                                     dataKey="value"
                                 >
                                     {categoryData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
                                     ))}
                                 </Pie>
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                                    itemStyle={{ color: '#fff' }}
-                                />
+                                <Tooltip />
                             </PieChart>
                         </ResponsiveContainer>
-                        <div className="flex justify-center gap-4 mt-4">
+                        <div className="grid grid-cols-2 gap-4 mt-4">
                             {categoryData.map((entry, index) => (
-                                <div key={index} className="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                                <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--airion-text-secondary)]">
+                                    <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                                     {entry.name}
                                 </div>
                             ))}
@@ -116,59 +126,65 @@ const Dashboard: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 mb-8">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Revenue & Platform Commission Trends</h3>
+            <div className="card-premium mb-8">
+                <div className="flex justify-between items-center mb-8">
+                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)]">Revenue Projections</h3>
+                    <div className="flex gap-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg">Volume</div>
+                        <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">Commission</div>
+                    </div>
+                </div>
                 <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={revenueData}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.03)" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
                             <YAxis 
                                 axisLine={false} 
                                 tickLine={false} 
-                                tick={{ fill: '#94a3b8' }}
+                                tick={{ fill: '#94a3b8', fontSize: 12 }}
                                 tickFormatter={(val) => `₹${val / 100000}L`}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                                itemStyle={{ color: '#fff' }}
+                                contentStyle={{ backgroundColor: '#fff', border: '1px solid #f1f5f9', borderRadius: '12px' }}
                                 formatter={(val: number) => `₹${val.toLocaleString()}`}
                             />
-                            <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                            <Bar dataKey="revenue" name="Total Booking Volume" fill="#818cf8" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="commission" name="Platform Commission (10%)" fill="#34d399" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="revenue" name="Total Volume" fill="#6366f1" radius={[6, 6, 0, 0]} barSize={32} />
+                            <Bar dataKey="commission" name="Commission" fill="#10b981" radius={[6, 6, 0, 0]} barSize={32} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Pending Vendor Approvals</h2>
+                <div className="card-premium">
+                    <h2 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Verification Queue</h2>
                     <div className="space-y-4">
                         {[
                             { name: 'Glow Makeup Studio', type: 'Makeup Artist', city: 'Mumbai' },
                             { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
                             { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
                         ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                            <div key={i} className="flex items-center justify-between p-4 bg-white border border-[var(--airion-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
                                         {vendor.name[0]}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-gray-900 dark:text-white">{vendor.name}</p>
-                                        <p className="text-xs text-gray-500 dark:text-slate-400">{vendor.type} • {vendor.city}</p>
+                                        <p className="font-bold text-[var(--airion-text-primary)]">{vendor.name}</p>
+                                        <p className="text-xs text-[var(--airion-text-muted)] font-medium">{vendor.type} • {vendor.city}</p>
                                     </div>
                                 </div>
-                                <span className="text-xs font-medium bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded-full">Pending</span>
+                                <div className="flex gap-2">
+                                    <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors">Review</button>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Recent Platform Activities</h2>
+                <div className="card-premium">
+                    <h2 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Platform Pulse</h2>
                     <div className="space-y-6">
                         {[
                             { user: 'Rahul S.', type: 'profile_view', target: 'Royal Palace', time: '10 mins ago' },
@@ -177,14 +193,14 @@ const Dashboard: React.FC = () => {
                         ].map((activity, i) => (
                             <div key={i} className="flex gap-4">
                                 <div className="flex flex-col items-center">
-                                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                                    <div className="w-0.5 h-full bg-gray-100 dark:bg-slate-800 my-1"></div>
+                                    <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full ring-4 ring-indigo-50"></div>
+                                    {i < 2 && <div className="w-0.5 h-full bg-slate-100 my-1"></div>}
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-900 dark:text-slate-200">
-                                        <span className="font-bold">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-red-600 font-medium">{activity.target}</span>
+                                    <p className="text-sm text-[var(--airion-text-secondary)]">
+                                        <span className="font-bold text-[var(--airion-text-primary)]">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-indigo-600 font-bold">{activity.target}</span>
                                     </p>
-                                    <p className="text-xs text-gray-400 dark:text-slate-500">{activity.time}</p>
+                                    <p className="text-[10px] font-bold text-[var(--airion-text-muted)] uppercase tracking-widest mt-1">{activity.time}</p>
                                 </div>
                             </div>
                         ))}

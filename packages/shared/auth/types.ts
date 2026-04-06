@@ -15,6 +15,7 @@ export interface User {
     name?: string;
     role: UserRole;
     phoneNumber?: string;
+    vendor?: { id: string; [key: string]: any };
     createdAt?: Date;
     updatedAt?: Date;
 }

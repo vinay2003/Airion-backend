@@ -33,7 +33,10 @@
         "./src/*"
       ],
       "@shared/*": [
-        "../shared/*"
+        "../../packages/shared/*"
+      ],
+      "@shared": [
+        "../../packages/shared"
       ]
     }
   },

@@ -6,6 +6,7 @@ import { Activity, ActivityType } from './entities/activity.entity';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { User } from '../auth/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
+import { Booking } from '../bookings/entities/booking.entity';
 
 @Injectable()
 export class VendorsService {
@@ -16,12 +17,14 @@ export class VendorsService {
         private activityRepository: Repository<Activity>,
         @InjectRepository(Category)
         private categoryRepository: Repository<Category>,
+        @InjectRepository(Booking)
+        private bookingRepository: Repository<Booking>,
     ) { }
 
-    async create(createVendorDto: CreateVendorDto, user: User): Promise<Vendor> {
+    async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
         // Check if user is already a vendor
         const existingVendor = await this.vendorRepository.findOne({
-            where: { userId: user.id },
+            where: { userId: user.userId },
         });
 
         if (existingVendor) {
@@ -31,7 +34,7 @@ export class VendorsService {
         const vendor = new Vendor();
         Object.assign(vendor, {
             ...(createVendorDto as Record<string, any>),
-            userId: user.id,
+            userId: user.userId,
             verificationStatus: 'pending',
             isVerified: false,
         });
@@ -63,12 +66,23 @@ export class VendorsService {
     }
 
     async findByUserId(userId: string): Promise<Vendor | null> {
-        const vendor = await this.vendorRepository.findOne({
-            where: { userId },
-            relations: ['user', 'category', 'subcategory'],
-        });
+        if (!userId) {
+            console.warn('[VendorsService] Attempted to find vendor with null/undefined userId');
+            return null;
+        }
 
-        return vendor;
+        try {
+            const vendor = await this.vendorRepository.findOne({
+                where: { userId },
+                relations: ['user', 'category', 'subcategory'],
+            });
+
+            return vendor || null;
+        } catch (error) {
+            console.error(`[VendorsService] Error finding vendor by userId: ${userId}`, error);
+            // We return null instead of throwing to prevent 500 errors in "me" endpoints
+            return null;
+        }
     }
 
     async update(id: string, updateVendorDto: Partial<CreateVendorDto>, userId: string): Promise<Vendor> {
@@ -105,5 +119,27 @@ export class VendorsService {
             vendor.isVerified = false;
         }
         return this.vendorRepository.save(vendor);
+    }
+
+    async getVendorStats(vendorId: string): Promise<any> {
+        const bookings = await this.bookingRepository.find({ 
+            where: { vendorId },
+            order: { createdAt: 'DESC' }
+        });
+
+        // Current business logic for stats
+        const pending = bookings.filter(b => b.status === 'pending').length;
+        const upcoming = bookings.filter(b => b.status === 'confirmed').length;
+        const events = bookings.filter(b => b.status === 'completed').length;
+        const revenue = bookings
+            .filter(b => b.status === 'completed' || b.paymentStatus === 'paid')
+            .reduce((sum, b) => sum + Number(b.totalAmount), 0);
+
+        return {
+            pendingBookings: pending,
+            totalEvents: events,
+            upcomingBookings: upcoming,
+            totalEarnings: revenue.toLocaleString('en-IN')
+        };
     }
 }

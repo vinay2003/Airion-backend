@@ -21,7 +21,12 @@ import { WishlistsModule } from './wishlists/wishlists.module';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: join(__dirname, '..', '..', '.env'),
+            envFilePath: [
+                join(__dirname, '..', '..', '.env'),      // apps/api/.env (if running from api root)
+                join(__dirname, '..', '..', '..', '.env'), // apps/.env (if running from apps root)
+                join(__dirname, '..', '..', '..', '..', '.env'), // (ROOT)/.env (if running from root)
+                '.env'                                    // Local .env
+            ],
         }),
         ThrottlerModule.forRoot([{
             ttl: 60000,

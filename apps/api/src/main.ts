@@ -47,7 +47,7 @@ async function bootstrap() {
                 'https://vendor.airion.vercel.app',
                 'https://admin.airion.vercel.app'
             ];
-            const isLocal = !origin || origin.startsWith('http://localhost:');
+            const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
             if (isLocal || process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
                 callback(null, true);
             } else {
@@ -69,8 +69,9 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
 
     const port = process.env.PORT || 3000;
-    await app.listen(port);
-    console.log(`🚀 Backend server is running on http://localhost:${port}`);
+    await app.listen(port, '0.0.0.0');
+    console.log(`🚀 Backend server is running on http://0.0.0.0:${port}`);
+    console.log(`📡 Local access: http://localhost:${port}`);
 }
 
 bootstrap();

@@ -59,16 +59,16 @@ export class Vendor {
     businessDescription: string | null;
 
     // Relationships with Category/Subcategory will be added when those entities are created
-    // @ManyToOne(() => Category)
-    // @JoinColumn({ name: 'category_id' })
-    // category: Category;
-    @Column('varchar', { name: 'category_id', nullable: true })
+    @ManyToOne(() => Category)
+    @JoinColumn({ name: 'category_id' })
+    category: Category;
+    @Column('uuid', { name: 'category_id', nullable: true })
     categoryId: string;
 
-    // @ManyToOne(() => Subcategory)
-    // @JoinColumn({ name: 'subcategory_id' })
-    // subcategory: Subcategory;
-    @Column('varchar', { name: 'subcategory_id', nullable: true })
+    @ManyToOne(() => Subcategory)
+    @JoinColumn({ name: 'subcategory_id' })
+    subcategory: Subcategory;
+    @Column('uuid', { name: 'subcategory_id', nullable: true })
     subcategoryId: string;
 
     @Column('jsonb', { name: 'business_hours', nullable: true })

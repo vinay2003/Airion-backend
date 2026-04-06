@@ -27,10 +27,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
+    const body = exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+    
+    let errorMessage = 'An unexpected error occurred';
+    if (typeof body === 'string') {
+        errorMessage = body;
+    } else if (body && typeof body === 'object') {
+        const msg = (body as any).message || (body as any).error;
+        errorMessage = Array.isArray(msg) ? msg.join(', ') : msg || JSON.stringify(body);
+    }
+
     const errorResponse = {
       success: false,
       data: null,
-      error: typeof message === 'object' ? (message as any).message : message,
+      error: errorMessage,
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,

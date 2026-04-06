@@ -11,15 +11,43 @@
 @import "tailwindcss";
 @import "@airion/ui/globals.css";
 
-/* ── 2. Admin-Specific Overrides ─────────────────────────── */
+/* ── 2. Light Theme Support ──────────────────────────────── */
 :root {
-  /* Admin uses a slightly deeper background for clear hierarchy */
-  --airion-bg-base:    #0A0C12;
-  --airion-bg-sidebar: #0F1117;
+  color-scheme: light;
 
-  /* Update Tailwind semantic aliases to match */
-  --background: #0A0C12;
-  --sidebar:    #0F1117;
+  /* Explicit Light Mode Surface Overrides — same as User Website */
+  --airion-bg-base:        #FFFFFF;
+  --airion-bg-surface:     #F8F8FF;
+  --airion-bg-elevated:    #F0EFFE;
+  --airion-bg-sidebar:     #FAFAFA;
+
+  /* Text for light mode */
+  --airion-text-primary:   #1A1A2E;
+  --airion-text-secondary: #4A4A6A;
+  --airion-text-muted:     #9090AA;
+  --airion-text-inverted:  #FFFFFF;
+
+  /* Borders for light mode */
+  --airion-border-subtle:  rgba(0, 0, 0, 0.06);
+  --airion-border-base:    rgba(0, 0, 0, 0.12);
+
+  /* Shadows for light mode */
+  --airion-shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
+  --airion-shadow-md:  0 6px 16px rgba(0, 0, 0, 0.12);
+  --airion-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.16);
+  --airion-shadow-glow: 0 0 24px rgba(108, 99, 255, 0.12);
+
+  /* Tailwind semantic aliases (light) */
+  --background:  #FFFFFF;
+  --foreground:  #1A1A2E;
+  --card:        #F8F8FF;
+  --card-foreground: #1A1A2E;
+  --muted:       #F0EFFE;
+  --muted-foreground: #9090AA;
+  --border:      rgba(0, 0, 0, 0.06);
+  --input:       rgba(0, 0, 0, 0.10);
+  --secondary:   #F0EFFE;
+  --secondary-foreground: #4A4A6A;
 }
 
 /* ── 3. Admin Component Classes ──────────────────────────── */

@@ -34,7 +34,19 @@
         "./src/*"
       ],
       "@shared/*": [
-        "../shared/*"
+        "../../packages/shared/*"
+      ],
+      "@shared": [
+        "../../packages/shared"
+      ],
+      "@airion/shared": [
+        "../../packages/shared"
+      ],
+      "@airion/shared/*": [
+        "../../packages/shared/*"
+      ],
+      "@airion/ui/*": [
+        "../../packages/ui/*"
       ]
     }
   },

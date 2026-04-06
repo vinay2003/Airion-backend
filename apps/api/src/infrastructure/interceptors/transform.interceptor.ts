@@ -28,7 +28,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ApiResponse<T
 
         return {
           success: true,
-          data: data || {},
+          data: data === undefined ? {} : data,
           error: null
         };
       }),

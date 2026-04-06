@@ -1,10 +1,12 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider } from '@airion/shared/auth/AuthContext';
-import ProtectedRoute from '@airion/shared/components/ProtectedRoute';
+import { AuthProvider, ProtectedRoute } from '@airion/shared';
 import { Toaster } from 'react-hot-toast';
+
+const queryClient = new QueryClient();
 
 // Lazy load pages
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -28,43 +30,45 @@ const PageLoader = () => (
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#0f172a', color: '#f8fafc', border: '1px solid #1e293b' } }} />
-      <Router basename="/vendor">
-        <AuthProvider>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="login" element={<VendorLogin />} />
-              <Route path="signup" element={<VendorSignupBasic />} />
-              <Route path="signup-form" element={<VendorSignupForm />} />
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#ffffff', color: '#1a1a2e', border: '1px solid #f0effe' } }} />
+        <Router basename="/vendor">
+          <AuthProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="login" element={<VendorLogin />} />
+                <Route path="signup" element={<VendorSignupBasic />} />
+                <Route path="signup-form" element={<VendorSignupForm />} />
 
-              {/* Protected routes */}
-              <Route path="/" element={
-                <ProtectedRoute allowedRoles={['vendor', 'admin']}>
-                  <Layout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<Dashboard />} />
-                <Route path="events" element={<Listings />} />
-                <Route path="enquiries" element={<Inbox />} />
-                <Route path="bookings" element={<Bookings />} />
-                <Route path="analytics" element={<Analytics />} />
-                <Route path="settings" element={<Settings />} />
+                {/* Protected routes */}
+                <Route path="/" element={
+                  <ProtectedRoute allowedRoles={['vendor', 'admin']}>
+                    <Layout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<Dashboard />} />
+                  <Route path="events" element={<Listings />} />
+                  <Route path="enquiries" element={<Inbox />} />
+                  <Route path="bookings" element={<Bookings />} />
+                  <Route path="analytics" element={<Analytics />} />
+                  <Route path="settings" element={<Settings />} />
 
-                <Route path="calendar" element={<div className="p-8 text-[var(--text-primary)]">Calendar View Placeholder</div>} />
-                <Route path="earnings" element={<div className="p-8 text-[var(--text-primary)]">Earnings & Financials Placeholder</div>} />
-                <Route path="products" element={<div className="p-8 text-[var(--text-primary)]">Products & Services Placeholder</div>} />
+                  <Route path="calendar" element={<div className="p-8 text-[var(--text-primary)] font-medium">Calendar View Placeholder</div>} />
+                  <Route path="earnings" element={<div className="p-8 text-[var(--text-primary)] font-medium">Earnings & Financials Placeholder</div>} />
+                  <Route path="products" element={<div className="p-8 text-[var(--text-primary)] font-medium">Products & Services Placeholder</div>} />
 
-                <Route path="plan-event" element={<EventPlanning />} />
-                <Route path="promotions" element={<Promotions />} />
-              </Route>
+                  <Route path="plan-event" element={<EventPlanning />} />
+                  <Route path="promotions" element={<Promotions />} />
+                </Route>
 
-              {/* Catch-all - redirect within the basename context */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </AuthProvider>
-      </Router>
+                {/* Catch-all - redirect within the basename context */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </AuthProvider>
+        </Router>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };

@@ -1,9 +1,12 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider } from '@airion/shared/auth/AuthContext';
-import ProtectedRoute from '@airion/shared/components/ProtectedRoute';
+import { AuthProvider, ProtectedRoute } from '@airion/shared';
+
+const queryClient = new QueryClient();
 
 // Lazy load pages
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -22,23 +25,26 @@ const PageLoader = () => (
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <Router basename="/admin">
-        <AuthProvider>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/login" element={<AdminLogin />} />
-              <Route path="/" element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
-                <Route index element={<Dashboard />} />
-                <Route path="vendors" element={<Vendors />} />
-                <Route path="users" element={<Users />} />
-                <Route path="bookings" element={<Bookings />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="*" element={<div className="p-8 dark:text-white">Page not found</div>} />
-              </Route>
-            </Routes>
-          </Suspense>
-        </AuthProvider>
-      </Router>
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#ffffff', color: '#1a1a2e', border: '1px solid #f0effe' } }} />
+        <Router basename="/admin">
+          <AuthProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/login" element={<AdminLogin />} />
+                <Route path="/" element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="vendors" element={<Vendors />} />
+                  <Route path="users" element={<Users />} />
+                  <Route path="bookings" element={<Bookings />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="*" element={<div className="p-8 text-[var(--airion-text-primary)] font-medium">Page not found</div>} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </AuthProvider>
+        </Router>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };

@@ -13,10 +13,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:   'bg-[var(--airion-brand-primary)] text-white hover:-translate-y-[2px] hover:shadow-[0_0_20px_rgba(108,99,255,0.35)] active:translate-y-0',
+  primary:   'bg-gradient-to-b from-[#5c54e5] to-[var(--airion-brand-primary)] text-white shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 border border-indigo-600/50 active:translate-y-0 transition-all',
   secondary: 'bg-[var(--airion-bg-elevated)] text-[var(--airion-text-secondary)] hover:text-[var(--airion-text-primary)] hover:bg-[var(--airion-border-base)]',
   outline:   'border border-[var(--airion-border-active)] text-[var(--airion-brand-primary)] bg-transparent hover:bg-[rgba(108,99,255,0.08)]',
-  ghost:     'bg-[rgba(255,255,255,0.05)] text-[var(--airion-text-secondary)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[var(--airion-text-primary)]',
+  ghost:     'bg-[rgba(255,255,255,0.05)] text-[var(--airion-text-secondary)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[var(--airion-text-primary)] transition-colors',
   danger:    'border border-[var(--airion-brand-danger)] text-[var(--airion-brand-danger)] bg-[rgba(255,107,107,0.08)] hover:bg-[rgba(255,107,107,0.18)]',
   gradient:  'bg-gradient-to-br from-[#6C63FF] to-[#4ECDC4] text-white hover:-translate-y-[2px] hover:shadow-[0_0_20px_rgba(78,205,196,0.3)] active:translate-y-0',
 };

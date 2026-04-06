@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Search, Clock, MapPin, Users, DollarSign, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Tabs, Input, Button, Badge } from '@airion/ui';
 
 interface Booking {
     id: number;
@@ -73,27 +74,18 @@ const Bookings: React.FC = () => {
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case 'Confirmed':
-                return <CheckCircle size={16} className="text-green-500" />;
-            case 'Pending':
-                return <AlertCircle size={16} className="text-yellow-500" />;
-            case 'Cancelled':
-                return <XCircle size={16} className="text-red-500" />;
+            case 'Confirmed': return <CheckCircle size={14} />;
+            case 'Pending': return <AlertCircle size={14} />;
+            case 'Cancelled': return <XCircle size={14} />;
         }
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'Confirmed':
-                return 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400';
-            case 'Pending':
-                return 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
-            case 'Cancelled':
-                return 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400';
-            default:
-                return 'bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-400';
-        }
-    };
+    const tabsData = [
+        { id: 'all', label: 'All' },
+        { id: 'Confirmed', label: 'Confirmed' },
+        { id: 'Pending', label: 'Pending' },
+        { id: 'Cancelled', label: 'Cancelled' },
+    ];
 
     const filteredBookings = bookings.filter(booking => {
         const matchesFilter = filter === 'all' || booking.status === filter;
@@ -105,49 +97,40 @@ const Bookings: React.FC = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Bookings</h1>
-                <p className="text-gray-500 dark:text-slate-400">Manage and track all your venue bookings</p>
+                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Bookings</h1>
+                <p className="text-[var(--airion-text-muted)]">Manage and track all your venue bookings</p>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition-all">
+                    <div key={idx} className="card-premium">
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`p-3 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-500/10 text-${stat.color}-500`}>
+                            <div className="p-3 rounded-xl bg-[rgba(108,99,255,0.08)] text-[var(--airion-brand-primary)]">
                                 <stat.icon size={24} />
                             </div>
                         </div>
-                        <p className="text-gray-500 dark:text-slate-400 text-sm mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</h3>
+                        <p className="text-[var(--airion-text-secondary)] text-sm mb-1">{stat.label}</p>
+                        <h3 className="text-3xl font-bold text-[var(--airion-text-primary)]">{stat.value}</h3>
                     </div>
                 ))}
             </div>
 
             {/* Filters and Search */}
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <div className="flex gap-2">
-                    {['all', 'Confirmed', 'Pending', 'Cancelled'].map((status) => (
-                        <button
-                            key={status}
-                            onClick={() => setFilter(status as any)}
-                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === status
-                                ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
-                                : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:border-red-500 dark:hover:border-red-400'
-                                }`}
-                        >
-                            {status === 'all' ? 'All' : status}
-                        </button>
-                    ))}
-                </div>
+                <Tabs 
+                    tabs={tabsData} 
+                    activeTab={filter} 
+                    onChange={(id) => setFilter(id as any)} 
+                    variant="pills"
+                />
                 <div className="relative w-full sm:w-64">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
-                    <input
-                        type="text"
+                    <Input
+                        leftIcon={<Search size={16} />}
                         placeholder="Search bookings..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 transition-all"
+                        inputSize="sm"
                     />
                 </div>
             </div>
@@ -155,51 +138,53 @@ const Bookings: React.FC = () => {
             {/* Bookings List */}
             <div className="space-y-4">
                 {filteredBookings.map((booking) => (
-                    <div key={booking.id} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-md transition-all">
+                    <div key={booking.id} className="card-premium group">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                             <div className="flex-1">
                                 <div className="flex items-start justify-between mb-3">
                                     <div>
-                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{booking.venueName}</h3>
-                                        <p className="text-sm text-gray-500 dark:text-slate-400">{booking.eventType}</p>
+                                        <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-1">{booking.venueName}</h3>
+                                        <p className="text-sm text-[var(--airion-text-muted)]">{booking.eventType}</p>
                                     </div>
-                                    <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(booking.status)}`}>
-                                        {getStatusIcon(booking.status)}
-                                        {booking.status}
-                                    </div>
+                                    <Badge variant={booking.status.toLowerCase() as any}>
+                                        <div className="flex items-center gap-1.5">
+                                            {getStatusIcon(booking.status)}
+                                            {booking.status}
+                                        </div>
+                                    </Badge>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                        <CalendarIcon size={16} className="text-gray-400 dark:text-slate-500" />
+                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
+                                        <CalendarIcon size={16} className="text-[var(--airion-text-muted)]" />
                                         {booking.date}
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                        <Clock size={16} className="text-gray-400 dark:text-slate-500" />
+                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
+                                        <Clock size={16} className="text-[var(--airion-text-muted)]" />
                                         {booking.time}
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                        <Users size={16} className="text-gray-400 dark:text-slate-500" />
+                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
+                                        <Users size={16} className="text-[var(--airion-text-muted)]" />
                                         {booking.guests} guests
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                                        <DollarSign size={16} className="text-red-500" />
+                                    <div className="flex items-center gap-2 text-sm font-bold text-[var(--airion-text-primary)]">
+                                        <DollarSign size={16} className="text-[var(--airion-brand-primary)]" />
                                         {booking.amount}
                                     </div>
                                 </div>
-                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-slate-800">
-                                    <p className="text-sm text-gray-600 dark:text-slate-400">
-                                        Client: <span className="font-medium text-gray-900 dark:text-white">{booking.clientName}</span>
+                                <div className="mt-3 pt-3 border-t border-[var(--airion-border-subtle)]">
+                                    <p className="text-sm text-[var(--airion-text-muted)]">
+                                        Client: <span className="font-semibold text-[var(--airion-text-primary)]">{booking.clientName}</span>
                                     </p>
                                 </div>
                             </div>
                             <div className="flex lg:flex-col gap-2">
-                                <button className="px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-lg text-sm font-medium transition-colors">
+                                <Button variant="secondary" size="sm" className="w-full">
                                     View Details
-                                </button>
+                                </Button>
                                 {booking.status === 'Pending' && (
-                                    <button className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors shadow-md shadow-red-500/20">
+                                    <Button variant="primary" size="sm" className="w-full">
                                         Confirm
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>
@@ -208,10 +193,10 @@ const Bookings: React.FC = () => {
             </div>
 
             {filteredBookings.length === 0 && (
-                <div className="text-center py-12">
-                    <CalendarIcon size={48} className="mx-auto text-gray-300 dark:text-slate-700 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No bookings found</h3>
-                    <p className="text-gray-500 dark:text-slate-400">Try adjusting your filters or search query</p>
+                <div className="text-center py-16 bg-[var(--airion-bg-surface)] rounded-2xl border border-[var(--airion-border-subtle)] border-dashed">
+                    <CalendarIcon size={48} className="mx-auto text-[var(--airion-text-muted)] mb-4 opacity-50" />
+                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-2">No bookings found</h3>
+                    <p className="text-[var(--airion-text-muted)]">Try adjusting your filters or search query</p>
                 </div>
             )}
         </div>

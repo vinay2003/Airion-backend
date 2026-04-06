@@ -21,7 +21,7 @@ const mapServiceToEvent = (service: any): Event => {
 
 // Create axios instance with base URL
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3000/api' : 'https://airion-backend.onrender.com/api'),
+    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:3000/api' : 'https://airion-backend.onrender.com/api'),
     headers: {
         'Content-Type': 'application/json',
     },

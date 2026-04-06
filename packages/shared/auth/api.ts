@@ -95,7 +95,8 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
 
             // Handle other errors
             if (import.meta.env.DEV) {
-                console.error('[API Error]', error.response?.data || error.message);
+                const apiMsg = error.response?.data?.message || error.response?.data || error.message;
+                console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}:`, apiMsg);
             }
 
             return Promise.reject(error);

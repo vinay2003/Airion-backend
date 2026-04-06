@@ -1,5 +1,6 @@
 import React from 'react';
-import { toast, Toaster, ToastBar, CheckCircle, XCircle, Info, Bell } from 'react-hot-toast';
+import { toast, Toaster, ToastBar } from 'react-hot-toast';
+import { CheckCircle, XCircle, Info, Bell } from 'lucide-react';
 
 export const AirionToaster = () => (
   <Toaster

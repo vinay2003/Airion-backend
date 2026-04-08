@@ -109,172 +109,168 @@ const Products: React.FC = () => {
 
     if (isAdding) {
         return (
-            <div className="max-w-5xl mx-auto space-y-8 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="w-full max-w-6xl mx-auto space-y-10 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-8">
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-bold text-white tracking-tight">Create Service</h1>
-                        <p className="text-sm text-slate-400 font-medium">Add a new service or venue to your marketplace catalog.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-10">
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-bold text-white tracking-tight">Create Service</h1>
+                        <p className="text-base text-slate-400 font-medium">Configure and publish a new service or venue to your marketplace.</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Button onClick={() => setIsAdding(false)} className="btn-secondary h-10 px-5 rounded-lg text-xs font-semibold">
+                    <div className="flex items-center gap-4">
+                        <Button onClick={() => setIsAdding(false)} className="px-6 py-2.5 btn-secondary rounded-xl text-sm font-semibold">
                             Cancel
                         </Button>
                         <Button 
                             onClick={handleCreateService} 
                             disabled={submitting}
-                            className="btn-primary h-10 px-6 rounded-lg text-xs font-semibold"
+                            className="px-8 py-2.5 btn-primary rounded-xl text-sm font-semibold"
                         >
-                            {submitting ? <Loader2 size={16} className="animate-spin" /> : 'Publish Service'}
+                            {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Publish Service'}
                         </Button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column: Form Fields */}
-                    <div className="lg:col-span-2 space-y-8">
+                <div className="space-y-10">
+                    {/* Section 1: Basic Information */}
+                    <div className="card-minimal space-y-8 p-8">
+                        <div className="flex items-center gap-3 border-b border-white/5 pb-6">
+                            <div className="p-2 bg-blue-500/10 rounded-lg">
+                                <Info size={20} className="text-blue-500" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Basic Information</h3>
+                        </div>
                         
-                        {/* Section 1: Basic Information */}
-                        <div className="card-minimal space-y-6">
-                            <div className="flex items-center gap-2 border-b border-white/5 pb-4">
-                                <Info size={18} className="text-blue-500" />
-                                <h3 className="text-sm font-semibold text-white">Basic Information</h3>
+                        <div className="grid grid-cols-1 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-slate-300">Service Title</label>
+                                <input 
+                                    type="text" 
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                    placeholder="e.g. Grand Ballroom at Hotel Saket"
+                                    className="input-dark-glass w-full h-12 text-sm font-medium"
+                                />
                             </div>
-                            
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Service Title</label>
-                                    <input 
-                                        type="text" 
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                        placeholder="e.g. Premium Wedding Photography"
-                                        className="input-dark-glass text-sm"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Description</label>
-                                    <textarea 
-                                        rows={5}
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                        placeholder="Describe your service, experience, and what's included..."
-                                        className="input-dark-glass min-h-[140px] py-3 text-sm leading-relaxed"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 2: Pricing & Capacity */}
-                        <div className="card-minimal space-y-6">
-                            <div className="flex items-center gap-2 border-b border-white/5 pb-4">
-                                <PackageIcon size={18} className="text-blue-500" />
-                                <h3 className="text-sm font-semibold text-white">Pricing & Capacity</h3>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Base Price (₹)</label>
-                                    <div className="relative">
-                                         <DollarSign size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                         <input 
-                                             type="number" 
-                                             value={formData.basePrice}
-                                             onChange={(e) => setFormData({...formData, basePrice: e.target.value})}
-                                             placeholder="0.00"
-                                             className="input-dark-glass pl-10 text-sm font-medium"
-                                         />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300">Guest Capacity</label>
-                                    <input 
-                                        type="number" 
-                                        placeholder="Max guests"
-                                        value={formData.guestCapacity}
-                                        onChange={(e) => setFormData({...formData, guestCapacity: e.target.value})}
-                                        className="input-dark-glass text-sm font-medium"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 3: Package Tiers */}
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-semibold text-white">Service Packages</h3>
-                                <Badge className="chip-soft-blue px-3 py-1">Tiered Pricing Active</Badge>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {formData.packages.map((pkg, i) => (
-                                    <div key={pkg.name} className={`p-5 rounded-xl border transition-all duration-200 ${pkg.isPopular ? 'bg-blue-500/5 border-blue-500/30' : 'bg-white/5 border-white/10'}`}>
-                                        <div className="space-y-4">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-xs font-bold text-slate-200">{pkg.name}</span>
-                                                {pkg.isPopular && <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Popular</span>}
-                                            </div>
-                                            <div className="space-y-1.5">
-                                                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Price (₹)</label>
-                                                <input 
-                                                    type="number" 
-                                                    value={pkg.price}
-                                                    onChange={(e) => updatePackage(i, 'price', e.target.value)}
-                                                    placeholder="Price"
-                                                    className="w-full bg-slate-800 border border-white/10 rounded-lg h-9 px-3 text-xs font-medium text-white outline-none focus:ring-1 focus:ring-blue-500"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Included Modules</label>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {['Catering', 'Decor', 'Audio', 'Visuals'].map(feat => (
-                                                        <button 
-                                                            key={feat}
-                                                            onClick={() => {
-                                                                const current = pkg.features;
-                                                                const next = current.includes(feat) ? current.filter(c => c !== feat) : [...current, feat];
-                                                                updatePackage(i, 'features', next);
-                                                            }}
-                                                            className={`text-[9px] px-2 py-1 rounded border transition-all ${pkg.features.includes(feat) ? 'bg-blue-600 text-white border-blue-600' : 'bg-white/5 text-slate-400 border-white/10 hover:border-white/20'}`}
-                                                        >
-                                                            {feat}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-slate-300">Description</label>
+                                <textarea 
+                                    rows={6}
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                    placeholder="Provide a comprehensive overview of the service, including amenities, special features, and booking terms..."
+                                    className="input-dark-glass w-full min-h-[160px] py-4 text-sm leading-relaxed"
+                                />
                             </div>
                         </div>
                     </div>
 
-                    {/* Right Column: Information & Preview */}
+                    {/* Section 2: Pricing & Capacity */}
+                    <div className="card-minimal space-y-8 p-8">
+                        <div className="flex items-center gap-3 border-b border-white/5 pb-6">
+                            <div className="p-2 bg-blue-500/10 rounded-lg">
+                                <PackageIcon size={20} className="text-blue-500" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Pricing & Capacity</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-slate-300">Base Price (₹)</label>
+                                <div className="relative">
+                                     <DollarSign size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                     <input 
+                                         type="number" 
+                                         value={formData.basePrice}
+                                         onChange={(e) => setFormData({...formData, basePrice: e.target.value})}
+                                         placeholder="0.00"
+                                         className="input-dark-glass w-full h-12 pl-12 text-sm font-bold"
+                                     />
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-slate-300">Maximum Guest Capacity</label>
+                                <input 
+                                    type="number" 
+                                    placeholder="e.g. 500"
+                                    value={formData.guestCapacity}
+                                    onChange={(e) => setFormData({...formData, guestCapacity: e.target.value})}
+                                    className="input-dark-glass w-full h-12 text-sm font-bold"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section 3: Service Packages */}
                     <div className="space-y-6">
-                        <div className="card-minimal bg-blue-600/5 border-blue-600/10 p-6">
-                             <h4 className="text-sm font-semibold text-white flex items-center gap-2 mb-3">
-                                 <Sparkles size={16} className="text-blue-400" /> Professional Listing
-                             </h4>
-                             <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                                 Complete all fields to ensure your service is ranked higher in the marketplace. High-quality descriptions lead to 40% more bookings.
-                             </p>
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-lg font-bold text-white">Service Packages</h3>
+                            <Badge className="chip-soft-blue px-4 py-1.5 rounded-lg font-bold">Standard Multi-Tier Enabled</Badge>
                         </div>
                         
-                        <div className="card-minimal flex flex-col items-center justify-center p-8 border-dashed border-white/10 bg-transparent text-center">
-                             <div className="w-12 h-12 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center text-slate-500 mb-4">
-                                 <Plus size={20} />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {formData.packages.map((pkg, i) => (
+                                <div key={pkg.name} className={`card-minimal p-8 transition-all duration-300 border shadow-md ${pkg.isPopular ? 'bg-blue-600/5 border-blue-500/30' : 'bg-white/5 border-white/10'}`}>
+                                    <div className="space-y-6">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm font-bold text-white">{pkg.name}</span>
+                                            {pkg.isPopular && <Badge className="bg-blue-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-blue-500/20">Recommended</Badge>}
+                                        </div>
+                                        <div className="space-y-2.5">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Base Rate (₹)</label>
+                                            <input 
+                                                type="number" 
+                                                value={pkg.price}
+                                                onChange={(e) => updatePackage(i, 'price', e.target.value)}
+                                                placeholder="0.00"
+                                                className="input-dark-glass w-full h-11 px-4 text-sm font-bold"
+                                            />
+                                        </div>
+                                        <div className="space-y-4">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Included Modules</label>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {['Catering', 'Decor', 'Audio', 'Visuals'].map(feat => (
+                                                    <button 
+                                                        key={feat}
+                                                        onClick={() => {
+                                                            const current = pkg.features;
+                                                            const next = current.includes(feat) ? current.filter(c => c !== feat) : [...current, feat];
+                                                            updatePackage(i, 'features', next);
+                                                        }}
+                                                        className={`text-xs px-2 py-2.5 rounded-xl border transition-all font-semibold ${pkg.features.includes(feat) ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/10' : 'bg-white/5 text-slate-400 border-white/10 hover:border-white/20'}`}
+                                                    >
+                                                        {feat}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Media Upload & Footer CTA */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="md:col-span-2 card-minimal flex flex-col items-center justify-center p-12 border-dashed border-white/10 bg-transparent text-center hover:bg-white/5 transition-all cursor-pointer group">
+                             <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-white/10 flex items-center justify-center text-slate-500 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                 <Plus size={28} />
                              </div>
-                             <h4 className="text-sm font-semibold text-white mb-1">Upload Media</h4>
-                             <p className="text-[10px] text-slate-500 font-medium">Add up to 5 high-quality images</p>
+                             <h4 className="text-lg font-bold text-white mb-2">Upload Visual Assets</h4>
+                             <p className="text-sm text-slate-400 font-medium">Drag and drop high-resolution imagery for your listing.</p>
                         </div>
                         
-                        <div className="pt-6">
+                        <div className="flex flex-col justify-end">
                             <Button 
                                 onClick={handleCreateService} 
                                 disabled={submitting}
-                                className="btn-primary w-full h-11 rounded-lg text-sm font-semibold"
+                                className="w-full h-full py-6 btn-primary rounded-2xl text-lg font-bold flex flex-col gap-2 items-center justify-center shadow-xl shadow-blue-500/20"
                             >
-                                {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Save & Publish Service'}
+                                {submitting ? <Loader2 size={24} className="animate-spin" /> : (
+                                    <>
+                                        <span>Publish Service</span>
+                                        <span className="text-xs font-medium opacity-70">Go live in marketplace</span>
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>

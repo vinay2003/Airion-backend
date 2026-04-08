@@ -20,6 +20,11 @@ const Analytics = lazy(() => import('./pages/Analytics'));
 const Settings = lazy(() => import('./pages/Settings'));
 const EventPlanning = lazy(() => import('./pages/EventPlanning'));
 const Promotions = lazy(() => import('./pages/Promotions'));
+const Calendar = lazy(() => import('./pages/Calendar'));
+const Earnings = lazy(() => import('./pages/Earnings'));
+const Products = lazy(() => import('./pages/Products'));
+const Ads = lazy(() => import('./pages/Ads'));
+const Gallery = lazy(() => import('./pages/Gallery'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -54,9 +59,11 @@ const App: React.FC = () => {
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
 
-                  <Route path="calendar" element={<div className="p-8 text-[var(--text-primary)] font-medium">Calendar View Placeholder</div>} />
-                  <Route path="earnings" element={<div className="p-8 text-[var(--text-primary)] font-medium">Earnings & Financials Placeholder</div>} />
-                  <Route path="products" element={<div className="p-8 text-[var(--text-primary)] font-medium">Products & Services Placeholder</div>} />
+                   <Route path="calendar" element={<Calendar />} />
+                  <Route path="earnings" element={<Earnings />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="ads" element={<Ads />} />
+                  <Route path="gallery" element={<Gallery />} />
 
                   <Route path="plan-event" element={<EventPlanning />} />
                   <Route path="promotions" element={<Promotions />} />

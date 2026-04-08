@@ -36,6 +36,7 @@ const BecomeVendor = lazy(() => import('./pages/BecomeVendor'));
 const InterestSelection = lazy(() => import('./pages/InterestSelection'));
 const SplashScreen = lazy(() => import('./pages/SplashScreen'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
+const VendorProfile = lazy(() => import('./pages/VendorProfile'));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">

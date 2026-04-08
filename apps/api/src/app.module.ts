@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -16,6 +16,7 @@ import { LeadsModule } from './leads/leads.module';
 import { AdsModule } from './ads/ads.module';
 import { CouponsModule } from './coupons/coupons.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
+import { CorrelationMiddleware } from './infrastructure/middleware/correlation.middleware';
 
 @Module({
     imports: [
@@ -72,4 +73,10 @@ import { WishlistsModule } from './wishlists/wishlists.module';
     ],
     controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule implements NestModule { 
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(CorrelationMiddleware)
+            .forRoutes({ path: '*', method: RequestMethod.ALL });
+    }
+}

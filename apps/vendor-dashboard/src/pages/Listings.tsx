@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, MapPin, Star, Edit2, Trash2 } from 'lucide-react';
+import { Plus, MapPin, Star, Edit2, Trash2, Search, Filter, MoreVertical, Layers, Calendar, ChevronRight, Users, CheckCircle2, FileText } from 'lucide-react';
 import api from '../lib/api';
 import ListingEditorModal from '../components/ListingEditorModal';
-import { Button, Badge, Spinner } from '@airion/ui';
+import { Button, Badge, Skeleton } from '@airion/ui';
 
 const Listings: React.FC = () => {
     const [listings, setListings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Modal State
     const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -49,94 +50,131 @@ const Listings: React.FC = () => {
         fetchListings();
     }, []);
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'Active':
-                return 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400';
-            case 'Under Review':
-                return 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
-            default:
-                return 'bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-400';
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-full min-h-[400px]">
-                <Spinner size="lg" className="text-[var(--airion-brand-primary)]" />
-            </div>
-        );
-    }
-
-    if (error) {
-        return <div className="flex justify-center items-center h-screen">Error: {error}</div>;
-    }
+    const filteredListings = listings.filter(l => 
+        l.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        l.location.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <>
-            <div>
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">My Listings</h1>
-                        <p className="text-[var(--airion-text-muted)]">Manage your venues and services</p>
+        <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <h1 className="text-3xl font-bold text-[var(--airion-text-primary)]">Event Management</h1>
+                    <p className="text-[var(--airion-text-muted)] font-medium mt-1">Configure and monitor your active event listings.</p>
+                </div>
+                <Button
+                    onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
+                    variant="primary"
+                    size="lg"
+                    leftIcon={<Plus size={20} />}
+                >
+                    Create New Listing
+                </Button>
+            </div>
+
+            {/* Quick Stats Bar */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                    { label: 'Active Listings', value: listings.filter(l => l.status === 'Active').length, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: 'Total Reach', value: '1.2k', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Avg. Rating', value: '4.8', icon: Star, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                    { label: 'Pending Reviews', value: '12', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                ].map((stat, i) => (
+                    <div key={i} className="card-premium !p-4 flex items-center gap-4">
+                        <div className={`p-2 rounded-xl ${stat.bg} ${stat.color}`}>
+                            <stat.icon size={20} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest">{stat.label}</p>
+                            <p className="text-xl font-bold text-[var(--airion-text-primary)]">{stat.value}</p>
+                        </div>
                     </div>
-                    <Button
-                        onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
-                        variant="primary"
-                        className="font-bold shadow-[var(--airion-shadow-md)]"
-                        leftIcon={<Plus size={20} />}
-                    >
-                        Add New Listing
+                ))}
+            </div>
+
+            {/* Filters Bar */}
+            <div className="card-premium p-4 flex flex-col md:flex-row items-center gap-4 bg-[var(--airion-bg-surface)]/50">
+                <div className="relative flex-1 w-full">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)]" size={18} />
+                    <input 
+                        type="text" 
+                        placeholder="Search listings..." 
+                        className="w-full bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all font-medium text-[var(--airion-text-primary)]"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className="flex gap-3 w-full md:w-auto">
+                    <Button variant="secondary" leftIcon={<Filter size={18} />}>
+                        Filter
                     </Button>
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {listings.map((listing) => (
-                        <div key={listing.id} className="bg-[var(--airion-bg-base)] rounded-3xl overflow-hidden border border-[var(--airion-border-subtle)] group hover:border-indigo-100 hover:shadow-[0_12px_32px_-8px_rgba(15,23,42,0.04),_0_4px_12px_-4px_rgba(15,23,42,0.02)] transition-all duration-400 ease-out hover:-translate-y-1">
-                            <div className="relative h-48 overflow-hidden">
+            {/* Grid List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {loading ? (
+                    [1, 2, 3].map(i => (
+                        <div key={i} className="card-premium h-[420px]">
+                            <Skeleton variant="rect" width="100%" height={200} />
+                            <div className="p-6 space-y-4">
+                                <Skeleton variant="text" width="60%" />
+                                <Skeleton variant="text" width="90%" />
+                                <Skeleton variant="text" width="40%" />
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    filteredListings.map((listing) => (
+                        <div key={listing.id} className="card-premium p-0 overflow-hidden flex flex-col group h-full hover:shadow-[var(--airion-shadow-glow)] transition-all duration-500">
+                            <div className="relative h-56 overflow-hidden">
                                 <img
                                     src={listing.image}
                                     alt={listing.title}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                <div className="absolute top-4 right-4">
-                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : listing.status === 'Under Review' ? 'pending' : 'default'} className="shadow-md">
+                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                <div className="absolute top-4 right-4 z-10">
+                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : 'pending'} className="shadow-xl backdrop-blur-md">
                                         {listing.status || 'Active'}
                                     </Badge>
                                 </div>
-                            </div>
-                            <div className="p-6">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors">{listing.title}</h3>
-                                    <div className="flex items-center gap-1 text-sm">
-                                        <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                                        <span className="font-bold text-[var(--airion-text-primary)]">{listing.rating}</span>
+                                <div className="absolute bottom-4 left-4 z-10">
+                                    <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
+                                        <Star size={14} className="text-amber-400 fill-amber-400" />
+                                        <span className="text-xs font-black text-white">{listing.rating}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1 text-[var(--airion-text-secondary)] text-sm mb-1">
-                                    <MapPin size={16} />
+                            </div>
+                            <div className="p-6 flex-1 flex flex-col">
+                                <div className="flex justify-between items-start mb-2">
+                                    <h3 className="text-xl font-bold text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors leading-tight">{listing.title}</h3>
+                                    <button
+                                        onClick={() => { setEditingListing(listing); setIsEditorOpen(true); }}
+                                        className="p-2 hover:bg-[var(--airion-brand-primary)]/10 rounded-xl text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all"
+                                    >
+                                        <Edit2 size={18} />
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-2 text-[var(--airion-text-muted)] text-sm mb-4 font-medium">
+                                    <MapPin size={16} className="text-[var(--airion-brand-primary)]" />
                                     {listing.location}
                                 </div>
-                                <p className="text-xs text-[var(--airion-text-muted)] mb-4">{listing.reviews} reviews</p>
-                                <div className="flex items-center justify-between pt-4 border-t border-[var(--airion-border-subtle)]">
-                                    <span className="font-bold text-[var(--airion-text-primary)] text-lg">{listing.price}</span>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => { setEditingListing(listing); setIsEditorOpen(true); }}
-                                            className="p-2 hover:bg-[rgba(108,99,255,0.05)] rounded-lg text-[var(--airion-text-secondary)] hover:text-[var(--airion-brand-primary)] transition-colors"
-                                        >
-                                            <Edit2 size={18} />
-                                        </button>
-                                        <button className="p-2 hover:bg-[rgba(255,107,107,0.05)] rounded-lg text-red-500 hover:text-[var(--airion-brand-danger)] transition-colors">
-                                            <Trash2 size={18} />
-                                        </button>
+                                
+                                <div className="mt-auto pt-6 border-t border-[var(--airion-border-subtle)] flex items-center justify-between">
+                                    <div>
+                                        <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest">Base Price</p>
+                                        <p className="text-2xl font-black text-[var(--airion-text-primary)]">{listing.price}</p>
                                     </div>
+                                    <Button variant="secondary" size="sm" className="px-3" rightIcon={<ChevronRight size={16} />}>
+                                        Details
+                                    </Button>
                                 </div>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    ))
+                )}
             </div>
 
             <ListingEditorModal
@@ -145,8 +183,10 @@ const Listings: React.FC = () => {
                 listing={editingListing}
                 onSave={handleSaveListing}
             />
-        </>
+        </div>
     );
 };
+
+
 
 export default Listings;

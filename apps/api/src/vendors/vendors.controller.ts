@@ -92,4 +92,38 @@ export class VendorsController {
     async getStats(@Param('id') id: string) {
         return this.vendorsService.getVendorStats(id);
     }
+
+    @Get(':id/earnings')
+    @UseGuards(JwtAuthGuard)
+    async getEarnings(@Param('id') id: string) {
+        return this.vendorsService.getDetailedEarnings(id);
+    }
+
+    // --- ADS ENDPOINTS ---
+
+    @Post('ads')
+    @UseGuards(JwtAuthGuard)
+    async createAd(@Request() req: any, @Body() adData: any) {
+        return this.vendorsService.createAd(req.user.userId, adData);
+    }
+
+    @Put('ads/:adId')
+    @UseGuards(JwtAuthGuard)
+    async updateAd(@Request() req: any, @Param('adId') adId: string, @Body() updateData: any) {
+        return this.vendorsService.updateAd(req.user.userId, adId, updateData);
+    }
+
+    // --- GALLERY ENDPOINTS ---
+
+    @Post('gallery')
+    @UseGuards(JwtAuthGuard)
+    async addToGallery(@Request() req: any, @Body() item: any) {
+        return this.vendorsService.addToGallery(req.user.userId, item);
+    }
+
+    @Delete('gallery/:itemId')
+    @UseGuards(JwtAuthGuard)
+    async removeFromGallery(@Request() req: any, @Param('itemId') itemId: string) {
+        return this.vendorsService.removeFromGallery(req.user.userId, itemId);
+    }
 }

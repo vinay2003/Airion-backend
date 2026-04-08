@@ -1,252 +1,426 @@
-import React, { useState } from 'react';
-import { User, Bell, Lock, CreditCard, Globe, Moon, Sun, Save, ShieldCheck, Upload, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+    User, Bell, Lock, Globe, Moon, Sun, Save, ShieldCheck, 
+    Upload, Loader2, Briefcase, TrendingUp, Sparkles, AlertCircle, 
+    Building, Wallet, Layers, Target, RefreshCcw, Image, Tag, 
+    ChevronRight, Plus, Trash2, Camera, MapPin, Mail, Phone, Instagram,
+    CheckCircle2
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@airion/shared';
-import { Input, Button, Avatar } from '@airion/ui';
+import { Avatar, Badge, Button } from '@airion/ui';
+import api from '../lib/api';
+import toast from 'react-hot-toast';
 
+/**
+ * 🍱 Configuration Genesis: Account & Business Registry
+ * Modernized with 'Premium Dark Glassmorphism' design nodes.
+ */
 const Settings: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
-    const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState('profile');
+    const { user, refreshUser } = useAuth();
+    const [activeTab, setActiveTab] = useState('personal');
+    const [submitting, setSubmitting] = useState(false);
 
-    // Split name for display
-    const displayName = user?.name || user?.email?.split('@')[0] || user?.phoneNumber || 'User';
-    const initials = (user?.name?.substring(0, 2) || displayName.substring(0, 2)).toUpperCase();
+    const [categories, setCategories] = useState<any[]>([]);
+    const [subcategories, setSubcategories] = useState<any[]>([]);
+
+    const [personalData, setPersonalData] = useState({
+        name: '',
+        phone: '',
+        profileImage: ''
+    });
+
+    const [businessData, setBusinessData] = useState({
+        businessName: '',
+        businessEmail: '',
+        businessPhone: '',
+        gstNumber: '',
+        address: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        description: '',
+        yearsInBusiness: '',
+        avgBookingPrice: '',
+        website: '',
+        instagram: '',
+        monthlyEventVolume: '',
+        acquisitionChannels: [] as string[],
+        painPoints: [] as string[],
+        categoryId: '',
+        subcategoryId: '',
+        portfolioImages: [] as string[],
+    });
+
+    useEffect(() => {
+        const fetchRegistry = async () => {
+            try {
+                const cats = await api.get('/categories') as any[];
+                setCategories(cats);
+            } catch (err) {
+                console.error('Failed to fetch categories');
+            }
+        };
+        fetchRegistry();
+    }, []);
+
+    useEffect(() => {
+        if (businessData.categoryId) {
+            const fetchSubs = async () => {
+                try {
+                    const subs = await api.get(`/categories/${businessData.categoryId}/subcategories`) as any[];
+                    setSubcategories(subs);
+                } catch (err) {
+                    setSubcategories([]);
+                }
+            };
+            fetchSubs();
+        } else {
+            setSubcategories([]);
+        }
+    }, [businessData.categoryId]);
+
+    useEffect(() => {
+        if (user) {
+            setPersonalData({
+                name: user.name || '',
+                phone: user.phoneNumber || '',
+                profileImage: user.vendor?.logo || ''
+            });
+
+            const v = user.vendor;
+            if (v) {
+                setBusinessData({
+                    businessName: v.businessName || '',
+                    businessEmail: v.businessEmail || '',
+                    businessPhone: v.businessPhone || '',
+                    gstNumber: v.gstNumber || '',
+                    address: v.businessAddress?.street || v.businessAddress?.address || '',
+                    city: v.businessAddress?.city || v.city || '',
+                    state: v.businessAddress?.state || '',
+                    zipCode: v.businessAddress?.zipCode || '',
+                    description: v.businessDescription || '',
+                    yearsInBusiness: v.yearsInBusiness || '',
+                    avgBookingPrice: v.averageBookingPrice ? String(v.averageBookingPrice) : '',
+                    website: v.socialLinks?.website || '',
+                    instagram: v.socialLinks?.instagram || '',
+                    monthlyEventVolume: v.monthlyEventVolume || '',
+                    acquisitionChannels: v.acquisitionChannels || [],
+                    painPoints: v.painPoints || [],
+                    categoryId: v.categoryId || '',
+                    subcategoryId: v.subcategoryId || '',
+                    portfolioImages: v.portfolioImages || [],
+                });
+            }
+        }
+    }, [user]);
+
+    const handleSavePersonal = async () => {
+        setSubmitting(true);
+        try {
+            await api.patch('/auth/profile', personalData);
+            toast.success('Profile sync complete!');
+            refreshUser();
+        } catch (err) {
+            toast.error('Failed to sync profile.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleSaveBusiness = async () => {
+        if (!businessData.businessName || !businessData.businessPhone || !businessData.description) {
+            toast.error('Required fields are missing.');
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const submissionData = {
+                ...businessData,
+                averageBookingPrice: Number(businessData.avgBookingPrice) || 0,
+                businessAddress: {
+                    street: businessData.address,
+                    city: businessData.city,
+                    state: businessData.state,
+                    country: 'India',
+                    zipCode: businessData.zipCode
+                },
+                socialLinks: {
+                    website: businessData.website,
+                    instagram: businessData.instagram
+                }
+            };
+            await api.put('/vendors/me', submissionData);
+            toast.success('Business registry updated!');
+            refreshUser();
+        } catch (err) {
+            toast.error('Failed to update business registry.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const calculateStrength = () => {
+        const fields = [
+            businessData.businessName, businessData.businessPhone,
+            businessData.description, businessData.city,
+            businessData.yearsInBusiness, businessData.avgBookingPrice, 
+            businessData.categoryId
+        ];
+        const filled = fields.filter(f => !!f).length;
+        return Math.min(Math.round((filled / fields.length) * 100), 100);
+    };
 
     const tabs = [
-        { id: 'profile', label: 'Profile', icon: User },
-        { id: 'notifications', label: 'Notifications', icon: Bell },
-        { id: 'security', label: 'Security', icon: Lock },
-        { id: 'billing', label: 'Billing', icon: CreditCard },
-        { id: 'verification', label: 'Verification (KYC)', icon: ShieldCheck },
-        { id: 'preferences', label: 'Preferences', icon: Globe },
+        { id: 'personal', label: 'Identity', icon: User },
+        { id: 'business', label: 'Business Nodes', icon: ShieldCheck },
+        { id: 'security', label: 'Vault Access', icon: Lock },
+        { id: 'preferences', label: 'Interface', icon: Globe },
     ];
 
     return (
-        <div className="space-y-6 max-w-6xl mx-auto pb-12">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Settings</h1>
-                <p className="text-[var(--airion-text-muted)]">Manage your account settings and preferences</p>
+        <div className="space-y-10 max-w-6xl mx-auto pb-24 animate-in fade-in duration-700">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-10">
+                <div className="space-y-3">
+                    <h1 className="text-3xl font-black text-white tracking-tight uppercase italic leading-none">Registry Overhaul</h1>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] italic">Autonomous Configuration Hub</p>
+                </div>
+                <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/5 shadow-inner">
+                    <div className="flex -space-x-3">
+                        {[1,2,3].map(i => (
+                            <div key={i} className="w-8 h-8 rounded-full border-2 border-[#020617] bg-slate-800" />
+                        ))}
+                    </div>
+                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest italic pr-2">Core Registry Active</span>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Sidebar Tabs */}
-                <div className="lg:col-span-1">
-                    <div className="bg-[var(--airion-bg-surface)] rounded-2xl shadow-[var(--airion-shadow-sm)] border border-[var(--airion-border-subtle)] p-2">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
-                                        ? 'bg-[var(--airion-bg-base)] text-[var(--airion-brand-primary)] shadow-[var(--airion-shadow-sm)] font-bold'
-                                        : 'text-[var(--airion-text-muted)] hover:bg-[var(--airion-bg-base)] hover:text-[var(--airion-text-secondary)] font-medium'
-                                    }`}
-                            >
-                                <tab.icon size={20} className={activeTab === tab.id ? 'text-[var(--airion-brand-primary)]' : ''} />
-                                <span>{tab.label}</span>
-                            </button>
-                        ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+                {/* Slim Sidebar */}
+                <div className="lg:col-span-1 space-y-2">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`w-full flex items-center gap-4 px-5 py-3 rounded-xl transition-all duration-500 font-black text-[10px] uppercase tracking-widest italic group ${activeTab === tab.id
+                                ? 'bg-blue-600 text-white shadow-2xl shadow-blue-500/20'
+                                : 'text-slate-500 hover:text-white hover:bg-white/5 hover:translate-x-1'
+                                }`}
+                        >
+                            <tab.icon size={16} className={`${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
+                            <span>{tab.label}</span>
+                        </button>
+                    ))}
+                    
+                    <div className="mt-12 p-6 card-minimal !bg-blue-500/5 !border-blue-500/10 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <span className="text-[9px] font-black uppercase text-slate-500 italic tracking-widest">Visibility Index</span>
+                            <span className="text-xs font-black text-blue-400 italic">0{calculateStrength()}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <div className="h-full bg-blue-500 transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `${calculateStrength()}%` }} />
+                        </div>
+                        <div className="flex items-center gap-2">
+                             <TrendingUp size={12} className="text-emerald-400" />
+                             <p className="text-[9px] text-slate-500 font-black uppercase tracking-tight italic">Registry Integrity: Optimal</p>
+                        </div>
                     </div>
                 </div>
 
                 {/* Content Area */}
                 <div className="lg:col-span-3">
-                    <div className="bg-[var(--airion-bg-surface)] rounded-2xl shadow-[var(--airion-shadow-sm)] border border-[var(--airion-border-subtle)] p-6 md:p-8">
-                        {activeTab === 'profile' && (
-                            <div className="space-y-8 animate-in fade-in duration-300">
-                                <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Profile Information</h2>
-                                <div className="flex items-center gap-6 pb-6 border-b border-[var(--airion-border-subtle)]">
-                                    <Avatar name={displayName} size="xl" />
+                    <div className="card-minimal !p-8 space-y-12">
+                        
+                        {/* Tab: Personal */}
+                        {activeTab === 'personal' && (
+                            <div className="space-y-10 animate-in fade-in duration-700">
+                                <div className="flex items-center gap-4 border-b border-white/5 pb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-400 shadow-glow-custom">
+                                        <User size={24} />
+                                    </div>
                                     <div>
-                                        <Button variant="outline" size="sm">
-                                            Change Photo
-                                        </Button>
-                                        <p className="text-xs text-[var(--airion-text-muted)] mt-2 font-medium">JPG, GIF or PNG. Max size of 2MB</p>
+                                        <h2 className="text-sm font-black text-white uppercase tracking-widest italic leading-none">Personal Identity Matrix</h2>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase mt-2 italic">Neural Node Parameters</p>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <Input
-                                            label="Display Name"
-                                            defaultValue={displayName}
+
+                                <div className="flex items-center gap-8 group">
+                                    <Avatar name={personalData.name} src={personalData.profileImage} size="xl" className="shadow-2xl ring-4 ring-white/5 group-hover:ring-blue-500/20 transition-all duration-500" />
+                                    <div className="space-y-3">
+                                        <h3 className="font-black text-xs text-white uppercase tracking-widest italic">Core Identification Image</h3>
+                                        <p className="text-[10px] text-slate-500 font-bold italic uppercase tracking-tighter opacity-70">Standard Marketplace Visual Node</p>
+                                        <Button className="btn-secondary h-9 px-6 text-[9px] uppercase italic">Deploy New Visual</Button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Identity Descriptor (Name)</label>
+                                        <input
+                                            value={personalData.name}
+                                            onChange={(e: any) => setPersonalData({ ...personalData, name: e.target.value })}
+                                            className="input-dark-glass font-black italic tracking-tight"
+                                            placeholder="John Doe"
                                         />
                                     </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            label="Email"
-                                            type="email"
-                                            disabled
-                                            defaultValue={user?.email || ''}
-                                            hint="To change your login email, contact support."
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            label="Phone"
-                                            type="tel"
-                                            defaultValue={user?.phoneNumber || ''}
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2 space-y-2">
-                                        <label className="block text-xs font-bold text-[var(--airion-text-muted)] uppercase tracking-widest pl-1">Bio</label>
-                                        <textarea
-                                            rows={4}
-                                            defaultValue="Professional event provider on Airion."
-                                            className="w-full rounded-xl border bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] focus:border-[var(--airion-brand-primary)] focus:ring-4 focus:ring-[rgba(108,99,255,0.08)] outline-none transition-all duration-200 px-4 py-3 text-sm text-[var(--airion-text-primary)] resize-none"
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Neural Connection (Phone)</label>
+                                        <input
+                                            value={personalData.phone}
+                                            onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
+                                            className="input-dark-glass font-black italic tracking-tight"
+                                            placeholder="+91 XXXXXXXXXX"
                                         />
                                     </div>
                                 </div>
-                                
-                                <div className="pt-4 flex justify-end">
-                                    <Button variant="primary" size="lg" leftIcon={<Save size={20} />}>
-                                        Save Changes
+
+                                <div className="pt-8 border-t border-white/5">
+                                    <Button onClick={handleSavePersonal} disabled={submitting} className="btn-primary h-11 px-10 text-[10px] tracking-[0.2em] italic">
+                                        {submitting ? <Loader2 className="animate-spin" /> : <><Save size={14} className="mr-2"/> Commit Identification</>}
                                     </Button>
                                 </div>
                             </div>
                         )}
 
-                        {activeTab === 'notifications' && (
-                            <div className="space-y-6">
-                                <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Notification Preferences</h2>
-                                <div className="space-y-4">
-                                    {[
-                                        { label: 'Email Notifications', description: 'Receive email updates about your bookings' },
-                                        { label: 'SMS Notifications', description: 'Get text messages for important updates' },
-                                        { label: 'Push Notifications', description: 'Receive push notifications on your device' },
-                                        { label: 'Marketing Emails', description: 'Receive promotional emails and offers' },
-                                    ].map((item, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-4 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-xl">
-                                            <div>
-                                                <h3 className="font-bold text-sm text-[var(--airion-text-primary)]">{item.label}</h3>
-                                                <p className="text-xs text-[var(--airion-text-muted)] font-medium mt-0.5">{item.description}</p>
-                                            </div>
-                                            <label className="relative inline-flex items-center cursor-pointer group">
-                                                <input type="checkbox" defaultChecked={idx < 2} className="sr-only peer" />
-                                                <div className="w-11 h-6 bg-[var(--airion-border-base)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[rgba(108,99,255,0.15)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[var(--airion-border-subtle)] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--airion-brand-primary)] group-hover:bg-[var(--airion-border-active)]"></div>
-                                            </label>
+                        {/* Tab: Business */}
+                        {activeTab === 'business' && (
+                            <div className="space-y-12 animate-in fade-in duration-700">
+                                <div className="flex justify-between items-start border-b border-white/5 pb-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-400 shadow-glow-custom">
+                                            <ShieldCheck size={24} />
                                         </div>
-                                    ))}
+                                        <div>
+                                            <h2 className="text-sm font-black text-white uppercase tracking-widest italic leading-none">Business Logic Config</h2>
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase mt-2 italic">Registry Handshake Status: Live</p>
+                                        </div>
+                                    </div>
+                                    <Badge className="chip-soft-blue italic">ID: {user?.id?.slice(0, 8)}</Badge>
+                                </div>
+
+                                <div className="space-y-16">
+                                    {/* Section 01 */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] flex items-center gap-3 italic">
+                                          <div className="w-2 h-2 bg-blue-600 rounded-sm rotate-45" />
+                                          01 Indexing Parameters
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest">Core Domain Category</label>
+                                                <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value })} className="input-dark-glass italic font-black">
+                                                    <option value="" className="bg-slate-900">Select Domain...</option>
+                                                    {categories.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest">Specialty Architecture</label>
+                                                <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="input-dark-glass italic font-black disabled:opacity-40">
+                                                    <option value="" className="bg-slate-900">Select Specialty...</option>
+                                                    {subcategories.map(s => <option key={s.id} value={s.id} className="bg-slate-900">{s.name}</option>)}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Section 02 */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] flex items-center gap-3 italic">
+                                          <div className="w-2 h-2 bg-blue-600 rounded-sm rotate-45" />
+                                          02 Institutional Identity
+                                        </h3>
+                                        <div className="space-y-8">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest">Public Institutional Name</label>
+                                                <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="input-dark-glass italic font-black" placeholder="Your Business Empire" />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Visual Registry Clusters</label>
+                                                <div className="flex flex-wrap gap-4">
+                                                    {businessData.portfolioImages.map((img, i) => (
+                                                        <div key={i} className="w-16 h-16 rounded-xl overflow-hidden bg-white/5 border border-white/5 relative group transition-all duration-500 hover:scale-110 shadow-2xl">
+                                                            <img src={img} className="w-full h-full object-cover opacity-60 group-hover:opacity-100" />
+                                                             <button onClick={() => setBusinessData(p => ({...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i)}))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={16}/></button>
+                                                        </div>
+                                                    ))}
+                                                    <button className="w-16 h-16 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center text-slate-600 hover:text-blue-500 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all duration-500"><Plus size={24}/></button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest">Institutional Narrative (Bio)</label>
+                                                <textarea value={businessData.description} onChange={(e: any) => setBusinessData({...businessData, description: e.target.value})} rows={5} className="input-dark-glass h-auto min-h-[140px] py-4 italic font-bold leading-relaxed" placeholder="Describe your logic philosophy..." />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Section 03 */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] flex items-center gap-3 italic">
+                                          <div className="w-2 h-2 bg-blue-600 rounded-sm rotate-45" />
+                                          03 Operational Telemetry
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic">Base Operations Hub (City)</label>
+                                                <input value={businessData.city} onChange={(e: any) => setBusinessData({...businessData, city: e.target.value})} className="input-dark-glass italic font-black" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase italic">Avg. Terminal Value (₹)</label>
+                                                <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({...businessData, avgBookingPrice: e.target.value})} className="input-dark-glass italic font-black tracking-tighter" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="pt-10 border-t border-white/5">
+                                    <Button onClick={handleSaveBusiness} disabled={submitting} className="btn-primary h-12 px-12 text-[10px] tracking-[0.3em] italic">
+                                        {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={16} className="mr-2"/> Update Registry Matrix</>}
+                                    </Button>
                                 </div>
                             </div>
                         )}
 
                         {activeTab === 'security' && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Security Settings</h2>
-                                <div className="space-y-6">
-                                    <Input
-                                        label="Current Password"
-                                        type="password"
-                                    />
-                                    <Input
-                                        label="New Password"
-                                        type="password"
-                                    />
-                                    <Input
-                                        label="Confirm New Password"
-                                        type="password"
-                                    />
-                                    
-                                    <div className="pt-2">
-                                        <Button variant="primary">
-                                            Update Password
-                                        </Button>
+                            <div className="space-y-10 animate-in fade-in duration-700">
+                                <div className="flex items-center gap-4 border-b border-white/5 pb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                                        <Lock size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-sm font-black text-white uppercase tracking-widest italic leading-none">Vault Access Config</h2>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase mt-2 italic">Neural Shield Status: Guarded</p>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'billing' && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Billing Information</h2>
-                                <div className="p-4 bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-xl shadow-[var(--airion-shadow-sm)]">
-                                    <p className="text-sm text-[var(--airion-text-muted)]">Current Plan: <span className="font-bold text-[var(--airion-text-primary)]">Professional</span></p>
-                                    <p className="text-sm text-[var(--airion-text-muted)] mt-1">Next billing date: <span className="font-medium text-[var(--airion-text-primary)]">Jan 1, 2025</span></p>
-                                </div>
-                                <Button variant="primary">
-                                    Manage Subscription
-                                </Button>
-                            </div>
-                        )}
-
-                        {activeTab === 'verification' && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <div>
-                                    <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Business Verification</h2>
-                                    <p className="text-sm text-[var(--airion-text-muted)] mt-1">Submit your official documents to get the "Verified Host" badge and boost your rankings.</p>
-                                </div>
-                                <div className="grid gap-6">
-                                    <div className="p-6 bg-[var(--airion-bg-base)] rounded-2xl border border-[var(--airion-border-subtle)] shadow-[var(--airion-shadow-sm)]">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h3 className="font-bold text-[var(--airion-text-primary)]">Government ID</h3>
-                                                <p className="text-sm text-[var(--airion-text-muted)]">Passport, Aadhar, or Driver's License</p>
-                                            </div>
-                                            <span className="bg-green-100/50 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                                <CheckCircle size={14} /> Verified
-                                            </span>
-                                        </div>
+                                <div className="max-w-md space-y-8">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest">New Protocol Cipher</label>
+                                        <input type="password" placeholder="••••••••" className="input-dark-glass italic font-black tracking-[0.5em]" />
                                     </div>
-                                    
-                                    <div className="p-6 bg-[var(--airion-bg-base)] rounded-2xl border border-[var(--airion-border-subtle)] shadow-[var(--airion-shadow-sm)]">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h3 className="font-bold text-[var(--airion-text-primary)]">Business Registration Proof</h3>
-                                                <p className="text-sm text-[var(--airion-text-muted)]">GST Certificate, Trade License, or Incorporation Document</p>
-                                            </div>
-                                            <span className="bg-yellow-100/50 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                                Pending Action
-                                            </span>
-                                        </div>
-                                        <div className="mt-4 border-2 border-dashed border-[var(--airion-border-subtle)] rounded-xl p-8 text-center cursor-pointer hover:bg-[var(--airion-bg-surface)] transition-colors group relative">
-                                            <Upload className="mx-auto text-[var(--airion-text-muted)] group-hover:text-[var(--airion-brand-primary)] transition-colors mb-2" size={32} />
-                                            <p className="font-bold text-[var(--airion-text-primary)]">Click to upload document</p>
-                                            <p className="text-xs text-[var(--airion-text-muted)] mt-1">PDF, JPG, or PNG up to 10MB</p>
-                                            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-                                        </div>
-                                    </div>
+                                    <Button className="btn-secondary h-11 px-8 text-[10px] tracking-[0.2em] italic text-slate-400 hover:text-white border-white/10">Rotate Access Cipher</Button>
                                 </div>
-                                <Button variant="primary">
-                                    Submit for Review
-                                </Button>
                             </div>
                         )}
 
                         {activeTab === 'preferences' && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <h2 className="text-xl font-bold text-[var(--airion-text-primary)]">Preferences</h2>
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-4 bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-xl shadow-[var(--airion-shadow-sm)]">
-                                        <div>
-                                            <h3 className="font-medium text-[var(--airion-text-primary)]">Theme</h3>
-                                            <p className="text-sm text-[var(--airion-text-muted)]">Choose your preferred theme</p>
-                                        </div>
-                                        <button
-                                            onClick={toggleTheme}
-                                            className="flex items-center gap-2 px-4 py-2 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-lg hover:bg-[var(--airion-bg-base)] transition-colors"
-                                        >
-                                            {theme === 'light' ? <Moon size={20} className="text-[var(--airion-text-muted)]" /> : <Sun size={20} className="text-[var(--airion-text-muted)]" />}
-                                            <span className="text-sm font-medium text-[var(--airion-text-primary)]">
-                                                {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                                            </span>
-                                        </button>
+                            <div className="space-y-10 animate-in fade-in duration-700">
+                                <div className="flex items-center gap-4 border-b border-white/5 pb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                                        <Globe size={24} />
                                     </div>
-                                    <div className="p-4 bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-xl shadow-[var(--airion-shadow-sm)]">
-                                        <label className="block text-sm font-medium text-[var(--airion-text-primary)] mb-2">Language</label>
-                                        <select className="w-full px-4 py-2 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-lg outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)] text-[var(--airion-text-primary)] transition-all">
-                                            <option>English</option>
-                                            <option>Hindi</option>
-                                            <option>Spanish</option>
-                                        </select>
+                                    <div>
+                                        <h2 className="text-sm font-black text-white uppercase tracking-widest italic leading-none">Interface Core Preferences</h2>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase mt-2 italic">UI/UX Engine Parameter: Glassmorphism_v4</p>
                                     </div>
-                                    <div className="p-4 bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-xl shadow-[var(--airion-shadow-sm)]">
-                                        <label className="block text-sm font-medium text-[var(--airion-text-primary)] mb-2">Timezone</label>
-                                        <select className="w-full px-4 py-2 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-lg outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)] text-[var(--airion-text-primary)] transition-all">
-                                            <option>Asia/Kolkata (IST)</option>
-                                            <option>America/New_York (EST)</option>
-                                            <option>Europe/London (GMT)</option>
-                                        </select>
-                                    </div>
+                                </div>
+                                <div className="bg-white/5 border border-white/5 p-8 rounded-2xl space-y-6">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] italic">Visual Spectrum Config</p>
+                                    <Button onClick={toggleTheme} className="btn-secondary h-12 px-8 text-[10px] tracking-[0.2em] italic">
+                                        {theme === 'light' ? <Moon size={16} className="mr-3 text-blue-400 shadow-glow-custom"/> : <Sun size={16} className="mr-3 text-amber-400"/>}
+                                        {theme === 'light' ? 'Switch to DARK_PRIME' : 'Switch to LIGHT_CLASSIC'}
+                                    </Button>
+                                    <p className="text-[9px] text-slate-600 font-bold italic uppercase tracking-tighter">* System currently optimized for HIGH_CONTRAST_DARK_GLASS</p>
                                 </div>
                             </div>
                         )}

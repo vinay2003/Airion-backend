@@ -131,7 +131,7 @@ export class VendorsService {
         const pending = bookings.filter(b => b.status === 'pending').length;
         const upcoming = bookings.filter(b => b.status === 'confirmed').length;
         const events = bookings.filter(b => b.status === 'completed').length;
-        const revenue = bookings
+        const revenueTotal = bookings
             .filter(b => b.status === 'completed' || b.paymentStatus === 'paid')
             .reduce((sum, b) => sum + Number(b.totalAmount), 0);
 
@@ -139,7 +139,107 @@ export class VendorsService {
             pendingBookings: pending,
             totalEvents: events,
             upcomingBookings: upcoming,
-            totalEarnings: revenue.toLocaleString('en-IN')
+            totalEarnings: revenueTotal.toLocaleString('en-IN')
         };
+    }
+
+    async getDetailedEarnings(vendorId: string): Promise<any> {
+        const bookings = await this.bookingRepository.find({
+            where: { vendorId },
+            order: { createdAt: 'DESC' }
+        });
+
+        const completedBookings = bookings.filter(b => b.status === 'completed' || b.paymentStatus === 'paid');
+        
+        // Calculate revenue stats
+        const totalBalance = completedBookings.reduce((sum, b) => sum + Number(b.totalAmount), 0);
+        
+        // Monthly trend (last 6 months)
+        const monthlyStats = [];
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            const monthLabel = monthNames[date.getMonth()];
+            const monthYear = date.getFullYear();
+            
+            const monthRevenue = completedBookings
+                .filter(b => {
+                    const bDate = new Date(b.createdAt);
+                    return bDate.getMonth() === date.getMonth() && bDate.getFullYear() === monthYear;
+                })
+                .reduce((sum, b) => sum + Number(b.totalAmount), 0);
+                
+            monthlyStats.push({ name: monthLabel, revenue: monthRevenue });
+        }
+
+        // Transactions (transformed for frontend)
+        const transactions = bookings.slice(0, 10).map(b => ({
+            id: `#TRX-${b.id?.split('-')[0].toUpperCase()}`,
+            service: 'Service Booking', // Should ideally fetch service title
+            client: 'Customer', // Should ideally fetch user name
+            date: new Date(b.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+            amount: `₹${Number(b.totalAmount).toLocaleString('en-IN')}`,
+            status: b.status.charAt(0).toUpperCase() + b.status.slice(1)
+        }));
+
+        return {
+            totalBalance,
+            monthlyRevenue: monthlyStats[monthlyStats.length - 1].revenue,
+            monthlyStats,
+            recentTransactions: transactions
+        };
+    }
+
+    // --- ADS MANAGEMENT ---
+
+    async createAd(userId: string, adData: any): Promise<Vendor> {
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+
+        const newAd = {
+            id: Math.random().toString(36).substr(2, 9),
+            ...adData,
+            status: 'Pending',
+            createdAt: new Date(),
+        };
+
+        vendor.ads = [...(vendor.ads || []), newAd];
+        return this.vendorRepository.save(vendor);
+    }
+
+    async updateAd(userId: string, adId: string, updateData: any): Promise<Vendor> {
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+
+        vendor.ads = (vendor.ads || []).map(ad => 
+            ad.id === adId ? { ...ad, ...updateData } : ad
+        );
+        return this.vendorRepository.save(vendor);
+    }
+
+    // --- GALLERY MANAGEMENT ---
+
+    async addToGallery(userId: string, item: any): Promise<Vendor> {
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+
+        const newItem = {
+            id: Math.random().toString(36).substr(2, 9),
+            ...item,
+            createdAt: new Date(),
+        };
+
+        vendor.gallery = [...(vendor.gallery || []), newItem];
+        return this.vendorRepository.save(vendor);
+    }
+
+    async removeFromGallery(userId: string, itemId: string): Promise<Vendor> {
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+
+        vendor.gallery = (vendor.gallery || []).filter(item => item.id !== itemId);
+        return this.vendorRepository.save(vendor);
     }
 }

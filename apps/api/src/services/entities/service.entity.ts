@@ -60,13 +60,25 @@ export class Service {
     @Column({ name: 'location_type', default: 'onsite' })
     locationType: string;
 
+    @Column('int', { name: 'guest_capacity', nullable: true })
+    guestCapacity: number;
+
+    @Column('text', { nullable: true })
+    address: string;
+
+    @Column('text', { nullable: true })
+    city: string;
+
+    @Column('text', { nullable: true })
+    state: string;
+
     @Column('jsonb', { name: 'available_locations', nullable: true })
     availableLocations: string[];
 
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
 
-    @OneToMany(() => ServicePackage, (pkg) => pkg.service)
+    @OneToMany(() => ServicePackage, (pkg) => pkg.service, { cascade: true })
     packages: ServicePackage[];
 
     @CreateDateColumn({ name: 'created_at' })

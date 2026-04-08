@@ -14,17 +14,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check health in parallel with auth check
     const healthCheckPromise = commonAuth.healthCheck();
     
-    // Check for tokens in the URL (for multi-app monorepo handoff)
+    // 🔐 JWT Handshake Protocol: Multi-Portal Monorepo Handoff
     const urlParams = new URL(window.location.href).searchParams;
     const urlToken = urlParams.get('token') || urlParams.get('airion_token');
     
     if (urlToken) {
       tokenService.setAccessToken(urlToken);
-      // Clean URL to prevent re-capturing token on reload or copy-paste
+      // 🔥 Clean URL to prevent re-capturing token on reload or security leaks
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('token');
       newUrl.searchParams.delete('airion_token');
-      window.history.replaceState({}, '', newUrl.toString());
+      window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
+      
+      const returnPath = urlParams.get('redirect_to');
+      if (returnPath) {
+        window.location.href = returnPath;
+        return;
+      }
     }
 
     if (!tokenService.hasToken()) {

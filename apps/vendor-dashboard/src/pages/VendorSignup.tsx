@@ -153,7 +153,7 @@ const VendorSignupWizard: React.FC = () => {
             const submissionData = {
                 businessName: formData.businessName.trim(),
                 businessEmail: formData.businessEmail?.trim() || user?.email || undefined,
-                businessPhone: user?.phoneNumber || formData.businessEmail || '+910000000000', // Mock fallback
+                businessPhone: (formData.businessPhone?.trim() || user?.phoneNumber || '+910000000000').replace(/[\s\(\)\-]/g, ''),
                 city: formData.city.trim(),
                 yearsInBusiness: formData.yearsInBusiness || undefined,
                 gstNumber: formData.gstNumber.trim() || undefined,
@@ -180,9 +180,26 @@ const VendorSignupWizard: React.FC = () => {
             setTimeout(() => navigate('/vendor'), 1500);
         } catch (err: any) {
             console.error('[VendorSignup] Submission failed:', err);
-            const errorMessage = err.error || err.message || 'Failed to save profile. Please check all fields.';
+            
+            // Extract meaningful message from API error
+            let errorMessage = 'Failed to save profile. Please check all fields.';
+            
+            if (err.error) {
+                if (Array.isArray(err.error)) {
+                    // Handle Zod validation errors (array of objects with 'message' and 'path')
+                    errorMessage = err.error.map((e: any) => {
+                        const path = e.path ? `(${e.path.join('.')}) ` : '';
+                        return `${path}${e.message || e}`;
+                    }).join('. ');
+                } else {
+                    errorMessage = err.error;
+                }
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+            
             toast.error(errorMessage, {
-                duration: 5000,
+                duration: 6000,
                 style: { borderRadius: '15px', background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }
             });
         } finally {

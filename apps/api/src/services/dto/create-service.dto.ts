@@ -52,4 +52,32 @@ export class CreateServiceDto {
     @IsArray()
     @IsOptional()
     availableLocations?: string[];
+
+    @IsNumber()
+    @Min(1)
+    @IsOptional()
+    guestCapacity?: number;
+
+    @IsString()
+    @IsOptional()
+    address?: string;
+
+    @IsString()
+    @IsOptional()
+    city?: string;
+
+    @IsString()
+    @IsOptional()
+    state?: string;
+
+    @IsArray()
+    @IsOptional()
+    packages?: Array<{
+        name: string;
+        price: number;
+        description: string;
+        features: any;
+        isPopular: boolean;
+        deliveryDays?: number;
+    }>;
 }

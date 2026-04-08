@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera } from 'lucide-react';
 import { useAuth } from '@airion/shared';
 import { Avatar } from '@airion/ui';
 
@@ -18,6 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { icon: CalendarDays, label: 'Calendar', path: '/calendar' },
         { icon: DollarSign, label: 'Earnings', path: '/earnings' },
         { icon: MessageSquare, label: 'Enquiries', path: '/enquiries' },
+        { icon: Megaphone, label: 'Ads', path: '/ads' },
+        { icon: Camera, label: 'Gallery', path: '/gallery' },
         { icon: Package, label: 'Products', path: '/products' },
         { icon: BarChart2, label: 'Analytics', path: '/analytics' },
         { icon: Settings, label: 'Settings', path: '/settings' },

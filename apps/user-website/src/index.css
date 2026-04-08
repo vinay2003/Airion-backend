@@ -28,29 +28,45 @@
   --airion-text-inverted:  #FFFFFF;
 
   /* Borders for light mode */
-  --airion-border-subtle:  rgba(0, 0, 0, 0.06);
-  --airion-border-base:    rgba(0, 0, 0, 0.12);
+  --airion-border-subtle:  rgba(0, 0, 0, 0.05);
+  --airion-border-base:    rgba(0, 0, 0, 0.08);
 
-  /* Shadows for light mode */
-  --airion-shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
-  --airion-shadow-md:  0 6px 16px rgba(0, 0, 0, 0.12);
-  --airion-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.16);
-  --airion-shadow-glow: 0 0 24px rgba(108, 99, 255, 0.12);
+  /* Refined multi-layered shadows for light mode */
+  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
+  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --airion-shadow-glow: 0 0 15px rgba(99, 102, 241, 0.1);
 
   /* Tailwind semantic aliases (light) */
   --background:  #FFFFFF;
-  --foreground:  #1A1A2E;
-  --card:        #F8F8FF;
-  --card-foreground: #1A1A2E;
-  --muted:       #F0EFFE;
-  --muted-foreground: #9090AA;
-  --border:      rgba(0, 0, 0, 0.06);
-  --input:       rgba(0, 0, 0, 0.10);
-  --secondary:   #F0EFFE;
-  --secondary-foreground: #4A4A6A;
+  --foreground:  #0F172A;
+  --card:        #FFFFFF;
+  --card-foreground: #0F172A;
+  --muted:       #F1F5F9;
+  --muted-foreground: #64748B;
+  --border:      rgba(0, 0, 0, 0.05);
+  --input:       rgba(0, 0, 0, 0.08);
+  --secondary:   #F1F5F9;
+  --secondary-foreground: #475569;
+}body {
+  @apply bg-white text-[#1A1A2E] antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* ── 3. User Portal Specific Utilities ───────────────────── */
+/* ── 3. User Portal Specific Components ──────────────────── */
+@layer components {
+  /* Minimal professional card with subtle lift */
+  .card-minimal {
+    @apply bg-white border border-gray-100 dark:border-slate-800 rounded-xl p-6 transition-all duration-300 hover:shadow-md hover:border-gray-200;
+  }
+
+  /* Premium card with soft multi-layer shadow */
+  .card-premium {
+    @apply bg-white border border-gray-100 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:border-indigo-100;
+  }
+}
+
+/* ── 4. User Portal Utilities ────────────────────────────── */
 @layer utilities {
   /* Airbnb-style card shadow for event listing cards */
   .shadow-listing      { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); }
@@ -64,4 +80,5 @@
       linear-gradient(90deg, rgba(108,99,255,0.07) 1px, transparent 1px);
     background-size: 40px 40px;
   }
+  .transition-soft { @apply transition-all duration-300 ease-in-out; }
 }

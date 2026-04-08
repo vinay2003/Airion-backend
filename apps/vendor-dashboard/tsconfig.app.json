@@ -45,6 +45,9 @@
       "@airion/shared/*": [
         "../../packages/shared/*"
       ],
+      "@airion/ui": [
+        "../../packages/ui"
+      ],
       "@airion/ui/*": [
         "../../packages/ui/*"
       ]

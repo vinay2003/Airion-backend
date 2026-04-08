@@ -73,7 +73,7 @@ const VendorSignupBasic: React.FC = () => {
             // Store token
             const authData = response.data;
             if (authData.access_token) {
-                localStorage.setItem('token', authData.access_token);
+                localStorage.setItem('airion_token', authData.access_token);
             }
 
             setSuccess('OTP verified! Redirecting to complete your profile...');

@@ -33,5 +33,9 @@ export const bookingService = {
   
   getStats: async (vendorId: string) => {
     return api.get<any>(`/vendors/${vendorId}/stats/bookings`);
+  },
+  
+  getEarnings: async (vendorId: string) => {
+    return api.get<any>(`/vendors/${vendorId}/earnings`);
   }
 };

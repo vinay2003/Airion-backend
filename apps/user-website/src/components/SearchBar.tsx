@@ -91,13 +91,13 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto transition-shadow duration-500">
             {/* Location Selector */}
             <div className="flex-1 relative group/input">
                 <Popover open={openLocation} onOpenChange={setOpenLocation}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-6 py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full cursor-pointer transition-colors flex items-center gap-3">
-                            <MapPin className={`w-5 h-5 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
+                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                            <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Location</label>
                                 <div className={`text-sm truncate ${location ? "text-gray-900 dark:text-white font-medium" : "text-gray-400"}`}>
@@ -148,8 +148,8 @@ const SearchBar = () => {
             <div className="flex-1 relative group/input">
                 <Popover open={openDate} onOpenChange={setOpenDate}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-6 py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full cursor-pointer transition-colors flex items-center gap-3">
-                            <CalendarIcon className={`w-5 h-5 ${date?.from ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
+                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                            <CalendarIcon className={`w-5 h-5 shrink-0 ${date?.from ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Date</label>
                                 <p className={`text-sm truncate ${date?.from ? "text-gray-900 dark:text-white font-medium" : "text-gray-400"}`}>
@@ -188,8 +188,8 @@ const SearchBar = () => {
             <div className="flex-1 relative group/input">
                 <Popover open={openGuests} onOpenChange={setOpenGuests}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-6 py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 rounded-full cursor-pointer transition-colors flex items-center gap-3">
-                            <Users className={`w-5 h-5 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
+                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                            <Users className={`w-5 h-5 shrink-0 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Guests</label>
                                 <p className="text-sm text-gray-900 dark:text-white font-medium truncate">
@@ -230,12 +230,13 @@ const SearchBar = () => {
             </div>
 
             {/* Search Button */}
-            <div className="p-2">
+            <div className="p-2 md:p-2 pt-0 md:pt-2">
                 <button
                     onClick={handleSearch}
-                    className="w-full md:w-auto h-full aspect-square bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all hover:scale-105 active:scale-95 group/btn"
+                    className="w-full md:w-[60px] h-14 md:h-[60px] bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all hover:scale-105 active:scale-95 group/btn"
                 >
                     <Search className="h-6 w-6 group-hover/btn:scale-110 transition-transform" />
+                    <span className="md:hidden ml-2 font-bold text-lg">Search</span>
                 </button>
             </div>
         </div>

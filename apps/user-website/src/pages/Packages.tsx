@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Check, Star } from 'lucide-react';
 import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
+import FallingPetals from '../components/FallingPetals';
 
 interface Package {
     id: string;
@@ -68,7 +69,8 @@ const Packages: React.FC = () => {
     ];
 
     return (
-        <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 py-12">
+        <main className="min-h-screen bg-gray-50 dark:bg-transparent aurora-bg relative transition-colors duration-300 py-12 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Event Packages" description="Explore our curated packages for weddings, birthdays, and corporate events." />
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">

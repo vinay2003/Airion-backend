@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-    ChevronLeft, ChevronRight, Sparkles, Heart, Cake, Briefcase, 
-    PartyPopper, Camera, ChefHat, Palette, Music, Hotel, Sparkle, CalendarCheck 
+import {
+    ChevronLeft, ChevronRight, Sparkles, Heart, Cake, Briefcase,
+    PartyPopper, Camera, ChefHat, Palette, Music, Hotel, Sparkle, CalendarCheck
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -27,7 +27,7 @@ const CategorySlider: React.FC = () => {
     const [showRightArrow, setShowRightArrow] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Extract category from URL or default to 'all'
     const searchParams = new URLSearchParams(location.search);
     const activeCategory = searchParams.get('category') || 'all';
@@ -71,11 +71,11 @@ const CategorySlider: React.FC = () => {
     };
 
     return (
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8 bg-white dark:bg-slate-950 z-20">
+        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8 bg-white dark:bg-slate-950 z-20">
             {/* Left fade/arrow */}
             {showLeftArrow && (
                 <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-slate-950 to-transparent flex items-center pl-4 z-10">
-                    <button 
+                    <button
                         onClick={() => slide('left')}
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
                         aria-label="Scroll left"
@@ -86,35 +86,36 @@ const CategorySlider: React.FC = () => {
             )}
 
             {/* Slider track */}
-            <div 
+            <div
                 ref={scrollRef}
-                className="flex overflow-x-auto gap-8 px-4 py-4 hide-scrollbar scroll-smooth snap-x"
+                className="flex overflow-x-auto justify-between gap-4 md:gap-6 px-4 py-6 hide-scrollbar scroll-smooth snap-x -mx-4 sm:mx-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {CATEGORIES.map((category) => (
-                    <button
-                        key={category.id}
-                        onClick={() => handleCategoryClick(category.id)}
-                        className={`flex flex-col items-center justify-center min-w-max gap-2 group snap-start transition-all ${
-                            activeCategory === category.id 
-                                ? 'text-gray-900 border-b-2 border-gray-900 pb-2 dark:text-white dark:border-white' 
-                                : 'text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-200 pb-2 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-slate-700'
-                        }`}
-                    >
-                        <span className={`text-gray-500 dark:text-gray-400 transition-transform duration-300 ${activeCategory === category.id ? 'scale-110 text-red-500 dark:text-red-400' : 'group-hover:scale-110'}`}>
-                            <category.icon size={24} className={activeCategory === category.id ? 'text-red-500' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200'} />
-                        </span>
-                        <span className="text-sm font-medium whitespace-nowrap">
-                            {category.label}
-                        </span>
-                    </button>
-                ))}
+                {CATEGORIES.map((category) => {
+                    const isActive = activeCategory === category.id;
+                    return (
+                        <button
+                            key={category.id}
+                            onClick={() => handleCategoryClick(category.id)}
+                            className={`flex flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 group snap-start transition-all duration-300 rounded-full border shadow-sm hover:shadow-md whitespace-nowrap gap-2.5 ${isActive
+                                ? 'bg-gradient-to-r from-red-600 to-red-500 border-red-500 text-white scale-105 shadow-red-500/20'
+                                : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-600 dark:text-gray-300 hover:border-red-200 dark:hover:border-red-900/50 hover:-translate-y-0.5'
+                                }`}
+                        >
+                            <category.icon size={18} className={`transition-colors ${isActive ? 'text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-red-500'}`} />
+                            <span className={`text-sm tracking-wide font-bold transition-colors ${isActive ? 'text-white' : 'group-hover:text-gray-900 dark:group-hover:text-white'
+                                }`}>
+                                {category.label}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Right fade/arrow */}
             {showRightArrow && (
                 <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-slate-950 to-transparent flex items-center justify-end pr-4 z-10">
-                    <button 
+                    <button
                         onClick={() => slide('right')}
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
                         aria-label="Scroll right"
@@ -123,7 +124,7 @@ const CategorySlider: React.FC = () => {
                     </button>
                 </div>
             )}
-            
+
             <style>{`
                 .hide-scrollbar::-webkit-scrollbar {
                     display: none;

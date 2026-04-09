@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Filter, Heart, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
+import FallingPetals from '../components/FallingPetals';
 
 const Inspiration: React.FC = () => {
     const [activeFilter, setActiveFilter] = useState('All');
@@ -30,7 +31,8 @@ const Inspiration: React.FC = () => {
     );
 
     return (
-        <div className="min-h-screen bg-transparent dark:bg-slate-950 transition-colors duration-300 pt-20 pb-20">
+        <div className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 pt-20 pb-20 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Inspiration Feed" description="Discover beautiful ideas for your next event." />
             
             {/* Header Section */}

@@ -9,6 +9,7 @@ import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '@shared/auth';
+import FallingPetals from '../components/FallingPetals';
 
 import { fetchEvents } from '../lib/api';
 import { events as mockEvents } from '../data/events';
@@ -55,7 +56,8 @@ const Home: React.FC = () => {
     }
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
+        <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
             <Hero />
 
@@ -63,9 +65,9 @@ const Home: React.FC = () => {
             {isAuthenticated && activeCategory === 'all' && (
                 <motion.section
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-16 relative z-40"
+                    className="max-w-[1536px] mx-auto px-4 md:px-8 -mt-12 mb-16 relative z-40"
                 >
-                    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-red-500/10 border border-red-50 dark:border-slate-800 p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10">
+                    <div className="bg-white/10 backdrop-blur-2xl dark:bg-slate-900/40 rounded-[2.5rem] shadow-2xl shadow-black/20 border border-white/20 dark:border-white/10 p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10">
                         <div className="flex-1 w-full text-center lg:text-left">
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Your Plan Hub</h2>
                             <p className="text-gray-500 dark:text-slate-400 font-medium mb-8">Manage every detail of your dream event from your personalized dashboard.</p>
@@ -123,7 +125,7 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="max-w-7xl mx-auto px-4 md:px-8 py-12"
+                        className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Marketplace Categories</h2>
@@ -133,17 +135,17 @@ const Home: React.FC = () => {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
                             {[
-                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop', link: '/?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
-                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop', link: '/?category=birthdays', class: 'col-span-1 h-64' },
-                                { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop', link: '/?category=corporate', class: 'col-span-1 h-64' },
-                                { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1000&auto=format&fit=crop', link: '/?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Photography', image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1000&auto=format&fit=crop', link: '/?category=photography', class: 'col-span-1 h-64' },
-                                { title: 'Catering', image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?q=80&w=1000&auto=format&fit=crop', link: '/?category=catering', class: 'col-span-1 h-64' },
-                                { title: 'Decor', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop', link: '/?category=decor', class: 'col-span-1 h-64' },
-                                { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop', link: '/?category=music', class: 'col-span-1 h-64' },
-                                { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop', link: '/?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1000&auto=format&fit=crop', link: '/?category=makeup', class: 'col-span-1 h-64' },
-                                { title: 'Planning', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=1000&auto=format&fit=crop', link: '/?category=planning', class: 'col-span-1 h-64' },
+                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1707374661682-d804856cee22?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fHdlZGRpbmclMjBoYWxsfGVufDB8fDB8fHww', link: '/?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
+                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1621857426350-ddab819cf0cc?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzl8fGJpcnRoZGF5JTIwcGFydHl8ZW58MHx8MHx8fDA%3D', link: '/?category=birthdays', class: 'col-span-1 h-64' },
+                                { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=100&w=2400&auto=format&fit=crop', link: '/?category=corporate', class: 'col-span-1 h-64' },
+                                { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=100&w=2400&auto=format&fit=crop', link: '/?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Photography', image: 'https://plus.unsplash.com/premium_photo-1682097066897-209d0d9e9ae5?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGhvdG9ncmFwaHl8ZW58MHx8MHx8fDA%3D', link: '/?category=photography', class: 'col-span-1 h-64' },
+                                { title: 'Catering', image: 'https://plus.unsplash.com/premium_photo-1663076035579-727173643e51?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0ZXJpbmclMjBzZXJ2aWNlc3xlbnwwfHwwfHx8MA%3D%3D', link: '/?category=catering', class: 'col-span-1 h-64' },
+                                { title: 'Decor', image: 'https://images.unsplash.com/photo-1636005429050-2fb797c01e6f?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGRlY29yYXRpb24lMjB3ZWRkaW5nfGVufDB8fDB8fHww', link: '/?category=decor', class: 'col-span-1 h-64' },
+                                { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=100&w=2400&auto=format&fit=crop', link: '/?category=music', class: 'col-span-1 h-64' },
+                                { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=100&w=2400&auto=format&fit=crop', link: '/?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1511923199659-1c16881689de?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1ha2V1cHxlbnwwfHwwfHx8MA%3D%3D', link: '/?category=makeup', class: 'col-span-1 h-64' },
+                                { title: 'Planning', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fHBsYW5uaW5nfGVufDB8fDB8fHww', link: '/?category=planning', class: 'col-span-1 h-64' },
                             ].map((cat, idx) => (
                                 <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
@@ -161,7 +163,7 @@ const Home: React.FC = () => {
 
 
                     {/* Featured Events This Month */}
-                    <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+                    <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Events This Month</h2>
                             <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
@@ -181,8 +183,8 @@ const Home: React.FC = () => {
                     </section>
 
                     {/* Marketplace Section (KEY Tabbed Layout) */}
-                    <section className="bg-gray-50 dark:bg-slate-900/50 py-16">
-                        <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-16">
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">What's Happening in the Marketplace</h2>
                                 <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 rounded-xl w-full md:w-auto overflow-x-auto shadow-sm border border-gray-100 dark:border-slate-700">
@@ -228,9 +230,9 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="bg-white dark:bg-slate-950 py-20 transition-colors duration-300"
+                        className="bg-white/5 backdrop-blur-md dark:bg-slate-950/20 py-20 transition-colors duration-300 relative z-10"
                     >
-                        <div className="max-w-7xl mx-auto px-4 md:px-8">
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                             <div className="text-center mb-16">
                                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
                                 <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -263,7 +265,7 @@ const Home: React.FC = () => {
                     </motion.section>
                 </>
             ) : (
-                <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+                <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
                     <div className="mb-8">
                         <h2 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} Marketplace</h2>
                         <p className="text-gray-500 text-sm mt-1">Discover premium listings specifically tailored for your choice.</p>
@@ -281,8 +283,8 @@ const Home: React.FC = () => {
             )}
 
             {/* Why Choose Us */}
-            <section className="bg-gray-900 text-white py-20">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <section className="bg-black/20 backdrop-blur-lg text-white py-20 relative z-10 border-t border-white/5">
+                <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Airion?</h2>

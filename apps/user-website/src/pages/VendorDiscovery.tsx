@@ -7,6 +7,7 @@ import { events as mockEvents } from '../data/events';
 import MapView from '../components/MapView';
 import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import type { Event } from '../types';
+import FallingPetals from '../components/FallingPetals';
 
 const SORT_OPTIONS = [
     { label: 'Recommended', value: 'recommended' },
@@ -57,7 +58,8 @@ const VendorDiscovery: React.FC = () => {
     const removeFilter = (filter: string) => setActiveFilters(prev => prev.filter(f => f !== filter));
 
     return (
-        <main className="min-h-screen bg-transparent transition-colors duration-300 pt-24 pb-12">
+        <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 pt-24 pb-12 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Explore Vendors | Airion" description="Discover the perfect vendors for your next event." />
 
             <div className="max-w-[1440px] mx-auto px-4 md:px-8">

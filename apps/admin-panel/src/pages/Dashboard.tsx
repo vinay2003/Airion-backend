@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Users, Store, DollarSign, ArrowUpRight } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
-import { Skeleton, SkeletonText } from '@airion/ui/components/Skeleton';
+import { Skeleton, SkeletonText } from '@airion/ui';
 
 const Dashboard: React.FC = () => {
     const { data: stats, isLoading: statsLoading } = useQuery<any[]>({

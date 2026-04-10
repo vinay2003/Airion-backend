@@ -108,57 +108,70 @@ const CalendarPage: React.FC = () => {
     const selectedEvents = selectedDate ? bookingsOnDays[selectedDate] || [] : [];
 
     return (
-        <div className="space-y-6 animate-fadeIn">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none uppercase">Operational Matrix</h1>
-                <p className="text-slate-400 font-bold text-[10px] mt-2 uppercase tracking-widest italic">Deployment Schedule • Resource Allocation • Performance Log</p>
+        <div className="space-y-6 animate-fadeIn pb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <h1 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tight leading-none uppercase">Operational Matrix</h1>
+                    <p className="text-[var(--airion-text-muted)] font-black text-[10px] mt-2 uppercase tracking-[0.2em] italic opacity-80">Deployment • Resource Allocation • Performance Log</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <button className="bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] p-3 rounded-xl text-[var(--airion-text-secondary)] hover:text-[var(--airion-brand-primary)] transition-all shadow-sm hover:shadow-md active:scale-95">
+                        <Filter size={18} />
+                    </button>
+                    <Button 
+                        className="h-11 px-8 rounded-xl font-black text-[10px] uppercase tracking-widest bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all active:scale-95" 
+                        leftIcon={<PlusCircle size={16} />}
+                    >
+                        Initialize Cell
+                    </Button>
+                </div>
             </div>
-            <div className="flex items-center gap-3">
-                <button className="bg-white border border-slate-100 p-2.5 rounded-xl text-slate-400 hover:text-primary transition-colors shadow-sm">
-                    <Filter size={18} />
-                </button>
-                <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white shadow-xl shadow-primary/20" leftIcon={<PlusCircle size={16} />}>
-                    Initialize Cell
-                </Button>
-            </div>
-        </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
                 {/* Main Calendar Card */}
-                <div className="xl:col-span-3 card-premium !p-0 overflow-hidden flex flex-col">
+                <div className="xl:col-span-3 card-premium !p-0 overflow-hidden flex flex-col bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-xl shadow-black/5">
                     {/* Calendar Header */}
-                    <div className="p-6 flex items-center justify-between border-b border-slate-100 bg-white">
+                    <div className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[var(--airion-border-subtle)] bg-[var(--airion-bg-elevated)]/30 backdrop-blur-md">
                         <div className="flex items-center gap-6">
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase italic">{monthNames[currentDate.getMonth()]} <span className="text-slate-300 not-italic font-black opacity-50">{currentDate.getFullYear()}</span></h2>
-                            <div className="flex bg-slate-50 rounded-xl p-1 border border-slate-100">
-                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-primary transition-all">
+                            <h2 className="text-2xl font-black text-[var(--airion-text-primary)] tracking-tight uppercase italic drop-shadow-sm">
+                                {monthNames[currentDate.getMonth()]} 
+                                <span className="text-[var(--airion-text-muted)] not-italic font-black ml-2 opacity-30">{currentDate.getFullYear()}</span>
+                            </h2>
+                            <div className="flex bg-[var(--airion-bg-base)] rounded-xl p-1 border border-[var(--airion-border-subtle)]">
+                                <button 
+                                    onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} 
+                                    className="p-2 hover:bg-[var(--airion-bg-surface)] rounded-lg text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all"
+                                >
                                     <ChevronLeft size={16} />
                                 </button>
-                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-primary transition-all">
+                                <button 
+                                    onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} 
+                                    className="p-2 hover:bg-[var(--airion-bg-surface)] rounded-lg text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all"
+                                >
                                     <ChevronRight size={16} />
                                 </button>
                             </div>
                         </div>
-                        <div className="hidden sm:flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
-                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest bg-white border border-slate-100 text-primary rounded-lg shadow-sm">Portal</button>
-                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Phase</button>
-                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">Node</button>
+                        <div className="flex gap-1 bg-[var(--airion-bg-base)] p-1 rounded-xl border border-[var(--airion-border-subtle)]">
+                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] text-[var(--airion-brand-primary)] rounded-lg shadow-sm">Portal</button>
+                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-colors">Phase</button>
+                            <button className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-colors">Node</button>
                         </div>
                     </div>
 
                     {/* Day Headers */}
                     <div className="grid grid-cols-7 border-b border-[var(--airion-border-subtle)] bg-[var(--airion-bg-elevated)]/50">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                            <div key={day} className="py-3 text-center text-[10px] font-bold uppercase tracking-widest text-[var(--airion-text-muted)]">{day}</div>
+                            <div key={day} className="py-4 text-center text-[10px] font-black uppercase tracking-[0.2em] text-[var(--airion-text-muted)]">{day}</div>
                         ))}
                     </div>
 
                     {/* Calendar Grid */}
                     <div className="grid grid-cols-7 flex-1">
                         {isLoading ? (
-                            <div className="col-span-7 h-96 flex items-center justify-center bg-[var(--airion-bg-elevated)]/10">
-                                <Skeleton variant="rect" width="90%" height="80%" />
+                            <div className="col-span-7 h-96 flex flex-col items-center justify-center gap-4 bg-[var(--airion-bg-elevated)]/10">
+                                <div className="w-12 h-12 border-4 border-[var(--airion-brand-primary)]/20 border-t-[var(--airion-brand-primary)] rounded-full animate-spin"></div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-[var(--airion-text-muted)]">Parsing Temporal Flux...</p>
                             </div>
                         ) : renderCalendar()}
                     </div>
@@ -166,13 +179,13 @@ const CalendarPage: React.FC = () => {
 
                 {/* Selected Date Details Sidebar */}
                 <div className="xl:col-span-1 space-y-6">
-                    <div className="card-premium p-6">
-                        <div className="flex justify-between items-center mb-6">
+                    <div className="card-premium p-6 bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] h-fit sticky top-[100px]">
+                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-[var(--airion-border-subtle)]">
                             <div>
-                                <h3 className="font-bold text-lg text-[var(--airion-text-primary)] uppercase tracking-tight">Schedule</h3>
-                                <p className="text-xs text-[var(--airion-text-muted)] font-black uppercase mt-1">{selectedDate} {monthNames[currentDate.getMonth()]}</p>
+                                <h3 className="font-black text-xl text-[var(--airion-text-primary)] uppercase tracking-tight">Timeline</h3>
+                                <p className="text-[10px] text-[var(--airion-brand-primary)] font-black uppercase mt-1 tracking-wider">{selectedDate} {monthNames[currentDate.getMonth()]}</p>
                             </div>
-                            <div className="p-2 bg-[var(--airion-brand-primary)]/10 rounded-xl">
+                            <div className="p-3 bg-[var(--airion-brand-primary)]/10 rounded-2xl shadow-inner">
                                 <CalendarIcon className="text-[var(--airion-brand-primary)]" size={24} />
                             </div>
                         </div>
@@ -180,34 +193,39 @@ const CalendarPage: React.FC = () => {
                         {selectedEvents.length > 0 ? (
                             <div className="space-y-4">
                                 {selectedEvents.map((ev) => (
-                                    <div key={ev.id} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--airion-brand-primary)] before:rounded-full group hover:bg-[var(--airion-bg-elevated)]/30 p-2 rounded-xl transition-all cursor-pointer">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <h4 className="font-bold text-sm text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors">{ev.title}</h4>
-                                            <button className="text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-colors"><MoreVertical size={14} /></button>
+                                    <div key={ev.id} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--airion-brand-primary)] before:rounded-full group hover:bg-[var(--airion-bg-elevated)]/50 p-4 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-[var(--airion-border-subtle)]">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h4 className="font-black text-sm text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors leading-tight">{ev.title}</h4>
+                                            <button className="text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-colors p-1"><MoreVertical size={14} /></button>
                                         </div>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2 text-xs text-[var(--airion-text-muted)] font-medium">
-                                                <Clock size={12} className="text-[var(--airion-brand-primary)]" />
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-3 text-[11px] text-[var(--airion-text-secondary)] font-bold">
+                                                <Clock size={14} className="text-[var(--airion-brand-primary)]" />
                                                 {ev.time}
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-[var(--airion-text-muted)] font-medium">
-                                                <Users size={12} className="text-[var(--airion-brand-primary)]" />
+                                            <div className="flex items-center gap-3 text-[11px] text-[var(--airion-text-secondary)] font-bold">
+                                                <Users size={14} className="text-[var(--airion-brand-primary)]" />
                                                 {ev.client}
                                             </div>
-                                            <Badge variant={ev.status.toLowerCase() === 'confirmed' ? 'confirmed' : 'pending'}>
-                                                {ev.status}
-                                            </Badge>
+                                            <div className="pt-2">
+                                                <Badge variant={ev.status.toLowerCase() === 'confirmed' ? 'confirmed' : 'pending'} className="rounded-lg px-3 py-1 font-black text-[9px] uppercase tracking-widest">
+                                                    {ev.status}
+                                                </Badge>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-12 text-center bg-[var(--airion-bg-elevated)]/30 rounded-2xl border border-dashed border-[var(--airion-border-base)]">
-                                <div className="w-16 h-16 bg-[var(--airion-bg-surface)] rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--airion-border-subtle)]">
-                                    <MapPin size={24} className="text-[var(--airion-text-muted)]" />
+                            <div className="py-16 text-center bg-[var(--airion-bg-base)] rounded-3xl border border-dashed border-[var(--airion-border-base)] px-4">
+                                <div className="w-20 h-20 bg-[var(--airion-bg-surface)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--airion-border-subtle)] shadow-inner">
+                                    <MapPin size={28} className="text-[var(--airion-text-muted)] opacity-40" />
                                 </div>
-                                <p className="text-xs font-black text-[var(--airion-text-muted)] uppercase tracking-widest">No events scheduled</p>
-                                <button className="mt-4 text-xs font-black text-[var(--airion-brand-primary)] hover:underline uppercase tracking-widest">BLOCK THIS DAY</button>
+                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em]">Zero Events Logged</p>
+                                <button className="mt-6 text-[10px] font-black text-[var(--airion-brand-primary)] hover:text-[var(--airion-brand-secondary)] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 mx-auto ring-1 ring-[var(--airion-brand-primary)]/20 px-4 py-2 rounded-full hover:bg-[var(--airion-brand-primary)]/5">
+                                    <PlusCircle size={14} />
+                                    Reserve Node
+                                </button>
                             </div>
                         )}
                     </div>

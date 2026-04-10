@@ -16,6 +16,9 @@ export class Otp {
     @Column({ type: 'bigint', nullable: true })
     expiresAt: string; // Store as string to handle big integers safely in JS/DB communication
 
+    @Column({ type: 'int', default: 0 })
+    attempts: number;
+
     @CreateDateColumn()
     createdAt: Date;
 }

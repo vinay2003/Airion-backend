@@ -7,13 +7,42 @@
 @import "tailwindcss";
 @import "@airion/ui/globals.css";
 
+/* 🔘 Clean Button Design: Standardized size, professional transitions */
+@utility btn-standard {
+  @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2;
+}
+
 /* ── 1. Global System Tokens (SaaS Dark) ───────────────────────── */
 :root {
+  color-scheme: light;
+  
+  --airion-bg-base:        #f8fafc; /* Slate 50 */
+  --airion-bg-surface:     #ffffff; /* White */
+  --airion-bg-elevated:    #f1f5f9; /* Slate 100 */
+  --airion-bg-sidebar:     #ffffff;
+
+  --airion-text-primary:   #0f172a; /* Slate 900 */
+  --airion-text-secondary: #475569; /* Slate 600 */
+  --airion-text-muted:     #94a3b8; /* Slate 400 */
+  --airion-text-inverted:  #ffffff;
+
+  --airion-border-subtle:  rgba(0, 0, 0, 0.03);
+  --airion-border-base:    rgba(0, 0, 0, 0.08);
+
+  --airion-brand-primary:  #6366f1; /* Indigo 500 */
+  --airion-brand-secondary: #f43f5e; /* Rose 500 */
+
+  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.02);
+  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+.dark {
   color-scheme: dark;
   
-  --airion-bg-base:        #0f172a; /* Slate 900 */
-  --airion-bg-surface:     #1e293b; /* Slate 800 */
-  --airion-bg-elevated:    #334155; /* Slate 700 */
+  --airion-bg-base:        #020617; /* Slate 950 */
+  --airion-bg-surface:     #0f172a; /* Slate 900 */
+  --airion-bg-elevated:    #1e293b; /* Slate 800 */
   --airion-bg-sidebar:     #020617;
 
   --airion-text-primary:   #f8fafc;
@@ -23,55 +52,52 @@
 
   --airion-border-subtle:  rgba(255, 255, 255, 0.05);
   --airion-border-base:    rgba(255, 255, 255, 0.1);
-
-  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
-  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 body {
-  @apply bg-[#0f172a] text-[#f8fafc] antialiased;
+  @apply bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] antialiased transition-colors duration-300;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+.font-display {
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 /* ── 2. Component Design System ─────────────────────────────── */
 @layer components {
   /* 📦 Professional SaaS Card */
   .card-minimal {
-    @apply bg-white/5 border border-white/10 rounded-2xl p-6 transition-all duration-200 shadow-sm hover:border-white/20;
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-2xl p-6 transition-all duration-200 shadow-[var(--airion-shadow-sm)] hover:border-[var(--airion-brand-primary)]/30;
   }
 
   .card-premium {
-    @apply bg-white/10 border border-white/20 rounded-2xl p-8 transition-all duration-200 shadow-md hover:bg-white/[0.12];
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-2xl p-8 transition-all duration-200 shadow-[var(--airion-shadow-md)] hover:shadow-[var(--airion-shadow-lg)] hover:bg-[var(--airion-bg-elevated)]/50;
   }
 
   /* 🚨 PRODUCTION READY: High-Visibility Input */
   .input-dark-glass {
-    @apply bg-slate-800 border border-white/10 rounded-lg h-11 px-4 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500;
+    @apply bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-base)] rounded-lg h-11 px-4 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] outline-none transition-all duration-200 focus:ring-2 focus:ring-[var(--airion-brand-primary)]/30 focus:border-[var(--airion-brand-primary)];
   }
 
-  /* 🔘 Clean Button Design: Standardized size, professional transitions */
-  .btn-standard {
-    @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2;
-  }
-
+  /* 🔘 Clean Button Design */
   .btn-primary {
-    @apply btn-standard bg-blue-600 hover:bg-blue-700 text-white shadow-sm;
+    @apply btn-standard bg-[var(--airion-brand-primary)] hover:opacity-90 text-white shadow-sm;
   }
 
   .btn-secondary {
-    @apply btn-standard bg-white/5 hover:bg-white/10 text-white border border-white/10;
+    @apply btn-standard bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] border border-[var(--airion-border-base)];
   }
 
   /* 🧩 Chip / Tag Design */
   .chip {
-    @apply inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-medium transition-all;
+    @apply inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-medium transition-all border;
   }
 
-  .chip-soft-blue { @apply bg-blue-500/10 text-blue-400 border border-blue-500/20; }
-  .chip-soft-emerald { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20; }
-  .chip-soft-amber { @apply bg-amber-500/10 text-amber-400 border border-amber-500/20; }
-  .chip-soft-rose { @apply bg-rose-500/10 text-rose-400 border border-rose-500/20; }
+  .chip-soft-blue { @apply bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20; }
+  .chip-soft-emerald { @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20; }
+  .chip-soft-amber { @apply bg-amber-500/10 text-amber-400 border-amber-500/20; }
+  .chip-soft-rose { @apply bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20; }
 
   /* Spacing Standard */
   .section-spacing { @apply p-6 space-y-6; }

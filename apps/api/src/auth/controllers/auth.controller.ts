@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Get, UseGuards, Request, HttpCode, HttpStatus, Patch } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from '../services/auth.service';
 import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
 import { SignupDto } from '../dto/signup.dto';
@@ -41,6 +42,22 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async verifyLoginOTP(@Body() dto: VerifyLoginOtpDto) {
         return this.authService.verifyLoginOTP(dto);
+    }
+
+    // Admin Flow: Send OTP
+    @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 per hour
+    @Post('admin/send-otp')
+    @HttpCode(HttpStatus.OK)
+    async sendAdminOTP(@Body() dto: { phone: string }) {
+        return this.authService.sendAdminOtp(dto);
+    }
+
+    // Admin Flow: Verify OTP
+    @Throttle({ default: { limit: 5, ttl: 3600000 } }) // 5 per hour
+    @Post('admin/verify-otp')
+    @HttpCode(HttpStatus.OK)
+    async verifyAdminOTP(@Body() dto: { phone: string; otp: string }) {
+        return this.authService.verifyAdminOtp(dto);
     }
 
     // Get current user profile

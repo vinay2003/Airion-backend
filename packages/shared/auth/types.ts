@@ -68,6 +68,7 @@ export interface AuthContextType {
     backendAvailable: boolean;
     login: (email: string, password: string) => Promise<void>;
     loginWithToken: (token: string) => Promise<void>;
+    loginWithResponse: (response: AuthResponse) => void;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
 }

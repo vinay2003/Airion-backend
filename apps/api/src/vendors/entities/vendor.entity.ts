@@ -83,6 +83,9 @@ export class Vendor {
     @Column('int', { name: 'total_reviews', default: 0 })
     totalReviews: number;
 
+    @Column('boolean', { name: 'is_profile_complete', default: false })
+    isProfileComplete: boolean;
+
     @Column('boolean', { name: 'is_verified', default: false })
     isVerified: boolean;
 

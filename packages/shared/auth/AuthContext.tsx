@@ -36,6 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!tokenService.hasToken()) {
       const health = await healthCheckPromise;
       setBackendAvailable(health);
+      // 🔥 Only clear user if it wasn't set by a late login event
+      setUser(prev => prev); 
       setIsLoading(false);
       return;
     }
@@ -45,13 +47,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         commonAuth.checkAuth(),
         healthCheckPromise
       ]);
-      setUser(userData);
+      
+      // 🔥 RACE CONDITION FIX: Do not overwrite if a user is already set (by loginWithResponse)
+      setUser(prev => prev || userData);
       setBackendAvailable(health);
     } catch (error) {
       console.error('[SharedAuth] Auth check failed:', error);
-      tokenService.clearTokens();
-      setUser(null);
-      // Even if auth fails, the backend might still be up
+      // 🔥 Don't clear tokens if we just logged in! Only if we are not in login flow.
+      // We check if the current user exists; if not, then clear.
+      setUser(prev => {
+         if (!prev) tokenService.clearTokens();
+         return prev;
+      });
+      
       const health = await healthCheckPromise;
       setBackendAvailable(health);
     } finally {
@@ -71,10 +79,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(async (email: string, password: string) => {
     const response = await commonAuth.login(email, password);
     tokenService.setAccessToken(response.access_token);
-    setUser(response.user);
     if (response.refresh_token) {
         tokenService.setRefreshToken(response.refresh_token);
     }
+    setUser(response.user);
+    setIsLoading(false);
+  }, []);
+
+  const loginWithResponse = useCallback((response: any) => {
+    tokenService.setAccessToken(response.access_token);
+    if (response.refresh_token) {
+        tokenService.setRefreshToken(response.refresh_token);
+    }
+    // 🔥 CRITICAL FIX: Update state and CLEAR loading so ProtectedRoutes can render immediately
+    setUser(response.user);
+    setIsLoading(false);
   }, []);
 
   const logout = useCallback(async () => {
@@ -95,6 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     backendAvailable,
     login,
     loginWithToken,
+    loginWithResponse,
     logout,
     refreshUser: fetchUser,
   };

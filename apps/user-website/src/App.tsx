@@ -74,6 +74,11 @@ const App: React.FC = () => {
                   <UnifiedAuth />
                 </Suspense>
               } />
+              <Route path="/admin/login" element={
+                <Suspense fallback={<PageLoader />}>
+                  <UnifiedAuth />
+                </Suspense>
+              } />
               <Route path="/onboarding/interests" element={
                 <Suspense fallback={<PageLoader />}>
                   <InterestSelection />

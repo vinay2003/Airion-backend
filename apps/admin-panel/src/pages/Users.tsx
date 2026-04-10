@@ -3,12 +3,13 @@ import { Search, MoreHorizontal, Mail, Phone, Calendar } from 'lucide-react';
 import api from '../lib/api';
 
 interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
-    phone: string;
-    joined: string;
-    status: 'Active' | 'Inactive';
+    phoneNumber: string;
+    createdAt: string;
+    role: string;
+    status?: 'Active' | 'Inactive';
 }
 
 const Users: React.FC = () => {
@@ -20,8 +21,20 @@ const Users: React.FC = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await api.get('/users');
-                setUsers(response.data);
+                const data = await api.get('/users?role=user') as any;
+                if (Array.isArray(data)) {
+                    // Enrich data with frontend-only status if needed
+                    const enriched = data.map((u: any) => ({
+                        ...u,
+                        status: u.role === 'admin' ? 'Active' : 'Active' 
+                    }));
+                    setUsers(enriched);
+                } else if (data && Array.isArray(data.data)) {
+                    // Handle double-wrapped data if any
+                    setUsers(data.data);
+                } else {
+                    setUsers([]);
+                }
             } catch (error: any) {
                 setError(error.message);
             } finally {
@@ -32,17 +45,26 @@ const Users: React.FC = () => {
         fetchUsers();
     }, []);
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredUsers = (users || []).filter(user => {
+        const name = user.name || '';
+        const email = user.email || '';
+        return name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               email.toLowerCase().includes(searchQuery.toLowerCase());
+    });
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        </div>;
     }
 
     if (error) {
-        return <div className="flex justify-center items-center h-screen">Error: {error}</div>;
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
+                <div className="text-red-500 font-medium whitespace-pre-wrap text-center max-w-md">Backend Error: {error}</div>
+                <button onClick={() => window.location.reload()} className="px-6 py-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all">Retry Connection</button>
+            </div>
+        );
     }
 
     return (
@@ -69,16 +91,16 @@ const Users: React.FC = () => {
                     <div key={user.id} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-1 transform transition-all duration-300">
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                    {user.name[0]}
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md uppercase">
+                                    {(user.name || 'U')[0]}
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white">{user.name}</h3>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full ${user.status === 'Active'
-                                        ? 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400'
-                                        : 'bg-gray-100 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400'
+                                <div className="max-w-[150px]">
+                                    <h3 className="font-bold text-gray-900 dark:text-white truncate">{user.name || 'Unnamed User'}</h3>
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider ${user.role === 'admin'
+                                        ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-400'
+                                        : 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400'
                                         }`}>
-                                        {user.status}
+                                        {user.role}
                                     </span>
                                 </div>
                             </div>
@@ -89,23 +111,23 @@ const Users: React.FC = () => {
 
                         <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                <Mail size={16} className="text-gray-400 dark:text-slate-500" />
-                                <span className="truncate">{user.email}</span>
+                                <Mail size={16} className="text-gray-400 dark:text-slate-500 shrink-0" />
+                                <span className="truncate">{user.email || 'No email'}</span>
                             </div>
                             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                <Phone size={16} className="text-gray-400 dark:text-slate-500" />
-                                {user.phone}
+                                <Phone size={16} className="text-gray-400 dark:text-slate-500 shrink-0" />
+                                {user.phoneNumber || 'No phone'}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
-                                <Calendar size={16} className="text-gray-400 dark:text-slate-500" />
-                                Joined {user.joined}
+                                <Calendar size={16} className="text-gray-400 dark:text-slate-500 shrink-0" />
+                                Joined {new Date(user.createdAt).toLocaleDateString()}
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center">
-                            <button className="text-red-500 dark:text-red-400 text-sm font-medium hover:underline">View Details</button>
-                            <button className="px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-lg text-sm font-medium transition-colors">
-                                Manage
+                        <div className="pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center mt-auto">
+                            <button className="text-red-500 dark:text-red-400 text-sm font-medium hover:underline transition-all">View Details</button>
+                            <button className="px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                MANAGE
                             </button>
                         </div>
                     </div>

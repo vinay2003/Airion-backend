@@ -23,6 +23,7 @@ export class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: 10000, // 10s failsafe to prevent infinite "Loading..." states
     });
 
     this.initializeInterceptors();

@@ -23,8 +23,14 @@ const Vendors: React.FC = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                const response = await api.get('/vendors');
-                setVendors(response.data);
+                const data = await api.get('/vendors') as any;
+                if (Array.isArray(data)) {
+                    setVendors(data);
+                } else if (data && Array.isArray(data.data)) {
+                    setVendors(data.data);
+                } else {
+                    setVendors([]);
+                }
             } catch (error: any) {
                 setError(error.message);
             } finally {
@@ -51,16 +57,18 @@ const Vendors: React.FC = () => {
     const handleAction = async (id: string, action: 'approve' | 'reject') => {
         try {
             await api.patch(`/vendors/${id}/status`, { status: action === 'approve' ? 'approved' : 'rejected' });
-            setVendors(prev => prev.map(v => v.id === id ? { ...v, verificationStatus: action === 'approve' ? 'approved' : 'rejected' } : v));
+            setVendors(prev => (prev || []).map(v => v.id === id ? { ...v, verificationStatus: action === 'approve' ? 'approved' : 'rejected' } : v));
         } catch (error: any) {
             alert('Action failed: ' + error.message);
         }
     };
 
-    const filteredVendors = vendors.filter(vendor => {
+    const filteredVendors = (vendors || []).filter((vendor: any) => {
         const matchesFilter = filter === 'all' || vendor.verificationStatus === filter;
-        const matchesSearch = vendor.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            vendor.city?.toLowerCase().includes(searchQuery.toLowerCase());
+        const businessName = vendor.businessName || '';
+        const city = vendor.city || '';
+        const matchesSearch = businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            city.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 

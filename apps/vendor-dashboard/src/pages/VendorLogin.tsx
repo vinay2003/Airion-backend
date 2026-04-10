@@ -26,8 +26,11 @@ const VendorLogin: React.FC = () => {
         // This ensures a single source of truth for authentication
         if (!user) {
             window.location.href = 'http://localhost:5173/login?portal=vendor';
+        } else if (user.role === 'vendor' || user.role === 'admin') {
+            navigate('/');
         } else {
-            navigate('/vendor');
+            // User-role accounts should NOT be in vendor dashboard
+            window.location.href = 'http://localhost:5173/dashboard';
         }
     }, [user, navigate]);
 

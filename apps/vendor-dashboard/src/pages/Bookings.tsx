@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Search, Clock, MapPin, Users, DollarSign, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { 
+    Calendar as CalendarIcon, 
+    Search, 
+    Clock, 
+    MapPin, 
+    Users, 
+    DollarSign, 
+    CheckCircle, 
+    XCircle, 
+    AlertCircle,
+    ChevronRight,
+    MoreVertical,
+    Target,
+    Activity,
+    Zap,
+    Filter
+} from 'lucide-react';
 import { Tabs, Input, Button, Badge } from '@airion/ui';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface Booking {
     id: number;
@@ -14,6 +31,10 @@ interface Booking {
     eventType: string;
 }
 
+/**
+ * 🎫 Booking Registry: High-Fidelity Management Interface
+ * Refactored for 'Premium SaaS' aesthetics and theme-aware interactivity.
+ */
 const Bookings: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'Confirmed' | 'Pending' | 'Cancelled'>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +45,7 @@ const Bookings: React.FC = () => {
             venueName: 'Grand Ballroom',
             clientName: 'Rahul Kumar',
             date: 'Dec 12, 2024',
-            time: '6:00 PM - 11:00 PM',
+            time: '06:00 PM - 11:00 PM',
             guests: 350,
             amount: '₹2,00,000',
             status: 'Confirmed',
@@ -35,56 +56,58 @@ const Bookings: React.FC = () => {
             venueName: 'Sunset Garden',
             clientName: 'Priya Singh',
             date: 'Dec 15, 2024',
-            time: '4:00 PM - 10:00 PM',
+            time: '04:00 PM - 10:00 PM',
             guests: 200,
             amount: '₹1,50,000',
             status: 'Pending',
-            eventType: 'Birthday Party'
+            eventType: 'Birthday Celebration'
         },
         {
             id: 3,
             venueName: 'Royal Palace Hall',
             clientName: 'Amit Shah',
             date: 'Dec 18, 2024',
-            time: '7:00 PM - 12:00 AM',
+            time: '07:00 PM - 12:00 AM',
             guests: 500,
             amount: '₹3,50,000',
             status: 'Confirmed',
-            eventType: 'Corporate Event'
+            eventType: 'Corporate Summit'
         },
         {
             id: 4,
             venueName: 'Grand Ballroom',
             clientName: 'Sneha Gupta',
             date: 'Dec 10, 2024',
-            time: '5:00 PM - 10:00 PM',
+            time: '05:00 PM - 10:00 PM',
             guests: 150,
             amount: '₹1,80,000',
             status: 'Cancelled',
-            eventType: 'Anniversary'
+            eventType: 'Anniversary Gala'
         },
     ];
 
     const stats = [
-        { label: 'Total Bookings', value: '28', icon: CalendarIcon, color: 'blue' },
-        { label: 'Confirmed', value: '18', icon: CheckCircle, color: 'green' },
-        { label: 'Pending', value: '7', icon: AlertCircle, color: 'yellow' },
-        { label: 'Revenue', value: '₹12.4L', icon: DollarSign, color: 'red' },
+        { label: 'Total Volume', value: '28', icon: Activity, trend: '+12%' },
+        { label: 'Active Pipeline', value: '18', icon: Zap, trend: '+5%' },
+        { label: 'Pending Nodes', value: '07', icon: Clock, trend: '-2%' },
+        { label: 'Target Capture', value: '₹12.4L', icon: Target, trend: '+18%' },
     ];
 
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case 'Confirmed': return <CheckCircle size={14} />;
-            case 'Pending': return <AlertCircle size={14} />;
-            case 'Cancelled': return <XCircle size={14} />;
-        }
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } }
     };
 
     const tabsData = [
-        { id: 'all', label: 'All' },
+        { id: 'all', label: 'All Clusters' },
         { id: 'Confirmed', label: 'Confirmed' },
-        { id: 'Pending', label: 'Pending' },
-        { id: 'Cancelled', label: 'Cancelled' },
+        { id: 'Pending', label: 'In_Hold' },
+        { id: 'Cancelled', label: 'Terminated' },
     ];
 
     const filteredBookings = bookings.filter(booking => {
@@ -95,111 +118,186 @@ const Bookings: React.FC = () => {
     });
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Bookings</h1>
-                <p className="text-[var(--airion-text-muted)]">Manage and track all your venue bookings</p>
+        <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="space-y-10 pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
+        >
+            {/* Header: Operational Matrix */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--airion-border-subtle)]">
+                <motion.div variants={itemVariants}>
+                    <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Operational Matrix</h1>
+                    <div className="flex items-center gap-3 mt-4">
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase rounded-full border border-blue-500/20">
+                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                            Registry Synchronization
+                        </span>
+                        <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Venue Throughput • Client Coordination</p>
+                    </div>
+                </motion.div>
+                
+                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-inner">
+                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] rounded-xl shadow-md border border-[var(--airion-border-base)] transition-all">Daily</button>
+                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all">Weekly</button>
+                </motion.div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Smart Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="card-premium">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-[rgba(108,99,255,0.08)] text-[var(--airion-brand-primary)]">
-                                <stat.icon size={24} />
+                    <motion.div 
+                        key={idx} 
+                        variants={itemVariants}
+                        whileHover={{ y: -5, scale: 1.02 }}
+                        className="card-minimal p-7 flex flex-col justify-between group cursor-pointer hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)]"
+                    >
+                        <div className="flex justify-between items-start mb-8 relative z-10">
+                            <div className="p-4 rounded-2xl bg-[var(--airion-bg-elevated)] text-[var(--airion-brand-primary)] group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white transition-all duration-500 shadow-sm border border-[var(--airion-border-subtle)]">
+                                <stat.icon size={22} className="group-hover:rotate-12 transition-all duration-500" />
                             </div>
+                            <span className="text-[10px] font-black px-2 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg">{stat.trend}</span>
                         </div>
-                        <p className="text-[var(--airion-text-secondary)] text-sm mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-[var(--airion-text-primary)]">{stat.value}</h3>
-                    </div>
+                        <div className="relative z-10">
+                            <p className="text-[var(--airion-text-muted)] font-black text-[10px] uppercase tracking-[0.3em] mb-2 opacity-70 group-hover:opacity-100 transition-all italic">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter italic leading-none font-display">{stat.value}</h3>
+                        </div>
+                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                            <stat.icon size={110} />
+                        </div>
+                    </motion.div>
                 ))}
             </div>
 
-            {/* Filters and Search */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <Tabs 
-                    tabs={tabsData} 
-                    activeTab={filter} 
-                    onChange={(id) => setFilter(id as any)} 
-                    variant="pills"
-                />
-                <div className="relative w-full sm:w-64">
-                    <Input
-                        leftIcon={<Search size={16} />}
-                        placeholder="Search bookings..."
+            {/* Filters & Navigation */}
+            <div className="flex flex-col xl:flex-row gap-8 justify-between items-start xl:items-center py-6">
+                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-inner w-full xl:w-auto overflow-x-auto scrollbar-hide">
+                    {tabsData.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setFilter(tab.id as any)}
+                            className={`flex-1 sm:flex-none px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic whitespace-nowrap ${filter === tab.id ? 'bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-[var(--airion-brand-primary)]/20' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </motion.div>
+                <motion.div variants={itemVariants} className="relative w-full xl:w-96">
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)]" size={18} />
+                    <input
+                        placeholder="FILTER BY CLIENT / VENUE..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        inputSize="sm"
+                        className="w-full pl-14 pr-6 py-4 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl text-[11px] font-black italic outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest"
                     />
-                </div>
+                </motion.div>
             </div>
 
-            {/* Bookings List */}
-            <div className="space-y-4">
-                {filteredBookings.map((booking) => (
-                    <div key={booking.id} className="card-premium group">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                            <div className="flex-1">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-1">{booking.venueName}</h3>
-                                        <p className="text-sm text-[var(--airion-text-muted)]">{booking.eventType}</p>
-                                    </div>
-                                    <Badge variant={booking.status.toLowerCase() as any}>
-                                        <div className="flex items-center gap-1.5">
-                                            {getStatusIcon(booking.status)}
-                                            {booking.status}
+            {/* Registry Flow (The "Table" replacement) */}
+            <div className="grid grid-cols-1 gap-6">
+                <AnimatePresence mode="popLayout">
+                    {filteredBookings.map((booking, idx) => (
+                        <motion.div 
+                            key={booking.id}
+                            layout
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.4, delay: idx * 0.05 }}
+                            className="card-minimal !p-0 overflow-hidden hover:border-[var(--airion-brand-primary)]/40 transition-all duration-500 group bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-lg"
+                        >
+                            <div className="flex flex-col xl:flex-row xl:items-stretch">
+                                {/* Left Side: Branding */}
+                                <div className="xl:w-2/3 p-8 flex flex-col justify-between border-b xl:border-b-0 xl:border-r border-[var(--airion-border-subtle)]">
+                                    <div className="flex justify-between items-start mb-10">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-3">
+                                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] tracking-tighter italic font-display uppercase leading-tight group-hover:text-[var(--airion-brand-primary)] transition-colors">{booking.venueName}</h3>
+                                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                            </div>
+                                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic opacity-60">PROTOCOL: {booking.eventType}</p>
                                         </div>
-                                    </Badge>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <CalendarIcon size={16} className="text-[var(--airion-text-muted)]" />
-                                        {booking.date}
+                                        <Badge className={`italic font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-[0.2em] border shadow-sm ${
+                                            booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 
+                                            booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
+                                        }`}>
+                                            {booking.status}
+                                        </Badge>
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <Clock size={16} className="text-[var(--airion-text-muted)]" />
-                                        {booking.time}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <Users size={16} className="text-[var(--airion-text-muted)]" />
-                                        {booking.guests} guests
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm font-bold text-[var(--airion-text-primary)]">
-                                        <DollarSign size={16} className="text-[var(--airion-brand-primary)]" />
-                                        {booking.amount}
-                                    </div>
-                                </div>
-                                <div className="mt-3 pt-3 border-t border-[var(--airion-border-subtle)]">
-                                    <p className="text-sm text-[var(--airion-text-muted)]">
-                                        Client: <span className="font-semibold text-[var(--airion-text-primary)]">{booking.clientName}</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex lg:flex-col gap-2">
-                                <Button variant="secondary" size="sm" className="w-full">
-                                    View Details
-                                </Button>
-                                {booking.status === 'Pending' && (
-                                    <Button variant="primary" size="sm" className="w-full">
-                                        Confirm
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
 
-            {filteredBookings.length === 0 && (
-                <div className="text-center py-16 bg-[var(--airion-bg-surface)] rounded-2xl border border-[var(--airion-border-subtle)] border-dashed">
-                    <CalendarIcon size={48} className="mx-auto text-[var(--airion-text-muted)] mb-4 opacity-50" />
-                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-2">No bookings found</h3>
-                    <p className="text-[var(--airion-text-muted)]">Try adjusting your filters or search query</p>
-                </div>
-            )}
-        </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                        <div className="space-y-1.5">
+                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Operational Hub</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
+                                                <MapPin size={14} className="text-[var(--airion-brand-primary)]" />
+                                                MAIN_LEVEL_HUB
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Node Sync Date</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
+                                                <CalendarIcon size={14} className="text-[var(--airion-brand-primary)]" />
+                                                {booking.date}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Unit Capacity</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
+                                                <Users size={14} className="text-[var(--airion-brand-primary)]" />
+                                                {booking.guests} NODES
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Capture Value</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-primary)] italic">
+                                                <DollarSign size={14} className="text-emerald-500" />
+                                                {booking.amount}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Side: Actions & Client */}
+                                <div className="xl:w-1/3 bg-[var(--airion-bg-elevated)]/30 p-8 flex flex-col justify-between">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50 italic">Registry Authority</p>
+                                            <h4 className="font-black text-sm text-[var(--airion-text-primary)] italic uppercase tracking-tight">{booking.clientName}</h4>
+                                        </div>
+                                        <button className="p-3 bg-[var(--airion-bg-surface)] rounded-2xl border border-[var(--airion-border-subtle)] text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all">
+                                            <MoreVertical size={16} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <Button className="flex-1 h-12 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] text-[var(--airion-text-primary)] rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:bg-[var(--airion-bg-elevated)]">
+                                            View Logs
+                                        </Button>
+                                        {booking.status === 'Pending' && (
+                                            <Button className="flex-1 h-12 bg-[var(--airion-brand-primary)] text-white shadow-lg shadow-[var(--airion-brand-primary)]/20 rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:scale-105 transition-all">
+                                                Confirm Sync
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+
+                {filteredBookings.length === 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-center py-24 bg-[var(--airion-bg-elevated)]/30 rounded-3xl border border-[var(--airion-border-subtle)] border-dashed"
+                    >
+                        <AlertCircle size={48} className="mx-auto text-[var(--airion-text-muted)] mb-6 opacity-40 animate-pulse" />
+                        <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase font-display tracking-tight">Registry Node Empty</h3>
+                        <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-widest mt-3 opacity-60">Modify filters for new unit synchronization</p>
+                    </motion.div>
+                )}
+            </div>
+        </motion.div>
     );
 };
 

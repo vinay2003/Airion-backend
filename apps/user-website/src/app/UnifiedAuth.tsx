@@ -4,7 +4,7 @@ import {
     Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, 
     Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck 
 } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth, UserRole } from '@airion/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole, decodeToken } from '@airion/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@airion/shared/components/OTPInput';
@@ -20,7 +20,7 @@ const UnifiedAuth: React.FC = () => {
 
     // UI States
     const [mode, setMode] = useState<AuthMode>('login');
-    const [step, setStep] = useState<'phone' | 'otp'>('phone');
+    const [step, setStep] = useState<'phone' | 'otp' | 'details'>('phone');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.USER);
 
     // Form Data
@@ -28,6 +28,7 @@ const UnifiedAuth: React.FC = () => {
     const [normalizedPhone, setNormalizedPhone] = useState('');
     const [otp, setOtp] = useState('');
     const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -117,30 +118,73 @@ const UnifiedAuth: React.FC = () => {
                 });
 
             if (response.access_token) {
-                const user = response?.user;
-                const role = user?.role || 'user';
+                await loginWithToken(response.access_token);
 
-                loginWithToken(response.access_token);
-                toast.success(mode === 'signup' ? 'Welcome to Airion!' : 'Welcome back!');
+                if (mode === 'signup') {
+                    // ✅ SIGNUP: Trust selectedRole — the user's explicit choice in the UI
+                    if (selectedRole === UserRole.USER) {
+                        toast.success('Identity verified! Please complete your profile.');
+                        setStep('details');
+                        setLoading(false);
+                        return;
+                    } else if (selectedRole === UserRole.VENDOR) {
+                        toast.success('Welcome to Airion! Setting up your vendor profile...');
+                        const VENDOR_URL_BASE = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
+                        setTimeout(() => {
+                            window.location.href = `${VENDOR_URL_BASE}/vendor/signup-form?token=${response.access_token}`;
+                        }, 800);
+                        return;
+                    }
+                }
+
+                // ✅ LOGIN: Decode role from JWT token — reliable source of truth
+                const tokenPayload = decodeToken(response.access_token);
+                const loginRole = tokenPayload?.role || response?.user?.role || 'user';
+
+                toast.success('Welcome back!');
 
                 setTimeout(() => {
                     const VENDOR_URL_BASE = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
                     const ADMIN_URL_BASE = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
 
-                    if (role === 'vendor') {
-                        const target = mode === 'signup' ? 'signup-form' : '';
-                        const token = response.access_token;
-                        window.location.href = `${VENDOR_URL_BASE}/vendor/${target}?token=${token}`;
-                    } else if (role === 'admin') {
-                        const token = response.access_token;
-                        window.location.href = `${ADMIN_URL_BASE}/admin/?token=${token}`;
+                    if (loginRole === 'vendor') {
+                        window.location.href = `${VENDOR_URL_BASE}/vendor/?token=${response.access_token}`;
+                    } else if (loginRole === 'admin') {
+                        window.location.href = `${ADMIN_URL_BASE}/admin/?token=${response.access_token}`;
                     } else {
-                        navigate(mode === 'signup' ? '/onboarding/interests' : from);
+                        navigate('/dashboard');
                     }
                 }, 800);
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Invalid code.');
+            const status = err.response?.status;
+            if (status === 401) {
+                toast.error('The verification code you entered is incorrect. Please try again.');
+            } else {
+                toast.error(err.response?.data?.message || 'Invalid code.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCompleteProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!fullName || !email) {
+            toast.error('Please provide both name and email');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await commonAuth.checkAuth(); 
+            toast.success('Profile updated successfully!');
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 800);
+        } catch (err) {
+            toast.error('Failed to update profile. Redirecting to dashboard...');
+            setTimeout(() => navigate('/dashboard'), 1500);
         } finally {
             setLoading(false);
         }
@@ -165,7 +209,7 @@ const UnifiedAuth: React.FC = () => {
                 } else if (role === 'admin') {
                     window.location.href = `${ADMIN_URL_BASE}/admin`;
                 } else {
-                    navigate(from);
+                    navigate('/dashboard');
                 }
             }, 800);
         } catch (err: any) {
@@ -262,7 +306,7 @@ const UnifiedAuth: React.FC = () => {
                     {mode === 'signup' && step === 'phone' && (
                         <div className="grid grid-cols-3 gap-3 mb-8">
                             {[
-                                { id: UserRole.USER, label: 'Planner', icon: User },
+                                { id: UserRole.USER, label: 'User', icon: User },
                                 { id: UserRole.VENDOR, label: 'Vendor', icon: Building },
                                 { id: UserRole.ADMIN, label: 'Admin', icon: ShieldCheck }
                             ].map(role => (
@@ -283,7 +327,7 @@ const UnifiedAuth: React.FC = () => {
                     )}
 
                     <AnimatePresence mode="wait">
-                        {step === 'phone' ? (
+                        {step === 'phone' && (
                             <motion.form key="phone-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                                 onSubmit={handleSendOTP} className="space-y-6"
                             >
@@ -310,11 +354,6 @@ const UnifiedAuth: React.FC = () => {
                                                 <CheckCircle2 size={24} fill="currentColor" className="text-white dark:text-slate-900" />
                                             </div>
                                         )}
-                                        {phone.length > 0 && phone.length < 10 && (
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-300 text-xs font-black">
-                                                {phone.length}/10
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                                 <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4.5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98]">
@@ -330,7 +369,9 @@ const UnifiedAuth: React.FC = () => {
                                     </button>
                                 </div>
                             </motion.form>
-                        ) : (
+                        )}
+
+                        {step === 'otp' && (
                             <motion.div key="otp-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                                 className="space-y-8"
                             >
@@ -360,12 +401,57 @@ const UnifiedAuth: React.FC = () => {
                                         >
                                             {resendTimer > 0 ? <><Clock size={16} /> Resend in {resendTimer}s</> : 'I didn\'t get a code'}
                                         </button>
-                                        <button onClick={() => setStep('phone')} className="text-sm font-bold text-neutral-400 hover:text-neutral-900 dark:hover:text-white">
+                                        <button onClick={() => setStep('phone')} className="text-sm font-bold text-neutral-400 hover:text-neutral-900 dark:hover:white">
                                             Switch phone number
                                         </button>
                                     </div>
                                 </div>
                             </motion.div>
+                        )}
+
+                        {step === 'details' && (
+                             <motion.form key="details-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                                onSubmit={handleCompleteProfile} className="space-y-6"
+                             >
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-neutral-700 dark:text-slate-300 uppercase tracking-widest">Full Name</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors">
+                                                <User size={20} />
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                required 
+                                                value={fullName}
+                                                onChange={e => setFullName(e.target.value)}
+                                                placeholder="John Doe"
+                                                className="w-full pl-12 pr-4 py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-red-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-bold text-neutral-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-neutral-700 dark:text-slate-300 uppercase tracking-widest">Email Address</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors">
+                                                <Mail size={20} />
+                                            </div>
+                                            <input 
+                                                type="email" 
+                                                required 
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                                placeholder="john@example.com"
+                                                className="w-full pl-12 pr-4 py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-red-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-bold text-neutral-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4.5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98]">
+                                    {loading ? <Loader className="animate-spin" /> : <>Finish Registration <ArrowRight size={20} /></>}
+                                </button>
+                             </motion.form>
                         )}
                     </AnimatePresence>
 

@@ -42,6 +42,40 @@ export class VendorsService {
         return this.vendorRepository.save(vendor);
     }
 
+    /**
+     * Complete vendor onboarding — saves business details and marks profile as complete.
+     * Called after vendor signup, from the onboarding form.
+     */
+    async completeOnboarding(userId: string, dto: {
+        businessName: string;
+        gstNumber?: string;
+        businessEmail?: string;
+        address?: string;
+        services?: string;
+        businessDescription?: string;
+    }): Promise<{ vendor: Vendor; isProfileComplete: boolean }> {
+        // Find or create vendor record for this user
+        let vendor = await this.vendorRepository.findOne({ where: { userId } });
+
+        if (!vendor) {
+            vendor = this.vendorRepository.create({ userId }) as Vendor;
+        }
+
+        // Assign onboarding fields
+        Object.assign(vendor, {
+            businessName: dto.businessName,
+            gstNumber: dto.gstNumber || null,
+            businessEmail: dto.businessEmail || null,
+            businessAddress: dto.address ? { street: dto.address, city: '', state: '', country: 'India', zipCode: '' } : null,
+            businessDescription: dto.businessDescription || null,
+            isProfileComplete: true,
+            verificationStatus: vendor.verificationStatus || 'pending',
+        });
+
+        const saved = await this.vendorRepository.save(vendor);
+        return { vendor: saved, isProfileComplete: true };
+    }
+
     async trackActivity(userId: string, type: ActivityType, targetId?: string, metadata?: any): Promise<Activity> {
         const activity = this.activityRepository.create({
             userId,

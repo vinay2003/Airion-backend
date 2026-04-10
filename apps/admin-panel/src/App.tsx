@@ -13,7 +13,6 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Vendors = lazy(() => import('./pages/Vendors'));
 const Users = lazy(() => import('./pages/Users'));
 const Bookings = lazy(() => import('./pages/Bookings'));
-const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 const PageLoader = () => (
@@ -31,8 +30,14 @@ const App: React.FC = () => {
           <AuthProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/login" element={<AdminLogin />} />
-                <Route path="/" element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
+                <Route path="/" element={
+                  <ProtectedRoute 
+                    allowedRoles={['admin']} 
+                    redirectUrl="http://localhost:5173/admin/login"
+                  >
+                    <Layout />
+                  </ProtectedRoute>
+                }>
                   <Route index element={<Dashboard />} />
                   <Route path="vendors" element={<Vendors />} />
                   <Route path="users" element={<Users />} />

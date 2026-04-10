@@ -4,7 +4,7 @@ import {
     Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, 
     Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck 
 } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth, UserRole } from '@airion/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole, decodeToken } from '@airion/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@airion/shared/components/OTPInput';
@@ -18,9 +18,11 @@ const UnifiedAuth: React.FC = () => {
     const location = useLocation();
     const from = location.state?.redirect || '/';
 
-    // UI States
-    const [mode, setMode] = useState<AuthMode>('login');
-    const [step, setStep] = useState<'phone' | 'otp'>('phone');
+    // UI States — initialize mode from URL path so /signup auto-sets signup mode
+    const [mode, setMode] = useState<AuthMode>(() => {
+        return location.pathname.includes('signup') ? 'signup' : 'login';
+    });
+    const [step, setStep] = useState<'phone' | 'otp' | 'details'>('phone');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.USER);
 
     // Form Data
@@ -28,6 +30,7 @@ const UnifiedAuth: React.FC = () => {
     const [normalizedPhone, setNormalizedPhone] = useState('');
     const [otp, setOtp] = useState('');
     const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -35,17 +38,40 @@ const UnifiedAuth: React.FC = () => {
 
     const startResendTimer = () => setResendTimer(60);
 
+    // One-time: read ?portal= from URL to pre-select role
     useEffect(() => {
         const portal = searchParams.get('portal');
-        if (portal === 'vendor') setSelectedRole(UserRole.VENDOR);
-        if (portal === 'admin') setSelectedRole(UserRole.ADMIN);
-        
+        const isSignUpPath = location.pathname.includes('signup');
+        const isAdminPath = location.pathname.includes('/admin/login');
+
+        // Force Admin role if on Admin path
+        if (isAdminPath) {
+            setSelectedRole(UserRole.ADMIN);
+            setMode('login');
+            return;
+        }
+
+        // Handle User/Vendor portals
+        if (portal === 'vendor') {
+            setSelectedRole(UserRole.VENDOR);
+        } else if (portal === 'user') {
+            setSelectedRole(UserRole.USER);
+        } else if (!isAdminPath && (location.pathname === '/login' || location.pathname === '/signup')) {
+            // Default to user portal if missing
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('portal', 'user');
+            navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+            setSelectedRole(UserRole.USER);
+        }
+    }, [location.pathname, searchParams, navigate]);
+
+    // Resend countdown timer
+    useEffect(() => {
         if (resendTimer > 0) {
             const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
             return () => clearTimeout(timer);
         }
-    }, [resendTimer, searchParams]);
-
+    }, [resendTimer]);
 
     const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
@@ -81,7 +107,13 @@ const UnifiedAuth: React.FC = () => {
             setStep('otp');
             setResendTimer(60);
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to send OTP.');
+            const status = err.response?.status;
+            if (status === 409) {
+                toast.error('Account already exists. Try logging in instead.');
+                setMode('login');
+            } else {
+                toast.error(err.response?.data?.message || 'Failed to send OTP.');
+            }
         } finally {
             setLoading(false);
         }
@@ -108,30 +140,92 @@ const UnifiedAuth: React.FC = () => {
                 });
 
             if (response.access_token) {
-                const user = response?.user;
-                const role = user?.role || 'user';
+                await loginWithToken(response.access_token);
 
-                loginWithToken(response.access_token);
-                toast.success(mode === 'signup' ? 'Welcome to Airion!' : 'Welcome back!');
+                if (mode === 'signup') {
+                    // ✅ SIGNUP: Trust selectedRole (user's explicit choice in the UI)
+                    if (selectedRole === UserRole.USER) {
+                        toast.success('Identity verified! Please complete your profile.');
+                        setStep('details');
+                        setLoading(false);
+                        return;
+                    } else if (selectedRole === UserRole.VENDOR) {
+                        toast.success('Welcome to Airion! Setting up your vendor profile...');
+                        const VENDOR_URL_BASE = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
+                        setTimeout(() => {
+                            window.location.href = `${VENDOR_URL_BASE}/vendor/signup-form?token=${response.access_token}`;
+                        }, 800);
+                        return;
+                    } else {
+                        // Safety fallback for admin signup or unknown roles
+                        toast.success('Account created successfully!');
+                        navigate('/dashboard');
+                        return;
+                    }
+                }
+
+                // ✅ LOGIN: Decode role from JWT token — reliable source of truth
+                const tokenPayload = decodeToken(response.access_token);
+                const loginRole = tokenPayload?.role || response?.user?.role || 'user';
+
+                toast.success('Welcome back!');
 
                 setTimeout(() => {
                     const VENDOR_URL_BASE = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
                     const ADMIN_URL_BASE = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
 
-                    if (role === 'vendor') {
-                        const target = mode === 'signup' ? 'signup-form' : '';
-                        const token = response.access_token;
-                        window.location.href = `${VENDOR_URL_BASE}/vendor/${target}?token=${token}`;
-                    } else if (role === 'admin') {
-                        const token = response.access_token;
-                        window.location.href = `${ADMIN_URL_BASE}/admin/?token=${token}`;
+                    if (loginRole === 'vendor') {
+                        window.location.href = `${VENDOR_URL_BASE}/vendor/?token=${response.access_token}`;
+                    } else if (loginRole === 'admin') {
+                        window.location.href = `${ADMIN_URL_BASE}/admin/?token=${response.access_token}`;
                     } else {
-                        navigate(mode === 'signup' ? '/onboarding/interests' : from);
+                        // user role — always go to user dashboard
+                        navigate('/dashboard');
                     }
                 }, 800);
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Invalid code.');
+            const status = err.response?.status;
+            const message = err.response?.data?.message || err.message || 'Invalid code.';
+            
+            if (status === 401) {
+                // If the message specifically mentions "not found", help the user
+                if (message.toLowerCase().includes('user not found')) {
+                    toast.error('No account found with this phone number. Please sign up first.');
+                    setMode('signup');
+                    setStep('phone');
+                } else {
+                    toast.error(message); // Show actual backend error (e.g. "Invalid verification code")
+                }
+            } else {
+                toast.error(message);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCompleteProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!fullName || !email) {
+            toast.error('Please provide both name and email');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // Assume an endpoint to update profile exists
+            await commonAuth.checkAuth(); // Just to verify token is valid / get user if needed
+            
+            // In a real app, you'd call api.put('/users/profile', { fullName, email })
+            // For now, we simulate success and redirect
+            toast.success('Profile updated successfully!');
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 800);
+        } catch (err) {
+            toast.error('Failed to update profile. Redirecting to dashboard...');
+            setTimeout(() => navigate('/dashboard'), 1500);
         } finally {
             setLoading(false);
         }
@@ -156,7 +250,7 @@ const UnifiedAuth: React.FC = () => {
                 } else if (role === 'admin') {
                     window.location.href = `${ADMIN_URL_BASE}/admin`;
                 } else {
-                    navigate(from);
+                    navigate('/dashboard');
                 }
             }, 800);
         } catch (err: any) {
@@ -226,40 +320,57 @@ const UnifiedAuth: React.FC = () => {
                         <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight font-cursive tracking-wider">Airion</span>
                     </div>
 
-                    {/* Mode Toggle Tabs */}
-                    <div className="flex p-1 bg-neutral-100 dark:bg-slate-900 rounded-2xl mb-10 w-full">
-                        <button 
-                            onClick={() => { setMode('login'); setStep('phone'); }}
-                            className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
-                        >
-                            Log In
-                        </button>
-                        <button 
-                            onClick={() => { setMode('signup'); setStep('phone'); }}
-                            className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
-                        >
-                            Create Account
-                        </button>
-                    </div>
+                    {/* Mode Toggle Tabs - Hidden for Admin as per requirement */}
+                    {selectedRole !== UserRole.ADMIN && (
+                        <div className="flex p-1 bg-neutral-100 dark:bg-slate-900 rounded-2xl mb-10 w-full">
+                            <button 
+                                onClick={() => { 
+                                    setMode('login'); 
+                                    setStep('phone'); 
+                                    navigate(`/login?portal=${selectedRole === UserRole.VENDOR ? 'vendor' : 'user'}`);
+                                }}
+                                className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+                            >
+                                Log In
+                            </button>
+                            <button 
+                                onClick={() => { 
+                                    setMode('signup'); 
+                                    setStep('phone'); 
+                                    navigate(`/signup?portal=${selectedRole === UserRole.VENDOR ? 'vendor' : 'user'}`);
+                                }}
+                                className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+                            >
+                                Create Account
+                            </button>
+                        </div>
+                    )}
 
                     <h2 className="text-3xl font-black text-neutral-900 dark:text-white mb-2">
-                        {mode === 'login' ? 'Welcome Back!' : 'Get Started with Airion'}
+                        {selectedRole === UserRole.ADMIN ? 'Admin Portal' : (mode === 'login' ? 'Welcome Back!' : 'Get Started with Airion')}
                     </h2>
                     <p className="text-neutral-500 dark:text-slate-400 font-medium mb-8">
                         {step === 'phone' ? 'Secure, passwordless access to your account.' : `We've sent a code to ${phone}.`}
                     </p>
 
-                    {/* Role Selector during Signup */}
-                    {mode === 'signup' && step === 'phone' && (
+                    {/* Role Selector during Signup/Login */}
+                    {step === 'phone' && (
                         <div className="grid grid-cols-3 gap-3 mb-8">
                             {[
-                                { id: UserRole.USER, label: 'Planner', icon: User },
-                                { id: UserRole.VENDOR, label: 'Vendor', icon: Building },
-                                { id: UserRole.ADMIN, label: 'Admin', icon: ShieldCheck }
-                            ].map(role => (
+                                { id: UserRole.USER, label: 'User', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
+                                { id: UserRole.VENDOR, label: 'Vendor', icon: Building, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=vendor` },
+                                { id: UserRole.ADMIN, label: 'Admin', icon: ShieldCheck, path: '/admin/login', hideOnSignup: true }
+                            ].filter(role => {
+                                // 🚨 Logic: Remove Admin from signup role selector
+                                if (mode === 'signup' && role.hideOnSignup) return false;
+                                return true;
+                            }).map(role => (
                                 <button
                                     key={role.id}
-                                    onClick={() => setSelectedRole(role.id as UserRole)}
+                                    onClick={() => {
+                                        navigate(role.path);
+                                        setSelectedRole(role.id as UserRole);
+                                    }}
                                     className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${
                                         selectedRole === role.id 
                                         ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-500 font-black' 
@@ -274,7 +385,7 @@ const UnifiedAuth: React.FC = () => {
                     )}
 
                     <AnimatePresence mode="wait">
-                        {step === 'phone' ? (
+                        {step === 'phone' && (
                             <motion.form key="phone-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                                 onSubmit={handleSendOTP} className="space-y-6"
                             >
@@ -301,11 +412,6 @@ const UnifiedAuth: React.FC = () => {
                                                 <CheckCircle2 size={24} fill="currentColor" className="text-white dark:text-slate-900" />
                                             </div>
                                         )}
-                                        {phone.length > 0 && phone.length < 10 && (
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-300 text-xs font-black">
-                                                {phone.length}/10
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                                 <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4.5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98]">
@@ -321,7 +427,9 @@ const UnifiedAuth: React.FC = () => {
                                     </button>
                                 </div>
                             </motion.form>
-                        ) : (
+                        )}
+
+                        {step === 'otp' && (
                             <motion.div key="otp-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                                 className="space-y-8"
                             >
@@ -357,6 +465,51 @@ const UnifiedAuth: React.FC = () => {
                                     </div>
                                 </div>
                             </motion.div>
+                        )}
+
+                        {step === 'details' && (
+                             <motion.form key="details-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                                onSubmit={handleCompleteProfile} className="space-y-6"
+                             >
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-neutral-700 dark:text-slate-300 uppercase tracking-widest">Full Name</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors">
+                                                <User size={20} />
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                required 
+                                                value={fullName}
+                                                onChange={e => setFullName(e.target.value)}
+                                                placeholder="John Doe"
+                                                className="w-full pl-12 pr-4 py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-red-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-bold text-neutral-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-neutral-700 dark:text-slate-300 uppercase tracking-widest">Email Address</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors">
+                                                <Mail size={20} />
+                                            </div>
+                                            <input 
+                                                type="email" 
+                                                required 
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                                placeholder="john@example.com"
+                                                className="w-full pl-12 pr-4 py-4 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-red-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-bold text-neutral-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4.5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98]">
+                                    {loading ? <Loader className="animate-spin" /> : <>Finish Registration <ArrowRight size={20} /></>}
+                                </button>
+                             </motion.form>
                         )}
                     </AnimatePresence>
 

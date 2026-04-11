@@ -65,49 +65,49 @@ const Home: React.FC = () => {
             {isAuthenticated && activeCategory === 'all' && (
                 <motion.section
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    className="max-w-[1536px] mx-auto px-4 md:px-8 -mt-12 mb-16 relative z-40"
+                    className="max-w-[1400px] mx-auto px-4 md:px-8 mt-8 mb-12 relative z-40"
                 >
-                    <div className="bg-white/10 backdrop-blur-2xl dark:bg-slate-900/40 rounded-[2.5rem] shadow-2xl shadow-black/20 border border-white/20 dark:border-white/10 p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10">
+                    <div className="bg-white/95 backdrop-blur-3xl dark:bg-slate-900/95 rounded-[2rem] shadow-xl shadow-black/10 border border-white/20 dark:border-white/10 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8">
                         <div className="flex-1 w-full text-center lg:text-left">
-                            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Your Plan Hub</h2>
-                            <p className="text-gray-500 dark:text-slate-400 font-medium mb-8">Manage every detail of your dream event from your personalized dashboard.</p>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase italic">Your Plan Hub</h2>
+                            <p className="text-sm text-gray-500 dark:text-slate-400 font-medium mb-6">Manage your dream event from your personalized dashboard.</p>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
-                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 bg-red-100/50 text-red-600 rounded-lg"><Clock size={18} /></div>
-                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0">
+                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="p-1.5 bg-red-100/50 text-red-600 rounded-lg"><Clock size={16} /></div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
                                     </div>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
-                                    <p className="text-[11px] text-gray-500 font-medium mt-1">Due in 2 days</p>
+                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
+                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">Due in 2 days</p>
                                 </div>
-                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={18} /></div>
-                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
+                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="p-1.5 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={16} /></div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
                                     </div>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
-                                    <p className="text-[11px] text-gray-500 font-medium mt-1">22.5% of total budget</p>
+                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
+                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">22.5% of total budget</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-4">
-                            <Link to="/dashboard" className="flex flex-col items-center justify-center p-6 bg-red-600 text-white rounded-3xl hover:bg-neutral-900 transition-all shadow-xl shadow-red-500/20 group">
-                                <LayoutDashboard size={28} className="mb-2 group-hover:scale-110 transition-transform" />
-                                <span className="text-sm font-bold">Overview</span>
+                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-3 relative z-50">
+                            <Link to="/dashboard" className="flex flex-col items-center justify-center p-4 bg-red-600 text-white rounded-2xl hover:bg-black transition-all shadow-lg shadow-red-500/10 group relative pointer-events-auto min-w-[120px]">
+                                <LayoutDashboard size={24} className="mb-1.5 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Overview</span>
                             </Link>
-                            <Link to="/dashboard/bookings" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Calendar size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Bookings</span>
+                            <Link to="/dashboard/bookings" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Calendar size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Bookings</span>
                             </Link>
-                            <Link to="/dashboard/inbox" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Search size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Messages</span>
+                            <Link to="/dashboard/inbox" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Search size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Messages</span>
                             </Link>
-                            <Link to="/dashboard/budget" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Star size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Saved</span>
+                            <Link to="/dashboard/budget" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Star size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Saved</span>
                             </Link>
                         </div>
                     </div>
@@ -163,11 +163,14 @@ const Home: React.FC = () => {
 
 
                     {/* Featured Events This Month */}
-                    <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
-                        <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Events This Month</h2>
-                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
-                                View Marketplace <ArrowRight size={16} />
+                    <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                            <div className="space-y-1">
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight uppercase italic">Featured Events This Month</h2>
+                                <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
+                            </div>
+                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-xs uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
+                                View Marketplace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -185,14 +188,17 @@ const Home: React.FC = () => {
                     {/* Marketplace Section (KEY Tabbed Layout) */}
                     <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-16">
                         <div className="max-w-[1536px] mx-auto px-4 md:px-8">
-                            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">What's Happening in the Marketplace</h2>
-                                <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 rounded-xl w-full md:w-auto overflow-x-auto shadow-sm border border-gray-100 dark:border-slate-700">
-                                    {['All', 'Available', 'Filling Fast', 'New Listings'].map(tab => (
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                                <div className="space-y-1">
+                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic">Market Place Evolution</h2>
+                                    <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Real-time status tracking</p>
+                                </div>
+                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-[1.25rem] w-full md:w-auto overflow-x-auto no-scrollbar shadow-inner border border-gray-100 dark:border-slate-700">
+                                    {['All', 'Available', 'Filling Fast', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${marketplaceTab === tab ? 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all flex-1 md:flex-none text-center ${marketplaceTab === tab ? 'bg-red-500 text-white shadow-lg' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
                                         >
                                             {tab}
                                         </button>

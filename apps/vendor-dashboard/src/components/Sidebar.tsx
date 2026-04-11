@@ -68,8 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                     {isActive && (
                                         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-2/3 bg-[var(--accent-primary)] rounded-r-md"></div>
                                     )}
-                                    <item.icon size={20} className={isActive ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors"} />
-                                    <span className={isActive ? "" : ""}>{item.label}</span>
+                                    <item.icon size={22} className={isActive ? "text-[var(--airion-brand-primary)]" : "text-[var(--airion-text-muted)] group-hover:text-[var(--airion-text-primary)] transition-colors"} />
+                                    <span className={`text-md tracking-tight ${isActive ? 'font-bold' : 'font-semibold text-[var(--airion-text-secondary)] group-hover:text-[var(--airion-text-primary)]'}`}>{item.label}</span>
                                 </>
                             )}
                         </NavLink>

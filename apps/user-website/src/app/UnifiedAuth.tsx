@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
-import { 
-    Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, 
-    Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck 
+import {
+    Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader,
+    Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck
 } from 'lucide-react';
 import { useAuth, otpAuth, commonAuth, UserRole } from '@airion/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,7 +39,7 @@ const UnifiedAuth: React.FC = () => {
         const portal = searchParams.get('portal');
         if (portal === 'vendor') setSelectedRole(UserRole.VENDOR);
         if (portal === 'admin') setSelectedRole(UserRole.ADMIN);
-        
+
         if (resendTimer > 0) {
             const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
             return () => clearTimeout(timer);
@@ -56,7 +56,7 @@ const UnifiedAuth: React.FC = () => {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const digitsOnly = sanitizedPhone.replace(/\D/g, '');
             const isTenDigits = digitsOnly.length === 10;
-            
+
             if (!isTenDigits) {
                 toast.error('Please enter a valid 10-digit phone number');
                 setLoading(false);
@@ -67,7 +67,7 @@ const UnifiedAuth: React.FC = () => {
             const finalPhone = `+91${digitsOnly}`;
             setNormalizedPhone(finalPhone);
 
-            const response = mode === 'signup' 
+            const response = mode === 'signup'
                 ? await otpAuth.sendSignupOTP({ phone: finalPhone })
                 : await otpAuth.sendLoginOTP({ phone: finalPhone });
 
@@ -83,7 +83,7 @@ const UnifiedAuth: React.FC = () => {
         } catch (err: any) {
             const status = err.response?.status;
             const message = err.response?.data?.message || err.message;
-            
+
             if (status === 409) {
                 toast.error('Account already exists. Try logging in instead.', { duration: 5000 });
                 // We could auto-switch to login mode here
@@ -106,14 +106,14 @@ const UnifiedAuth: React.FC = () => {
         setLoading(true);
         try {
             const response = mode === 'signup'
-                ? await otpAuth.verifySignupOTP({ 
-                    phone: normalizedPhone, 
+                ? await otpAuth.verifySignupOTP({
+                    phone: normalizedPhone,
                     otp: otpValue.trim(),
-                    role: selectedRole 
+                    role: selectedRole
                 })
-                : await otpAuth.verifyLoginOTP({ 
-                    phone: normalizedPhone, 
-                    otp: otpValue.trim() 
+                : await otpAuth.verifyLoginOTP({
+                    phone: normalizedPhone,
+                    otp: otpValue.trim()
                 });
 
             if (response.access_token) {
@@ -207,7 +207,7 @@ const UnifiedAuth: React.FC = () => {
                     >
                         {mode === 'login' ? 'Login to manage your bookings, message vendors, and track your event budgets in real-time.' : 'Create an account to discover verified vendors and access professional planning tools for free.'}
                     </motion.p>
-                    
+
                     <div className="flex items-center gap-6">
                         <div className="flex -space-x-4">
                             {[1, 2, 3, 4].map(i => (
@@ -237,13 +237,13 @@ const UnifiedAuth: React.FC = () => {
 
                     {/* Mode Toggle Tabs */}
                     <div className="flex p-1 bg-neutral-100 dark:bg-slate-900 rounded-2xl mb-10 w-full">
-                        <button 
+                        <button
                             onClick={() => { setMode('login'); setStep('phone'); }}
                             className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
                             Log In
                         </button>
-                        <button 
+                        <button
                             onClick={() => { setMode('signup'); setStep('phone'); }}
                             className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
@@ -269,11 +269,10 @@ const UnifiedAuth: React.FC = () => {
                                 <button
                                     key={role.id}
                                     onClick={() => setSelectedRole(role.id as UserRole)}
-                                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${
-                                        selectedRole === role.id 
-                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-500 font-black' 
+                                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${selectedRole === role.id
+                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-500 font-black'
                                         : 'border-neutral-100 dark:border-slate-800 text-neutral-400 font-bold hover:bg-neutral-50 dark:hover:bg-slate-900'
-                                    }`}
+                                        }`}
                                 >
                                     <role.icon size={20} />
                                     <span className="text-[10px] uppercase tracking-widest">{role.label}</span>
@@ -293,11 +292,11 @@ const UnifiedAuth: React.FC = () => {
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors">
                                             <Phone size={20} />
                                         </div>
-                                        <input 
-                                            type="tel" 
+                                        <input
+                                            type="tel"
                                             inputMode="numeric"
-                                            required 
-                                            value={phone} 
+                                            required
+                                            value={phone}
                                             onChange={e => {
                                                 const val = e.target.value.replace(/\D/g, '');
                                                 if (val.length <= 10) setPhone(val);
@@ -321,7 +320,7 @@ const UnifiedAuth: React.FC = () => {
                                     {loading ? <Loader className="animate-spin" /> : <>Continue Securely <ArrowRight size={20} /></>}
                                 </button>
                                 <div className="text-center">
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
                                         className="text-sm font-bold text-neutral-500 hover:text-red-500 transition-colors"
@@ -350,7 +349,7 @@ const UnifiedAuth: React.FC = () => {
                                     >
                                         {loading ? <Loader className="animate-spin" /> : 'Confirm & Proceed'}
                                     </button>
-                                    
+
                                     <div className="flex flex-col items-center gap-3">
                                         <button
                                             type="button"

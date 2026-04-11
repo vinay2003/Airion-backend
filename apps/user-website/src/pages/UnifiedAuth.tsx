@@ -251,7 +251,7 @@ const UnifiedAuth: React.FC = () => {
 
                     {/* Role Selector during Signup */}
                     {mode === 'signup' && step === 'phone' && (
-                        <div className="grid grid-cols-3 gap-3 mb-8">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-10 bg-neutral-50 dark:bg-slate-900/50 p-2 rounded-[2rem] border border-neutral-100 dark:border-slate-800">
                             {[
                                 { id: UserRole.USER, label: 'Planner', icon: User },
                                 { id: UserRole.VENDOR, label: 'Vendor', icon: Building },
@@ -260,14 +260,14 @@ const UnifiedAuth: React.FC = () => {
                                 <button
                                     key={role.id}
                                     onClick={() => setSelectedRole(role.id as UserRole)}
-                                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${
+                                    className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-300 ${
                                         selectedRole === role.id 
-                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-500 font-black' 
-                                        : 'border-neutral-100 dark:border-slate-800 text-neutral-400 font-bold hover:bg-neutral-50 dark:hover:bg-slate-900'
+                                        ? 'bg-red-600 text-white shadow-xl shadow-red-500/20 font-black scale-[1.05] z-10' 
+                                        : 'text-neutral-400 font-bold hover:bg-white dark:hover:bg-slate-800'
                                     }`}
                                 >
-                                    <role.icon size={20} />
-                                    <span className="text-[10px] uppercase tracking-widest">{role.label}</span>
+                                    <role.icon size={20} className={selectedRole === role.id ? 'scale-110' : ''} />
+                                    <span className="text-[9px] uppercase tracking-[0.15em]">{role.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -308,7 +308,7 @@ const UnifiedAuth: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
-                                <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4.5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98]">
+                                <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-neutral-900 py-5 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-500/10 active:scale-[0.98] uppercase tracking-[0.2em] text-xs italic">
                                     {loading ? <Loader className="animate-spin" /> : <>Continue Securely <ArrowRight size={20} /></>}
                                 </button>
                                 <div className="text-center">

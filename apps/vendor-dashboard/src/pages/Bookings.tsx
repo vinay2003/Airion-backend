@@ -74,9 +74,9 @@ const Bookings: React.FC = () => {
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case 'Confirmed': return <CheckCircle size={14} />;
-            case 'Pending': return <AlertCircle size={14} />;
-            case 'Cancelled': return <XCircle size={14} />;
+            case 'Confirmed': return <CheckCircle size={16} />;
+            case 'Pending': return <AlertCircle size={16} />;
+            case 'Cancelled': return <XCircle size={16} />;
         }
     };
 
@@ -95,95 +95,108 @@ const Bookings: React.FC = () => {
     });
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Bookings</h1>
-                <p className="text-[var(--airion-text-muted)]">Manage and track all your venue bookings</p>
+        <div className="space-y-10 sm:space-y-12 animate-in fade-in duration-500 pb-20">
+            <div className="space-y-4">
+                <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose">Bookings Management</h1>
+                <p className="text-lg font-semibold text-[var(--airion-text-muted)]">Enterprise-grade tracking for all your venue operations</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="card-premium">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-[rgba(108,99,255,0.08)] text-[var(--airion-brand-primary)]">
-                                <stat.icon size={24} />
+                    <div key={idx} className="card-premium p-8 rounded-[2rem] shadow-xl hover:scale-[1.02] transition-all duration-300">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="p-4 rounded-2xl bg-[var(--airion-brand-primary)]/10 text-[var(--airion-brand-primary)] shadow-sm">
+                                <stat.icon size={32} />
                             </div>
                         </div>
-                        <p className="text-[var(--airion-text-secondary)] text-sm mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-[var(--airion-text-primary)]">{stat.value}</h3>
+                        <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-3">{stat.label}</p>
+                        <h3 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight">{stat.value}</h3>
                     </div>
                 ))}
             </div>
 
             {/* Filters and Search */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <Tabs 
-                    tabs={tabsData} 
-                    activeTab={filter} 
-                    onChange={(id) => setFilter(id as any)} 
+            <div className="flex flex-col xl:flex-row gap-8 justify-between items-start xl:items-center bg-[var(--airion-bg-surface)] p-6 rounded-[2rem] border border-[var(--airion-border-subtle)] shadow-inner transition-all hover:shadow-xl hover:scale-[1.01] duration-300">
+                <Tabs
+                    tabs={tabsData}
+                    activeTab={filter}
+                    onChange={(id) => setFilter(id as any)}
                     variant="pills"
+                    className="w-full xl:w-auto overflow-x-auto scrolbar-hide"
                 />
-                <div className="relative w-full sm:w-64">
-                    <Input
-                        leftIcon={<Search size={16} />}
-                        placeholder="Search bookings..."
+                <div className="relative w-full xl:w-96 group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[var(--airion-brand-primary)] transition-colors">
+                        <Search size={24} />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search bookings by client or venue..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        inputSize="sm"
+                        className="w-full h-16 pl-16 pr-6 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl text-base font-bold outline-none focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 transition-all text-[var(--airion-text-primary)] placeholder-slate-400"
                     />
                 </div>
             </div>
 
             {/* Bookings List */}
-            <div className="space-y-4">
+            <div className="space-y-6">
                 {filteredBookings.map((booking) => (
-                    <div key={booking.id} className="card-premium group">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div key={booking.id} className="card-premium p-8 rounded-[2.5rem] group hover:border-[var(--airion-brand-primary)]/30 shadow-xl transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                             <div className="flex-1">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-1">{booking.venueName}</h3>
-                                        <p className="text-sm text-[var(--airion-text-muted)]">{booking.eventType}</p>
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="space-y-1">
+                                        <h3 className="text-2xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-none">{booking.venueName}</h3>
+                                        <p className="text-sm font-semibold text-[var(--airion-text-muted)] uppercase tracking-wide opacity-80">{booking.eventType}</p>
                                     </div>
-                                    <Badge variant={booking.status.toLowerCase() as any}>
-                                        <div className="flex items-center gap-1.5">
+                                    <Badge
+                                        className="h-9 px-5 rounded-full text-xs font-bold uppercase tracking-widest"
+                                        variant={booking.status.toLowerCase() as any}
+                                    >
+                                        <div className="flex items-center gap-2">
                                             {getStatusIcon(booking.status)}
                                             {booking.status}
                                         </div>
                                     </Badge>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <CalendarIcon size={16} className="text-[var(--airion-text-muted)]" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                                    <div className="flex items-center gap-3 text-md font-semibold text-[var(--airion-text-secondary)]">
+                                        <CalendarIcon size={20} className="text-[var(--airion-brand-primary)]" />
                                         {booking.date}
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <Clock size={16} className="text-[var(--airion-text-muted)]" />
+                                    <div className="flex items-center gap-3 text-md font-semibold text-[var(--airion-text-secondary)]">
+                                        <Clock size={20} className="text-[var(--airion-brand-primary)]" />
                                         {booking.time}
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-[var(--airion-text-secondary)]">
-                                        <Users size={16} className="text-[var(--airion-text-muted)]" />
-                                        {booking.guests} guests
+                                    <div className="flex items-center gap-3 text-md font-semibold text-[var(--airion-text-secondary)]">
+                                        <Users size={20} className="text-[var(--airion-brand-primary)]" />
+                                        {booking.guests} Guests
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm font-bold text-[var(--airion-text-primary)]">
-                                        <DollarSign size={16} className="text-[var(--airion-brand-primary)]" />
+                                    <div className="flex items-center gap-3 text-lg font-bold text-[var(--airion-text-primary)]">
+                                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                            <DollarSign size={16} />
+                                        </div>
                                         {booking.amount}
                                     </div>
                                 </div>
-                                <div className="mt-3 pt-3 border-t border-[var(--airion-border-subtle)]">
-                                    <p className="text-sm text-[var(--airion-text-muted)]">
-                                        Client: <span className="font-semibold text-[var(--airion-text-primary)]">{booking.clientName}</span>
+                                <div className="mt-6 pt-6 border-t border-[var(--airion-border-subtle)] flex items-center justify-between">
+                                    <p className="text-md text-[var(--airion-text-muted)] font-semibold">
+                                        Client: <span className="font-bold text-[var(--airion-text-primary)] ml-1">{booking.clientName}</span>
                                     </p>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Active File</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex lg:flex-col gap-2">
-                                <Button variant="secondary" size="sm" className="w-full">
-                                    View Details
+                            <div className="flex lg:flex-col gap-3 min-w-[180px]">
+                                <Button variant="secondary" size="lg" className="w-full h-15 rounded-[1.25rem] font-black text-sm uppercase tracking-widest shadow-md hover:scale-[1.01] transition-all italic">
+                                    Review Details
                                 </Button>
                                 {booking.status === 'Pending' && (
-                                    <Button variant="primary" size="sm" className="w-full">
-                                        Confirm
+                                    <Button variant="primary" size="lg" className="w-full h-15 rounded-[1.25rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.01] transition-all italic">
+                                        Execute Approval
                                     </Button>
                                 )}
                             </div>
@@ -193,10 +206,10 @@ const Bookings: React.FC = () => {
             </div>
 
             {filteredBookings.length === 0 && (
-                <div className="text-center py-16 bg-[var(--airion-bg-surface)] rounded-2xl border border-[var(--airion-border-subtle)] border-dashed">
-                    <CalendarIcon size={48} className="mx-auto text-[var(--airion-text-muted)] mb-4 opacity-50" />
-                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-2">No bookings found</h3>
-                    <p className="text-[var(--airion-text-muted)]">Try adjusting your filters or search query</p>
+                <div className="text-center py-24 bg-[var(--airion-bg-surface)] rounded-[3rem] border-2 border-[var(--airion-border-subtle)] border-dashed shadow-inner">
+                    <CalendarIcon size={64} className="mx-auto text-[var(--airion-text-muted)] mb-6 opacity-30" />
+                    <h3 className="text-2xl font-bold text-[var(--airion-text-primary)] mb-3">No bookings found</h3>
+                    <p className="text-lg text-[var(--airion-text-muted)] font-semibold">Try adjusting your filters or search query</p>
                 </div>
             )}
         </div>

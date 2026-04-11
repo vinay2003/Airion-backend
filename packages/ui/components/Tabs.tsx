@@ -22,30 +22,27 @@ export const Tabs = ({
   className = '',
 }: TabsProps) => {
   return (
-    <div className={`flex gap-1 p-1 bg-[var(--airion-bg-elevated)]/30 rounded-2xl border border-[var(--airion-border-subtle)] w-fit ${className}`}>
+    <div className={`flex gap-3 p-2 bg-[var(--airion-bg-elevated)]/40 rounded-[1.5rem] border border-[var(--airion-border-subtle)] w-fit ${className}`}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={`
-            relative flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all duration-300 select-none
-            ${variant === 'line' ? 'font-bold uppercase text-[10px] tracking-widest' : 'font-medium text-sm'}
+            relative flex items-center gap-4 px-10 py-3.5 rounded-xl transition-all duration-300 select-none outline-none
+            ${variant === 'line' ? 'font-black uppercase text-[10px] tracking-[0.25em]' : 'font-black text-[16px] uppercase tracking-tight'}
             ${
               activeTab === tab.id
-                ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-[var(--airion-shadow-sm)] border border-[var(--airion-border-subtle)]'
-                : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-secondary)] hover:bg-[var(--airion-bg-surface)]/40'
+                ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-xl shadow-black/5 border border-[var(--airion-border-subtle)] translate-y-[-1px]'
+                : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] hover:bg-[var(--airion-bg-surface)]/60'
             }
           `}
         >
           {tab.icon && (
-            <span className={activeTab === tab.id ? 'text-[var(--airion-brand-primary)]' : 'text-[var(--airion-text-muted)] transition-colors group-hover:text-[var(--airion-text-secondary)]'}>
+            <span className={activeTab === tab.id ? 'text-[var(--airion-brand-primary)]' : 'text-[var(--airion-text-muted)]'}>
               {tab.icon}
             </span>
           )}
           {tab.label}
-          {activeTab === tab.id && (
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-[var(--airion-brand-primary)] rounded-full blur-[4px] opacity-40" />
-          )}
         </button>
       ))}
     </div>

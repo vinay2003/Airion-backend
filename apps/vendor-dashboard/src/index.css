@@ -7,47 +7,87 @@
 @import "tailwindcss";
 @import "@airion/ui/globals.css";
 
-/* ── 1. Global System Tokens (SaaS Dark) ───────────────────────── */
+/* ── 1. Global System Tokens (SaaS Themes) ───────────────────────── */
 :root {
-  color-scheme: dark;
-  
-  --airion-bg-base:        #0f172a; /* Slate 900 */
-  --airion-bg-surface:     #1e293b; /* Slate 800 */
-  --airion-bg-elevated:    #334155; /* Slate 700 */
-  --airion-bg-sidebar:     #020617;
+  --airion-bg-base: #f8fafc;
+  /* Slate 50 */
+  --airion-bg-surface: #ffffff;
+  --airion-bg-elevated: #f1f5f9;
+  /* Slate 100 */
+  --airion-bg-sidebar: #f1f5f9;
 
-  --airion-text-primary:   #f8fafc;
+  --airion-text-primary: #0f172a;
+  --airion-text-secondary: #475569;
+  --airion-text-muted: #64748b;
+  --airion-text-inverted: #f8fafc;
+
+  --airion-border-subtle: rgba(15, 23, 42, 0.08);
+  --airion-border-base: rgba(15, 23, 42, 0.15);
+  color-scheme: light;
+}
+
+.dark,
+[data-theme='dark'] {
+  --airion-bg-base: #0f172a;
+  /* Slate 900 */
+  --airion-bg-surface: #1e293b;
+  /* Slate 800 */
+  --airion-bg-elevated: #334155;
+  /* Slate 700 */
+  --airion-bg-sidebar: #020617;
+
+  --airion-text-primary: #f8fafc;
   --airion-text-secondary: #94a3b8;
-  --airion-text-muted:     #64748b;
-  --airion-text-inverted:  #0f172a;
+  --airion-text-muted: #64748b;
+  --airion-text-inverted: #0f172a;
 
-  --airion-border-subtle:  rgba(255, 255, 255, 0.05);
-  --airion-border-base:    rgba(255, 255, 255, 0.1);
-
-  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
-  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --airion-border-subtle: rgba(255, 255, 255, 0.05);
+  --airion-border-base: rgba(255, 255, 255, 0.1);
+  color-scheme: dark !important;
 }
 
 body {
-  @apply bg-[#0f172a] text-[#f8fafc] antialiased;
+  background-color: var(--airion-bg-base);
+  color: var(--airion-text-primary);
+  @apply antialiased;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+.text-heading {
+  @apply font-bold tracking-tight text-[var(--airion-text-primary)];
+}
+
+.text-semibold {
+  @apply font-semibold;
 }
 
 /* ── 2. Component Design System ─────────────────────────────── */
 @layer components {
+
   /* 📦 Professional SaaS Card */
   .card-minimal {
-    @apply bg-white/5 border border-white/10 rounded-2xl p-6 transition-all duration-200 shadow-sm hover:border-white/20;
+    background-color: var(--airion-bg-surface);
+    border: 1px solid var(--airion-border-subtle);
+    @apply rounded-2xl p-6 transition-all duration-200 shadow-sm hover:border-[var(--airion-border-base)];
   }
 
   .card-premium {
-    @apply bg-white/10 border border-white/20 rounded-2xl p-8 transition-all duration-200 shadow-md hover:bg-white/[0.12];
+    background-color: var(--airion-bg-elevated);
+    border: 1px solid var(--airion-border-base);
+    @apply rounded-2xl p-8 transition-all duration-200 shadow-md hover:opacity-90;
   }
 
   /* 🚨 PRODUCTION READY: High-Visibility Input */
   .input-dark-glass {
-    @apply bg-slate-800 border border-white/10 rounded-lg h-11 px-4 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500;
+    background-color: var(--airion-bg-elevated);
+    border: 1px solid var(--airion-border-subtle);
+    @apply rounded-lg h-11 px-4 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500;
   }
 
   /* 🔘 Clean Button Design: Standardized size, professional transitions */
@@ -68,21 +108,112 @@ body {
     @apply inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-medium transition-all;
   }
 
-  .chip-soft-blue { @apply bg-blue-500/10 text-blue-400 border border-blue-500/20; }
-  .chip-soft-emerald { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20; }
-  .chip-soft-amber { @apply bg-amber-500/10 text-amber-400 border border-amber-500/20; }
-  .chip-soft-rose { @apply bg-rose-500/10 text-rose-400 border border-rose-500/20; }
+  .chip-soft-blue {
+    @apply bg-blue-500/10 text-blue-400 border border-blue-500/20;
+  }
+
+  .chip-soft-emerald {
+    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  }
+
+  .chip-soft-amber {
+    @apply bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  }
+
+  .chip-soft-rose {
+    @apply bg-rose-500/10 text-rose-400 border border-rose-500/20;
+  }
 
   /* Spacing Standard */
-  .section-spacing { @apply p-6 space-y-6; }
+  .section-spacing {
+    @apply p-6 space-y-6;
+  }
 }
 
 /* ── 3. Utilities ─────────────────────────────────────── */
 @layer utilities {
-  .transition-soft { @apply transition-all duration-300 ease-in-out; }
-  
+  .transition-soft {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
   /* Scrollbar for SaaS Dark Theme */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors; }
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors;
+  }
+}
+
+/* ── 4. Premium RGB Atmospheric Engine ────────────────────────── */
+.rgb-bg-container {
+  @apply fixed inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000;
+  z-index: 0;
+  background-color: var(--airion-bg-base);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,4%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(250,49%,8%,1) 0, transparent 50%);
+  animation: bg-hue-shift 25s linear infinite;
+}
+
+.rgb-glow-node {
+  @apply absolute rounded-full blur-[160px] mix-blend-screen opacity-5 dark:opacity-10 animate-pulse;
+  transition: all 12s ease-in-out;
+}
+
+.node-1 {
+  @apply w-[1200px] h-[1200px] -top-80 -left-80 bg-slate-800/20;
+  animation: float-1 45s infinite alternate;
+}
+
+.node-2 {
+  @apply w-[1000px] h-[1000px] top-1/4 -right-80 bg-indigo-900/15;
+  animation: float-2 50s infinite alternate-reverse;
+}
+
+.node-3 {
+  @apply w-[1400px] h-[1400px] -bottom-[400px] left-1/4 bg-blue-950/20;
+  animation: float-3 40s infinite alternate;
+}
+
+@keyframes bg-hue-shift {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
+}
+
+@keyframes float-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(150px, 200px) scale(1.1); }
+}
+
+@keyframes float-2 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-200px, -100px) rotate(90deg); }
+}
+
+@keyframes float-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(200px, -100px) scale(0.9); }
+}
+
+/* Glassmorphism for Dashboard Cards */
+.card-minimal, .card-premium {
+  @apply backdrop-blur-[60px] relative z-20;
+}
+
+.dark .card-minimal {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.dark .card-premium {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }

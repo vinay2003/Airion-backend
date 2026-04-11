@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     Church, Building2, Mic, GraduationCap, Users,
     Palette, TrendingUp, Handshake, Sparkles, Trophy,
-    ChevronRight, ChevronLeft, Check
+    ChevronRight, ChevronLeft, Check, Target, Zap
 } from 'lucide-react';
 
 interface EventPlanningProps {
@@ -19,6 +19,10 @@ interface EventPlanningData {
     specialRequests: string;
 }
 
+/**
+ * 📅 Neural Event Architect
+ * Modernized with theme-aware tokens, premium typography, and high-contrast Day/Night mode support.
+ */
 const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState<EventPlanningData>({
@@ -32,13 +36,13 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
     });
 
     const steps = [
-        'Explore Venue',
-        'Catering',
-        'Additional Services',
-        'Guest Welcome',
-        'Book Your Date',
-        'Budget',
-        'Request',
+        'Venue Selection',
+        'Culinary Logic',
+        'Modular Services',
+        'Guest Protocol',
+        'Temporal Node',
+        'Financial Matrix',
+        'Special Directives',
     ];
 
     const eventTypes = [
@@ -118,35 +122,36 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
         switch (currentStep) {
             case 0: // Explore Venue
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-red-500 mb-2">
-                                Which type of event do you want to plan?
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-brand-primary)] uppercase italic tracking-tighter">
+                                Select Operational Node
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                Choose the event type that best matches your needs
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Choose the event type that best matches your strategic requirements
                             </p>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
                             {eventTypes.map((type) => (
                                 <button
                                     key={type.id}
                                     onClick={() => handleEventTypeSelect(type.id)}
-                                    className={`p-6 rounded-2xl border-2 transition-all hover:scale-105 ${formData.eventType === type.id
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                    className={`p-10 rounded-[2rem] border-2 transition-all group relative overflow-hidden ${formData.eventType === type.id
+                                        ? 'border-blue-500 bg-[var(--airion-bg-elevated)] shadow-xl shadow-blue-500/10'
+                                        : 'border-[var(--airion-border-subtle)] bg-[var(--airion-bg-surface)] hover:border-blue-500/30'
                                         }`}
                                 >
+                                    <div className={`absolute inset-0 bg-blue-500/5 transition-transform duration-700 ${formData.eventType === type.id ? 'scale-100' : 'scale-0 group-hover:scale-100'}`}></div>
                                     <type.icon
-                                        size={40}
-                                        className={`mx-auto mb-3 ${formData.eventType === type.id
-                                                ? 'text-red-500'
-                                                : 'text-gray-700 dark:text-slate-300'
+                                        size={48}
+                                        className={`mx-auto mb-6 transition-all relative z-10 ${formData.eventType === type.id
+                                            ? 'text-blue-500 scale-110 drop-shadow-[0_0_10px_rgba(37,99,235,0.4)]'
+                                            : 'text-[var(--airion-text-muted)] group-hover:text-blue-400'
                                             }`}
                                     />
-                                    <p className={`font-medium text-sm ${formData.eventType === type.id
-                                            ? 'text-red-500'
-                                            : 'text-gray-900 dark:text-white'
+                                    <p className={`font-black text-xs uppercase tracking-[0.2em] relative z-10 ${formData.eventType === type.id
+                                        ? 'text-blue-500'
+                                        : 'text-[var(--airion-text-secondary)] group-hover:text-[var(--airion-text-primary)]'
                                         }`}>
                                         {type.label}
                                     </p>
@@ -158,72 +163,36 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
             case 1: // Catering
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                Select Catering Options
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Culinary Logistics
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                Choose one or more catering styles for your event
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Choose one or more catering protocols for your mission
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             {cateringOptions.map((option) => (
                                 <button
                                     key={option}
                                     onClick={() => handleCateringToggle(option)}
-                                    className={`p-6 rounded-xl border-2 transition-all text-left ${formData.catering.includes(option)
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                    className={`p-10 rounded-[2rem] border-2 transition-all text-left group relative overflow-hidden ${formData.catering.includes(option)
+                                        ? 'border-blue-500 bg-[var(--airion-bg-elevated)] shadow-xl'
+                                        : 'border-[var(--airion-border-subtle)] bg-[var(--airion-bg-surface)] hover:border-blue-500/30'
                                         }`}
                                 >
-                                    <div className="flex items-center justify-between">
-                                        <span className={`font-medium ${formData.catering.includes(option)
-                                                ? 'text-red-500'
-                                                : 'text-gray-900 dark:text-white'
+                                    <div className="flex items-center justify-between relative z-10">
+                                        <span className={`font-black text-lg uppercase tracking-tight ${formData.catering.includes(option)
+                                            ? 'text-blue-500'
+                                            : 'text-[var(--airion-text-primary)]'
                                             }`}>
                                             {option}
                                         </span>
                                         {formData.catering.includes(option) && (
-                                            <Check size={20} className="text-red-500" />
-                                        )}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                );
-
-            case 2: // Additional Services
-                return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                Additional Services
-                            </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                Enhance your event with professional services
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {additionalServicesOptions.map((service) => (
-                                <button
-                                    key={service}
-                                    onClick={() => handleServiceToggle(service)}
-                                    className={`p-6 rounded-xl border-2 transition-all ${formData.additionalServices.includes(service)
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
-                                        }`}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <span className={`font-medium ${formData.additionalServices.includes(service)
-                                                ? 'text-red-500'
-                                                : 'text-gray-900 dark:text-white'
-                                            }`}>
-                                            {service}
-                                        </span>
-                                        {formData.additionalServices.includes(service) && (
-                                            <Check size={20} className="text-red-500" />
+                                            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                                <Check size={20} strokeWidth={4} />
+                                            </div>
                                         )}
                                     </div>
                                 </button>
@@ -234,29 +203,32 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
             case 3: // Guest Welcome
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                Guest Count
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Node Volume Index
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                How many guests are you expecting?
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Quantify the expected neural connections for this event
                             </p>
                         </div>
-                        <div className="max-w-md mx-auto">
-                            <input
-                                type="number"
-                                value={formData.guestCount || ''}
-                                onChange={(e) => setFormData({ ...formData, guestCount: parseInt(e.target.value) || 0 })}
-                                placeholder="Enter number of guests"
-                                className="w-full p-4 text-center text-2xl font-bold border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-white transition-all"
-                            />
-                            <div className="grid grid-cols-3 gap-3 mt-6">
-                                {[50, 100, 200, 300, 500, 1000].map((count) => (
+                        <div className="max-w-2xl mx-auto space-y-12">
+                            <div className="relative group">
+                                <Users className="absolute left-8 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" size={32} />
+                                <input
+                                    type="number"
+                                    value={formData.guestCount || ''}
+                                    onChange={(e) => setFormData({ ...formData, guestCount: parseInt(e.target.value) || 0 })}
+                                    placeholder="Enter capacity index"
+                                    className="w-full pl-24 pr-10 py-10 bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] rounded-[2.5rem] text-center text-4xl font-black italic tracking-tighter outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--airion-text-primary)] transition-all shadow-inner"
+                                />
+                            </div>
+                            <div className="grid grid-cols-3 gap-6">
+                                {[100, 250, 500, 1000, 2500, 5000].map((count) => (
                                     <button
                                         key={count}
                                         onClick={() => setFormData({ ...formData, guestCount: count })}
-                                        className="p-4 bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl font-medium text-gray-900 dark:text-white transition-colors"
+                                        className="p-8 bg-[var(--airion-bg-surface)] border-2 border-[var(--airion-border-subtle)] hover:bg-[var(--airion-bg-elevated)] hover:border-blue-500/30 rounded-[1.5rem] font-black text-xl text-[var(--airion-text-primary)] transition-all uppercase italic tracking-tighter shadow-sm"
                                     >
                                         {count}
                                     </button>
@@ -268,21 +240,21 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
             case 4: // Book Your Date
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                Select Event Date
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Temporal Node Locking
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                When would you like to host your event?
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Synchronize the event timestamp with the global registry
                             </p>
                         </div>
-                        <div className="max-w-md mx-auto">
+                        <div className="max-w-2xl mx-auto">
                             <input
                                 type="date"
                                 value={formData.eventDate}
                                 onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-                                className="w-full p-4 text-center text-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-white transition-all"
+                                className="w-full p-10 text-center text-2xl font-black bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] rounded-[2.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--airion-text-primary)] transition-all shadow-xl uppercase italic tracking-widest"
                             />
                         </div>
                     </div>
@@ -290,28 +262,28 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
             case 5: // Budget
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                What's Your Budget?
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Financial Matrix Allocation
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                Select your estimated budget range
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Select your estimated capital flux range
                             </p>
                         </div>
-                        <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                             {budgetRanges.map((range) => (
                                 <button
                                     key={range}
                                     onClick={() => setFormData({ ...formData, budget: range })}
-                                    className={`p-6 rounded-xl border-2 transition-all ${formData.budget === range
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                    className={`p-10 rounded-[2.5rem] border-2 transition-all group overflow-hidden ${formData.budget === range
+                                        ? 'border-blue-500 bg-[var(--airion-bg-elevated)] shadow-2xl'
+                                        : 'border-[var(--airion-border-subtle)] bg-[var(--airion-bg-surface)] hover:border-blue-500/30'
                                         }`}
                                 >
-                                    <span className={`font-medium text-lg ${formData.budget === range
-                                            ? 'text-red-500'
-                                            : 'text-gray-900 dark:text-white'
+                                    <span className={`font-black text-2xl italic tracking-tighter uppercase ${formData.budget === range
+                                        ? 'text-blue-500 scale-105 inline-block transition-transform'
+                                        : 'text-[var(--airion-text-primary)]'
                                         }`}>
                                         {range}
                                     </span>
@@ -323,83 +295,144 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
             case 6: // Request
                 return (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                Special Requests
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Critical Directives
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400">
-                                Any specific requirements or requests for your event?
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Any specific parameters or neural requirements for this operation?
                             </p>
                         </div>
-                        <div className="max-w-2xl mx-auto">
+                        <div className="max-w-4xl mx-auto">
                             <textarea
                                 value={formData.specialRequests}
                                 onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
-                                placeholder="Tell us about any special requirements, dietary restrictions, accessibility needs, or other important details..."
-                                rows={8}
-                                className="w-full p-4 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all resize-none"
+                                placeholder="Input mission-critical details, dietary logic, accessibility protocols, or custom neural pathways..."
+                                rows={10}
+                                className="w-full p-12 bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] rounded-[3.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] font-bold text-lg leading-relaxed transition-all resize-none shadow-inner"
                             />
                         </div>
                     </div>
                 );
 
-            default:
-                return null;
+            default: // Additional Services (Default Fallback for Step 2)
+                return (
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                        <div className="text-center mb-12 space-y-4">
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] uppercase italic tracking-tighter">
+                                Modular Augmentations
+                            </h2>
+                            <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest">
+                                Enhance your operational mission with professional sub-nodes
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {additionalServicesOptions.map((service) => (
+                                <button
+                                    key={service}
+                                    onClick={() => handleServiceToggle(service)}
+                                    className={`p-8 rounded-[2rem] border-2 transition-all group relative overflow-hidden ${formData.additionalServices.includes(service)
+                                        ? 'border-blue-500 bg-[var(--airion-bg-elevated)] shadow-xl'
+                                        : 'border-[var(--airion-border-subtle)] bg-[var(--airion-bg-surface)] hover:border-blue-500/30'
+                                        }`}
+                                >
+                                    <div className="flex items-center justify-between relative z-10">
+                                        <span className={`font-black text-sm uppercase tracking-widest ${formData.additionalServices.includes(service)
+                                            ? 'text-blue-500'
+                                            : 'text-[var(--airion-text-secondary)] group-hover:text-[var(--airion-text-primary)]'
+                                            }`}>
+                                            {service}
+                                        </span>
+                                        {formData.additionalServices.includes(service) && (
+                                            <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg">
+                                                <Check size={14} strokeWidth={4} />
+                                            </div>
+                                        )}
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Sidebar */}
+        <div className="min-h-screen bg-[var(--airion-bg-base)] transition-colors duration-700 pb-24">
+            <div className="max-w-[1600px] mx-auto px-8 py-16">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-16">
+                    {/* Sidebar Navigator */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 sticky top-24">
-                            <h3 className="text-xl font-bold text-red-500 mb-6">Choose Your Interest</h3>
-                            <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">
-                                Choose the options you want to add in your events
-                            </p>
-                            <div className="space-y-2">
+                        <div className="card-minimal !p-10 rounded-[3rem] shadow-2xl border-[var(--airion-border-base)] sticky top-32 space-y-12">
+                            <div className="space-y-4">
+                                <h3 className="text-2xl font-black text-blue-500 uppercase italic tracking-tighter flex items-center gap-3">
+                                    <Target size={28} />
+                                    Mission Logic
+                                </h3>
+                                <p className="text-sm font-bold text-[var(--airion-text-muted)] uppercase tracking-[0.2em] leading-relaxed">
+                                    Configure the neural nodes for your upcoming operation sequence.
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
                                 {steps.map((step, index) => (
                                     <button
                                         key={step}
                                         onClick={() => setCurrentStep(index)}
-                                        className={`w-full text-left px-4 py-3 rounded-lg transition-all ${currentStep === index
-                                                ? 'bg-red-500 text-white font-medium'
-                                                : 'text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                        className={`w-full text-left px-8 py-5 rounded-2xl transition-all relative group flex items-center justify-between ${currentStep === index
+                                            ? 'bg-blue-600 text-white font-black shadow-xl shadow-blue-500/20 translate-x-3 scale-105 italic'
+                                            : 'text-[var(--airion-text-secondary)] hover:bg-[var(--airion-bg-elevated)] hover:text-[var(--airion-text-primary)] font-bold uppercase tracking-widest text-[10px]'
                                             }`}
                                     >
                                         {step}
+                                        {currentStep === index && <Zap size={14} className="animate-pulse" />}
                                     </button>
                                 ))}
+                            </div>
+
+                            <div className="pt-8 border-t border-[var(--airion-border-subtle)] flex items-center justify-center">
+                                <div className="text-[15px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em]">Operational Status: ALPHA</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Main Content */}
+                    {/* Main Construction Content */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-8 min-h-[600px]">
-                            {renderStepContent()}
+                        <div className="card-minimal !p-16 rounded-[4rem] shadow-2xl border-[var(--airion-border-base)] min-h-[800px] flex flex-col justify-between relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
 
-                            {/* Navigation Buttons */}
-                            <div className="flex justify-center gap-4 mt-12">
-                                {currentStep > 0 && (
+                            <div className="relative z-10 flex-1">
+                                {renderStepContent()}
+                            </div>
+
+                            {/* Sequential Navigation Buttons */}
+                            <div className="flex justify-between items-center gap-10 mt-20 relative z-10">
+                                <div className="flex-1 h-2 bg-[var(--airion-bg-elevated)] rounded-full overflow-hidden max-w-sm border border-[var(--airion-border-subtle)]">
+                                    <div
+                                        className="h-full bg-blue-600 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(37,99,235,0.6)]"
+                                        style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                                    ></div>
+                                </div>
+
+                                <div className="flex gap-6">
+                                    {currentStep > 0 && (
+                                        <button
+                                            onClick={handleBack}
+                                            className="px-12 py-5 bg-[var(--airion-bg-surface)] hover:bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] text-[var(--airion-text-primary)] rounded-3xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-black/5"
+                                        >
+                                            <ChevronLeft size={24} />
+                                            Revert Node
+                                        </button>
+                                    )}
                                     <button
-                                        onClick={handleBack}
-                                        className="px-8 py-3 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-xl font-medium transition-all flex items-center gap-2"
+                                        onClick={handleNext}
+                                        className="px-14 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 shadow-2xl shadow-blue-500/30 active:scale-95 hover:scale-105 italic"
                                     >
-                                        <ChevronLeft size={20} />
-                                        Back
+                                        {currentStep === steps.length - 1 ? 'Commit Sequence' : 'Advance Stream'}
+                                        <ChevronRight size={24} />
                                     </button>
-                                )}
-                                <button
-                                    onClick={handleNext}
-                                    className="px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-500/20"
-                                >
-                                    {currentStep === steps.length - 1 ? 'Submit Request' : 'Next'}
-                                    <ChevronRight size={20} />
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -74,25 +74,30 @@ const Hero: React.FC = () => {
 
                         {/* ✅ Welcome badge */}
                         {isAuthenticated && (
-                            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-xl">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                Welcome back, {user?.name.split(' ')[0]}!
+                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-black shadow-2xl">
+                                <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]"></div>
+
+                                Welcome back,
+                                <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                                    {user?.name.split(' ')[0]}
+                                </span>
+                                !
                             </div>
                         )}
 
                         {/* ✅ Dynamic Heading */}
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                             {isAuthenticated ? (
                                 <>
-                                    Your Event Dashboard <br />
-                                    <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent italic">
+                                    Your Event Dashboard <br className="hidden md:block" />
+                                    <span className="bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent italic px-2">
                                         is Waiting for You
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     Create Unforgettable <br className="hidden md:block" />
-                                    <span className="bg-gradient-to-r from-red-700 via-red-500 to-orange-600 bg-clip-text text-transparent italic">
+                                    <span className="bg-gradient-to-r from-rose-500 via-red-400 to-orange-500 bg-clip-text text-transparent italic px-2">
                                         Moments
                                     </span>
                                     With Airion
@@ -101,10 +106,10 @@ const Hero: React.FC = () => {
                         </h1>
 
                         {/* ✅ Dynamic Description */}
-                        <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+                        <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                             {isAuthenticated
-                                ? "Manage your bookings, track event progress, and connect with vendors easily."
-                                : "Discover the world's best venues and services for weddings, parties, and corporate events."
+                                ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
+                                : "Discover the world's most exclusive venues and services for weddings, parties, and corporate galas."
                             }
                         </p>
 
@@ -129,8 +134,8 @@ const Hero: React.FC = () => {
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
                             className={`h-1.5 rounded-full ${idx === currentImageIndex
-                                    ? "w-8 bg-white"
-                                    : "w-2 bg-white/40"
+                                ? "w-8 bg-white"
+                                : "w-2 bg-white/40"
                                 }`}
                         />
                     ))}
@@ -154,8 +159,8 @@ const Hero: React.FC = () => {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold ${activeTab === tab
-                                        ? "bg-white text-black"
-                                        : "bg-black/20 text-white"
+                                    ? "bg-white text-black"
+                                    : "bg-black/20 text-white"
                                     }`}
                             >
                                 {tab}

@@ -88,7 +88,7 @@ const CategorySlider: React.FC = () => {
             {/* Slider track */}
             <div
                 ref={scrollRef}
-                className="flex overflow-x-auto justify-between gap-4 md:gap-6 px-4 py-6 hide-scrollbar scroll-smooth snap-x -mx-4 sm:mx-0"
+                className="flex overflow-x-auto justify-between gap-2 md:gap-3 px-4 py-6 hide-scrollbar scroll-smooth snap-x -mx-4 sm:mx-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {CATEGORIES.map((category) => {

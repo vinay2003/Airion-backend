@@ -74,7 +74,7 @@ const DashboardOverview: React.FC = () => {
             </header>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                     { title: 'Upcoming Events', value: activeBookings.length, icon: Calendar, bg: 'bg-blue-50 dark:bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', link: '/dashboard/bookings' },
                     { title: 'Budget Spent', value: `₹${totalSpent.toLocaleString()}`, icon: CreditCard, bg: 'bg-green-50 dark:bg-green-500/10', text: 'text-green-600 dark:text-green-400', link: '/dashboard/budget' },
@@ -88,14 +88,14 @@ const DashboardOverview: React.FC = () => {
                     >
                         <Link
                             to={stat.link}
-                            className="p-6 bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl flex items-center gap-4 hover:shadow-md hover:border-red-200 dark:hover:border-red-500/30 transition-all block"
+                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-[2rem] flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:shadow-xl hover:border-red-500/30 transition-all block group"
                         >
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bg} ${stat.text}`}>
-                                <stat.icon size={22} />
+                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 ${stat.bg} ${stat.text}`}>
+                                <stat.icon size={28} />
                             </div>
-                            <div>
-                                <p className="text-sm text-neutral-500 dark:text-slate-400 font-medium">{stat.title}</p>
-                                <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mt-0.5">{stat.value}</h3>
+                            <div className="text-center sm:text-left space-y-1">
+                                <p className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.2em]">{stat.title}</p>
+                                <h3 className="text-3xl font-black text-neutral-900 dark:text-white italic">{stat.value}</h3>
                             </div>
                         </Link>
                     </motion.div>
@@ -166,29 +166,29 @@ const DashboardOverview: React.FC = () => {
                         {activeBookings.length > 0 ? activeBookings.map((booking: Booking) => (
                             <motion.div
                                 key={booking.id}
-                                className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl p-4 flex gap-4 hover:shadow-md transition cursor-pointer"
+                                className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-[2rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-2xl transition-all cursor-pointer group hover:border-red-500/20"
                             >
-                                <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-neutral-100 dark:bg-slate-800">
-                                    <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover" />
+                                <div className="w-full sm:w-32 sm:h-32 aspect-square rounded-[1.5rem] overflow-hidden flex-shrink-0 bg-neutral-100 dark:bg-slate-800 shadow-lg">
+                                    <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
                                 </div>
-                                <div className="flex-1 flex flex-col justify-between min-w-0">
+                                <div className="flex-1 flex flex-col justify-between min-w-0 py-1">
                                     <div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs font-bold text-red-500 tracking-wider uppercase">{booking.category}</span>
-                                            <span className="text-xs font-semibold px-2 py-0.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-full">{booking.status}</span>
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                                            <span className="text-[10px] font-black text-red-500 tracking-[0.2em] uppercase italic bg-red-50 dark:bg-red-500/10 px-3 py-1 rounded-full w-fit">{booking.category}</span>
+                                            <span className="text-[10px] font-black px-4 py-1 bg-emerald-500/10 text-emerald-500 rounded-full w-fit uppercase tracking-widest border border-emerald-500/20">{booking.status}</span>
                                         </div>
-                                        <h3 className="text-base font-bold text-neutral-900 dark:text-white mt-1 truncate">{booking.vendorName}</h3>
-                                        <div className="flex items-center gap-1 text-xs text-neutral-400 mt-0.5">
-                                            <MapPin size={12} />
+                                        <h3 className="text-2xl font-black text-neutral-900 dark:text-white mb-2 truncate italic">{booking.vendorName}</h3>
+                                        <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 dark:text-slate-500 uppercase tracking-tight">
+                                            <MapPin size={14} className="text-red-500" />
                                             <span className="truncate">{booking.location}</span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-between border-t border-neutral-100/60 dark:border-slate-800/60 pt-2 mt-2">
-                                        <div className="flex items-center gap-1 text-xs text-neutral-500 dark:text-slate-400">
-                                            <Calendar size={12} />
-                                            {booking.date} at {booking.time}
+                                    <div className="flex items-center justify-between border-t border-neutral-100 dark:border-slate-800 pt-6 mt-6">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-neutral-500 dark:text-slate-400 uppercase">
+                                            <Calendar size={14} className="text-red-500" />
+                                            {booking.date} <span className="text-neutral-300 dark:text-slate-600">|</span> {booking.time}
                                         </div>
-                                        <span className="text-sm font-bold text-neutral-900 dark:text-white">₹{booking.price.toLocaleString()}</span>
+                                        <span className="text-xl font-black text-neutral-900 dark:text-white italic">₹{booking.price.toLocaleString()}</span>
                                     </div>
                                 </div>
                             </motion.div>

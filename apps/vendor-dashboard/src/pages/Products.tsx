@@ -31,7 +31,7 @@ const Products: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState<any[]>([]);
-    
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -105,7 +105,7 @@ const Products: React.FC = () => {
         setFormData({ ...formData, packages: newPackages });
     };
 
-    const filteredProducts = products.filter(p => 
+    const filteredProducts = products.filter(p =>
         p.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -144,10 +144,10 @@ const Products: React.FC = () => {
                         <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-2xl font-black text-[10px] uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all">
                             Discard
                         </Button>
-                        <Button 
-                            onClick={handleCreateService} 
+                        <Button
+                            onClick={handleCreateService}
                             disabled={submitting}
-                            className="px-10 h-12 bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-[var(--airion-brand-primary)]/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all"
+                            className="px-10 h-12 bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-[var(--airion-brand-primary)]/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
                         >
                             {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Synchronize Node'}
                         </Button>
@@ -271,7 +271,7 @@ const Products: React.FC = () => {
                             <motion.div 
                                 key={pkg.name} 
                                 whileHover={{ y: -8 }}
-                                className={`card-minimal !p-10 transition-all duration-500 border shadow-2xl relative overflow-hidden ${pkg.isPopular ? 'bg-gradient-to-br from-[var(--airion-brand-primary)]/[0.05] to-transparent border-[var(--airion-brand-primary)]/30' : 'bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)]'}`}
+                                className={`card-minimal !p-10 transition-all duration-500 border shadow-2xl relative overflow-hidden rounded-[2.5rem] ${pkg.isPopular ? 'bg-gradient-to-br from-[var(--airion-brand-primary)]/[0.05] to-transparent border-[var(--airion-brand-primary)]/30' : 'bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)]'}`}
                             >
                                 <div className="space-y-10 relative z-10">
                                     <div className="flex justify-between items-center">
@@ -346,24 +346,25 @@ const Products: React.FC = () => {
             </div>
 
             {/* Matrix Filters */}
-            <motion.div variants={itemVariants} className="flex flex-col xl:flex-row gap-6 p-4 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-3xl shadow-xl">
+            <motion.div variants={itemVariants} className="flex flex-col xl:flex-row gap-6 p-4 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-base)] rounded-3xl shadow-inner">
                 <div className="relative flex-1 group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)] group-focus-within:text-[var(--airion-brand-primary)] transition-colors" size={20} />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)] group-focus-within:text-[var(--airion-brand-primary)] transition-colors" size={24} />
                     <input 
                         type="text" 
                         placeholder="SEARCH_REGISTRY_NODES..." 
-                        className="w-full bg-transparent border-none rounded-2xl py-4 pl-14 pr-6 text-[11px] font-black italic text-[var(--airion-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--airion-text-muted)] uppercase tracking-widest"
+                        className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold italic text-[var(--airion-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--airion-text-muted)] uppercase tracking-widest transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex bg-[var(--airion-bg-elevated)]/50 p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-inner">
+                <div className="flex bg-[var(--airion-bg-surface)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-md">
                     {['ALL_NODES', 'ACTIVE_SYNC', 'ARCHIVE_CMD'].map(tab => (
                         <button 
                             key={tab} 
-                            className={`px-8 py-3 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all italic ${tab === 'ALL_NODES' ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-lg border border-[var(--airion-border-subtle)]' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                            onClick={() => {}}
+                            className={`px-8 py-3 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all italic ${tab === 'ALL_NODES' ? 'bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-indigo-500/20' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
                         >
-                            {tab}
+                            {tab.replace('_', ' ')}
                         </button>
                     ))}
                 </div>
@@ -373,7 +374,7 @@ const Products: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {loading ? (
                     [1, 2, 3].map(i => (
-                        <div key={i} className="h-80 rounded-3xl border border-[var(--airion-border-subtle)] animate-pulse bg-[var(--airion-bg-surface)] shadow-lg"></div>
+                        <div key={i} className="h-80 rounded-[3rem] border border-[var(--airion-border-subtle)] animate-pulse bg-[var(--airion-bg-surface)] shadow-lg"></div>
                     ))
                 ) : (
                     <>
@@ -386,7 +387,7 @@ const Products: React.FC = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="card-minimal !p-0 overflow-hidden group border-[var(--airion-border-base)] shadow-2xl bg-[var(--airion-bg-surface)] hover:border-[var(--airion-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer"
+                                className="card-minimal !p-0 overflow-hidden group border-[var(--airion-border-base)] shadow-2xl bg-[var(--airion-bg-surface)] hover:border-[var(--airion-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer rounded-[3rem]"
                             >
                                 <div className="h-56 bg-slate-900 relative overflow-hidden">
                                     <img 
@@ -406,7 +407,7 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className="p-8 flex-1 flex flex-col space-y-6">
                                     <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-[var(--airion-brand-primary)] uppercase tracking-[0.3em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
+                                        <p className="text-[10px] font-black text-[var(--airion-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
                                         <h3 className="text-xl font-black text-[var(--airion-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--airion-brand-primary)] transition-colors">{prod.title}</h3>
                                     </div>
                                     <p className="text-xs text-[var(--airion-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
@@ -430,7 +431,7 @@ const Products: React.FC = () => {
                     <motion.div 
                         whileHover={{ y: -5, scale: 1.02 }}
                         onClick={() => setIsAdding(true)}
-                        className="card-minimal border-4 border-dashed border-[var(--airion-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--airion-brand-primary)]/40 hover:bg-[var(--airion-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl"
+                        className="card-minimal border-4 border-dashed border-[var(--airion-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--airion-brand-primary)]/40 hover:bg-[var(--airion-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl rounded-[3rem]"
                     >
                         <div className="w-16 h-16 rounded-3xl bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] flex items-center justify-center text-[var(--airion-text-muted)] group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-700 shadow-2xl">
                             <Plus size={32} />

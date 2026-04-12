@@ -3,7 +3,7 @@ export const events = [
     {
         id: 'hotel-saket',
         category: 'Weddings',
-        image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=100&w=2400&auto=format&fit=crop',
         title: 'Hotel Saket',
         rating: 4.7,
         reviews: 545,
@@ -15,7 +15,7 @@ export const events = [
     {
         id: 'sangam-castle',
         category: 'Weddings',
-        image: 'https://images.unsplash.com/photo-1519225468359-69632974758a?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1661873863027-51b409f112f5?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2FzdGxlfGVufDB8fDB8fHww',
         title: 'Sangam Castle',
         rating: 4.6,
         reviews: 387,
@@ -27,7 +27,7 @@ export const events = [
     {
         id: 'divine-vatika',
         category: 'Weddings',
-        image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2069&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=100&w=2400&auto=format&fit=crop',
         title: 'Divine Vatika',
         rating: 4.6,
         reviews: 241,
@@ -39,7 +39,7 @@ export const events = [
     {
         id: 'palms-resort',
         category: 'Weddings',
-        image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=100&w=2400&auto=format&fit=crop',
         title: 'Palms Resort',
         rating: 4.5,
         reviews: 347,
@@ -51,7 +51,7 @@ export const events = [
     {
         id: 'om-sai-resort',
         category: 'Weddings',
-        image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=100&w=2400&auto=format&fit=crop',
         title: 'Om Sai Resort',
         rating: 4.4,
         reviews: 245,
@@ -65,7 +65,7 @@ export const events = [
     {
         id: 'hotel-shyam',
         category: 'Parties',
-        image: 'https://images.unsplash.com/photo-1530103862676-de3c9da59af7?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1602081115720-72e5b0a254b8?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGx1eHVyeSUyMGhvdGVsfGVufDB8fDB8fHww',
         title: 'Hotel Shyam',
         rating: 4.5,
         reviews: 476,
@@ -77,7 +77,7 @@ export const events = [
     {
         id: 'dream-castle',
         category: 'Parties',
-        image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=100&w=2400&auto=format&fit=crop',
         title: 'Dream Castle',
         rating: 4.3,
         reviews: 122,
@@ -89,7 +89,7 @@ export const events = [
     {
         id: 'paradise-restaurant',
         category: 'Parties',
-        image: 'https://images.unsplash.com/photo-1514525253440-b393452e3383?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1661433201283-fcb240e88ad4?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D',
         title: 'Paradise Restaurant',
         rating: 4.1,
         reviews: 287,
@@ -101,7 +101,7 @@ export const events = [
     {
         id: 'kanha-shyam',
         category: 'Parties',
-        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=100&w=2400&auto=format&fit=crop',
         title: 'Kanha Shyam',
         rating: 4.0,
         reviews: 587,
@@ -113,7 +113,7 @@ export const events = [
     {
         id: 'bikaner-hotel',
         category: 'Parties',
-        image: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=100&w=2400&auto=format&fit=crop',
         title: 'Bikaner Hotel',
         rating: 4.0,
         reviews: 280,
@@ -127,7 +127,7 @@ export const events = [
     {
         id: 'resort-rendezvous',
         category: 'Meetups',
-        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=100&w=2400&auto=format&fit=crop',
         title: 'Resort Rendezvous',
         rating: 3.5,
         reviews: 122,
@@ -139,7 +139,7 @@ export const events = [
     {
         id: 'the-inn-crowd',
         category: 'Meetups',
-        image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=100&w=2400&auto=format&fit=crop',
         title: 'The Inn Crowd',
         rating: 3.5,
         reviews: 122,
@@ -151,7 +151,7 @@ export const events = [
     {
         id: 'innspire',
         category: 'Meetups',
-        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=100&w=2400&auto=format&fit=crop',
         title: 'InnSpire',
         rating: 3.5,
         reviews: 122,
@@ -163,7 +163,7 @@ export const events = [
     {
         id: 'travelers-tryst',
         category: 'Meetups',
-        image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=100&w=2400&auto=format&fit=crop',
         title: 'Travelers\' Tryst',
         rating: 3.5,
         reviews: 122,
@@ -175,7 +175,7 @@ export const events = [
     {
         id: 'the-wander-inn',
         category: 'Meetups',
-        image: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?q=80&w=1973&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?q=100&w=2400&auto=format&fit=crop',
         title: 'The Wander Inn',
         rating: 3.5,
         reviews: 122,
@@ -189,7 +189,7 @@ export const events = [
     {
         id: 'seminar-hotel-saket',
         category: 'Seminars',
-        image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=100&w=2400&auto=format&fit=crop',
         title: 'Hotel Saket',
         rating: 3.5,
         reviews: 122,
@@ -201,7 +201,7 @@ export const events = [
     {
         id: 'seminar-sangam-castle',
         category: 'Seminars',
-        image: 'https://images.unsplash.com/photo-1560523160-754a9e25c68f?q=80&w=2036&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1560523160-754a9e25c68f?q=100&w=2400&auto=format&fit=crop',
         title: 'Sangam Castle',
         rating: 3.5,
         reviews: 122,
@@ -213,7 +213,7 @@ export const events = [
     {
         id: 'seminar-divine-vatika',
         category: 'Seminars',
-        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=100&w=2400&auto=format&fit=crop',
         title: 'Divine Vatika',
         rating: 3.5,
         reviews: 122,
@@ -225,7 +225,7 @@ export const events = [
     {
         id: 'seminar-palms-resort',
         category: 'Seminars',
-        image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=100&w=2400&auto=format&fit=crop',
         title: 'Palms Resort',
         rating: 3.5,
         reviews: 122,
@@ -237,7 +237,7 @@ export const events = [
     {
         id: 'seminar-om-sai',
         category: 'Seminars',
-        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=100&w=2400&auto=format&fit=crop',
         title: 'Om Sai Ki Rasoi',
         rating: 3.5,
         reviews: 122,
@@ -251,7 +251,7 @@ export const events = [
     {
         id: 'p1',
         category: 'Photography',
-        image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=100&w=2400&auto=format&fit=crop',
         title: 'Pixel Perfect Photography',
         rating: 4.9,
         reviews: 215,
@@ -263,7 +263,7 @@ export const events = [
     {
         id: 'p2',
         category: 'Photography',
-        image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=100&w=2400&auto=format&fit=crop',
         title: 'Candid Frames',
         rating: 4.7,
         reviews: 142,
@@ -277,7 +277,7 @@ export const events = [
     {
         id: 'c1',
         category: 'Catering',
-        image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1518619745898-93e765966dcd?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZvb2QlMjBjYXRlcmluZ3xlbnwwfHwwfHx8MA%3D%3D',
         title: 'Flavor Delight Caterers',
         rating: 4.8,
         reviews: 184,
@@ -289,7 +289,7 @@ export const events = [
     {
         id: 'c2',
         category: 'Catering',
-        image: 'https://images.unsplash.com/photo-1532635241-17e8206cc462?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1722477936580-84aa10762b0b?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YnVmZmV0fGVufDB8fDB8fHww',
         title: 'Nourish Buffets',
         rating: 4.5,
         reviews: 95,
@@ -303,7 +303,7 @@ export const events = [
     {
         id: 'd1',
         category: 'Decor',
-        image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=100&w=2400&auto=format&fit=crop',
         title: 'Elegance Decorators',
         rating: 4.6,
         reviews: 110,
@@ -317,7 +317,7 @@ export const events = [
     {
         id: 'm1',
         category: 'Music',
-        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=100&w=2400&auto=format&fit=crop',
         title: 'DJ Rock & Sound',
         rating: 4.8,
         reviews: 310,
@@ -331,7 +331,7 @@ export const events = [
     {
         id: 'mu1',
         category: 'Makeup',
-        image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=100&w=2400&auto=format&fit=crop',
         title: 'Glow Up Bridal Studio',
         rating: 4.9,
         reviews: 188,
@@ -345,7 +345,7 @@ export const events = [
     {
         id: 'pl1',
         category: 'Planning',
-        image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=600&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=100&w=2400&auto=format&fit=crop',
         title: 'Vows to Forever Planners',
         rating: 4.7,
         reviews: 145,

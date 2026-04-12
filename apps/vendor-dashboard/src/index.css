@@ -1,18 +1,19 @@
 /**
- * Airion Vendor Dashboard — Styles (Clean SaaS Professional)
+ * Airion Vendor Dashboard — Styles (Modernized SaaS Registry)
+ * Implements high-fidelity "Bento Box" grid aesthetics and "Operational Matrix" dark modes.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
 @import "@airion/ui/globals.css";
 
-/* 🔘 Clean Button Design: Standardized size, professional transitions */
+/* 🔘 SaaS Interactive Elements */
 @utility btn-standard {
   @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2;
 }
 
-/* ── 1. Global System Tokens (SaaS Dark) ───────────────────────── */
+/* ── 1. Global System Tokens (SaaS Themes) ───────────────────────── */
 :root {
   color-scheme: light;
   
@@ -37,21 +38,24 @@
   --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
-.dark {
-  color-scheme: dark;
+.dark, [data-theme='dark'] {
+  color-scheme: dark !important;
   
   --airion-bg-base:        #020617; /* Slate 950 */
   --airion-bg-surface:     #0f172a; /* Slate 900 */
   --airion-bg-elevated:    #1e293b; /* Slate 800 */
   --airion-bg-sidebar:     #020617;
 
-  --airion-text-primary:   #f8fafc;
-  --airion-text-secondary: #94a3b8;
-  --airion-text-muted:     #64748b;
+  --airion-text-primary:   #f8fafc; /* Slate 50 */
+  --airion-text-secondary: #94a3b8; /* Slate 400 */
+  --airion-text-muted:     #64748b; /* Slate 500 */
   --airion-text-inverted:  #0f172a;
 
   --airion-border-subtle:  rgba(255, 255, 255, 0.05);
   --airion-border-base:    rgba(255, 255, 255, 0.1);
+  
+  --airion-shadow-sm:  0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --airion-shadow-md:  0 20px 40px -8px rgba(0, 0, 0, 0.6);
 }
 
 body {
@@ -60,55 +64,118 @@ body {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
+h1, h2, h3, h4, .text-heading {
+  @apply font-bold tracking-tight text-[var(--airion-text-primary)];
+}
+
 .font-display {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.font-cursive {
+  font-family: 'DM Sans', sans-serif;
 }
 
 /* ── 2. Component Design System ─────────────────────────────── */
 @layer components {
+
   /* 📦 Professional SaaS Card */
   .card-minimal {
-    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-2xl p-6 transition-all duration-200 shadow-[var(--airion-shadow-sm)] hover:border-[var(--airion-brand-primary)]/30;
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl p-6 transition-all duration-300 shadow-[var(--airion-shadow-sm)] hover:border-[var(--airion-brand-primary)]/30;
   }
 
   .card-premium {
-    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-2xl p-8 transition-all duration-200 shadow-[var(--airion-shadow-md)] hover:shadow-[var(--airion-shadow-lg)] hover:bg-[var(--airion-bg-elevated)]/50;
+    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-3xl p-8 transition-all duration-500 shadow-[var(--airion-shadow-md)] hover:shadow-2xl hover:bg-[var(--airion-bg-elevated)]/30;
   }
 
-  /* 🚨 PRODUCTION READY: High-Visibility Input */
+  /* 🚨 High-Visibility Input */
   .input-dark-glass {
-    @apply bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-base)] rounded-lg h-11 px-4 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] outline-none transition-all duration-200 focus:ring-2 focus:ring-[var(--airion-brand-primary)]/30 focus:border-[var(--airion-brand-primary)];
+    @apply bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-xl h-12 px-5 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] outline-none transition-all duration-300 focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 focus:border-[var(--airion-brand-primary)];
   }
 
-  /* 🔘 Clean Button Design */
   .btn-primary {
-    @apply btn-standard bg-[var(--airion-brand-primary)] hover:opacity-90 text-white shadow-sm;
+    @apply btn-standard bg-[var(--airion-brand-primary)] hover:shadow-xl hover:shadow-[var(--airion-brand-primary)]/20 text-white font-bold italic uppercase tracking-widest;
   }
 
   .btn-secondary {
-    @apply btn-standard bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] border border-[var(--airion-border-base)];
+    @apply btn-standard bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] border border-[var(--airion-border-base)] font-bold italic uppercase tracking-widest;
   }
 
   /* 🧩 Chip / Tag Design */
   .chip {
-    @apply inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-medium transition-all border;
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all border italic;
   }
 
-  .chip-soft-blue { @apply bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20; }
-  .chip-soft-emerald { @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20; }
-  .chip-soft-amber { @apply bg-amber-500/10 text-amber-400 border-amber-500/20; }
-  .chip-soft-rose { @apply bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20; }
+  .chip-soft-blue { @apply bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]; }
+  .chip-soft-emerald { @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]; }
+  .chip-soft-amber { @apply bg-amber-500/10 text-amber-500 border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]; }
+  .chip-soft-rose { @apply bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]; }
 
-  /* Spacing Standard */
-  .section-spacing { @apply p-6 space-y-6; }
+  .section-spacing {
+    @apply p-8 space-y-8;
+  }
 }
 
 /* ── 3. Utilities ─────────────────────────────────────── */
 @layer utilities {
-  .transition-soft { @apply transition-all duration-300 ease-in-out; }
-  
-  /* Scrollbar for SaaS Dark Theme */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors; }
+  .transition-soft {
+    @apply transition-all duration-500 ease-in-out;
+  }
+
+  /* Enhanced Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-[var(--airion-brand-primary)] transition-colors;
+  }
+}
+
+/* ── 4. Premium RGB Atmospheric Engine ────────────────────────── */
+.rgb-bg-container {
+  @apply fixed inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000;
+  z-index: 0;
+  background-color: var(--airion-bg-base);
+}
+
+.rgb-glow-node {
+  @apply absolute rounded-full blur-[140px] mix-blend-overlay opacity-30 dark:opacity-20 animate-pulse;
+}
+
+.node-1 {
+  @apply w-[1000px] h-[1000px] -top-80 -left-80 bg-indigo-500/20;
+  animation: float-1 45s infinite alternate;
+}
+
+.node-2 {
+  @apply w-[800px] h-[800px] top-1/4 -right-80 bg-rose-500/10;
+  animation: float-2 50s infinite alternate-reverse;
+}
+
+@keyframes float-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(150px, 200px) scale(1.1); }
+}
+
+@keyframes float-2 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-200px, -100px) rotate(90deg); }
+}
+
+/* Glassmorphism Refinement */
+.dark .card-minimal {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .card-premium {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(40px);
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }

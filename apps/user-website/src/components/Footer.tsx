@@ -8,21 +8,17 @@ const Footer: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
-                    <div>
-                        <h3 className="text-2xl font-bold text-red-500 font-cursive mb-4">aayojan</h3>
-                        <p className="text-gray-600 dark:text-slate-400 text-sm mb-4">
-                            Your one-stop platform for discovering and booking the perfect venues and services for every occasion.
+                    <div className="space-y-6">
+                        <Link to="/" className="text-3xl font-black text-red-500 font-cursive tracking-tighter hover:scale-105 transition-transform inline-block">Airion</Link>
+                        <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
+                            The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>
-                        <div className="flex gap-3">
-                            <a href="#" className="w-8 h-8 bg-gray-200 dark:bg-slate-800 rounded-full flex items-center justify-center hover:bg-red-500 dark:hover:bg-red-500 hover:text-white dark:hover:text-white transition-colors">
-                                <Facebook size={16} />
-                            </a>
-                            <a href="#" className="w-8 h-8 bg-gray-200 dark:bg-slate-800 rounded-full flex items-center justify-center hover:bg-red-500 dark:hover:bg-red-500 hover:text-white dark:hover:text-white transition-colors">
-                                <Instagram size={16} />
-                            </a>
-                            <a href="#" className="w-8 h-8 bg-gray-200 dark:bg-slate-800 rounded-full flex items-center justify-center hover:bg-red-500 dark:hover:bg-red-500 hover:text-white dark:hover:text-white transition-colors">
-                                <Twitter size={16} />
-                            </a>
+                        <div className="flex gap-4">
+                            {[Facebook, Instagram, Twitter].map((Icon, i) => (
+                                <a key={i} href="#" className="w-10 h-10 bg-white dark:bg-slate-800 border border-neutral-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all">
+                                    <Icon size={18} />
+                                </a>
+                            ))}
                         </div>
                     </div>
 
@@ -49,20 +45,20 @@ const Footer: React.FC = () => {
                     </div>
 
                     {/* Contact */}
-                    <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-4">Contact Us</h4>
-                        <ul className="space-y-3 text-sm">
-                            <li className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
-                                <Mail size={16} />
-                                <span>hello@aayojan.com</span>
+                    <div className="space-y-6">
+                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">Contact Node</h4>
+                        <ul className="space-y-4 text-sm font-bold text-gray-500 dark:text-slate-400">
+                            <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
+                                <Mail size={18} className="text-red-500" />
+                                <span>concierge@airion.app</span>
                             </li>
-                            <li className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
-                                <Phone size={16} />
-                                <span>+91 98765 43210</span>
+                            <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
+                                <Phone size={18} className="text-red-500" />
+                                <span>+91 99999 00000</span>
                             </li>
-                            <li className="flex items-start gap-2 text-gray-600 dark:text-slate-400">
-                                <MapPin size={16} className="mt-1" />
-                                <span>Mumbai, Maharashtra, India</span>
+                            <li className="flex items-start gap-3">
+                                <MapPin size={18} className="text-red-500 mt-1 flex-shrink-0" />
+                                <span>Enterprise Square, Digital Park,<br />Patna, Bihar 800001</span>
                             </li>
                         </ul>
                     </div>

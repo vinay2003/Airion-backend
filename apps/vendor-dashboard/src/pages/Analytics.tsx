@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@airion/shared';
-import { bookingService } from '@airion/shared/lib/services/bookingService';
+import api from '../lib/api'; // Use common api instance
 import { useQuery } from '@tanstack/react-query';
 import { Badge, Button, Skeleton } from '@airion/ui';
 
@@ -18,17 +18,27 @@ type AnalysisPeriod = '24H_REALTIME' | '30D_CYCLE' | 'ANNUAL_MATRIX';
 
 /**
  * 🍱 Intelligence Matrix: Autonomous Business Engine
- * Refined for high-fidelity responsiveness and dynamic node orchestration.
+ * Modernized for high-fidelity responsiveness and dynamic node orchestration.
+ * Features 'Neural Core' telemetry and global marketplace visibility indexing.
  */
 const Analytics: React.FC = () => {
     const { user } = useAuth();
     const vendorId = user?.vendor?.id || user?.id || '';
     const [selectedPeriod, setSelectedPeriod] = useState<AnalysisPeriod>('30D_CYCLE');
 
-    // 🛰️ Real-time Operational Insights
+    // 🛰️ Real-time Operational Insights Fetching
     const { data: statsData, isLoading } = useQuery({
         queryKey: ['vendorStats', vendorId, selectedPeriod],
-        queryFn: () => vendorId ? bookingService.getStats(vendorId).catch(() => null) : Promise.resolve(null),
+        queryFn: async () => {
+            if (!vendorId) return null;
+            try {
+                // Assuming stats endpoint exists, fallback to mock if not
+                const res = await api.get(`/vendors/stats/${vendorId}`) as any;
+                return res;
+            } catch (err) {
+                return null;
+            }
+        },
         enabled: !!vendorId
     });
 
@@ -87,254 +97,166 @@ const Analytics: React.FC = () => {
             variants={containerVariants}
             className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
         >
-            {/* 🛸 Global Matrix Header */}
+            {/* 🛸 Intelligence Matrix Header */}
             <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--airion-border-subtle)] relative overflow-hidden">
-                <motion.div variants={itemVariants} className="relative z-10">
+                <motion.div variants={itemVariants} className="relative z-10 space-y-4">
                     <h1 className="text-5xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
-                    <div className="flex items-center gap-4 mt-6">
-                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                            System Telemetry Live
+                    <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+                            <Activity size={12} className="animate-pulse" />
+                            Core Telemetry Live
                         </span>
-                        <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] opacity-40 italic">Operational Throughput • Genesis v4.2</p>
+                        <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)]/50 p-2 rounded-[28px] border border-[var(--airion-border-subtle)] shadow-inner relative z-10">
+                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--airion-border-subtle)] relative z-10">
                     {(['24H_REALTIME', '30D_CYCLE', 'ANNUAL_MATRIX'] as AnalysisPeriod[]).map((tab) => (
                         <button 
                             key={tab} 
                             onClick={() => setSelectedPeriod(tab)}
-                            className={`px-10 py-4 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all duration-700 italic relative ${selectedPeriod === tab ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-2xl border border-[var(--airion-border-base)] scale-105 z-10' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                            className={`px-8 py-3.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic relative ${selectedPeriod === tab ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-xl border border-[var(--airion-border-base)] scale-105 z-10' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
                         >
                             {tab.split('_')[0]} Cycle
-                            {selectedPeriod === tab && <motion.div layoutId="headerTab" className="absolute inset-0 bg-[var(--airion-brand-primary)]/5 rounded-2xl -z-10" />}
                         </button>
                     ))}
                 </motion.div>
-                
-                {/* Visual Flair */}
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-[var(--airion-brand-primary)]/[0.03] to-transparent pointer-events-none"></div>
             </div>
 
-            {/* 🚀 High-Velocity Telemetry Nodes */}
+            {/* 🚀 Tactical Telemetry Nodes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, idx) => (
                     <motion.div 
                         key={idx} 
                         variants={itemVariants}
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        className={`card-minimal !p-8 flex flex-col justify-between group cursor-pointer border-[var(--airion-border-base)] relative overflow-hidden shadow-2xl bg-[var(--airion-bg-surface)] ${stat.shadow}`}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--airion-border-base)] relative overflow-hidden shadow-2xl bg-[var(--airion-bg-surface)] ${stat.shadow}`}
                     >
                         <div className="flex justify-between items-start mb-12 relative z-10">
-                            <div className={`p-5 rounded-2xl bg-[var(--airion-bg-elevated)] ${stat.color} group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white transition-all duration-700 shadow-sm border border-[var(--airion-border-subtle)]`}>
-                                <stat.icon size={26} className="group-hover:rotate-12 transition-all duration-700" />
+                            <div className={`p-4 rounded-xl bg-[var(--airion-bg-elevated)] ${stat.color} group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--airion-border-subtle)]`}>
+                                <stat.icon size={24} />
                             </div>
-                            <div className={`flex items-center gap-2 text-[10px] font-black px-4 py-2 rounded-2xl border uppercase tracking-widest transition-all duration-700 ${stat.trend === 'up'
-                                ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white'
-                                : 'bg-rose-500/10 text-rose-600 border-rose-500/20 group-hover:bg-rose-500 group-hover:text-white'
-                                }`}>
-                                {stat.change}
-                                {stat.trend === 'up' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                            </div>
+                            <Badge className={`italic font-black text-[9px] tracking-widest px-3 py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
+                                {stat.change} {stat.trend === 'up' ? '↑' : '↓'}
+                            </Badge>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] mb-4 opacity-40 group-hover:opacity-100 group-hover:text-[var(--airion-brand-primary)] transition-all italic">{stat.label}</p>
-                            <h3 className="text-5xl font-black text-[var(--airion-text-primary)] tracking-tighter italic leading-none font-display mb-1 group-hover:scale-105 transition-transform origin-left">{stat.value}</h3>
+                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
                         </div>
-                        <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:opacity-[0.1] transition-opacity duration-1000">
-                            <stat.icon size={180} />
-                        </div>
+                        <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
                     </motion.div>
                 ))}
             </div>
 
-            {/* 📊 Intelligence Spectrum Charts */}
+            {/* 📊 Spectrum Analytics Flow */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* Area Spectrum: Visibility Index */}
-                <motion.div variants={itemVariants} className="card-minimal !p-10 bg-[var(--airion-bg-surface)] shadow-2xl relative overflow-hidden group border-[var(--airion-border-base)]">
-                    <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:opacity-[0.08] transition-opacity duration-1000">
-                        <Globe size={200} />
-                    </div>
+                <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-16 relative z-10">
                         <div className="flex items-center gap-6">
-                            <div className="w-2.5 h-14 bg-[var(--airion-brand-primary)] rounded-full shadow-[0_0_20px_var(--airion-brand-primary)] group-hover:h-20 transition-all duration-1000"></div>
+                            <div className="w-2 h-12 bg-[var(--airion-brand-primary)] rounded-full shadow-[0_0_15px_var(--airion-brand-primary)]"></div>
                             <div>
-                                <h3 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tight italic uppercase font-display leading-tight">Visibility Index</h3>
-                                <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-3 opacity-40 italic">Global Marketplace Node Exposure</p>
+                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
+                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
                             </div>
                         </div>
-                        <div className="p-5 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-[24px] group-hover:bg-[var(--airion-brand-primary)]/10 transition-all duration-700 shadow-sm">
-                            <Activity className="text-[var(--airion-brand-primary)]" size={32} />
+                        <div className="p-4 bg-[var(--airion-bg-elevated)] rounded-2xl border border-[var(--airion-border-subtle)]">
+                            <Globe className="text-[var(--airion-brand-primary)]" size={24} />
                         </div>
                     </div>
                     
-                    <div className="h-[420px] w-full -ml-4 relative z-10">
+                    <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={performanceData}>
                                 <defs>
-                                    <linearGradient id="colorVisibility" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="var(--airion-brand-primary)" stopOpacity={0.6} />
+                                    <linearGradient id="visGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="var(--airion-brand-primary)" stopOpacity={0.8} />
                                         <stop offset="95%" stopColor="var(--airion-brand-primary)" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.2} />
+                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.1} />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dx={-20} />
+                                <YAxis hide />
                                 <Tooltip
-                                    contentStyle={{ 
-                                        backgroundColor: 'rgba(255,255,255,0.95)', 
-                                        backdropFilter: 'blur(20px)', 
-                                        border: '1px solid var(--airion-border-base)', 
-                                        borderRadius: '40px', 
-                                        boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.25)', 
-                                        padding: '32px' 
-                                    }}
-                                    itemStyle={{ color: 'var(--airion-brand-primary)', fontWeight: 900, fontSize: '24px', fontStyle: 'italic', letterSpacing: '-0.02em' }}
-                                    labelStyle={{ color: 'var(--airion-text-muted)', fontWeight: 900, fontSize: '11px', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.3em', fontStyle: 'italic' }}
-                                    cursor={{ stroke: 'var(--airion-brand-primary)', strokeWidth: 3, strokeDasharray: '8 8' }}
+                                    cursor={{ stroke: 'var(--airion-brand-primary)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                                    contentStyle={{ background: 'var(--airion-bg-surface)', border: '1px solid var(--airion-border-base)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                                 />
-                                <Area 
-                                    type="monotone" 
-                                    dataKey="views" 
-                                    stroke="var(--airion-brand-primary)" 
-                                    strokeWidth={6} 
-                                    fillOpacity={1} 
-                                    fill="url(#colorVisibility)" 
-                                    activeDot={{ r: 12, fill: 'var(--airion-brand-primary)', stroke: 'white', strokeWidth: 5, style: { filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.6))' } }} 
-                                    animationDuration={3000}
-                                />
+                                <Area type="monotone" dataKey="views" stroke="var(--airion-brand-primary)" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>
 
-                {/* Capital Spectrum: Conversion Delta */}
-                <motion.div variants={itemVariants} className="card-minimal !p-10 bg-[var(--airion-bg-surface)] shadow-2xl relative overflow-hidden group border-[var(--airion-border-base)]">
-                    <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:opacity-[0.08] transition-opacity duration-1000">
-                        <Cpu size={200} />
-                    </div>
+                <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-16 relative z-10">
                         <div className="flex items-center gap-6">
-                            <div className="w-2.5 h-14 bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:h-20 transition-all duration-1000"></div>
+                            <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
-                                <h3 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tight italic uppercase font-display leading-tight">Capital Matrix</h3>
-                                <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-3 opacity-40 italic">Financial Throughput Efficiency</p>
+                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
+                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
                             </div>
                         </div>
-                        <div className="p-5 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-[24px] group-hover:bg-emerald-500/10 transition-all duration-700 shadow-sm">
-                            <BarChart3 className="text-emerald-500" size={32} />
+                        <div className="p-4 bg-[var(--airion-bg-elevated)] rounded-2xl border border-[var(--airion-border-subtle)]">
+                            <Zap className="text-emerald-500" size={24} />
                         </div>
                     </div>
                     
-                    <div className="h-[420px] w-full -ml-4 relative z-10">
+                    <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={performanceData}>
-                                <defs>
-                                    <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#10b981" />
-                                        <stop offset="100%" stopColor="#059669" />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.2} />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dx={-20} />
+                                <YAxis hide />
                                 <Tooltip
-                                    contentStyle={{ 
-                                        backgroundColor: 'rgba(255,255,255,0.95)', 
-                                        backdropFilter: 'blur(20px)', 
-                                        border: '1px solid var(--airion-border-base)', 
-                                        borderRadius: '40px', 
-                                        boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.25)', 
-                                        padding: '32px' 
-                                    }}
-                                    itemStyle={{ color: '#10b981', fontWeight: 900, fontSize: '24px', fontStyle: 'italic' }}
-                                    labelStyle={{ color: 'var(--airion-text-muted)', fontWeight: 900, fontSize: '11px', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.3em', fontStyle: 'italic' }}
-                                    cursor={{ fill: 'var(--airion-bg-elevated)', opacity: 0.5 }}
+                                    cursor={{ fill: 'var(--airion-bg-elevated)', opacity: 0.3 }}
+                                    contentStyle={{ background: 'var(--airion-bg-surface)', border: '1px solid var(--airion-border-base)', borderRadius: '24px' }}
                                 />
-                                <Bar dataKey="capture" fill="url(#emeraldGradient)" radius={[16, 16, 0, 0]} barSize={32}>
-                                    {performanceData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fillOpacity={0.8 + (index * 0.02)} />
-                                    ))}
-                                </Bar>
+                                <Bar dataKey="capture" fill="#10b981" radius={[8, 8, 0, 0]} barSize={24} animationDuration={2500} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>
             </div>
 
-            {/* 🏰 Operational Sovereignty: Node Leadership Ranking */}
-            <motion.div variants={itemVariants} className="card-minimal !p-12 bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-[0_64px_100px_-32px_rgba(0,0,0,0.2)] rounded-[64px] overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-20 opacity-[0.03] rotate-12 group-hover:scale-110 transition-transform duration-2000">
-                    <Target size={300} className="text-[var(--airion-text-primary)]" />
-                </div>
-                
-                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-12 mb-20 pb-12 border-b border-[var(--airion-border-subtle)] relative z-10">
+            {/* 🏰 Node Leadership Matrix */}
+            <motion.div variants={itemVariants} className="card-premium !p-16 border-[var(--airion-border-base)] shadow-2xl relative group">
+                <div className="flex items-center justify-between mb-16 pb-12 border-b border-[var(--airion-border-subtle)]">
                     <div className="flex items-center gap-8">
-                        <div className="p-6 bg-[var(--airion-brand-primary)]/10 rounded-[32px] shadow-sm border border-[var(--airion-brand-primary)]/10">
-                            <Target className="text-[var(--airion-brand-primary)]" size={40} />
+                        <div className="p-5 bg-[var(--airion-bg-elevated)] rounded-3xl border border-[var(--airion-border-subtle)]">
+                            <Zap className="text-[var(--airion-brand-primary)]" size={32} />
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tight uppercase italic font-display leading-none">Operational Sovereignty</h2>
-                            <p className="text-[12px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Node Hierarchy • Capacity Thresholds</p>
+                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
+                            <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-6">
-                        <Badge className="bg-[var(--airion-brand-primary)] text-white font-black italic uppercase text-[11px] px-8 py-3 rounded-full shadow-2xl shadow-[var(--airion-brand-primary)]/40 tracking-[0.3em]">RANKING_SYSTEM_v4</Badge>
-                        <button className="p-5 bg-[var(--airion-bg-elevated)] rounded-3xl text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all hover:bg-[var(--airion-bg-base)] shadow-sm">
-                            <MoreVertical size={28} />
-                        </button>
-                    </div>
+                    <Button variant="outline" className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
-                    {topNodes.map((venue, idx) => (
-                        <motion.div 
-                            key={idx} 
-                            whileHover={{ y: -16, scale: 1.02 }}
-                            className="flex flex-col p-12 bg-[var(--airion-bg-elevated)]/30 border border-[var(--airion-border-subtle)] rounded-[48px] hover:bg-[var(--airion-bg-surface)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] hover:border-[var(--airion-brand-primary)]/30 transition-all duration-1000 group relative overflow-hidden"
-                        >
-                            <div className="absolute -top-12 -right-12 p-16 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity duration-2000">
-                                <Layers size={180} className="text-[var(--airion-text-primary)]" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    {topNodes.map((node, i) => (
+                        <div key={i} className="space-y-8 p-10 bg-[var(--airion-bg-elevated)]/20 border border-[var(--airion-border-subtle)] rounded-[40px] hover:bg-[var(--airion-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
+                            <div className="flex justify-between items-start">
+                                <span className="text-4xl font-black text-[var(--airion-brand-primary)]/20 italic font-display group-hover/node:text-[var(--airion-brand-primary)] transition-colors">0{i+1}</span>
+                                <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px]`}>{node.status}</Badge>
                             </div>
-                            <div className="w-16 h-16 rounded-[24px] bg-[var(--airion-text-primary)] flex items-center justify-center text-[var(--airion-text-inverted)] text-lg font-black mb-10 shadow-2xl group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white group-hover:rotate-12 transition-all duration-1000 italic">
-                                0{idx + 1}
-                            </div>
-                            <h3 className="font-black text-[var(--airion-text-primary)] tracking-tight mb-8 uppercase text-2xl italic leading-tight group-hover:text-[var(--airion-brand-primary)] transition-colors duration-700">{venue.name}</h3>
-                            
-                            <div className="space-y-8 mb-12">
-                                <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-[0.4em] text-[var(--airion-text-muted)] italic">
-                                    <span>Sync Alpha</span>
-                                    <span className="text-[var(--airion-text-primary)] font-display text-xl group-hover:text-[var(--airion-brand-primary)] transition-colors">{venue.occupancy}%</span>
-                                </div>
-                                <div className="h-3.5 w-full bg-[var(--airion-bg-elevated)] rounded-full overflow-hidden p-0.5 border border-[var(--airion-border-subtle)] shadow-inner">
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${venue.occupancy}%` }}
-                                        transition={{ duration: 2, delay: 0.5 + (idx * 0.15), type: 'spring' }}
-                                        className={`h-full rounded-full ${idx === 0 ? 'bg-[var(--airion-brand-primary)] shadow-[0_0_15px_var(--airion-brand-primary)]' : 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]'} `}
-                                    />
+                            <div>
+                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
+                                <div className="mt-8 space-y-4">
+                                    <div className="flex justify-between items-end">
+                                        <p className="text-[9px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest italic">Sync Intensity</p>
+                                        <p className="text-lg font-black text-[var(--airion-text-primary)] italic">{node.occupancy}%</p>
+                                    </div>
+                                    <div className="h-2 w-full bg-[var(--airion-bg-elevated)] rounded-full overflow-hidden">
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--airion-brand-primary)] shadow-[0_0_10px_var(--airion-brand-primary)]" />
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="flex justify-between items-end mt-auto">
-                                <div className="space-y-3">
-                                    <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] opacity-40 italic">{venue.bookings} NODES DEPLOYED</p>
-                                    <p className="font-black text-4xl text-[var(--airion-text-primary)] tracking-tighter italic font-display group-hover:scale-105 transition-all duration-700 origin-left">{venue.revenue}</p>
-                                </div>
-                                <div className={`p-5 ${venue.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'} rounded-3xl border border-current opacity-30 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-12 transition-all duration-1000`}>
-                                    <Sparkles size={32} />
-                                </div>
+                            <div className="pt-8 border-t border-[var(--airion-border-subtle)] flex justify-between items-center">
+                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
+                                <p className="text-2xl font-black text-[var(--airion-text-primary)] italic">{node.revenue}</p>
                             </div>
-                        </motion.div>
+                        </div>
                     ))}
-                </div>
-                
-                <div className="mt-20 flex justify-center relative z-10">
-                    <button className="flex items-center gap-6 px-16 py-6 bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-full text-[12px] font-black uppercase tracking-[0.6em] text-[var(--airion-text-primary)] italic transition-all active:scale-95 group/btn shadow-2xl hover:shadow-[var(--airion-brand-primary)]/10">
-                        ACCESS GLOBAL ANALYTICS REGISTRY
-                        <ChevronRight size={24} className="group-hover/btn:translate-x-3 transition-transform duration-700" />
-                    </button>
                 </div>
             </motion.div>
         </motion.div>

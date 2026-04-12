@@ -98,7 +98,7 @@ const Header: React.FC = () => {
                                 <LayoutDashboard size={18} />
                                 User Dashboard
                             </Link>
-                            
+
                             {user?.role === 'vendor' && (
                                 <a
                                     href="/vendor"
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
                                     Vendor Dashboard
                                 </a>
                             )}
-                            
+
                             {user?.role === 'admin' && (
                                 <a
                                     href="/admin"
@@ -244,194 +244,111 @@ const Header: React.FC = () => {
                 {isMenuOpen ? <X size={24} className="text-gray-900 dark:text-white" /> : <Menu size={24} />}
             </button>
 
-            {/* Mobile Navigation Overlay */}
-            {isMenuOpen && (
-                <>
-                    {/* Backdrop */}
-                    <div
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-                        onClick={toggleMenu}
-                    />
-
-                    {/* Menu Panel */}
-                    <div className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-slate-900 z-50 flex flex-col shadow-2xl md:hidden transform transition-transform duration-300 ease-out">
-                        {/* Menu Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-800">
-                            <span className="text-xl font-bold text-red-500 font-cursive flex items-center gap-2">
-                                <Sparkles size={20} />
-                                Menu
+            {/* Mobile Navigation Portal */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 bg-white dark:bg-slate-950 z-[100] md:hidden flex flex-col"
+                    >
+                        {/* Menu Header (Solid) */}
+                        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
+                            <span className="text-2xl font-black text-red-500 italic uppercase tracking-tighter flex items-center gap-2">
+                                <Sparkles size={24} />
+                                Airion
                             </span>
                             <button
                                 onClick={toggleMenu}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                className="p-2.5 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white rounded-xl transition-all shadow-sm"
                             >
-                                <X size={24} className="text-gray-700 dark:text-slate-300" />
+                                <X size={24} />
                             </button>
                         </div>
 
-                        {/* Menu Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                            {/* Navigation Links */}
-                            <nav className="space-y-3">
-                                <Link
-                                    to="/search"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/search')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                        {/* Menu Content (Scrollable) */}
+                        <div className="flex-1 overflow-y-auto p-6 bg-white dark:bg-slate-950">
+                            <nav className="space-y-4">
+                                {[
+                                    { name: 'Marketplace', path: '/search' },
+                                    { name: 'Packages', path: '/packages' },
+                                    { name: 'Inspiration', path: '/inspiration' },
+                                    { name: 'Weddings', path: '/category/weddings' },
+                                    { name: 'Parties', path: '/category/parties' }
+                                ].map((item) => (
+                                    <Link
+                                        key={item.path}
+                                        to={item.path}
+                                        onClick={toggleMenu}
+                                        className={`block text-xl font-black uppercase tracking-tight py-4 px-6 rounded-2xl transition-all ${
+                                            isActivePath(item.path)
+                                                ? 'bg-red-500 text-white shadow-xl shadow-red-500/20'
+                                                : 'text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border border-transparent hover:border-red-500/10'
                                         }`}
-                                >
-                                    Marketplace
-                                </Link>
-                                <Link
-                                    to="/packages"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/packages')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Packages
-                                </Link>
-                                <Link
-                                    to="/plan-event"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/plan-event')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Plan Event
-                                </Link>
-                                <Link
-                                    to="/inspiration"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/inspiration')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Inspiration
-                                </Link>
-                                <Link
-                                    to="/category/weddings"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/category/weddings')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Weddings
-                                </Link>
-                                <Link
-                                    to="/category/parties"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/category/parties')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Parties
-                                </Link>
-                                <Link
-                                    to="/about"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/about')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    About Us
-                                </Link>
-                                <Link
-                                    to="/contact"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/contact')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Contact Us
-                                </Link>
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
                             </nav>
 
-                            <hr className="border-gray-200 dark:border-slate-800" />
-
-                            {/* Settings */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between py-2 px-4">
-                                    <span className="text-base font-medium text-gray-900 dark:text-slate-100">Language</span>
-                                    <button className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">
-                                        <Globe size={20} />
-                                        <span>EN</span>
-                                        <ChevronDown size={16} />
-                                    </button>
-                                </div>
-                                <div className="flex items-center justify-between py-2 px-4">
-                                    <span className="text-base font-medium text-gray-900 dark:text-slate-100">Theme</span>
+                            <div className="mt-8 pt-8 border-t border-gray-100 dark:border-slate-800 space-y-4">
+                                <div className="flex items-center justify-between px-2">
+                                    <span className="text-sm font-black uppercase text-gray-400">Appearance</span>
                                     <button
                                         onClick={toggleTheme}
-                                        className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+                                        className="flex items-center gap-2 bg-gray-50 dark:bg-slate-900 px-4 py-2 rounded-xl text-gray-900 dark:text-white font-bold text-sm border border-gray-100 dark:border-slate-800 shadow-sm"
                                     >
-                                        {theme === 'dark' ? (
-                                            <>
-                                                <Sun size={20} />
-                                                <span className="text-sm">Light</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Moon size={20} />
-                                                <span className="text-sm">Dark</span>
-                                            </>
-                                        )}
+                                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                                        {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Menu Footer */}
-                        <div className="p-4 border-t border-gray-200 dark:border-slate-800 space-y-3">
-                            {isAuthenticated ? (
-                                <>
-                                    <Link
-                                        to="/dashboard"
-                                        onClick={toggleMenu}
-                                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-red-500/20 text-center block transition-all"
-                                    >
-                                        My Dashboard
-                                    </Link>
-                                    <button
-                                        onClick={() => {
-                                            logout();
-                                            toggleMenu();
-                                        }}
-                                        className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 rounded-xl font-bold text-base text-center block transition-colors"
-                                    >
-                                        Log Out
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link
-                                        to="/login"
-                                        onClick={toggleMenu}
-                                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-base shadow-lg shadow-red-500/20 text-center block transition-all"
-                                    >
-                                        Login / Signup
-                                    </Link>
-                                    <Link
-                                        to="/contact"
-                                        onClick={toggleMenu}
-                                        className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 rounded-xl font-bold text-base text-center block transition-colors"
-                                    >
-                                        List Your Business
-                                    </Link>
-                                </>
-                            )}
+                        {/* Menu Footer (Fixed at Bottom) */}
+                        <div className="p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 shrink-0">
+                            <div className="flex flex-col gap-4">
+                                {isAuthenticated ? (
+                                    <>
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={toggleMenu}
+                                            className="w-full bg-red-500 hover:bg-black text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-red-500/20 text-center block transition-all"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <button
+                                            onClick={() => { logout(); toggleMenu(); }}
+                                            className="w-full bg-white dark:bg-slate-900 border-2 border-red-500/10 text-red-500 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-center block transition-all"
+                                        >
+                                            Log Out
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            to="/login"
+                                            onClick={toggleMenu}
+                                            className="w-full bg-red-500 hover:bg-black text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-red-500/20 text-center block transition-all"
+                                        >
+                                            Login / Signup
+                                        </Link>
+                                        <Link
+                                            to="/contact"
+                                            onClick={toggleMenu}
+                                            className="w-full bg-white dark:bg-slate-900 border-2 border-red-500/10 text-red-500 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-center block transition-all uppercase"
+                                        >
+                                            List Your Business
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Tablet Menu Overlay (md to lg) */}
             {isMenuOpen && (

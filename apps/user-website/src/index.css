@@ -48,9 +48,34 @@
   --input:       rgba(0, 0, 0, 0.08);
   --secondary:   #F1F5F9;
   --secondary-foreground: #475569;
-}body {
-  @apply bg-white text-[#1A1A2E] antialiased;
+}
+
+body {
+  @apply bg-transparent text-[#1A1A2E] antialiased;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@layer utilities {
+  .dark .aurora-bg {
+    background: linear-gradient(
+      -45deg,
+      #000000,
+      #1a0505,
+      #050a14,
+      #000000,
+      #140514,
+      #05140a,
+      #000000
+    );
+    background-size: 400% 400%;
+    animation: auroraAnim 30s ease infinite;
+  }
+
+  @keyframes auroraAnim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 }
 
 /* ── 3. User Portal Specific Components ──────────────────── */

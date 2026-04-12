@@ -50,23 +50,24 @@ const Listings: React.FC = () => {
         fetchListings();
     }, []);
 
-    const filteredListings = listings.filter(l => 
-        l.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const filteredListings = listings.filter(l =>
+        l.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         l.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-12 animate-in fade-in duration-700 pb-20">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-[var(--airion-text-primary)]">Event Management</h1>
-                    <p className="text-[var(--airion-text-muted)] font-medium mt-1">Configure and monitor your active event listings.</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--airion-border-subtle)] pb-12">
+                <div className="space-y-4">
+                    <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose uppercase">Event Management</h1>
+                    <p className="text-1.5xl font-bold text-[var(--airion-text-secondary)]">
+                        Configure and monitor your active event listings.
+                    </p>
                 </div>
                 <Button
                     onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
-                    variant="primary"
-                    size="lg"
+                    className="h-14 px-10 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl"
                     leftIcon={<Plus size={20} />}
                 >
                     Create New Listing
@@ -74,101 +75,101 @@ const Listings: React.FC = () => {
             </div>
 
             {/* Quick Stats Bar */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
                     { label: 'Active Listings', value: listings.filter(l => l.status === 'Active').length, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'Total Reach', value: '1.2k', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'Avg. Rating', value: '4.8', icon: Star, color: 'text-amber-500', bg: 'bg-amber-500/10' },
                     { label: 'Pending Reviews', value: '12', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                 ].map((stat, i) => (
-                    <div key={i} className="card-premium !p-4 flex items-center gap-4">
-                        <div className={`p-2 rounded-xl ${stat.bg} ${stat.color}`}>
-                            <stat.icon size={20} />
+                    <div key={i} className="card-minimal !p-8 flex items-center gap-6 shadow-xl rounded-[2.5rem] hover:scale-[1.02] transition-all">
+                        <div className={`p-4 rounded-[1.5rem] ${stat.bg} ${stat.color} shadow-lg`}>
+                            <stat.icon size={32} />
                         </div>
-                        <div>
-                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest">{stat.label}</p>
-                            <p className="text-xl font-bold text-[var(--airion-text-primary)]">{stat.value}</p>
+                        <div className="space-y-2">
+                            <p className="text-xs font-bold text-[var(--airion-text-muted)] uppercase tracking-widest leading-none">{stat.label}</p>
+                            <p className="text-3xl font-bold text-[var(--airion-text-primary)] tracking-tight">{stat.value}</p>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* Filters Bar */}
-            <div className="card-premium p-4 flex flex-col md:flex-row items-center gap-4 bg-[var(--airion-bg-surface)]/50">
-                <div className="relative flex-1 w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)]" size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="Search listings..." 
-                        className="w-full bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all font-medium text-[var(--airion-text-primary)]"
+            <div className="flex flex-col md:flex-row items-center gap-8 bg-[var(--airion-bg-elevated)] p-8 rounded-[2.5rem] border border-[var(--airion-border-subtle)] shadow-inner">
+                <div className="relative flex-1 w-full group">
+                    <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)] group-focus-within:text-[var(--airion-brand-primary)] transition-colors" size={24} />
+                    <input
+                        type="text"
+                        placeholder="Search listings by title or location..."
+                        className="w-full h-16 pl-16 pr-8 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-[1.5rem] text-base font-bold outline-none focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 transition-all text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex gap-3 w-full md:w-auto">
-                    <Button variant="secondary" leftIcon={<Filter size={18} />}>
-                        Filter
+                <div className="flex gap-4 w-full md:w-auto">
+                    <Button variant="secondary" className="h-16 px-10 rounded-[1.5rem] border-[var(--airion-border-subtle)] font-bold text-xs uppercase tracking-widest bg-[var(--airion-bg-surface)]" leftIcon={<Filter size={20} />}>
+                        More Filters
                     </Button>
                 </div>
             </div>
 
             {/* Grid List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {loading ? (
                     [1, 2, 3].map(i => (
-                        <div key={i} className="card-premium h-[420px]">
-                            <Skeleton variant="rect" width="100%" height={200} />
-                            <div className="p-6 space-y-4">
-                                <Skeleton variant="text" width="60%" />
-                                <Skeleton variant="text" width="90%" />
-                                <Skeleton variant="text" width="40%" />
+                        <div key={i} className="card-minimal h-[480px] rounded-[2.5rem] bg-[var(--airion-bg-elevated)] animate-pulse border-[var(--airion-border-subtle)]">
+                            <div className="h-64 bg-[var(--airion-bg-surface)] rounded-t-[2.5rem]"></div>
+                            <div className="p-10 space-y-6">
+                                <div className="h-10 bg-[var(--airion-bg-surface)] w-3/4 rounded-xl"></div>
+                                <div className="h-6 bg-[var(--airion-bg-surface)] w-1/2 rounded-xl"></div>
+                                <div className="h-16 bg-[var(--airion-bg-surface)] w-full rounded-[1.5rem] mt-8"></div>
                             </div>
                         </div>
                     ))
                 ) : (
                     filteredListings.map((listing) => (
-                        <div key={listing.id} className="card-premium p-0 overflow-hidden flex flex-col group h-full hover:shadow-[var(--airion-shadow-glow)] transition-all duration-500">
-                            <div className="relative h-56 overflow-hidden">
+                        <div key={listing.id} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--airion-shadow-xl)] border-[var(--airion-border-subtle)] hover:border-[var(--airion-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
+                            <div className="relative h-72 overflow-hidden">
                                 <img
                                     src={listing.image}
                                     alt={listing.title}
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
-                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
-                                <div className="absolute top-4 right-4 z-10">
-                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : 'pending'} className="shadow-xl backdrop-blur-md">
+                                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[var(--airion-bg-base)] via-transparent to-transparent opacity-90"></div>
+                                <div className="absolute top-8 right-8 z-10">
+                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : 'pending'} className="shadow-2xl backdrop-blur-xl px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-full">
                                         {listing.status || 'Active'}
                                     </Badge>
                                 </div>
-                                <div className="absolute bottom-4 left-4 z-10">
-                                    <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
-                                        <Star size={14} className="text-amber-400 fill-amber-400" />
-                                        <span className="text-xs font-black text-white">{listing.rating}</span>
+                                <div className="absolute bottom-8 left-8 z-10">
+                                    <div className="flex items-center gap-3 bg-[var(--airion-bg-surface)]/40 backdrop-blur-xl px-5 py-2.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-xl">
+                                        <Star size={20} className="text-amber-500 fill-amber-500" />
+                                        <span className="text-base font-bold text-[var(--airion-text-primary)] tracking-tight">{listing.rating}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-6 flex-1 flex flex-col">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h3 className="text-xl font-bold text-[var(--airion-text-primary)] group-hover:text-[var(--airion-brand-primary)] transition-colors leading-tight">{listing.title}</h3>
+                            <div className="p-10 flex-1 flex flex-col space-y-8">
+                                <div className="flex justify-between items-start gap-5">
+                                    <h3 className="text-3xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight group-hover:text-[var(--airion-brand-primary)] transition-colors line-clamp-2">{listing.title}</h3>
                                     <button
                                         onClick={() => { setEditingListing(listing); setIsEditorOpen(true); }}
-                                        className="p-2 hover:bg-[var(--airion-brand-primary)]/10 rounded-xl text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all"
+                                        className="p-4 bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-brand-primary)]/10 rounded-2xl text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all shadow-md border border-[var(--airion-border-subtle)]"
                                     >
-                                        <Edit2 size={18} />
+                                        <Edit2 size={24} />
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-2 text-[var(--airion-text-muted)] text-sm mb-4 font-medium">
-                                    <MapPin size={16} className="text-[var(--airion-brand-primary)]" />
+                                <div className="flex items-center gap-4 text-[var(--airion-text-secondary)] text-lg font-bold tracking-tight">
+                                    <MapPin size={24} className="text-[var(--airion-brand-primary)]" />
                                     {listing.location}
                                 </div>
-                                
-                                <div className="mt-auto pt-6 border-t border-[var(--airion-border-subtle)] flex items-center justify-between">
-                                    <div>
-                                        <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest">Base Price</p>
-                                        <p className="text-2xl font-black text-[var(--airion-text-primary)]">{listing.price}</p>
+
+                                <div className="mt-auto pt-10 border-t border-[var(--airion-border-subtle)] flex items-center justify-between">
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-bold text-[var(--airion-text-muted)] uppercase tracking-widest leading-none">Base Price</p>
+                                        <p className="text-3xl font-bold text-[var(--airion-text-primary)] tracking-tight">{listing.price}</p>
                                     </div>
-                                    <Button variant="secondary" size="sm" className="px-3" rightIcon={<ChevronRight size={16} />}>
-                                        Details
+                                    <Button variant="secondary" size="md" className="px-8 h-14 rounded-2xl font-bold text-xs uppercase bg-[var(--airion-bg-elevated)] border-[var(--airion-border-subtle)]" rightIcon={<ChevronRight size={20} />}>
+                                        Manage
                                     </Button>
                                 </div>
                             </div>
@@ -186,7 +187,5 @@ const Listings: React.FC = () => {
         </div>
     );
 };
-
-
 
 export default Listings;

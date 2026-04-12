@@ -83,7 +83,7 @@ const EventDetails: React.FC = () => {
         event.image,
         `https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop`,
         `https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=1000&auto=format&fit=crop`,
-        `https://images.unsplash.com/photo-1587271407850-8d43891882c0?q=80&w=1000&auto=format&fit=crop`,
+        `https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fHJveWFsJTIwd2VkZGluZ3xlbnwwfHwwfHx8MA%3D%3D`,
         `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop`,
     ];
 
@@ -279,9 +279,9 @@ const EventDetails: React.FC = () => {
                                         </ul>
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all"
+                                            className="w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all italic"
                                         >
-                                            Select Package
+                                            Initialize {pkg.title} Protocol
                                         </button>
                                     </div>
                                 ))}
@@ -413,9 +413,9 @@ const EventDetails: React.FC = () => {
 
                                 <button
                                     onClick={() => handleBookingClick()}
-                                    className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-black py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-[0.98]"
+                                    className="w-full bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-red-500/20 italic"
                                 >
-                                    Request to Book
+                                    Initiate Booking Sequence
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500 mt-4">You won't be charged yet</p>
@@ -456,9 +456,9 @@ const EventDetails: React.FC = () => {
                 </div>
                 <button
                     onClick={() => handleBookingClick()}
-                    className="bg-red-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-500/30"
+                    className="bg-red-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/30 italic"
                 >
-                    Reserve
+                    Initialize Reserve
                 </button>
             </div>
 

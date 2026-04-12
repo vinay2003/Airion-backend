@@ -7,6 +7,7 @@ import { events as mockEvents } from '../data/events';
 import MapView from '../components/MapView';
 import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import type { Event } from '../types';
+import FallingPetals from '../components/FallingPetals';
 
 const SORT_OPTIONS = [
     { label: 'Recommended', value: 'recommended' },
@@ -57,18 +58,20 @@ const VendorDiscovery: React.FC = () => {
     const removeFilter = (filter: string) => setActiveFilters(prev => prev.filter(f => f !== filter));
 
     return (
-        <main className="min-h-screen bg-transparent transition-colors duration-300 pt-24 pb-12">
+        <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 pt-24 pb-12 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Explore Vendors | Airion" description="Discover the perfect vendors for your next event." />
 
             <div className="max-w-[1440px] mx-auto px-4 md:px-8">
                 {/* Header */}
                 <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200/60 dark:border-slate-800 pb-6">
                     <div>
-                        <h1 className="text-3xl md:text-5xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">
-                            Explore the Marketplace
+                        <h1 className="text-3xl md:text-6xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight italic">
+                            MARKETPLACE <span className="text-blue-600 not-italic">MATRIX</span>
                         </h1>
-                        <p className="text-neutral-500 dark:text-slate-400 font-medium">
-                            {sortedVendors.length}+ premium vendors match your search.
+                        <p className="text-neutral-500 dark:text-slate-400 font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                            {sortedVendors.length}+ VERIFIED NODES ACTIVE
                         </p>
                     </div>
 
@@ -90,8 +93,7 @@ const VendorDiscovery: React.FC = () => {
                         <div className="relative">
                             <button
                                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-200 dark:border-slate-700 text-sm font-bold shadow-sm bg-white dark:bg-slate-900 hover:border-red-300 transition-colors"
-                            >
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#545353] text-sm font-bold shadow-sm bg-[#545353] text-white hover:bg-[#3f3e3e] transition-colors"                            >
                                 <ArrowUpDown size={15} className="text-neutral-400" />
                                 {currentSortLabel}
                                 <ChevronDown size={14} className={`text-neutral-400 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
@@ -223,9 +225,9 @@ const VendorDiscovery: React.FC = () => {
                         )}
 
                         {!loading && sortedVendors.length > 0 && (
-                            <div className="mt-16 flex justify-center">
-                                <button className="px-8 py-3.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-xl font-bold hover:shadow-lg transition-transform hover:-translate-y-1">
-                                    Load More Results
+                            <div className="mt-20 flex justify-center">
+                                <button className="px-12 py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all italic border-2 border-white/10">
+                                    Expand Network Results
                                 </button>
                             </div>
                         )}

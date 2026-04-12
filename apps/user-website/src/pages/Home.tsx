@@ -9,6 +9,7 @@ import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '@shared/auth';
+import FallingPetals from '../components/FallingPetals';
 
 import { fetchEvents } from '../lib/api';
 import { events as mockEvents } from '../data/events';
@@ -55,7 +56,8 @@ const Home: React.FC = () => {
     }
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
+        <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
             <Hero />
 
@@ -63,49 +65,49 @@ const Home: React.FC = () => {
             {isAuthenticated && activeCategory === 'all' && (
                 <motion.section
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-16 relative z-40"
+                    className="max-w-[1400px] mx-auto px-4 md:px-8 mt-8 mb-12 relative z-40"
                 >
-                    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-red-500/10 border border-red-50 dark:border-slate-800 p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10">
+                    <div className="bg-white/95 backdrop-blur-3xl dark:bg-slate-900/95 rounded-[2rem] shadow-xl shadow-black/10 border border-white/20 dark:border-white/10 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8">
                         <div className="flex-1 w-full text-center lg:text-left">
-                            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Your Plan Hub</h2>
-                            <p className="text-gray-500 dark:text-slate-400 font-medium mb-8">Manage every detail of your dream event from your personalized dashboard.</p>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase italic">Your Plan Hub</h2>
+                            <p className="text-sm text-gray-500 dark:text-slate-400 font-medium mb-6">Manage your dream event from your personalized dashboard.</p>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto lg:mx-0">
-                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 bg-red-100/50 text-red-600 rounded-lg"><Clock size={18} /></div>
-                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0">
+                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="p-1.5 bg-red-100/50 text-red-600 rounded-lg"><Clock size={16} /></div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
                                     </div>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
-                                    <p className="text-[11px] text-gray-500 font-medium mt-1">Due in 2 days</p>
+                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
+                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">Due in 2 days</p>
                                 </div>
-                                <div className="p-5 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-red-200 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={18} /></div>
-                                        <span className="text-xs font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
+                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="p-1.5 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={16} /></div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
                                     </div>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
-                                    <p className="text-[11px] text-gray-500 font-medium mt-1">22.5% of total budget</p>
+                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
+                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">22.5% of total budget</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-4">
-                            <Link to="/dashboard" className="flex flex-col items-center justify-center p-6 bg-red-600 text-white rounded-3xl hover:bg-neutral-900 transition-all shadow-xl shadow-red-500/20 group">
-                                <LayoutDashboard size={28} className="mb-2 group-hover:scale-110 transition-transform" />
-                                <span className="text-sm font-bold">Overview</span>
+                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-3 relative z-50">
+                            <Link to="/dashboard" className="flex flex-col items-center justify-center p-4 bg-red-600 text-white rounded-2xl hover:bg-black transition-all shadow-lg shadow-red-500/10 group relative pointer-events-auto min-w-[120px]">
+                                <LayoutDashboard size={24} className="mb-1.5 group-hover:scale-110 transition-transform" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Overview</span>
                             </Link>
-                            <Link to="/dashboard/bookings" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Calendar size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Bookings</span>
+                            <Link to="/dashboard/bookings" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Calendar size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Bookings</span>
                             </Link>
-                            <Link to="/dashboard/inbox" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Search size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Messages</span>
+                            <Link to="/dashboard/inbox" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Search size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Messages</span>
                             </Link>
-                            <Link to="/dashboard/budget" className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-3xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-xl">
-                                <Star size={28} className="mb-2" />
-                                <span className="text-sm font-bold">Saved</span>
+                            <Link to="/dashboard/budget" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
+                                <Star size={24} className="mb-1.5" />
+                                <span className="text-[10px] font-black uppercase tracking-tight">Saved</span>
                             </Link>
                         </div>
                     </div>
@@ -123,7 +125,7 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="max-w-7xl mx-auto px-4 md:px-8 py-12"
+                        className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Marketplace Categories</h2>
@@ -133,17 +135,17 @@ const Home: React.FC = () => {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
                             {[
-                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop', link: '/?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
-                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop', link: '/?category=birthdays', class: 'col-span-1 h-64' },
-                                { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop', link: '/?category=corporate', class: 'col-span-1 h-64' },
-                                { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1000&auto=format&fit=crop', link: '/?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Photography', image: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1000&auto=format&fit=crop', link: '/?category=photography', class: 'col-span-1 h-64' },
-                                { title: 'Catering', image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?q=80&w=1000&auto=format&fit=crop', link: '/?category=catering', class: 'col-span-1 h-64' },
-                                { title: 'Decor', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop', link: '/?category=decor', class: 'col-span-1 h-64' },
-                                { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop', link: '/?category=music', class: 'col-span-1 h-64' },
-                                { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop', link: '/?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1000&auto=format&fit=crop', link: '/?category=makeup', class: 'col-span-1 h-64' },
-                                { title: 'Planning', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=1000&auto=format&fit=crop', link: '/?category=planning', class: 'col-span-1 h-64' },
+                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1707374661682-d804856cee22?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fHdlZGRpbmclMjBoYWxsfGVufDB8fDB8fHww', link: '/?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
+                                { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1621857426350-ddab819cf0cc?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzl8fGJpcnRoZGF5JTIwcGFydHl8ZW58MHx8MHx8fDA%3D', link: '/?category=birthdays', class: 'col-span-1 h-64' },
+                                { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=100&w=2400&auto=format&fit=crop', link: '/?category=corporate', class: 'col-span-1 h-64' },
+                                { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=100&w=2400&auto=format&fit=crop', link: '/?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Photography', image: 'https://plus.unsplash.com/premium_photo-1682097066897-209d0d9e9ae5?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGhvdG9ncmFwaHl8ZW58MHx8MHx8fDA%3D', link: '/?category=photography', class: 'col-span-1 h-64' },
+                                { title: 'Catering', image: 'https://plus.unsplash.com/premium_photo-1663076035579-727173643e51?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0ZXJpbmclMjBzZXJ2aWNlc3xlbnwwfHwwfHx8MA%3D%3D', link: '/?category=catering', class: 'col-span-1 h-64' },
+                                { title: 'Decor', image: 'https://images.unsplash.com/photo-1636005429050-2fb797c01e6f?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGRlY29yYXRpb24lMjB3ZWRkaW5nfGVufDB8fDB8fHww', link: '/?category=decor', class: 'col-span-1 h-64' },
+                                { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=100&w=2400&auto=format&fit=crop', link: '/?category=music', class: 'col-span-1 h-64' },
+                                { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=100&w=2400&auto=format&fit=crop', link: '/?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1511923199659-1c16881689de?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1ha2V1cHxlbnwwfHwwfHx8MA%3D%3D', link: '/?category=makeup', class: 'col-span-1 h-64' },
+                                { title: 'Planning', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?w=2400&auto=format&fit=crop&q=100&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fHBsYW5uaW5nfGVufDB8fDB8fHww', link: '/?category=planning', class: 'col-span-1 h-64' },
                             ].map((cat, idx) => (
                                 <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
@@ -161,11 +163,14 @@ const Home: React.FC = () => {
 
 
                     {/* Featured Events This Month */}
-                    <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-                        <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Featured Events This Month</h2>
-                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
-                                View Marketplace <ArrowRight size={16} />
+                    <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                            <div className="space-y-1">
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight uppercase italic">Featured Events This Month</h2>
+                                <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
+                            </div>
+                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-xs uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
+                                View Marketplace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -181,16 +186,19 @@ const Home: React.FC = () => {
                     </section>
 
                     {/* Marketplace Section (KEY Tabbed Layout) */}
-                    <section className="bg-gray-50 dark:bg-slate-900/50 py-16">
-                        <div className="max-w-7xl mx-auto px-4 md:px-8">
-                            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">What's Happening in the Marketplace</h2>
-                                <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 rounded-xl w-full md:w-auto overflow-x-auto shadow-sm border border-gray-100 dark:border-slate-700">
-                                    {['All', 'Available', 'Filling Fast', 'New Listings'].map(tab => (
+                    <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-16">
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                                <div className="space-y-1">
+                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic">Market Place Evolution</h2>
+                                    <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Real-time status tracking</p>
+                                </div>
+                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-[1.25rem] w-full md:w-auto overflow-x-auto no-scrollbar shadow-inner border border-gray-100 dark:border-slate-700">
+                                    {['All', 'Available', 'Filling Fast', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${marketplaceTab === tab ? 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all flex-1 md:flex-none text-center ${marketplaceTab === tab ? 'bg-red-500 text-white shadow-lg' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
                                         >
                                             {tab}
                                         </button>
@@ -228,9 +236,9 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="bg-white dark:bg-slate-950 py-20 transition-colors duration-300"
+                        className="bg-white/5 backdrop-blur-md dark:bg-slate-950/20 py-20 transition-colors duration-300 relative z-10"
                     >
-                        <div className="max-w-7xl mx-auto px-4 md:px-8">
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                             <div className="text-center mb-16">
                                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
                                 <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -263,7 +271,7 @@ const Home: React.FC = () => {
                     </motion.section>
                 </>
             ) : (
-                <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+                <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
                     <div className="mb-8">
                         <h2 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} Marketplace</h2>
                         <p className="text-gray-500 text-sm mt-1">Discover premium listings specifically tailored for your choice.</p>
@@ -281,8 +289,8 @@ const Home: React.FC = () => {
             )}
 
             {/* Why Choose Us */}
-            <section className="bg-gray-900 text-white py-20">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <section className="bg-black/20 backdrop-blur-lg text-white py-20 relative z-10 border-t border-white/5">
+                <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Airion?</h2>

@@ -9,11 +9,11 @@ const AboutUs: React.FC = () => {
             <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
-                    <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                        We Create <span className="text-red-500 font-cursive">Memories</span>
+                    <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tighter italic">
+                        We Create <span className="text-red-600 font-cursive not-italic">Memories</span>
                     </h1>
-                    <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Airion is your trusted partner in crafting unforgettable events. From intimate gatherings to grand celebrations, we bring your vision to life.
+                    <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold uppercase text-xs tracking-widest">
+                        Airion is the premier digital ecosystem for orchestrating unforgettable events. From intimate gatherings to grand celebrations, we execute your vision with precision.
                     </p>
                 </div>
             </div>
@@ -51,11 +51,11 @@ const AboutUs: React.FC = () => {
                     </div>
                     <div className="md:w-1/2">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Story</h2>
-                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed mb-6">
-                            Founded by a team of passionate event enthusiasts, Airion was born out of a shared vision to make event planning an enjoyable and seamless experience. We understand the stress that comes with organizing special moments, and we're here to change that.
+                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed mb-6 font-medium">
+                            Founded by a team of passionate event architects, Airion was engineered with a mission to make event orchestration a seamless, premium experience. We eliminate the friction of organizing complex celebrations.
                         </p>
-                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed">
-                            What started as a small idea has grown into a comprehensive platform connecting thousands of people with the perfect venues and vendors for their celebrations.
+                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed font-medium italic">
+                            What started as a disruptive idea has evolved into a global marketplace connecting the world with verified venues and elite vendors.
                         </p>
                     </div>
                 </div>
@@ -109,10 +109,10 @@ const AboutUs: React.FC = () => {
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Naif Farooqui</h3>
-                            <p className="text-red-500 font-medium mb-4">Lead Designer & Developer</p>
-                            <p className="text-gray-600 dark:text-slate-400 text-sm">
-                                Passionate about creating intuitive and beautiful digital experiences. Leading the technical and design vision for Airion.
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase italic tracking-tighter">Naif Farooqui</h3>
+                            <p className="text-red-600 font-black uppercase text-[10px] tracking-[0.2em] mb-4">Lead Architect & Systems Developer</p>
+                            <p className="text-gray-600 dark:text-slate-400 text-sm font-medium leading-relaxed">
+                                Engineered for high-fidelity digital experiences. Overseeing the architectural precision and technical orchestration of the Airion platform.
                             </p>
                         </div>
                     </div>

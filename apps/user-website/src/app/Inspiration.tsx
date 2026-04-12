@@ -10,21 +10,20 @@ const Inspiration: React.FC = () => {
     const filters = ['All', 'Decor', 'Outfits', 'Venues', 'Food', 'Photography', 'Mehndi'];
 
     const images = [
-        { id: 1, category: 'Decor', image: 'https://images.unsplash.com/photo-1519225468359-2996bc01c32c?q=80&w=1000&auto=format&fit=crop', title: 'Floral Mandap Setup' },
-        { id: 2, category: 'Outfits', image: 'https://images.unsplash.com/photo-1595524366670-bf9988cc17c8?q=80&w=1000&auto=format&fit=crop', title: 'Bridal Lehenga Red' },
-        { id: 3, category: 'Venues', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop', title: 'Royal Palace Wedding' },
-        { id: 4, category: 'Food', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1000&auto=format&fit=crop', title: 'Gourmet Catering' },
-        { id: 5, category: 'Photography', image: 'https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80&w=1000&auto=format&fit=crop', title: 'Couple Portrait' },
-        { id: 6, category: 'Mehndi', image: 'https://images.unsplash.com/photo-1565694425434-327b15752625?q=80&w=1000&auto=format&fit=crop', title: 'Intricate Mehndi Design' },
-        { id: 7, category: 'Decor', image: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?q=80&w=1000&auto=format&fit=crop', title: 'Table Setting' },
-        { id: 8, category: 'Outfits', image: 'https://images.unsplash.com/photo-1605218427368-35b019b8a391?q=80&w=1000&auto=format&fit=crop', title: 'Groom Sherwani' },
-        { id: 9, category: 'Venues', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af0bc3?q=80&w=1000&auto=format&fit=crop', title: 'Beach Wedding Setup' },
-        { id: 10, category: 'Food', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop', title: 'Dessert Table' },
-        { id: 11, category: 'Photography', image: 'https://images.unsplash.com/photo-1520854221256-17451cc330e7?q=80&w=1000&auto=format&fit=crop', title: 'Candid Moments' },
-        { id: 12, category: 'Mehndi', image: 'https://images.unsplash.com/photo-1604608673550-e78f1d304618?q=80&w=1000&auto=format&fit=crop', title: 'Bridal Hands' },
+        { id: 1, category: 'Decor', image: 'https://images.unsplash.com/photo-1587271636175-90d58cdad458?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuZGFwfGVufDB8fDB8fHww', title: 'Floral Mandap Setup' },
+        { id: 2, category: 'Outfits', image: 'https://images.unsplash.com/photo-1724856604403-60304b28906c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxlaGVuZ2F8ZW58MHx8MHx8fDA%3D', title: 'Bridal Lehenga' },
+        { id: 3, category: 'Venues', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=100&w=2400&auto=format&fit=crop', title: 'Royal Palace Wedding' },
+        { id: 4, category: 'Food', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=100&w=2400&auto=format&fit=crop', title: 'Gourmet Catering' },
+        { id: 5, category: 'Photography', image: 'https://images.unsplash.com/photo-1668028772352-bdd4951048cf?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fENvdXBsZSUyMFBvcnRyYWl0fGVufDB8fDB8fHww', title: 'Couple Portrait' },
+        { id: 6, category: 'Mehndi', image: 'https://plus.unsplash.com/premium_photo-1661862397518-8e50332b6e97?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmRpJTIwZGVzaWdufGVufDB8fDB8fHww', title: 'Intricate Mehndi Design' },
+        { id: 7, category: 'Decor', image: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?q=100&w=2400&auto=format&fit=crop', title: 'Table Setting' },
+        { id: 8, category: 'Outfits', image: 'https://images.unsplash.com/photo-1724856604249-ca73680262e8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3Jvb20lMjBkcmVzc3xlbnwwfHwwfHx8MA%3D%3D', title: 'Groom Sherwani' },
+        { id: 9, category: 'Venues', image: 'https://images.unsplash.com/photo-1515232389446-a17ce9ca7434?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJlYWNoJTIwd2VkZGluZ3xlbnwwfHwwfHx8MA%3D%3D', title: 'Beach Wedding Setup' },
+        { id: 10, category: 'Food', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=100&w=2400&auto=format&fit=crop', title: 'Dessert Table' },
+        { id: 11, category: 'Photography', image: 'https://images.unsplash.com/photo-1614566957872-9548817a3298?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDh8fGNhbmRpZHxlbnwwfHwwfHx8MA%3D%3D', title: 'Candid Moments' },
+        { id: 12, category: 'Mehndi', image: 'https://images.unsplash.com/photo-1722872112546-936593441be8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnJpZGFsJTIwaGFuZHxlbnwwfHwwfHx8MA%3D%3D', title: 'Bridal Hands' },
     ];
-
-    const filteredImages = images.filter(img => 
+    const filteredImages = images.filter(img =>
         (activeFilter === 'All' || img.category === activeFilter) &&
         img.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -32,7 +31,7 @@ const Inspiration: React.FC = () => {
     return (
         <div className="min-h-screen bg-transparent dark:bg-slate-950 transition-colors duration-300 pt-20 pb-20">
             <SEO title="Inspiration Feed" description="Discover beautiful ideas for your next event." />
-            
+
             {/* Header Section */}
             <div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm border-b border-neutral-200/50 dark:border-slate-800/80 sticky top-[72px] z-30 transition-colors">
                 <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-8 pb-4">
@@ -41,7 +40,7 @@ const Inspiration: React.FC = () => {
                             <h1 className="text-3xl md:text-5xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Event Inspiration</h1>
                             <p className="text-neutral-500 dark:text-slate-400 font-medium">Discover beautiful ideas curated just for you.</p>
                         </div>
-                        
+
                         <div className="relative w-full md:w-96">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                             <input
@@ -62,11 +61,10 @@ const Inspiration: React.FC = () => {
                             <button
                                 key={filter}
                                 onClick={() => setActiveFilter(filter)}
-                                className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm ${
-                                    activeFilter === filter
+                                className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm ${activeFilter === filter
                                     ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900'
                                     : 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:border-neutral-900 dark:hover:border-white'
-                                }`}
+                                    }`}
                             >
                                 {filter}
                             </button>
@@ -112,7 +110,7 @@ const Inspiration: React.FC = () => {
                         ))}
                     </AnimatePresence>
                 </motion.div>
-                
+
                 {filteredImages.length === 0 && (
                     <div className="text-center py-32 bg-neutral-50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-neutral-200 dark:border-slate-800">
                         <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">No inspiration found</h3>

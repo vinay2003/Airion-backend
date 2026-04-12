@@ -5,6 +5,7 @@ import {
   Download, 
   Eye, 
   ArrowUpRight, 
+  ArrowDownRight,
   Filter, 
   Calendar as CalendarIcon, 
   ChevronRight, 
@@ -191,9 +192,14 @@ const Earnings: React.FC = () => {
                     <p className="text-[var(--airion-text-inverted)]/30 text-[10px] font-black uppercase tracking-widest leading-none italic">Synchronized</p>
                     <p className="text-sm font-black text-[var(--airion-text-inverted)]/90 leading-none shadow-sm">OCT 15, 2023</p>
                 </div>
-                <button className="flex items-center gap-2 text-[10px] font-black bg-[var(--airion-text-inverted)]/10 hover:bg-[var(--airion-text-inverted)]/20 px-6 py-3 rounded-2xl border border-[var(--airion-text-inverted)]/10 transition-all uppercase tracking-[0.2em] italic active:scale-90">
-                    WITHDRAWAL
-                </button>
+                <div className="flex items-center gap-3">
+                  <button className="flex items-center gap-2 text-[10px] font-black bg-[var(--airion-text-inverted)]/10 hover:bg-blue-600 px-6 py-3 rounded-2xl border border-[var(--airion-text-inverted)]/10 transition-all uppercase tracking-[0.2em] italic active:scale-90">
+                      WITHDRAWAL
+                  </button>
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-blue-400 hover:bg-white/10 transition-all shadow-inner shrink-0">
+                    <CreditCard size={20} />
+                  </div>
+                </div>
             </div>
           </div>
         </motion.div>
@@ -216,7 +222,7 @@ const Earnings: React.FC = () => {
              <div className="flex -space-x-3">
                  {[1,2,3,4].map(i => <div key={i} className="w-8 h-8 rounded-full bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-bg-surface)] shadow-md hover:z-10 transition-all" />)}
              </div>
-             <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60">Updated <span className="text-emerald-500">Live Telemetry</span></p>
+             <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60">Nodes Updated <span className="text-emerald-500">Live Telemetry</span></p>
           </div>
         </motion.div>
 
@@ -246,9 +252,9 @@ const Earnings: React.FC = () => {
               </div>
           </div>
           
-          <button className="mt-10 flex items-center justify-between w-full p-5 bg-[var(--airion-bg-elevated)]/50 hover:bg-[var(--airion-bg-base)] border border-[var(--airion-border-subtle)] rounded-3xl transition-all group active:scale-95">
+          <button className="mt-10 flex items-center justify-between w-full p-5 bg-[var(--airion-bg-surface)] hover:bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] rounded-[2rem] transition-all group active:scale-95 shadow-inner">
             <span className="text-[11px] font-black text-[var(--airion-text-primary)] uppercase tracking-widest italic">Modify Target Matrix</span>
-            <ArrowRight size={18} className="text-[var(--airion-text-muted)] group-hover:translate-x-2 transition-transform" />
+            <ArrowRight size={18} className="text-[var(--airion-brand-primary)] group-hover:translate-x-2 transition-transform" />
           </button>
         </motion.div>
       </div>
@@ -357,7 +363,7 @@ const Earnings: React.FC = () => {
                         </div>
                     ))}
                 </div>
-                <button className="w-full mt-12 py-5 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-3xl text-[11px] font-black uppercase tracking-[0.4em] text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] hover:border-[var(--airion-brand-primary)]/40 transition-all font-display italic active:scale-95 shadow-sm">
+                <button className="w-full mt-12 py-5 bg-[var(--airion-bg-surface)] border-2 border-[var(--airion-border-subtle)] rounded-[1.5rem] text-xs font-black uppercase tracking-[0.2em] text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] hover:border-[var(--airion-brand-primary)]/40 hover:shadow-xl transition-all font-display italic active:scale-95 shadow-inner">
                     Access Ledger Logs
                 </button>
             </div>
@@ -371,9 +377,9 @@ const Earnings: React.FC = () => {
                 </div>
                 <div className="space-y-8">
                    <div className="flex justify-between items-end border-b border-[var(--airion-border-subtle)] pb-8">
-                      <div>
-                        <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mb-2 opacity-50 italic">System Overhead (Avg)</p>
-                        <p className="font-black text-3xl text-[var(--airion-text-primary)] italic font-display leading-none">3.5%</p>
+                      <div className="space-y-2">
+                        <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mb-1 pl-1 italic">Fee deduction (Avg)</p>
+                        <p className="font-black text-5xl text-[var(--airion-text-primary)] italic font-display leading-none">3.5%</p>
                       </div>
                       <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black uppercase text-[10px] px-4 py-2 rounded-2xl tracking-[0.2em] shadow-sm">GLOBAL_MINIMUM</Badge>
                    </div>
@@ -387,7 +393,7 @@ const Earnings: React.FC = () => {
 
       {/* 🧾 Intelligence Registry (Enhanced Table) */}
       <motion.div variants={itemVariants} className="card-minimal !p-0 overflow-hidden border-[var(--airion-border-base)] shadow-[0_48px_80px_-24px_rgba(0,0,0,0.15)] bg-[var(--airion-bg-surface)] rounded-[40px]">
-        <div className="p-10 border-b border-[var(--airion-border-subtle)] bg-[var(--airion-bg-surface)] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10">
+        <div className="p-10 border-b border-[var(--airion-border-subtle)] bg-[var(--airion-bg-elevated)] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10">
           <div>
             <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter uppercase italic font-display leading-none">Transaction Registry</h3>
             <p className="text-[11px] text-[var(--airion-text-muted)] font-black uppercase mt-5 tracking-[0.5em] italic opacity-50">Complete Settlement Audit Logs • Verified Nodes</p>
@@ -400,7 +406,7 @@ const Earnings: React.FC = () => {
                     placeholder="SEARCH_REGISTRY_BY_NODE..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-16 pr-8 py-5 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-3xl text-[12px] font-black italic outline-none focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest placeholder:text-[var(--airion-text-muted)]/40 shadow-inner" 
+                    className="w-full pl-16 pr-8 py-5 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-3xl text-[12px] font-black italic outline-none focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest placeholder:text-[var(--airion-text-muted)]/40 shadow-inner" 
                 />
             </div>
             <Button className="hidden sm:flex h-16 w-16 items-center justify-center bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-3xl text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all active:scale-90 hover:border-[var(--airion-brand-primary)]/40 hover:shadow-xl">
@@ -408,7 +414,7 @@ const Earnings: React.FC = () => {
             </Button>
           </div>
         </div>
-        
+
         <div className="overflow-x-auto scrollbar-hide">
           <table className="w-full text-left min-w-[1100px]">
             <thead>

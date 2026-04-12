@@ -1,17 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    User, Bell, Lock, Globe, Moon, Sun, Save, ShieldCheck, 
-    Upload, Loader2, Briefcase, TrendingUp, Sparkles, AlertCircle, 
-    Building, Wallet, Layers, Target, RefreshCcw, Image, Tag, 
+import {
+    User, Bell, Lock, Globe, Moon, Sun, Save, ShieldCheck,
+    Upload, Loader2, Briefcase, TrendingUp, Sparkles, AlertCircle,
+    Building, Wallet, Layers, Target, RefreshCcw, Image, Tag,
     ChevronRight, Plus, Trash2, Camera, MapPin, Mail, Phone, Instagram,
     CheckCircle2, Cpu, Database, Eye, Activity
 } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@airion/shared';
 import { Avatar, Badge, Button } from '@airion/ui';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+
+const useTheme = () => {
+    const [theme, setTheme] = React.useState(() => {
+        const saved = localStorage.getItem('airion-theme');
+        if (saved) return saved;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    });
+
+    React.useEffect(() => {
+        const root = document.documentElement;
+        if (theme === 'dark') {
+            root.classList.add('dark');
+            root.setAttribute('data-theme', 'dark');
+        } else {
+            root.classList.remove('dark');
+            root.setAttribute('data-theme', 'light');
+        }
+        localStorage.setItem('airion-theme', theme);
+    }, [theme]);
+
+    return { theme, toggleTheme: () => setTheme(prev => prev === 'light' ? 'dark' : 'light') };
+};
 
 /**
  * 🍱 Configuration Genesis: Account & Business Registry
@@ -168,7 +189,7 @@ const Settings: React.FC = () => {
         const fields = [
             businessData.businessName, businessData.businessPhone,
             businessData.description, businessData.city,
-            businessData.yearsInBusiness, businessData.avgBookingPrice, 
+            businessData.yearsInBusiness, businessData.avgBookingPrice,
             businessData.categoryId
         ];
         const filled = fields.filter(f => !!f).length;
@@ -247,7 +268,7 @@ const Settings: React.FC = () => {
                         </motion.button>
                     ))}
                     
-                    <div className="mt-12 p-8 card-minimal !bg-[var(--airion-brand-primary)]/5 !border-[var(--airion-brand-primary)]/20 space-y-6 relative group overflow-hidden shadow-xl">
+                    <div className="mt-12 p-8 card-minimal !bg-[var(--airion-brand-primary)]/5 !border-[var(--airion-brand-primary)]/20 space-y-6 relative group overflow-hidden shadow-xl rounded-[2.5rem]">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                             <TrendingUp size={100} />
                         </div>
@@ -283,7 +304,7 @@ const Settings: React.FC = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.4 }}
-                            className="card-minimal !p-12 space-y-16 bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-2xl overflow-hidden"
+                            className="card-minimal !p-12 space-y-16 bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-2xl overflow-hidden rounded-[3rem]"
                         >
                             {/* 👤 Identity Interface */}
                             {activeTab === 'personal' && (
@@ -369,16 +390,16 @@ const Settings: React.FC = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4">
                                                     <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic tracking-[0.2em] ml-1">Marketplace Domain</label>
-                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value })} className="w-full h-14 bg-[var(--airion-bg-elevated)] px-6 rounded-2xl border border-[var(--airion-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
+                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-14 bg-[var(--airion-bg-elevated)] px-6 rounded-2xl border border-[var(--airion-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
                                                         <option value="" className="bg-[var(--airion-bg-surface)]">Select Core Domain...</option>
-                                                        {categories.map(c => <option key={c.id} value={c.id} className="bg-[var(--airion-bg-surface)]">{c.name}</option>)}
+                                                        {categories.map((c: any) => <option key={c._id || c.id} value={c._id || c.id} className="bg-[var(--airion-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-4">
                                                     <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic tracking-[0.2em] ml-1">Specialized Logic Node</label>
                                                     <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-14 bg-[var(--airion-bg-elevated)] px-6 rounded-2xl border border-[var(--airion-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
                                                         <option value="" className="bg-[var(--airion-bg-surface)]">Select Specialty Node...</option>
-                                                        {subcategories.map(s => <option key={s.id} value={s.id} className="bg-[var(--airion-bg-surface)]">{s.name}</option>)}
+                                                        {subcategories.map((s: any) => <option key={s._id || s.id} value={s._id || s.id} className="bg-[var(--airion-bg-surface)]">{s.name}</option>)}
                                                     </select>
                                                 </div>
                                             </div>
@@ -470,7 +491,7 @@ const Settings: React.FC = () => {
                                             <Button className="h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] italic hover:scale-105 transition-all">ROTATE ACCESS CIPHER</Button>
                                         </div>
 
-                                        <div className="card-minimal !p-10 bg-gradient-to-br from-amber-500/[0.04] to-transparent border-amber-500/20 flex flex-col justify-between shadow-xl">
+                                        <div className="card-minimal !p-10 bg-gradient-to-br from-amber-500/[0.04] to-transparent border-amber-500/20 flex flex-col justify-between shadow-xl rounded-[2.5rem]">
                                             <div>
                                                 <div className="flex items-center gap-4 mb-8">
                                                     <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/10">

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Check, Star } from 'lucide-react';
 import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
+import FallingPetals from '../components/FallingPetals';
 
 interface Package {
     id: string;
@@ -30,7 +31,7 @@ const Packages: React.FC = () => {
                 'Entertainment: Live Band + DJ'
             ],
             isSponsored: true,
-            image: 'https://images.unsplash.com/photo-1519225421980-715cb0202128?q=80&w=1000&auto=format&fit=crop',
+            image: 'https://images.unsplash.com/photo-1756190564669-215843660e93?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHJveWFsJTIwd2VkZGluZ3xlbnwwfHwwfHx8MA%3D%3D',
             vendor: 'Grand Hotel & Events'
         },
         {
@@ -46,7 +47,7 @@ const Packages: React.FC = () => {
                 'Music: Bluetooth Speaker System'
             ],
             isSponsored: false,
-            image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop',
+            image: 'https://images.unsplash.com/photo-1744216615372-bbc32acf92c5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHN1bnNldCUyMGNhZmV8ZW58MHx8MHx8fDA%3D',
             vendor: 'Sunset Cafe'
         },
         {
@@ -68,7 +69,8 @@ const Packages: React.FC = () => {
     ];
 
     return (
-        <main className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 py-12">
+        <main className="min-h-screen bg-gray-50 dark:bg-transparent aurora-bg relative transition-colors duration-300 py-12 overflow-x-hidden">
+            <FallingPetals />
             <SEO title="Event Packages" description="Explore our curated packages for weddings, birthdays, and corporate events." />
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">

@@ -12,7 +12,6 @@ import { useAuth } from '@shared/auth';
 import FallingPetals from '../components/FallingPetals';
 
 import { fetchEvents } from '../lib/api';
-import { events as mockEvents } from '../data/events';
 import type { Event } from '../types';
 
 
@@ -29,9 +28,16 @@ const Home: React.FC = () => {
     const [marketplaceTab, setMarketplaceTab] = useState('All');
 
     useEffect(() => {
-        // Load immediately using mock data for instant Vercel rendering
-        setEvents(mockEvents as any[]);
-        setLoading(false);
+        fetchEvents()
+            .then(data => {
+                setEvents(data);
+            })
+            .catch(err => {
+                console.error('Failed to load events', err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     const filteredEvents = activeCategory === 'all'

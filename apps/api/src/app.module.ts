@@ -17,6 +17,7 @@ import { AdsModule } from './ads/ads.module';
 import { CouponsModule } from './coupons/coupons.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
+import { UploadsModule } from './uploads/uploads.module';
 import { CorrelationMiddleware } from './infrastructure/middleware/correlation.middleware';
 
 @Module({
@@ -72,6 +73,7 @@ import { CorrelationMiddleware } from './infrastructure/middleware/correlation.m
         CouponsModule,
         WishlistsModule,
         UserDashboardModule,
+        UploadsModule,
     ],
     controllers: [AppController],
 })

@@ -2,12 +2,14 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class BookingsService {
     constructor(
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
+        private notificationsService: NotificationsService,
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
@@ -19,7 +21,29 @@ export class BookingsService {
             status: 'pending',
             paymentStatus: 'pending',
         });
-        return this.bookingsRepository.save(booking);
+        const savedBooking = await this.bookingsRepository.save(booking);
+
+        // Notify Vendor
+        try {
+            const fullBooking = await this.bookingsRepository.findOne({
+                where: { id: savedBooking.id },
+                relations: ['vendor', 'user', 'service'],
+            });
+
+            if (fullBooking?.vendor?.userId) {
+                await this.notificationsService.create({
+                    userId: fullBooking.vendor.userId,
+                    type: 'booking_new',
+                    title: 'New Booking Request',
+                    message: `You have a new booking request for ${fullBooking.service?.title || 'a service'} from ${fullBooking.user?.name || 'a customer'}.`,
+                    data: { bookingId: fullBooking.id }
+                });
+            }
+        } catch (err) {
+            console.error('Failed to send notification:', err);
+        }
+
+        return savedBooking;
     }
 
     async findOne(id: string, user?: { userId: string, role: string }): Promise<Booking> {
@@ -72,7 +96,30 @@ export class BookingsService {
             }
         }
         
-        return this.bookingsRepository.save(booking);
+        const savedBooking = await this.bookingsRepository.save(booking);
+
+        // Notify User
+        try {
+            const fullBooking = await this.bookingsRepository.findOne({
+                where: { id: savedBooking.id },
+                relations: ['user', 'vendor', 'service'],
+            });
+
+            if (fullBooking?.user?.id) {
+                const statusString = fullBooking.status.charAt(0).toUpperCase() + fullBooking.status.slice(1);
+                await this.notificationsService.create({
+                    userId: fullBooking.user.id,
+                    type: `booking_${fullBooking.status}`,
+                    title: `Booking ${statusString}`,
+                    message: `Your booking for ${fullBooking.service?.title || 'a service'} is now ${fullBooking.status}.`,
+                    data: { bookingId: fullBooking.id }
+                });
+            }
+        } catch (err) {
+            console.error('Failed to send notification on transition:', err);
+        }
+
+        return savedBooking;
     }
 
     async findAllByUserId(userId: string): Promise<Booking[]> {

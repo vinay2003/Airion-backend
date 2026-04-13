@@ -10,7 +10,6 @@ import SEO from '../components/SEO';
 import { useAuth } from '@shared/auth';
 
 import { fetchEvents } from '../lib/api';
-import { events as mockEvents } from '../data/events';
 import type { Event } from '../types';
 
 const Home: React.FC = () => {
@@ -26,13 +25,15 @@ const Home: React.FC = () => {
     const [marketplaceTab, setMarketplaceTab] = useState('All'); // ✅ simple marketplace
 
     useEffect(() => {
-        // ✅ Hybrid data handling (FAST + REAL)
-        setEvents(mockEvents as Event[]);
-        setLoading(false);
-
         fetchEvents()
-            .then((data) => setEvents(data))
-            .catch(() => console.log('API failed, using mock'));
+            .then((data) => {
+                setEvents(data);
+                setLoading(false);
+            })
+            .catch(() => {
+                console.log('API failed');
+                setLoading(false);
+            });
     }, []);
 
     const filteredEvents = activeCategory === 'all'

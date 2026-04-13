@@ -33,7 +33,7 @@ const Analytics: React.FC = () => {
             if (!vendorId) return null;
             try {
                 // Assuming stats endpoint exists, fallback to mock if not
-                const res = await api.get(`/vendors/stats/${vendorId}`) as any;
+                const res: any = await api.get(`/vendors/${vendorId}/stats/bookings`);
                 return res;
             } catch (err) {
                 return null;
@@ -43,10 +43,10 @@ const Analytics: React.FC = () => {
     });
 
     const stats = useMemo(() => [
-        { label: 'Network Visibility', value: statsData?.visibility || '24.5k', change: '+12.4%', trend: 'up', icon: Eye, color: 'text-blue-500', shadow: 'shadow-blue-500/10' },
-        { label: 'Active Inquiries', value: statsData?.inquiries || '142', change: '+5.2%', trend: 'up', icon: Users, color: 'text-indigo-500', shadow: 'shadow-indigo-500/10' },
-        { label: 'Conversion Delta', value: statsData?.conversion || '18.2%', change: '-2.1%', trend: 'down', icon: Zap, color: 'text-amber-500', shadow: 'shadow-amber-500/10' },
-        { label: 'Gross Capture', value: statsData?.revenue || '₹12.4L', change: '+18.5%', trend: 'up', icon: DollarSign, color: 'text-emerald-500', shadow: 'shadow-emerald-500/10' },
+        { label: 'Network Visibility', value: statsData?.totalEvents || '0', change: '+12.4%', trend: 'up', icon: Eye, color: 'text-blue-500', shadow: 'shadow-blue-500/10' },
+        { label: 'Active Inquiries', value: statsData?.pendingBookings || '0', change: '+5.2%', trend: 'up', icon: Users, color: 'text-indigo-500', shadow: 'shadow-indigo-500/10' },
+        { label: 'Upcoming Bookings', value: statsData?.upcomingBookings || '0', change: '-2.1%', trend: 'down', icon: Zap, color: 'text-amber-500', shadow: 'shadow-amber-500/10' },
+        { label: 'Gross Capture', value: `₹${statsData?.totalEarnings || '0'}`, change: '+18.5%', trend: 'up', icon: DollarSign, color: 'text-emerald-500', shadow: 'shadow-emerald-500/10' },
     ], [statsData]);
 
     const performanceData = useMemo(() => [

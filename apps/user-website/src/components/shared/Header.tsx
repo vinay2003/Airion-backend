@@ -3,7 +3,6 @@ import { User as UserIcon, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronD
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { events } from '../../data/events';
 import { useAuth } from '@ease2event/shared/auth';
 
 const Header: React.FC = () => {
@@ -59,8 +58,6 @@ const Header: React.FC = () => {
     }, [isMenuOpen, isSearchOpen]);
 
     const isActivePath = (path: string) => location.pathname === path;
-
-    const featuredVendors = events.slice(0, 3);
 
     const UserProfileMenu = () => (
         <div className="relative" ref={userMenuRef}>

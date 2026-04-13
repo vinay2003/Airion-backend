@@ -276,161 +276,170 @@ const Header: React.FC = () => {
                 </button>
             </div>
 
-            {/* Mobile Navigation Overlay */}
-            {/* Mobile & Tablet Navigation Overlay */}
-            <AnimatePresence>
+            {/* Mobile & Tablet Side Drawer Navigation */}
+            <AnimatePresence mode="wait">
                 {isMenuOpen && (
                     <>
-                        {/* Backdrop */}
+                        {/* Backdrop with localized blur */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] lg:hidden"
+                            className="fixed inset-0 bg-black/40 backdrop-blur-xl z-[60] lg:hidden"
                             onClick={toggleMenu}
                         />
 
-                        {/* Menu Panel */}
+                        {/* Solid Menu Panel */}
                         <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 right-0 w-full xs:w-80 sm:w-96 bg-white dark:bg-[#0F172A] z-[70] flex flex-col shadow-2xl lg:hidden border-l border-gray-100 dark:border-slate-800"
+                            transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
+                            className="fixed inset-y-0 right-0 w-full xs:w-80 sm:w-96 bg-white dark:bg-slate-950 z-[100] flex flex-col shadow-[-20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-l border-gray-100 dark:border-slate-800"
                         >
-                            {/* Menu Header */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-[#0F172A] sticky top-0 z-10">
-                                <span className="text-2xl font-black text-red-500 font-cursive flex items-center gap-2 italic">
-                                    <Sparkles size={24} className="animate-pulse" />
-                                    Explore Airion
-                                </span>
+                            {/* Drawer Header - FORCED SOLID BACKGROUND */}
+                            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[110]">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/20">
+                                        <Sparkles size={20} className="text-white animate-pulse" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Explore</span>
+                                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Airion Menu</span>
+                                    </div>
+                                </div>
                                 <button
                                     onClick={toggleMenu}
-                                    className="p-2.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+                                    className="p-3 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white hover:border-red-500 transition-all active:scale-90"
                                 >
-                                    <X size={24} className="text-gray-900 dark:text-white" />
+                                    <X size={20} />
                                 </button>
                             </div>
 
-                        {/* Menu Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
-                            {/* Navigation Links */}
-                            <nav className="space-y-1.5">
-                                {navItems.map((item) => (
-                                    <div key={item.name} className="space-y-1.5">
-                                        {item.children ? (
-                                            <div className="space-y-1.5 py-2">
-                                                <div className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 mt-2 first:mt-0">
-                                                    {item.name}
+                            {/* Drawer Content - FORCED SOLID BACKGROUND */}
+                            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-white dark:bg-slate-950">
+                                {/* Core Navigation */}
+                                <nav className="space-y-1.5 px-1">
+                                    {navItems.map((item) => (
+                                        <div key={item.name} className="space-y-1.5">
+                                            {item.children ? (
+                                                <div className="space-y-1.5 py-3">
+                                                    <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 dark:text-slate-500">
+                                                        {item.name}
+                                                    </div>
+                                                    {item.children.map((child) => (
+                                                        <Link
+                                                            key={child.name}
+                                                            to={child.path}
+                                                            onClick={toggleMenu}
+                                                            className={`flex items-center justify-between group py-3.5 px-4 rounded-2xl transition-all ${
+                                                                isActivePath(child.path)
+                                                                    ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                                    : 'bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-900/10'
+                                                            }`}
+                                                        >
+                                                            <span className="text-base font-bold">{child.name}</span>
+                                                            <ArrowRight size={16} className={`transition-transform group-hover:translate-x-1 ${isActivePath(child.path) ? 'opacity-100' : 'opacity-0'}`} />
+                                                        </Link>
+                                                    ))}
                                                 </div>
-                                                {item.children.map((child) => (
-                                                    <Link
-                                                        key={child.name}
-                                                        to={child.path}
-                                                        onClick={toggleMenu}
-                                                        className={`block text-base font-bold py-3 px-4 rounded-xl transition-all ${
-                                                            isActivePath(child.path)
-                                                                ? 'bg-red-500 text-white shadow-xl shadow-red-500/20'
-                                                                : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                                        }`}
-                                                    >
-                                                        {child.name}
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <Link
-                                                to={item.path}
-                                                onClick={toggleMenu}
-                                                className={`block text-lg font-bold py-3.5 px-4 rounded-xl transition-all ${
-                                                    isActivePath(item.path)
-                                                        ? 'bg-red-500 text-white shadow-xl shadow-red-500/20'
-                                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                                }`}
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        )}
-                                    </div>
-                                ))}
-                            </nav>
+                                            ) : (
+                                                <Link
+                                                    to={item.path}
+                                                    onClick={toggleMenu}
+                                                    className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${
+                                                        isActivePath(item.path)
+                                                            ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                            : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
+                                                    }`}
+                                                >
+                                                    <span className="text-lg font-black tracking-tight">{item.name}</span>
+                                                    <ArrowRight size={18} className={`transition-transform group-hover:translate-x-1 ${isActivePath(item.path) ? 'opacity-100' : 'opacity-30'}`} />
+                                                </Link>
+                                            )}
+                                        </div>
+                                    ))}
 
-                            <hr className="border-gray-200 dark:border-slate-800" />
-
-                            {/* Options */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between py-2 px-4">
-                                    <span className="text-base font-bold text-gray-900 dark:text-slate-100">Language</span>
-                                    <button className="flex items-center gap-2 text-gray-600 dark:text-slate-400 font-bold hover:text-red-500 transition-colors">
-                                        <Globe size={18} />
-                                        <span>EN</span>
-                                        <ChevronDown size={14} />
-                                    </button>
-                                </div>
-                                <div className="flex items-center justify-between py-2 px-4">
-                                    <span className="text-base font-bold text-gray-900 dark:text-slate-100">Theme</span>
-                                    <button
-                                        onClick={toggleTheme}
-                                        className="flex items-center gap-2 text-gray-600 dark:text-slate-400 transition-all p-2 bg-gray-50 dark:bg-slate-800/50 rounded-xl"
+                                    {/* Additional CTA: Plan Your Event */}
+                                    <Link
+                                        to="/plan-event"
+                                        onClick={toggleMenu}
+                                        className={`mt-4 flex items-center justify-between group py-5 px-5 rounded-2xl transition-all bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-xl shadow-red-500/40 relative overflow-hidden`}
                                     >
-                                        {theme === 'dark' ? (
-                                            <>
-                                                <Sun size={18} className="text-yellow-500" />
-                                                <span className="text-xs font-black uppercase">Light</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Moon size={18} className="text-blue-500" />
-                                                <span className="text-xs font-black uppercase">Dark</span>
-                                            </>
-                                        )}
-                                    </button>
+                                        <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                                        <span className="text-lg font-black tracking-tight uppercase relative z-10">Plan Your Event</span>
+                                        <Sparkles size={20} className="text-white/80 group-hover:rotate-12 transition-transform" />
+                                    </Link>
+                                </nav>
+
+                                {/* Theme & Settings */}
+                                <div className="grid grid-cols-1 gap-3 p-1">
+                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                        <div className="flex items-center gap-3">
+                                            {theme === 'dark' ? <Moon size={20} className="text-blue-500" /> : <Sun size={20} className="text-yellow-500" />}
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white">Appearance</span>
+                                        </div>
+                                        <button
+                                            onClick={toggleTheme}
+                                            className="w-12 h-6 bg-gray-200 dark:bg-slate-700 rounded-full relative transition-colors"
+                                        >
+                                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${theme === 'dark' ? 'left-7' : 'left-1'}`} />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                        <div className="flex items-center gap-3">
+                                            <Globe size={20} className="text-gray-400" />
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white">Language</span>
+                                        </div>
+                                        <span className="text-xs font-black text-red-500 uppercase tracking-widest">English</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Menu Footer CTA */}
-                        <div className="p-6 border-t border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50 space-y-4">
-                            {isAuthenticated ? (
-                                <>
-                                    <Link
-                                        to="/dashboard"
-                                        onClick={toggleMenu}
-                                        className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 rounded-2xl font-black text-base shadow-xl shadow-red-500/25 text-center block transition-transform hover:scale-[1.02] active:scale-[0.98]"
-                                    >
-                                        DASHBOARD
-                                    </Link>
-                                    <button
-                                        onClick={() => {
-                                            logout();
-                                            toggleMenu();
-                                        }}
-                                        className="w-full text-gray-500 dark:text-slate-400 py-2 font-bold text-sm hover:text-red-500 transition-colors"
-                                    >
-                                        Logout Account
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link
-                                        to="/login"
-                                        onClick={toggleMenu}
-                                        className="w-full bg-red-600 hover:bg-black text-white py-4 rounded-2xl font-black text-base shadow-xl shadow-red-500/20 text-center block transition-all"
-                                    >
-                                        LOGIN / SIGNUP
-                                    </Link>
-                                    <Link
-                                        to="/contact"
-                                        onClick={toggleMenu}
-                                        className="w-full border-2 border-red-500 text-red-500 dark:text-red-400 py-4 rounded-2xl font-black text-base text-center block transition-all hover:bg-red-50 dark:hover:bg-red-900/10"
-                                    >
-                                        LIST YOUR BUSINESS
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </motion.div>
-                </>
+                            {/* Drawer Footer - FORCED SOLID BACKGROUND */}
+                            <div className="p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 sticky bottom-0 z-[110]">
+                                {isAuthenticated ? (
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <div className="w-12 h-12 rounded-2xl bg-red-500 flex items-center justify-center text-white text-xl font-black">
+                                                {user?.name?.[0]}
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-black text-gray-900 dark:text-white">{user?.name}</span>
+                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Member ID: #2384</span>
+                                            </div>
+                                        </div>
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={toggleMenu}
+                                            className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
+                                        >
+                                            <LayoutDashboard size={18} />
+                                            Access Dashboard
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <Link
+                                            to="/login"
+                                            onClick={toggleMenu}
+                                            className="w-full bg-red-600 hover:bg-black text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest text-center shadow-xl shadow-red-500/30"
+                                        >
+                                            LOGIN / SIGNUP
+                                        </Link>
+                                        <Link
+                                            to="/contact"
+                                            onClick={toggleMenu}
+                                            className="w-full border-2 border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                                        >
+                                            CONTACT SUPPORT
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </header>

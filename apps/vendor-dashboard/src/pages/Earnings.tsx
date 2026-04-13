@@ -288,6 +288,17 @@ const Earnings: React.FC = () => {
                         <stop offset="5%" stopColor="var(--airion-brand-primary)" stopOpacity={0.6}/>
                         <stop offset="95%" stopColor="var(--airion-brand-primary)" stopOpacity={0}/>
                         </linearGradient>
+                        <filter id="dotShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                            <feOffset dx="0" dy="4" result="offsetblur" />
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.5" />
+                            </feComponentTransfer>
+                            <feMerge>
+                                <feMergeNode />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
                     <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.2} />
                     <XAxis 
@@ -326,7 +337,7 @@ const Earnings: React.FC = () => {
                         fillOpacity={1} 
                         fill="url(#colorRev)" 
                         animationDuration={2500}
-                        activeDot={{ r: 10, fill: 'var(--airion-brand-primary)', stroke: 'white', strokeWidth: 4, shadow: '0 0 20px var(--airion-brand-primary)' }}
+                        activeDot={{ r: 10, fill: 'var(--airion-brand-primary)', stroke: 'white', strokeWidth: 4, filter: 'url(#dotShadow)' }}
                     />
                     </AreaChart>
                 </ResponsiveContainer>

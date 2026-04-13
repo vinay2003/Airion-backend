@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import { Otp } from './entities/otp.entity';
 import { Session } from './entities/session.entity';
 import { AuditLog } from './entities/audit-log.entity';
+import { RefreshToken } from './entities/refresh-token.entity';
 import { AuthService } from './services/auth.service';
 import { SessionService } from './services/session.service';
 import { AuditService } from './services/audit.service';
@@ -17,7 +18,7 @@ import { Vendor } from '../vendors/entities/vendor.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Otp, Session, AuditLog, Vendor]),
+        TypeOrmModule.forFeature([User, Otp, Session, AuditLog, Vendor, RefreshToken]),
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],

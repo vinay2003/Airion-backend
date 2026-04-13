@@ -104,6 +104,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       tokenService.clearTokens();
       setUser(null);
+      
+      // 🚀 Global Identity Reset: Redirect to Central Auth Portal
+      const isCentralAuth = window.location.port === '5173';
+      const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
+      
+      if (!isCentralAuth) {
+          window.location.href = `${LOGIN_URL}?portal_logout=true`;
+      } else {
+          // If we are already on central auth, just navigating to login is enough
+          // We can use navigate if we're in a react-router context, but window.location is safer here
+          window.location.href = '/login';
+      }
     }
   }, []);
 

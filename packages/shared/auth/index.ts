@@ -11,6 +11,7 @@ export * from './constants';
 
 // Utilities
 export * from './utils';
+export * from './tokenService';
 export * from './cookieStorage';
 
 // API

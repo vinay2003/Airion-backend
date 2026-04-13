@@ -2,6 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Subcategory } from '../../categories/entities/subcategory.entity';
+import { VendorAd } from './vendor-ad.entity';
+import { VendorGallery } from './vendor-gallery.entity';
 
 @Entity('vendors')
 export class Vendor {
@@ -98,23 +100,11 @@ export class Vendor {
     @Column('jsonb', { name: 'social_links', nullable: true })
     socialLinks: { facebook?: string; instagram?: string; website?: string };
 
-    @Column('jsonb', { name: 'ads', default: [] })
-    ads: Array<{
-        id?: string;
-        title: string;
-        image: string;
-        budget: number;
-        status: 'Active' | 'Pending' | 'Rejected';
-        createdAt?: Date;
-    }>;
+    @OneToMany(() => VendorAd, ad => ad.vendor, { cascade: true })
+    ads: VendorAd[];
 
-    @Column('jsonb', { name: 'gallery', default: [] })
-    gallery: Array<{
-        id?: string;
-        imageUrl: string;
-        title?: string;
-        createdAt: Date;
-    }>;
+    @OneToMany(() => VendorGallery, item => item.vendor, { cascade: true })
+    gallery: VendorGallery[];
 
     @Column('text', { name: 'portfolio_images', array: true, nullable: true })
     portfolioImages: string[];

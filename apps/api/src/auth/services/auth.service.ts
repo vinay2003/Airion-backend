@@ -10,6 +10,8 @@ import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto, ResetPasswordDto } f
 import { SignupDto } from '../dto/signup.dto';
 
 import { SessionService } from './session.service';
+import { CryptoUtil } from '../../common/utils/crypto.util';
+import { RefreshToken } from '../entities/refresh-token.entity';
 
 @Injectable()
 export class AuthService {
@@ -20,14 +22,16 @@ export class AuthService {
         private userRepository: Repository<User>,
         @InjectRepository(Otp)
         private otpRepository: Repository<Otp>,
+        @InjectRepository(RefreshToken)
+        private refreshTokenRepository: Repository<RefreshToken>,
         private jwtService: JwtService,
         private configService: ConfigService,
         private sessionService: SessionService,
     ) { }
 
-    // Generate 6-digit OTP
+    // Generate 6-digit secure OTP
     private generateOTP(): string {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+        return CryptoUtil.generateOTP(6);
     }
 
     // Send OTP for signup
@@ -43,10 +47,10 @@ export class AuthService {
         if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
         if (dto.email) whereConditions.push({ email: dto.email });
 
-        // Run existence check and cleanup in parallel to reduce network latency
+        // Run existence check and cleanup in parallel
         const [existingUser, _] = await Promise.all([
             this.userRepository.findOne({ where: whereConditions }),
-            this.otpRepository.delete({ identifier })
+            this.otpRepository.delete({ identifier, type: 'signup' })
         ]);
 
         if (existingUser) {
@@ -61,6 +65,7 @@ export class AuthService {
             identifier,
             otp: hashedOtp,
             expiresAt,
+            type: 'signup',
         });
         await this.otpRepository.save(otp);
 
@@ -91,7 +96,7 @@ export class AuthService {
 
         // Validate OTP
         const otpRecord = await this.otpRepository.findOne({
-            where: { identifier },
+            where: { identifier, type: 'signup' },
             order: { createdAt: 'DESC' },
         });
 
@@ -173,7 +178,7 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: whereConditions });
         
         // Parallelize user check and OTP cleanup
-        await this.otpRepository.delete({ identifier });
+        await this.otpRepository.delete({ identifier, type: 'login' });
 
         const otpCode = this.generateOTP();
         const hashedOtp = await bcrypt.hash(otpCode, 10);
@@ -183,6 +188,7 @@ export class AuthService {
             identifier,
             otp: hashedOtp,
             expiresAt,
+            type: 'login',
         });
 
         await this.otpRepository.save(otp);
@@ -253,7 +259,7 @@ export class AuthService {
 
         // Get OTP Record
         const otpRecord = await this.otpRepository.findOne({
-            where: { identifier },
+            where: { identifier, type: 'login' },
             order: { createdAt: 'DESC' },
         });
 
@@ -334,13 +340,21 @@ export class AuthService {
         // Return user without password
         const { password, ...userWithoutPassword } = loggedInUser;
 
-        // Generate Refresh Token & Session
-        const refresh_token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        await this.sessionService.createSession(loggedInUser.id, refresh_token, '0.0.0.0', 'Airion Gateway');
+        // 🔐 SECURE REFRESH SYSTEM: Generate Entropy-Rich Token
+        const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
+        const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
+        
+        // Persist session node
+        const refreshToken = this.refreshTokenRepository.create({
+            userId: loggedInUser.id,
+            tokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 Day TTL
+        });
+        await this.refreshTokenRepository.save(refreshToken);
 
         return {
             access_token,
-            refresh_token,
+            refresh_token: refreshTokenPlain,
             user: userWithoutPassword as Partial<User>,
             isProfileComplete: loggedInUser.role === UserRole.VENDOR ? isProfileComplete : undefined,
         };
@@ -487,6 +501,59 @@ export class AuthService {
             message: 'Password reset link sent to your email',
             link: this.configService.get('NODE_ENV') !== 'production' ? resetLink : undefined
         };
+    }
+
+    /**
+     * 🔄 Secure Token Rotation
+     * Verifies current entropy-rich refresh token and issues a new synchronized pair.
+     */
+    async refreshToken(token: string): Promise<{ access_token: string; refresh_token: string }> {
+        if (!token) throw new UnauthorizedException('Identity cipher missing.');
+
+        const tokenHash = CryptoUtil.hashValue(token);
+        const refreshToken = await this.refreshTokenRepository.findOne({
+            where: { tokenHash, isRevoked: false },
+            relations: ['user', 'user.vendor']
+        });
+
+        if (!refreshToken || refreshToken.expiresAt < new Date()) {
+            if (refreshToken) {
+                refreshToken.isRevoked = true;
+                await this.refreshTokenRepository.save(refreshToken);
+            }
+            throw new UnauthorizedException('Identity synchronization expired. Re-authentication required.');
+        }
+
+        const user = refreshToken.user;
+        
+        // 🔐 ROTATE: Revoke old cipher immediately
+        refreshToken.isRevoked = true;
+        await this.refreshTokenRepository.save(refreshToken);
+
+        // Generate new atomic identity pair
+        const isProfileComplete = (user as any).vendor?.isProfileComplete ?? false;
+        const vendorId = (user as any).vendor?.id;
+
+        const payload = { 
+            sub: user.id, 
+            email: user.email, 
+            role: user.role,
+            isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
+            vendorId,
+        };
+        const access_token = this.jwtService.sign(payload);
+
+        const newRefreshTokenPlain = CryptoUtil.generateSecureToken(32);
+        const newTokenHash = CryptoUtil.hashValue(newRefreshTokenPlain);
+        
+        const newRefreshToken = this.refreshTokenRepository.create({
+            userId: user.id,
+            tokenHash: newTokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+        await this.refreshTokenRepository.save(newRefreshToken);
+
+        return { access_token, refresh_token: newRefreshTokenPlain };
     }
 
     // Reset Password

@@ -75,6 +75,12 @@ export class AuthController {
         return { message: 'Logged out successfully' };
     }
 
+    @Post('refresh')
+    @HttpCode(HttpStatus.OK)
+    async refreshToken(@Body() dto: { refresh_token: string }) {
+        return this.authService.refreshToken(dto.refresh_token);
+    }
+
     @Post('forgot-password')
     @HttpCode(HttpStatus.OK)
     async forgotPassword(@Body() dto: { email: string }) {

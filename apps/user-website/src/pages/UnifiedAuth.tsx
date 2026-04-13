@@ -4,7 +4,7 @@ import {
     Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, 
     Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck 
 } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth, UserRole, decodeToken } from '@airion/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } from '@airion/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@airion/shared/components/OTPInput';
@@ -18,7 +18,7 @@ type AuthMode = 'login' | 'signup';
  */
 const UnifiedAuth: React.FC = () => {
     const navigate = useNavigate();
-    const { loginWithToken } = useAuth();
+    const { loginWithToken, user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
     const location = useLocation();
 
@@ -52,6 +52,39 @@ const UnifiedAuth: React.FC = () => {
             setSelectedRole(UserRole.USER);
         }
     }, [location.pathname, searchParams]);
+
+    // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
+    useEffect(() => {
+        // Handle global logout synchronization
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('portal_logout') === 'true') {
+            const logoutGlobal = async () => {
+                tokenService.clearTokens();
+                // Clear the URL params
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.delete('portal_logout');
+                window.history.replaceState({}, '', newUrl.pathname + newUrl.search);
+            };
+            logoutGlobal();
+            return;
+        }
+
+        if (isAuthenticated && user && !authLoading) {
+            const VENDOR_URL = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
+            const ADMIN_URL = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
+            const token = tokenService.getAccessToken();
+
+            if (user.role === UserRole.VENDOR) {
+                window.location.href = `${VENDOR_URL}/vendor/?token=${token}`;
+            } else if (user.role === UserRole.ADMIN) {
+                window.location.href = `${ADMIN_URL}/admin/?token=${token}`;
+            } else {
+                // For 'user' role, if we are already on signup/details step, don't interrupt
+                if (step === 'details') return;
+                navigate('/dashboard');
+            }
+        }
+    }, [isAuthenticated, user, authLoading, navigate, step]);
 
     useEffect(() => {
         if (resendTimer > 0) {
@@ -164,7 +197,21 @@ const UnifiedAuth: React.FC = () => {
                 }, 800);
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Verification failure. Node access denied.');
+            const apiError = err.response?.data;
+            const errorMsg = apiError?.error || apiError?.message || '';
+            
+            // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
+            if (errorMsg.includes('User not found') || err.response?.status === 401) {
+                toast.error('Identity Node not indexed. Reconciling to Genesis Protocol...');
+                setTimeout(() => {
+                    setMode('signup');
+                    setStep('phone');
+                    setLoading(false);
+                }, 1500);
+                return;
+            }
+            
+            toast.error(errorMsg || 'Verification failure. Node access denied.');
         } finally {
             setLoading(false);
         }
@@ -214,13 +261,13 @@ const UnifiedAuth: React.FC = () => {
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                         className="text-6xl font-black text-white leading-tight tracking-tighter uppercase italic"
                     >
-                        {mode === 'login' ? 'Access the Marketplace.' : 'Join the Genesis Network.'}
+                        {mode === 'login' ? 'Neural Sync Protocol.' : 'Nexus Genesis Protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                         className="text-xl text-neutral-400 font-bold uppercase tracking-widest italic leading-relaxed opacity-60"
                     >
-                        {mode === 'login' ? 'Synchronize your bookings and telemetry across all nodes.' : 'Deploy your talent to the elite event registry.'}
+                        {mode === 'login' ? 'Synchronize your identity across the decentralized matrix nodes.' : 'Deploy your talent to the next-generation elite registry.'}
                     </motion.p>
                     
                     <div className="flex items-center gap-8 pt-10 border-t border-white/5">
@@ -270,10 +317,10 @@ const UnifiedAuth: React.FC = () => {
 
                     <div className="space-y-3">
                         <h2 className="text-4xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none">
-                            {selectedRole === UserRole.ADMIN ? 'Vault Access' : (mode === 'login' ? 'Neural Sync' : 'Genesis Initiation')}
+                            {selectedRole === UserRole.ADMIN ? 'Vault Access' : (mode === 'login' ? 'Neural Sync' : 'Genesis Node')}
                         </h2>
                         <p className="text-[11px] text-neutral-400 font-black uppercase tracking-[0.3em] italic opacity-60">
-                            {step === 'phone' ? 'Secure, Passwordless Entry Protocol' : `Cipher dispatched to ${phone}`}
+                            {step === 'phone' ? 'Secure, Passwordless Entry Protocol' : `Cipher dispatched to node: ${phone}`}
                         </p>
                     </div>
 
@@ -281,7 +328,7 @@ const UnifiedAuth: React.FC = () => {
                     {step === 'phone' && (
                         <div className="grid grid-cols-3 gap-3 bg-neutral-50 dark:bg-slate-900/50 p-2 rounded-[32px] border border-neutral-100 dark:border-slate-800">
                             {[
-                                { id: UserRole.USER, label: 'Standard', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
+                                { id: UserRole.USER, label: 'User', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
                                 { id: UserRole.VENDOR, label: 'Vendor', icon: Building, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=vendor` },
                                 { id: UserRole.ADMIN, label: 'Admin', icon: ShieldCheck, path: '/admin/login', hideOnSignup: true }
                             ].filter(r => mode !== 'signup' || !r.hideOnSignup).map(role => (

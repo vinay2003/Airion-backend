@@ -279,26 +279,28 @@ const Header: React.FC = () => {
             {/* Mobile & Tablet Side Drawer Navigation */}
             <AnimatePresence mode="wait">
                 {isMenuOpen && (
-                    <>
+                    <div key="mobile-menu-portal" className="relative z-[100]">
                         {/* Backdrop with localized blur */}
                         <motion.div
+                            key="menu-backdrop"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/40 backdrop-blur-xl z-[60] lg:hidden"
+                            className="fixed inset-0 bg-black/50 backdrop-blur-xl z-[100] lg:hidden"
                             onClick={toggleMenu}
                         />
 
                         {/* Solid Menu Panel */}
                         <motion.div
+                            key="menu-panel"
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
-                            className="fixed inset-y-0 right-0 w-full xs:w-80 sm:w-96 bg-white dark:bg-slate-950 z-[100] flex flex-col shadow-[-20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-l border-gray-100 dark:border-slate-800"
+                            className="fixed inset-y-0 right-0 w-full xs:w-80 sm:w-96 bg-white dark:bg-slate-950 z-[110] flex flex-col shadow-[-20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-l border-gray-100 dark:border-slate-800"
                         >
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[110]">
+                            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/20">
                                         <Sparkles size={20} className="text-white animate-pulse" />
@@ -317,7 +319,7 @@ const Header: React.FC = () => {
                             </div>
 
                             {/* Drawer Content - FORCED SOLID BACKGROUND */}
-                            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-white dark:bg-slate-950">
+                            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-white dark:bg-slate-950 custom-scrollbar">
                                 {/* Core Navigation */}
                                 <nav className="space-y-1.5 px-1">
                                     {navItems.map((item) => (
@@ -398,7 +400,7 @@ const Header: React.FC = () => {
                             </div>
 
                             {/* Drawer Footer - FORCED SOLID BACKGROUND */}
-                            <div className="p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 sticky bottom-0 z-[110]">
+                            <div className="mt-auto p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 sticky bottom-0 z-[120]">
                                 {isAuthenticated ? (
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-4 mb-4">
@@ -439,7 +441,7 @@ const Header: React.FC = () => {
                                 )}
                             </div>
                         </motion.div>
-                    </>
+                    </div>
                 )}
             </AnimatePresence>
         </header>

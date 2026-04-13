@@ -60,7 +60,7 @@ const SplashScreen: React.FC = () => {
 
                 {/* Wordmark */}
                 <h1 className="text-5xl font-bold text-white tracking-tight mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
-                    Airion
+                    Ease2event
                 </h1>
 
                 {/* Tagline */}

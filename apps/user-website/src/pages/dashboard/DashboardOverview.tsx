@@ -20,7 +20,7 @@ const OCCASIONS = [
 const TRENDING_VENDORS = [
     { id: '1', name: 'Royal Photography', category: 'Photographer', rating: 4.9, price: '₹25,000', image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400', location: 'Kankarbagh, Patna' },
     { id: '2', name: 'Sharma Tent House', category: 'Decor & Setup', rating: 4.6, price: '₹12,000', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400', location: 'Boring Road, Patna' },
-    { id: '3', name: 'Sweets & Caterers', category: 'Catering', rating: 4.7, price: '₹800/plate', image: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?w=400', location: 'Bailey Road, Patna' },
+    { id: '3', name: 'Sweets & Caterers', category: 'Catering', rating: 4.7, price: '₹800/plate', image: 'https://images.unsplash.com/photo-1591123220262-87ed377f7c08?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fFN3ZWV0c3xlbnwwfHwwfHx8MA%3D%3D', location: 'Bailey Road, Patna' },
     { id: '4', name: 'Dream Decor Events', category: 'Event Planner', rating: 4.5, price: '₹50,000', image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400', location: 'Exhibition Road' },
 ];
 

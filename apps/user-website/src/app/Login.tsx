@@ -102,8 +102,8 @@ const Login: React.FC = () => {
         try {
             const sanitizedPhone = phone.replace(/\s+/g, '').trim();
             const portalRole = searchParams.get('portal') || 'user';
-            const response = await otpAuth.verifyLoginOTP({ 
-                phone: sanitizedPhone, 
+            const response = await otpAuth.verifyLoginOTP({
+                phone: sanitizedPhone,
                 otp: otpValue.trim(),
                 role: portalRole as any
             });
@@ -151,7 +151,7 @@ const Login: React.FC = () => {
                         className="flex items-center gap-2 mb-6"
                     >
                         <Sparkles className="text-red-500" size={32} />
-                        <span className="text-3xl font-black text-white tracking-tight font-cursive">Airion</span>
+                        <span className="text-3xl font-black text-white tracking-tight font-cursive">Ease2event</span>
                     </motion.div>
 
                     <motion.h1
@@ -192,7 +192,7 @@ const Login: React.FC = () => {
                 <div className="w-full max-w-md mt-16 lg:mt-0 relative z-10">
                     <div className="mb-10 lg:hidden flex items-center gap-2 justify-center">
                         <Sparkles className="text-red-500" size={28} />
-                        <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight font-cursive">Airion</span>
+                        <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight font-cursive">Ease2event</span>
                     </div>
 
                     <h2 className="text-3xl font-black text-neutral-900 dark:text-white mb-2">Welcome Back</h2>

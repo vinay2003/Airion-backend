@@ -100,7 +100,10 @@ h4,
   }
 
   .btn-secondary {
-    @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10;
+    background-color: var(--airion-bg-elevated);
+    color: var(--airion-text-primary);
+    border-color: var(--airion-border-base);
+    @apply px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 border hover:opacity-80;
   }
 
   /* 🧩 Chip / Tag Design */
@@ -109,19 +112,19 @@ h4,
   }
 
   .chip-soft-blue {
-    @apply bg-blue-500/10 text-blue-400 border border-blue-500/20;
+    @apply bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20;
   }
 
   .chip-soft-emerald {
-    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+    @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20;
   }
 
   .chip-soft-amber {
-    @apply bg-amber-500/10 text-amber-400 border border-amber-500/20;
+    @apply bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20;
   }
 
   .chip-soft-rose {
-    @apply bg-rose-500/10 text-rose-400 border border-rose-500/20;
+    @apply bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20;
   }
 
   /* Spacing Standard */
@@ -155,15 +158,18 @@ h4,
   @apply fixed inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000;
   z-index: 0;
   background-color: var(--airion-bg-base);
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,4%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(250,49%,8%,1) 0, transparent 50%);
+}
+
+.dark .rgb-bg-container {
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 4%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 10%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(250, 49%, 8%, 1) 0, transparent 50%);
   animation: bg-hue-shift 25s linear infinite;
 }
 
 .rgb-glow-node {
-  @apply absolute rounded-full blur-[160px] mix-blend-screen opacity-5 dark:opacity-10 animate-pulse;
+  @apply absolute rounded-full blur-[160px] mix-blend-screen opacity-0 dark:opacity-10 animate-pulse;
   transition: all 12s ease-in-out;
 }
 
@@ -183,28 +189,53 @@ h4,
 }
 
 @keyframes bg-hue-shift {
-  from { filter: hue-rotate(0deg); }
-  to { filter: hue-rotate(360deg); }
+  from {
+    filter: hue-rotate(0deg);
+  }
+
+  to {
+    filter: hue-rotate(360deg);
+  }
 }
 
 @keyframes float-1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(150px, 200px) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(150px, 200px) scale(1.1);
+  }
 }
 
 @keyframes float-2 {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(-200px, -100px) rotate(90deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-200px, -100px) rotate(90deg);
+  }
 }
 
 @keyframes float-3 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(200px, -100px) scale(0.9); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(200px, -100px) scale(0.9);
+  }
 }
 
-/* Glassmorphism for Dashboard Cards */
-.card-minimal, .card-premium {
+.card-minimal,
+.card-premium {
   @apply backdrop-blur-[60px] relative z-20;
+}
+
+/* Light mode: keep cards fully opaque */
+.card-minimal {
+  background-color: var(--airion-bg-surface);
 }
 
 .dark .card-minimal {

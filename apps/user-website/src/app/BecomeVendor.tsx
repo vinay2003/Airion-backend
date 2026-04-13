@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const BecomeVendor: React.FC = () => {
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="Become a Vendor" description="Join Airion and grow your business. Connect with thousands of customers planning their events." />
+            <SEO title="Become a Vendor" description="Join Ease2event and grow your business. Connect with thousands of customers planning their events." />
 
             {/* Hero Section */}
             <section className="relative h-[80vh] flex items-center bg-gray-900 text-white overflow-hidden">
@@ -28,7 +28,7 @@ const BecomeVendor: React.FC = () => {
                         className="max-w-3xl"
                     >
                         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                            Grow Your Business with Airion
+                            Grow Your Business with Ease2event
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-300 mb-10 leading-relaxed">
                             Join Bihar's fastest-growing event marketplace. Connect with verified leads and manage bookings effortlessly.
@@ -113,7 +113,7 @@ const BecomeVendor: React.FC = () => {
             <section className="pb-20 px-4 md:px-8">
                 <div className="max-w-5xl mx-auto bg-red-600 rounded-3xl p-12 md:p-20 text-center text-white shadow-2xl shadow-red-600/30">
                     <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Scale Your Business?</h2>
-                    <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Airion today. It takes less than 5 minutes to get started.</p>
+                    <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Ease2event today. It takes less than 5 minutes to get started.</p>
                     <a href="/vendor/signup" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105">
                         Join as a Vendor
                     </a>

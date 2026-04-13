@@ -58,7 +58,7 @@ const Home: React.FC = () => {
     return (
         <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 overflow-x-hidden">
             <FallingPetals />
-            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
+            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Ease2event." />
             <Hero />
 
             {/* Dashboard Highlights for Logged-in Users */}
@@ -167,9 +167,9 @@ const Home: React.FC = () => {
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                             <div className="space-y-1">
                                 <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight uppercase italic">Featured Events This Month</h2>
-                                <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
+                                <p className="text-s text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
                             </div>
-                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-xs uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
+                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-s uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
                                 View Marketplace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -188,36 +188,61 @@ const Home: React.FC = () => {
                     {/* Marketplace Section (KEY Tabbed Layout) */}
                     <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-16">
                         <div className="max-w-[1536px] mx-auto px-4 md:px-8">
+
+                            {/* 🔹 Header */}
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+
                                 <div className="space-y-1">
-                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic">Market Place Evolution</h2>
-                                    <p className="text-xs text-gray-400 font-black uppercase tracking-widest italic opacity-60">Real-time status tracking</p>
+                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">
+                                        Market Place Evolution
+                                    </h2>
+
+                                    <p className="text-s text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
+                                        Real-time status tracking
+                                    </p>
                                 </div>
-                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-[1.25rem] w-full md:w-auto overflow-x-auto no-scrollbar shadow-inner border border-gray-100 dark:border-slate-700">
-                                    {['All', 'Available', 'Filling Fast', 'New'].map(tab => (
+
+                                {/* 🔹 Tabs (FIXED) */}
+                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-full w-full md:w-auto shadow-inner border border-gray-100 dark:border-slate-700">
+
+                                    {['All', 'Available', 'Filling', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all flex-1 md:flex-none text-center ${marketplaceTab === tab ? 'bg-red-500 text-white shadow-lg' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                                            className={`flex-1 px-2 py-2 rounded-full text-xs md:text-sm font-semibold uppercase tracking-wide text-center transition-all ${marketplaceTab === tab
+                                                ? 'bg-red-500 text-white shadow-md'
+                                                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                                }`}
                                         >
                                             {tab}
                                         </button>
                                     ))}
+
                                 </div>
                             </div>
 
+                            {/* 🔹 Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                                 {events.slice(0, 6).map((item, index) => {
                                     const statuses = ['AVAILABLE', 'FILLING_FAST', 'SOLD_OUT', 'COMING_SOON'] as const;
                                     const status = statuses[index % 4];
-                                    const spots = status === 'SOLD_OUT' ? 0 : (status === 'FILLING_FAST' ? 8 : 42);
+                                    const spots =
+                                        status === 'SOLD_OUT'
+                                            ? 0
+                                            : status === 'FILLING_FAST'
+                                                ? 8
+                                                : 42;
 
-                                    // Mock filtering for demonstration
+                                    // Filtering
                                     if (marketplaceTab === 'Available' && status !== 'AVAILABLE') return null;
-                                    if (marketplaceTab === 'Filling Fast' && status !== 'FILLING_FAST') return null;
+                                    if (marketplaceTab === 'Filling' && status !== 'FILLING_FAST') return null;
 
                                     return (
-                                        <div key={item.id || index} className="animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${index * 100}ms` }}>
+                                        <div
+                                            key={item.id || index}
+                                            className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                            style={{ animationDelay: `${index * 100}ms` }}
+                                        >
                                             <ListingCard
                                                 {...item}
                                                 marketplaceStatus={status}
@@ -227,6 +252,7 @@ const Home: React.FC = () => {
                                     );
                                 })}
                             </div>
+
                         </div>
                     </section>
 
@@ -293,7 +319,12 @@ const Home: React.FC = () => {
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Airion?</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-center whitespace-nowrap mb-10 tracking-tight">
+                                <span className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
+                                    Why Ease2event?
+                                </span>
+                            </h2>
+
                             <div className="space-y-8">
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -301,25 +332,33 @@ const Home: React.FC = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">Verified Vendors</h3>
-                                        <p className="text-gray-400">Every venue and vendor is personally verified by our team to ensure quality and reliability.</p>
+                                        <p className="text-gray-400">
+                                            Every venue and vendor is personally verified by our team to ensure quality and reliability.
+                                        </p>
                                     </div>
                                 </div>
+
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Heart size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">Best Price Guarantee</h3>
-                                        <p className="text-gray-400">We negotiate the best rates so you don't have to. Find a lower price? We'll match it.</p>
+                                        <p className="text-gray-400">
+                                            We negotiate the best rates so you don't have to. Find a lower price? We'll match it.
+                                        </p>
                                     </div>
                                 </div>
+
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Star size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">24/7 Support</h3>
-                                        <p className="text-gray-400">Our dedicated support team is available around the clock to assist you with any queries.</p>
+                                        <p className="text-gray-400">
+                                            Our dedicated support team is available around the clock to assist you with any queries.
+                                        </p>
                                     </div>
                                 </div>
                             </div>

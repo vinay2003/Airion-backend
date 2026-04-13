@@ -17,8 +17,8 @@ const SEO = ({
     url = "https://airion.com",
     type = "website"
 }: SEOProps) => {
-    const siteTitle = "Airion | Premium Event Planning & Venue Booking";
-    const fullTitle = title === "Home" ? siteTitle : `${title} | Airion`;
+    const siteTitle = "Ease2event | Premium Event Planning & Venue Booking";
+    const fullTitle = title === "Home" ? siteTitle : `${title} | Ease2event`;
 
     return (
         <Helmet>

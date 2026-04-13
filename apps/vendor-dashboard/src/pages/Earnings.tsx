@@ -135,7 +135,7 @@ const Earnings: React.FC = () => {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 border-b border-[var(--airion-border-subtle)] padding-bottom-10">
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose uppercase">Financial Intelligence</h1>
+          <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight uppercase">Financial Intelligence</h1>
           <p className="text-lg font-bold text-[var(--airion-text-muted)] flex items-center gap-3">
             <Activity size={20} className="text-blue-500" />
             Revenue Streams • Settlement Matrix • Tax Compliance

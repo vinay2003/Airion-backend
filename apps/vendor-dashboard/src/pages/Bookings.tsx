@@ -97,7 +97,7 @@ const Bookings: React.FC = () => {
     return (
         <div className="space-y-10 sm:space-y-12 animate-in fade-in duration-500 pb-20">
             <div className="space-y-4">
-                <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose">Bookings Management</h1>
+                <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight">Bookings Management</h1>
                 <p className="text-lg font-semibold text-[var(--airion-text-muted)]">Enterprise-grade tracking for all your venue operations</p>
             </div>
 

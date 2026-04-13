@@ -204,7 +204,7 @@ const Products: React.FC = () => {
                     <div className="space-y-8">
                         <div className="flex items-center justify-between px-4 mb-6">
                             <h3 className="text-2xl font-bold text-[var(--airion-text-primary)] uppercase tracking-wider">Service Packages</h3>
-                            <Badge className="chip-soft-blue px-6 h-9 rounded-xl font-bold text-base">Standard Multi-Tier Enabled</Badge>
+                            <Badge className="chip-soft-blue px-6 h-10 rounded-xl font-bold text-lg md:text-base">Standard Multi-Tier Enabled</Badge>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -287,7 +287,7 @@ const Products: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-[var(--airion-border-subtle)] pb-12">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose uppercase">Services & Inventory</h1>
+                    <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight uppercase">Services & Inventory</h1>
                     <p className="text-lg font-bold text-[var(--airion-text-secondary)]">Manage and organize your service offerings in the marketplace.</p>
                 </div>
                 <Button

@@ -11,7 +11,7 @@ export interface ApiResponse<T = any> {
 }
 
 /**
- * Airion Shared API Client
+ * Ease2event Shared API Client
  * Centralized instance for all portals with standard interceptors
  */
 export class ApiClient {
@@ -63,7 +63,7 @@ export class ApiClient {
           localStorage.removeItem('airion_token');
           // Optional: Dispatch event or redirect if window is available
           if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-             // window.location.href = '/login'; // Let consumer handle if needed
+            // window.location.href = '/login'; // Let consumer handle if needed
           }
         }
 

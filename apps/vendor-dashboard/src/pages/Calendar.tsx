@@ -108,7 +108,7 @@ const CalendarPage: React.FC = () => {
         <div className="space-y-8 animate-in fade-in duration-700 pb-24">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[var(--airion-border-subtle)] pb-6">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tight leading-loose uppercase">Operational Matrix</h1>
+                    <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tight leading-tight uppercase">Operational Matrix</h1>
                     <p className="text-lg font-bold text-[var(--airion-text-muted)] flex items-center gap-3 uppercase tracking-widest italic">
                         <Activity size={20} className="text-blue-500" />
                         Deployment Schedule • Resource Allocation • Performance Log

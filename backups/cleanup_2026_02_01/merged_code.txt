@@ -558,7 +558,7 @@ const VendorSignup: React.FC = () => {
                         </div>
                     </div>
                     <CardTitle className="text-3xl font-bold">Vendor Registration</CardTitle>
-                    <CardDescription>Join Airion Solutions - The Future of Event Management</CardDescription>
+                    <CardDescription>Join Ease2event Solutions - The Future of Event Management</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-10 space-y-8">
                     <form onSubmit={handleSubmit}>
@@ -758,7 +758,7 @@ const VendorSignup: React.FC = () => {
                             <h3 className={sectionTitleClass}><TrendingUp className="h-5 w-5" /> Section 4: Platform Interest</h3>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>16. Likelihood to join Airion (1-5)</Label>
+                                    <Label>16. Likelihood to join Ease2event (1-5)</Label>
                                     <div className="flex gap-6">
                                         {[1, 2, 3, 4, 5].map(num => (
                                             <label key={num} className="flex flex-col items-center cursor-pointer">
@@ -853,7 +853,7 @@ const VendorSignup: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>22. When will you join Airion?</Label>
+                                    <Label>22. When will you join Ease2event?</Label>
                                     <div className="flex gap-4 flex-wrap">
                                         {["Immediately", "Within 1 month", "After others join", "Not sure"].map(opt => (
                                             <label key={opt} className="flex items-center space-x-2 cursor-pointer">

@@ -144,18 +144,62 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link
                 to="/"
-                className="text-3xl md:text-4xl font-black text-red-600 font-cursive z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0 tracking-tighter italic"
+                className="text-3xl md:text-4xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
-                Airion
+                <Sparkles
+                    size={28}
+                    className="text-red-600 hidden sm:block animate-pulse"
+                />
+
+                <span
+                    className="tracking-tight text-red-600"
+                    style={{ fontFamily: 'Kaushan Script, cursive' }}
+                >
+                    Ease2event
+                </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-6">
-                <Link to="/" className={`text-sm font-medium transition-colors ${isActivePath('/') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Home</Link>
-                <Link to="/search" className={`text-sm font-medium transition-colors ${isActivePath('/search') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Marketplace</Link>
-                <Link to="/packages" className={`text-sm font-medium transition-colors ${isActivePath('/packages') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Packages</Link>
-                <Link to="/inspiration" className={`text-sm font-medium transition-colors ${isActivePath('/inspiration') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Inspiration</Link>
+            <nav className="hidden lg:flex items-center gap-8">
+                <Link
+                    to="/"
+                    className={`text-base font-semibold transition-colors ${isActivePath('/')
+                            ? 'text-red-600'
+                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
+                        }`}
+                >
+                    Home
+                </Link>
+
+                <Link
+                    to="/search"
+                    className={`text-base font-semibold transition-colors ${isActivePath('/search')
+                            ? 'text-red-600'
+                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
+                        }`}
+                >
+                    Marketplace
+                </Link>
+
+                <Link
+                    to="/packages"
+                    className={`text-base font-semibold transition-colors ${isActivePath('/packages')
+                            ? 'text-red-600'
+                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
+                        }`}
+                >
+                    Packages
+                </Link>
+
+                <Link
+                    to="/inspiration"
+                    className={`text-base font-semibold transition-colors ${isActivePath('/inspiration')
+                            ? 'text-red-600'
+                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
+                        }`}
+                >
+                    Inspiration
+                </Link>
             </nav>
 
             {/* Desktop Actions */}

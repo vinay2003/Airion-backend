@@ -34,7 +34,7 @@ const TrendingWeddings: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="Trending Weddings | Airion" description="Explore the most popular and trending wedding venues tailored for your special day." />
+            <SEO title="Trending Weddings | Ease2event" description="Explore the most popular and trending wedding venues tailored for your special day." />
 
             {/* Hero Section */}
             <div className="relative h-[40vh] min-h-[350px] overflow-hidden">

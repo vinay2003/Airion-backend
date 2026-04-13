@@ -37,8 +37,8 @@ const Settings: React.FC = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
-                                        ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
-                                        : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                    ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
+                                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800'
                                     }`}
                             >
                                 <tab.icon size={20} />
@@ -95,7 +95,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Bio</label>
                                         <textarea
                                             rows={4}
-                                            defaultValue="Professional event provider on Airion."
+                                            defaultValue="Professional event provider on Ease2event."
                                             className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all resize-none"
                                         />
                                     </div>
@@ -195,7 +195,7 @@ const Settings: React.FC = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="p-6 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>

@@ -425,7 +425,7 @@ const EventDetails: React.FC = () => {
                                     <span>₹{(parseInt(event.price.replace(/\D/g, '')) * guestMode || 0).toLocaleString()}</span>
                                 </div>
                                 <div className="mt-2 flex justify-between text-sm text-gray-600 dark:text-slate-400">
-                                    <span className="underline decoration-dotted">Airion Service Fee</span>
+                                    <span className="underline decoration-dotted">Ease2event Service Fee</span>
                                     <span>₹{(parseInt(event.price.replace(/\D/g, '')) * guestMode * 0.1 || 0).toLocaleString()}</span>
                                 </div>
                             </div>

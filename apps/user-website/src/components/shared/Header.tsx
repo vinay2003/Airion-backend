@@ -258,7 +258,7 @@ const Header: React.FC = () => {
                         <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
                             <span className="text-2xl font-black text-red-500 italic uppercase tracking-tighter flex items-center gap-2">
                                 <Sparkles size={24} />
-                                Airion
+                                Ease2event
                             </span>
                             <button
                                 onClick={toggleMenu}
@@ -282,11 +282,10 @@ const Header: React.FC = () => {
                                         key={item.path}
                                         to={item.path}
                                         onClick={toggleMenu}
-                                        className={`block text-xl font-black uppercase tracking-tight py-4 px-6 rounded-2xl transition-all ${
-                                            isActivePath(item.path)
+                                        className={`block text-xl font-black uppercase tracking-tight py-4 px-6 rounded-2xl transition-all ${isActivePath(item.path)
                                                 ? 'bg-red-500 text-white shadow-xl shadow-red-500/20'
                                                 : 'text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border border-transparent hover:border-red-500/10'
-                                        }`}
+                                            }`}
                                     >
                                         {item.name}
                                     </Link>

@@ -4,7 +4,7 @@ import SEO from '../components/SEO';
 const AboutUs: React.FC = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="About Us" description="We bring your vision to life. Airion is your trusted partner for unforgettable events." />
+            <SEO title="About Us" description="We bring your vision to life. Ease2event is your trusted partner for unforgettable events." />
             {/* Hero Section */}
             <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
@@ -13,7 +13,7 @@ const AboutUs: React.FC = () => {
                         We Create <span className="text-red-600 font-cursive not-italic">Memories</span>
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold uppercase text-xs tracking-widest">
-                        Airion is the premier digital ecosystem for orchestrating unforgettable events. From intimate gatherings to grand celebrations, we execute your vision with precision.
+                        Ease2event is the premier digital ecosystem for orchestrating unforgettable events. From intimate gatherings to grand celebrations, we execute your vision with precision.
                     </p>
                 </div>
             </div>
@@ -52,7 +52,7 @@ const AboutUs: React.FC = () => {
                     <div className="md:w-1/2">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Story</h2>
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed mb-6 font-medium">
-                            Founded by a team of passionate event architects, Airion was engineered with a mission to make event orchestration a seamless, premium experience. We eliminate the friction of organizing complex celebrations.
+                            Founded by a team of passionate event architects, Ease2event was engineered with a mission to make event orchestration a seamless, premium experience. We eliminate the friction of organizing complex celebrations.
                         </p>
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed font-medium italic">
                             What started as a disruptive idea has evolved into a global marketplace connecting the world with verified venues and elite vendors.
@@ -112,7 +112,7 @@ const AboutUs: React.FC = () => {
                             <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase italic tracking-tighter">Naif Farooqui</h3>
                             <p className="text-red-600 font-black uppercase text-[10px] tracking-[0.2em] mb-4">Lead Architect & Systems Developer</p>
                             <p className="text-gray-600 dark:text-slate-400 text-sm font-medium leading-relaxed">
-                                Engineered for high-fidelity digital experiences. Overseeing the architectural precision and technical orchestration of the Airion platform.
+                                Engineered for high-fidelity digital experiences. Overseeing the architectural precision and technical orchestration of the Ease2event platform.
                             </p>
                         </div>
                     </div>

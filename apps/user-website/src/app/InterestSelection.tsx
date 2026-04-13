@@ -26,10 +26,10 @@ const CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 
 
 const OnboardingFlow: React.FC = () => {
     const navigate = useNavigate();
-    
+
     // Step state
     const [step, setStep] = useState(0); // 0: Splash, 1: Intent, 2: Services, 3: Location
-    
+
     // Form state
     const [eventType, setEventType] = useState<string | null>(null);
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -53,7 +53,7 @@ const OnboardingFlow: React.FC = () => {
     const handleComplete = async () => {
         setLoading(true);
         try {
-            await api.patch('/auth/profile', { 
+            await api.patch('/auth/profile', {
                 interests: selectedServices,
                 eventType,
                 location
@@ -89,11 +89,11 @@ const OnboardingFlow: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 overflow-hidden relative">
-            
+
             {/* Progress Bar (Hidden on Splash) */}
             {step > 0 && (
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-neutral-100 dark:bg-neutral-800">
-                    <motion.div 
+                    <motion.div
                         className="h-full bg-red-500"
                         initial={{ width: 0 }}
                         animate={{ width: `${(step / 3) * 100}%` }}
@@ -104,10 +104,10 @@ const OnboardingFlow: React.FC = () => {
 
             <div className="w-full max-w-2xl relative">
                 <AnimatePresence mode="wait" custom={1}>
-                    
+
                     {/* STEP 0: Splash Screen */}
                     {step === 0 && (
-                        <motion.div 
+                        <motion.div
                             key="splash"
                             className="flex flex-col items-center justify-center text-center space-y-6"
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -119,7 +119,7 @@ const OnboardingFlow: React.FC = () => {
                                 <Sparkles size={48} className="text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white tracking-tight mb-4 font-cursive">Welcome to Airion</h1>
+                                <h1 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white tracking-tight mb-4 font-cursive">Welcome to Ease2event</h1>
                                 <p className="text-xl text-neutral-500 dark:text-neutral-400 font-medium">Let's craft your perfect experience.</p>
                             </div>
                         </motion.div>
@@ -127,7 +127,7 @@ const OnboardingFlow: React.FC = () => {
 
                     {/* STEP 1: Intent (Setup) */}
                     {step === 1 && (
-                        <motion.div 
+                        <motion.div
                             key="intent"
                             custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                             className="bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-neutral-100 dark:border-slate-800"
@@ -142,15 +142,13 @@ const OnboardingFlow: React.FC = () => {
                                     <button
                                         key={type.id}
                                         onClick={() => setEventType(type.id)}
-                                        className={`flex items-center gap-4 p-5 rounded-2xl border-2 transition-all text-left group ${
-                                            eventType === type.id 
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500' 
-                                            : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
-                                        }`}
+                                        className={`flex items-center gap-4 p-5 rounded-2xl border-2 transition-all text-left group ${eventType === type.id
+                                                ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500'
+                                                : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
+                                            }`}
                                     >
-                                        <div className={`p-3 rounded-xl transition-colors ${
-                                            eventType === type.id ? 'bg-red-500 text-white' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500'
-                                        }`}>
+                                        <div className={`p-3 rounded-xl transition-colors ${eventType === type.id ? 'bg-red-500 text-white' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500'
+                                            }`}>
                                             {type.icon}
                                         </div>
                                         <div className="flex-1 font-bold text-neutral-900 dark:text-white">
@@ -171,7 +169,7 @@ const OnboardingFlow: React.FC = () => {
 
                     {/* STEP 2: Interests (Services) */}
                     {step === 2 && (
-                        <motion.div 
+                        <motion.div
                             key="services"
                             custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                             className="bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-neutral-100 dark:border-slate-800"
@@ -186,15 +184,13 @@ const OnboardingFlow: React.FC = () => {
                                     <button
                                         key={service.id}
                                         onClick={() => toggleService(service.id)}
-                                        className={`flex flex-col items-center justify-center p-6 space-y-4 rounded-3xl border-2 transition-all text-center group ${
-                                            selectedServices.includes(service.id)
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500'
-                                            : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
-                                        }`}
+                                        className={`flex flex-col items-center justify-center p-6 space-y-4 rounded-3xl border-2 transition-all text-center group ${selectedServices.includes(service.id)
+                                                ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500'
+                                                : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
+                                            }`}
                                     >
-                                        <div className={`p-4 rounded-2xl transition-colors ${
-                                            selectedServices.includes(service.id) ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500 group-hover:bg-red-50 dark:group-hover:bg-red-500/20'
-                                        }`}>
+                                        <div className={`p-4 rounded-2xl transition-colors ${selectedServices.includes(service.id) ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500 group-hover:bg-red-50 dark:group-hover:bg-red-500/20'
+                                            }`}>
                                             {service.icon}
                                         </div>
                                         <div className="font-bold text-neutral-900 dark:text-white text-sm">
@@ -222,7 +218,7 @@ const OnboardingFlow: React.FC = () => {
 
                     {/* STEP 3: Location */}
                     {step === 3 && (
-                        <motion.div 
+                        <motion.div
                             key="location"
                             custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                             className="bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-neutral-100 dark:border-slate-800"
@@ -235,25 +231,24 @@ const OnboardingFlow: React.FC = () => {
                             <div className="space-y-4 mb-10 max-w-md mx-auto">
                                 <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-2xl border border-neutral-200 dark:border-slate-700 flex items-center gap-4">
                                     <MapPin className="text-red-500" />
-                                    <input 
-                                        type="text" 
-                                        placeholder="Search for your city..." 
+                                    <input
+                                        type="text"
+                                        placeholder="Search for your city..."
                                         className="bg-transparent border-none outline-none w-full font-bold text-neutral-900 dark:text-white placeholder:text-neutral-400"
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
                                     />
                                 </div>
-                                
+
                                 <div className="flex flex-wrap gap-2 pt-4">
                                     {CITIES.map(city => (
-                                        <button 
+                                        <button
                                             key={city}
                                             onClick={() => setLocation(city)}
-                                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                                                location === city 
-                                                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-md' 
-                                                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-slate-800 dark:text-neutral-300 dark:hover:bg-slate-700'
-                                            }`}
+                                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${location === city
+                                                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-md'
+                                                    : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-slate-800 dark:text-neutral-300 dark:hover:bg-slate-700'
+                                                }`}
                                         >
                                             {city}
                                         </button>

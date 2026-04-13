@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-    Building, MapPin, Briefcase, TrendingUp, AlertCircle, ShieldCheck, 
-    CheckCircle, ArrowRight, ArrowLeft, Plus, X, Sparkles, Camera, 
+    Building, MapPin, Briefcase, TrendingUp, AlertCircle, ShieldCheck,
+    CheckCircle, ArrowRight, ArrowLeft, Plus, X, Sparkles, Camera,
     Clock, Globe, Wallet, CheckCircle2, Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -129,7 +129,7 @@ const VendorSignupWizard: React.FC = () => {
                 monthlyEventVolume: formData.monthlyEventVolume,
                 averageBookingPrice: formData.averageBookingPrice.toString(),
                 painPoints: formData.painPoints,
-                businessDescription: formData.businessDescription || 'Bridging the gap between vendors and events at Airion.',
+                businessDescription: formData.businessDescription || 'Bridging the gap between vendors and events at Ease2event.',
                 portfolioImages: formData.portfolioImages,
                 businessAddress: {
                     street: formData.businessAddress || 'Business Location',
@@ -162,7 +162,7 @@ const VendorSignupWizard: React.FC = () => {
         <div className="flex gap-2 mb-12 max-w-md mx-auto">
             {[1, 2, 3].map(step => (
                 <div key={step} className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden relative">
-                    <motion.div 
+                    <motion.div
                         initial={false}
                         animate={{ width: currentStep >= step ? '100%' : '0%' }}
                         className={`h-full ${currentStep > step ? 'bg-emerald-500' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`}
@@ -189,7 +189,7 @@ const VendorSignupWizard: React.FC = () => {
                         {currentStep === 2 && "Growth Intelligence"}
                         {currentStep === 3 && "Visual Showcase"}
                     </h1>
-                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Airion.</p>
+                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Ease2event.</p>
                 </div>
 
                 {renderProgress()}
@@ -249,14 +249,13 @@ const VendorSignupWizard: React.FC = () => {
                                     <p className="text-slate-400 text-sm">Where do you currently find most of your clients?</p>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                         {["Instagram", "JustDial", "Google Registry", "WhatsApp", "WedMeGood", "WedPlan"].map(item => (
-                                            <button 
-                                                key={item} type="button" 
+                                            <button
+                                                key={item} type="button"
                                                 onClick={() => handleCheckboxChange('acquisitionChannels', item)}
-                                                className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                                                    formData.acquisitionChannels.includes(item) 
-                                                    ? 'border-red-500 bg-red-500/10 text-red-500' 
+                                                className={`p-4 rounded-2xl border-2 text-left transition-all ${formData.acquisitionChannels.includes(item)
+                                                    ? 'border-red-500 bg-red-500/10 text-red-500'
                                                     : 'border-slate-800 bg-slate-900/40 text-slate-500 hover:border-slate-700'
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="font-bold">{item}</span>
                                             </button>
@@ -269,7 +268,7 @@ const VendorSignupWizard: React.FC = () => {
                                         <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><TrendingUp size={16} /> Monthly Project Volume</label>
                                         <div className="grid grid-cols-2 gap-2">
                                             {["1-2", "3-5", "5-10", "10+"].map(vol => (
-                                                <button key={vol} type="button" onClick={() => setFormData(p => ({...p, monthlyEventVolume: vol}))} className={`py-3 rounded-xl border font-bold transition-all ${formData.monthlyEventVolume === vol ? 'bg-white text-black border-white' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}>
+                                                <button key={vol} type="button" onClick={() => setFormData(p => ({ ...p, monthlyEventVolume: vol }))} className={`py-3 rounded-xl border font-bold transition-all ${formData.monthlyEventVolume === vol ? 'bg-white text-black border-white' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}>
                                                     {vol} Events
                                                 </button>
                                             ))}
@@ -341,11 +340,10 @@ const VendorSignupWizard: React.FC = () => {
                                 <ArrowLeft size={20} /> Previous
                             </button>
                         )}
-                        <button type="submit" disabled={submitting} className={`flex-[2] py-5 rounded-3xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] ${
-                            currentStep === 3 
-                            ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/10' 
+                        <button type="submit" disabled={submitting} className={`flex-[2] py-5 rounded-3xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] ${currentStep === 3
+                            ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/10'
                             : 'bg-red-600 hover:bg-red-500 text-white shadow-red-500/10'
-                        }`}>
+                            }`}>
                             {submitting ? (
                                 <Loader2 className="animate-spin" />
                             ) : (

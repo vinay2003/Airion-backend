@@ -80,11 +80,11 @@ export const GuestList: React.FC = () => {
                     <p className="text-gray-500">Manage invitations and track RSVPs.</p>
                 </div>
                 <form onSubmit={addGuest} className="flex gap-2 w-full sm:w-auto">
-                    <Input 
-                        placeholder="Quick add guest name..." 
+                    <Input
+                        placeholder="Quick add guest name..."
                         value={newGuest}
                         onChange={(e) => setNewGuest(e.target.value)}
-                        className="dark:bg-slate-800 dark:border-slate-700" 
+                        className="dark:bg-slate-800 dark:border-slate-700"
                     />
                     <Button type="submit" className="bg-red-500 hover:bg-red-600 text-white"><Plus size={18} /></Button>
                 </form>
@@ -184,11 +184,11 @@ export const Support: React.FC = () => (
                         </div>
                         <div>
                             <h4 className="font-bold text-gray-900 dark:text-white">Call Us</h4>
-                            <p className="text-sm text-gray-500">+91 1800-AIRION (Toll Free)</p>
+                            <p className="text-sm text-gray-500">+91 1800-Ease2event (Toll Free)</p>
                             <p className="text-xs text-gray-400 mt-1">Mon-Sun, 9:00 AM - 9:00 PM</p>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 dark:text-gray-300">
                             <MailIcon size={20} />

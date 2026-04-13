@@ -58,22 +58,22 @@ const VendorDiscovery: React.FC = () => {
 
     return (
         <main className="min-h-screen bg-white transition-all duration-500 pt-32 pb-24 selection:bg-red-600 selection:text-white">
-            <SEO title="Explore Vendors | Airion" description="Discover the perfect verified vendors for your next premium event." />
+            <SEO title="Explore Vendors | Ease2event" description="Discover the perfect verified vendors for your next premium event." />
 
             <div className="max-w-[1400px] mx-auto px-6 md:px-10">
                 {/* Header */}
                 <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-slate-50 pb-12">
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-2 mb-4">
-                           <div className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5 shadow-sm shadow-red-500/5">
-                               <Sparkles size={12} /> Marketplace Hub Live
-                           </div>
+                            <div className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5 shadow-sm shadow-red-500/5">
+                                <Sparkles size={12} /> Marketplace Hub Live
+                            </div>
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-4 tracking-tighter uppercase leading-none">
                             Discover the <span className="text-red-600">Elite</span>
                         </h1>
                         <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest leading-loose">
-                            Connecting you with {sortedVendors.length}+ premier service providers globally. 
+                            Connecting you with {sortedVendors.length}+ premier service providers globally.
                             <span className="hidden md:inline ml-2 text-slate-200">Verified • Rated • Exclusive</span>
                         </p>
                     </div>
@@ -160,17 +160,19 @@ const VendorDiscovery: React.FC = () => {
                                             initial={{ opacity: 0, y: 30 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: (idx % 6) * 0.1 }}
-                                            className="relative group"
+                                            className="relative group hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 rounded-[2.5rem]"
                                         >
                                             {STATUS_BADGES[idx % 3] && (
-                                                <div className={`absolute top-5 left-5 z-20 px-3 py-1 rounded-xl text-[9px] font-black tracking-widest shadow-lg ${STATUS_BADGES[idx % 3].color}`}>
+                                                <div
+                                                    className={`absolute top-5 left-5 z-20 px-3 py-1 rounded-xl text-[9px] font-black tracking-widest shadow-lg ${STATUS_BADGES[idx % 3].color}`}
+                                                >
                                                     {STATUS_BADGES[idx % 3].label}
                                                 </div>
                                             )}
+
                                             <ListingCard
                                                 {...vendor}
                                                 image={vendor.image || vendor.images?.[0]}
-                                                className="hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 rounded-[2.5rem]"
                                             />
                                         </motion.div>
                                     ))}

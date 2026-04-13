@@ -17,7 +17,7 @@ const CURRENCIES = ['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'];
 const ProfileSettings: React.FC = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
-    
+
     // Form State
     const [name, setName] = useState('Vinay Sharma');
     const [email, setEmail] = useState('vinay@example.com');
@@ -56,17 +56,16 @@ const ProfileSettings: React.FC = () => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${
-                                activeTab === tab.id 
-                                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400' 
-                                : 'text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800'
-                            }`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${activeTab === tab.id
+                                    ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                    : 'text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800'
+                                }`}
                         >
                             {tab.icon}
                             {tab.label}
                         </button>
                     ))}
-                    
+
                     <div className="mt-8 pt-6 border-t border-neutral-200 dark:border-slate-800">
                         <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800">
                             <HelpCircle size={18} />
@@ -80,7 +79,7 @@ const ProfileSettings: React.FC = () => {
                     {activeTab === 'profile' && (
                         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Personal Information</h2>
-                            
+
                             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-neutral-200 dark:border-slate-800">
                                 <div className="relative">
                                     <div className="w-24 h-24 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center overflow-hidden">
@@ -132,7 +131,7 @@ const ProfileSettings: React.FC = () => {
                     {activeTab === 'preferences' && (
                         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Global Preferences</h2>
-                            
+
                             <form onSubmit={handleSave} className="space-y-8">
                                 <div className="space-y-6">
                                     <div className="border border-neutral-200 dark:border-slate-800 rounded-2xl p-6 bg-neutral-50 dark:bg-slate-800/50">
@@ -142,18 +141,17 @@ const ProfileSettings: React.FC = () => {
                                             </div>
                                             <div className="flex-1">
                                                 <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Language</h3>
-                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Select your preferred language for the Airion interface.</p>
+                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Select your preferred language for the Ease2event interface.</p>
                                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                                     {LANGUAGES.map(lang => (
                                                         <button
                                                             key={lang.code}
                                                             type="button"
                                                             onClick={() => setLanguage(lang.code)}
-                                                            className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${
-                                                                language === lang.code 
-                                                                ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm' 
-                                                                : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
-                                                            }`}
+                                                            className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${language === lang.code
+                                                                    ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
+                                                                    : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
+                                                                }`}
                                                         >
                                                             {lang.name}
                                                         </button>
@@ -168,8 +166,8 @@ const ProfileSettings: React.FC = () => {
                                             <div className="flex-1">
                                                 <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Currency</h3>
                                                 <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Choose the currency for displaying prices and processing payments.</p>
-                                                <select 
-                                                    value={currency} 
+                                                <select
+                                                    value={currency}
                                                     onChange={e => setCurrency(e.target.value)}
                                                     className="w-full max-w-xs bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-xl px-4 py-3 font-bold text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-red-500"
                                                 >

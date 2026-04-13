@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="space-y-6">
-                        <Link to="/" className="text-3xl font-black text-red-500 font-cursive tracking-tighter hover:scale-105 transition-transform inline-block">Airion</Link>
+                        <Link to="/" className="text-3xl font-black text-red-500 font-bold tracking-tighter hover:scale-105 transition-transform inline-block">Ease2event</Link>
                         <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>
@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-slate-400">
-                    <p>&copy; 2024 Airion. All rights reserved.</p>
+                    <p>&copy; 2024 Ease2event. All rights reserved.</p>
                 </div>
             </div>
         </footer>

@@ -54,14 +54,14 @@ interface DashboardState {
     // Budget
     totalBudget: number;
     budgetItems: BudgetItem[];
-    
+
     // Bookings
     bookings: Booking[];
-    
+
     // Notifications & Chats
     notifications: Notification[];
     chatThreads: ChatThread[];
-    
+
     // Actions
     updateBudgetAllocation: (id: string, allocated: number) => void;
     addExpense: (id: string, amount: number) => void;
@@ -118,7 +118,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
             status: 'Upcoming',
             price: 150000,
             paidAmount: 45000,
-            imageUrl: 'https://images.unsplash.com/photo-1555244166-3f8b320cd56b?auto=format&fit=crop&w=400&q=80',
+            imageUrl: 'https://plus.unsplash.com/premium_photo-1672192166625-c1fda211498e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Rmxhdm9yJTIwRGVsaWdodHxlbnwwfHwwfHx8MA%3D%3D',
             location: 'Mumbai, MH',
             emiAvailable: true
         }
@@ -177,14 +177,14 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     })),
 
     sendMessage: (threadId, text) => set((state) => ({
-        chatThreads: state.chatThreads.map(thread => 
-            thread.id === threadId 
+        chatThreads: state.chatThreads.map(thread =>
+            thread.id === threadId
                 ? {
-                    ...thread, 
+                    ...thread,
                     messages: [...thread.messages, { id: `m${Date.now()}`, sender: 'user', text, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }],
                     lastMessage: text,
                     timestamp: 'Just now'
-                  }
+                }
                 : thread
         )
     }))

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Menu, X, Search, Bell, ChevronLeft, ChevronRight, LogOut, User, 
-    LayoutDashboard, Calendar, Bookmark, MessageSquare, PieChart, 
-    Settings, Package, Users, ShieldAlert, FileText, ShoppingBag, 
+import {
+    Menu, X, Search, Bell, ChevronLeft, ChevronRight, LogOut, User,
+    LayoutDashboard, Calendar, Bookmark, MessageSquare, PieChart,
+    Settings, Package, Users, ShieldAlert, FileText, ShoppingBag,
     Zap, Headphones, Sparkles, PlusCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -72,12 +72,12 @@ const DashboardLayout: React.FC<{ portalRole: Role }> = ({ portalRole }) => {
 
     return (
         <div className="min-h-screen bg-white text-slate-900 flex overflow-hidden font-sans selection:bg-red-500 selection:text-white">
-            
+
             {/* MOBILE SIDEBAR DRAWER */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <>
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setIsMobileMenuOpen(false)}
                             className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[60] lg:hidden"
@@ -95,7 +95,7 @@ const DashboardLayout: React.FC<{ portalRole: Role }> = ({ portalRole }) => {
             {/* DESKTOP SIDEBAR */}
             <aside className={`hidden lg:flex flex-col bg-white border-r border-slate-50 transition-all duration-500 ease-in-out relative z-50 ${isSidebarOpen ? 'w-[280px]' : 'w-[100px]'}`}>
                 <SidebarContent items={navItems} currentPath={location.pathname} isCollapsed={!isSidebarOpen} portalRole={portalRole} />
-                <button 
+                <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className="absolute -right-3 top-24 w-7 h-7 bg-white border border-slate-100 text-slate-400 rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:text-white hover:border-red-600 transition-all hover:scale-110 active:scale-95"
                 >
@@ -110,10 +110,10 @@ const DashboardLayout: React.FC<{ portalRole: Role }> = ({ portalRole }) => {
                         <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-3 bg-slate-50 text-slate-600 rounded-2xl hover:bg-red-50 transition-colors"><Menu size={24} /></button>
                         <div className="hidden md:flex items-center relative group">
                             <Search size={18} className="absolute left-4 text-slate-400 group-focus-within:text-red-500 transition-colors" />
-                            <input 
-                                type="text" 
-                                placeholder="Universal Command Search..." 
-                                className="bg-slate-50 border-none rounded-2xl pl-12 pr-6 py-3.5 text-xs font-black uppercase tracking-widest w-80 focus:w-96 outline-none transition-all focus:ring-4 focus:ring-red-500/5 placeholder:text-slate-300" 
+                            <input
+                                type="text"
+                                placeholder="Universal Command Search..."
+                                className="bg-slate-50 border-none rounded-2xl pl-12 pr-6 py-3.5 text-xs font-black uppercase tracking-widest w-80 focus:w-96 outline-none transition-all focus:ring-4 focus:ring-red-500/5 placeholder:text-slate-300"
                             />
                         </div>
                     </div>
@@ -174,7 +174,7 @@ const SidebarContent: React.FC<{ items: NavItem[], currentPath: string, isCollap
                 <div className="w-12 h-12 bg-red-600 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-red-600/20 group-hover:rotate-6 group-hover:scale-110 transition-all ring-4 ring-red-50">A</div>
                 {!isCollapsed && (
                     <div className="flex flex-col">
-                        <span className="text-3xl font-black tracking-tighter uppercase text-slate-900 group-hover:text-red-600 transition-colors">Airion</span>
+                        <span className="text-3xl font-black tracking-tighter uppercase text-slate-900 group-hover:text-red-600 transition-colors">Ease2event</span>
                         <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300 leading-none mt-1">Core Terminal</span>
                     </div>
                 )}
@@ -187,18 +187,17 @@ const SidebarContent: React.FC<{ items: NavItem[], currentPath: string, isCollap
             {items.map((item) => {
                 const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
                 return (
-                    <Link 
-                        key={item.path} 
-                        to={item.path} 
-                        onClick={onClose} 
-                        className={`flex items-center gap-5 px-5 py-4 rounded-[1.5rem] transition-all relative group origin-left ${
-                            isActive 
-                            ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/20 scale-105' 
-                            : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
-                        }`}
+                    <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={onClose}
+                        className={`flex items-center gap-5 px-5 py-4 rounded-[1.5rem] transition-all relative group origin-left ${isActive
+                                ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/20 scale-105'
+                                : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
+                            }`}
                     >
                         {isActive && !isCollapsed && (
-                             <motion.div layoutId="sidebar-active" className="absolute -left-6 w-2 h-8 bg-red-600 rounded-r-full" />
+                            <motion.div layoutId="sidebar-active" className="absolute -left-6 w-2 h-8 bg-red-600 rounded-r-full" />
                         )}
                         <item.icon size={20} className={isActive ? 'text-red-500' : 'text-slate-300 group-hover:text-red-500 transition-colors'} />
                         {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">{item.label}</span>}

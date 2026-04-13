@@ -60,7 +60,7 @@ const Listings: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--airion-border-subtle)] pb-12">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose uppercase">Event Management</h1>
+                    <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight uppercase">Event Management</h1>
                     <p className="text-1.5xl font-bold text-[var(--airion-text-secondary)]">
                         Configure and monitor your active event listings.
                     </p>

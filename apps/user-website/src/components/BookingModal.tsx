@@ -47,7 +47,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
             key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_xxxx',
             amount: order.amount,
             currency: "INR",
-            name: "Airion Event Booking",
+            name: "Ease2event Event Booking",
             description: `Payment for ${eventName}`,
             order_id: order.orderId,
             handler: async (response: any) => {
@@ -350,7 +350,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
 
                                     <div className="flex items-start gap-3 text-xs text-neutral-500 dark:text-slate-400 p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl text-blue-700 dark:text-blue-300">
                                         <Shield size={16} className="shrink-0 mt-0.5" />
-                                        <p>Secure payment protected by industry standard 256-bit encryption. Airion guarantees full refund on cancellations 14 days before the event.</p>
+                                        <p>Secure payment protected by industry standard 256-bit encryption. Ease2event guarantees full refund on cancellations 14 days before the event.</p>
                                     </div>
                                 </div>
                             )}

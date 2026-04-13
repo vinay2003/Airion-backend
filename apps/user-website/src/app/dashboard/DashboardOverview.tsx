@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useDashboardStore, Booking } from '@/lib/store/useDashboardStore';
+import { useDashboardStore, Booking } from '@/store/useDashboardStore';
 import { Calendar, Clock, CreditCard, ArrowRight, Plus, MapPin, Heart, Star, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';

@@ -138,7 +138,7 @@ const Header: React.FC = () => {
 
     return (
         <header
-            className={`w-full py-4 px-4 md:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled || isSearchOpen
+            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled || isSearchOpen
                 ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
                 : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
@@ -175,7 +175,7 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-3">
                 {navItems.map((item) => (
                     <div key={item.name} className="relative group px-1">
                         {item.children ? (
@@ -246,8 +246,8 @@ const Header: React.FC = () => {
                 </button>
             </div>
 
-            {/* Tablet Navigation (md to lg) */}
-            <div className="hidden md:flex lg:hidden items-center gap-3">
+            {/* Mobile & Tablet Toggle Action Container */}
+            <div className="flex lg:hidden items-center gap-2 items-center">
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
@@ -255,36 +255,26 @@ const Header: React.FC = () => {
                 >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
+                
                 {isAuthenticated ? (
-                    <Link to="/dashboard" className="w-9 h-9 rounded-full bg-red-500 flex items-center justify-center text-white font-bold shadow-lg shadow-red-500/20">
-                        {user?.name?.[0]}
-                    </Link>
+                    <UserProfileMenu />
                 ) : (
                     <Link
                         to="/login"
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-red-500/20 flex items-center gap-2"
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-lg shadow-red-500/20"
                     >
-                        <UserIcon size={16} />
+                        Login
                     </Link>
                 )}
+
                 <button
                     onClick={toggleMenu}
-                    className="p-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    className="p-2 text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-all"
                     aria-label="Toggle menu"
                 >
-                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    {isMenuOpen ? <X size={24} className="text-gray-900 dark:text-white" /> : <Menu size={24} />}
                 </button>
             </div>
-
-
-            {/* Mobile Menu Button */}
-            <button
-                onClick={toggleMenu}
-                className="md:hidden p-2 text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                aria-label="Toggle menu"
-            >
-                {isMenuOpen ? <X size={24} className="text-gray-900 dark:text-white" /> : <Menu size={24} />}
-            </button>
 
             {/* Mobile Navigation Overlay */}
             <AnimatePresence>
@@ -305,10 +295,10 @@ const Header: React.FC = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-[#0F172A] z-[70] flex flex-col shadow-2xl md:hidden border-l border-gray-100 dark:border-slate-800"
+                            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-[#0F172A] z-[70] flex flex-col shadow-2xl lg:hidden border-l border-gray-100 dark:border-slate-800"
                         >
                             {/* Menu Header */}
-                            <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-[#0F172A]/80 backdrop-blur-sm sticky top-0 z-10">
+                            <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-[#0F172A] sticky top-0 z-10">
                                 <span className="text-2xl font-black text-red-500 font-cursive flex items-center gap-2 italic">
                                     <Sparkles size={24} className="animate-pulse" />
                                     Menu
@@ -322,14 +312,14 @@ const Header: React.FC = () => {
                             </div>
 
                         {/* Menu Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                        <div className="flex-1 overflow-y-auto p-5 space-y-6">
                             {/* Navigation Links */}
-                            <nav className="space-y-2">
+                            <nav className="space-y-1">
                                 {navItems.map((item) => (
                                     <div key={item.name} className="space-y-1">
                                         {item.children ? (
-                                            <div className="space-y-1">
-                                                <div className="px-4 py-2 text-xs font-black uppercase tracking-widest text-gray-400 dark:text-slate-500 mt-4 first:mt-0">
+                                            <div className="space-y-1 py-1">
+                                                <div className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-slate-500 mt-2 first:mt-0">
                                                     {item.name}
                                                 </div>
                                                 {item.children.map((child) => (
@@ -337,7 +327,7 @@ const Header: React.FC = () => {
                                                         key={child.name}
                                                         to={child.path}
                                                         onClick={toggleMenu}
-                                                        className={`block text-lg font-bold py-3 px-4 rounded-xl transition-all ${
+                                                        className={`block text-base font-bold py-2.5 px-4 rounded-xl transition-all ${
                                                             isActivePath(child.path)
                                                                 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
                                                                 : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
@@ -351,7 +341,7 @@ const Header: React.FC = () => {
                                             <Link
                                                 to={item.path}
                                                 onClick={toggleMenu}
-                                                className={`block text-lg font-bold py-3 px-4 rounded-xl transition-all ${
+                                                className={`block text-base font-bold py-2.5 px-4 rounded-xl transition-all ${
                                                     isActivePath(item.path)
                                                         ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
                                                         : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'

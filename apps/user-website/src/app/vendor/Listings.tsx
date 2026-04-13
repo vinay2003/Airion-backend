@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, MapPin, Star, Edit2, Trash2, LayoutGrid, List as ListIcon, Search, Filter } from 'lucide-react';
-import { useListingStore } from '@airion/shared/lib/stores/useListingStore';
-import { useAuth } from '@airion/shared/auth';
+import { useListingStore } from '@ease2event/shared/lib/stores/useListingStore';
+import { useAuth } from '@ease2event/shared/auth';
 import ListingEditorModal from '../components/ListingEditorModal';
-import { Button, Card, Skeleton, notify } from '@airion/ui';
+import { Button, Card, Skeleton, notify } from '@ease2event/ui';
 
 const Listings: React.FC = () => {
     const { user } = useAuth();

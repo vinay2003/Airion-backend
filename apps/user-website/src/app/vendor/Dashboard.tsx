@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Calendar as CalendarIcon, TrendingUp, TrendingDown, DollarSign, Package, Bell, FileText, Settings, Star, Search, Filter } from 'lucide-react';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 import { useBookingStore } from '@/lib/store/useBookingStore';
 import { useListingStore } from '@/lib/store/useListingStore';
 import { Button, Card, Skeleton } from '@/components/ui/index'; // I'll consolidate exports

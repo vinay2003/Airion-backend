@@ -42,7 +42,7 @@ export const Dropdown = ({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-xs font-bold text-[var(--airion-text-muted)] uppercase tracking-widest mb-2 pl-1 select-none">
+        <label className="block text-xs font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest mb-2 pl-1 select-none">
           {label}
         </label>
       )}
@@ -53,25 +53,25 @@ export const Dropdown = ({
           flex items-center justify-between w-full px-5 py-3 rounded-2xl border transition-all duration-200
           ${
             isOpen
-              ? 'border-[var(--airion-brand-primary)] ring-4 ring-[rgba(108,99,255,0.08)] bg-[var(--airion-bg-surface)] shadow-[var(--airion-shadow-md)]'
-              : 'border-[var(--airion-border-base)] bg-[var(--airion-bg-surface)] hover:border-[var(--airion-border-active)] hover:bg-[var(--airion-bg-elevated)]/50'
+              ? 'border-[var(--ease2event-brand-primary)] ring-4 ring-[rgba(108,99,255,0.08)] bg-[var(--ease2event-bg-surface)] shadow-[var(--ease2event-shadow-md)]'
+              : 'border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-border-active)] hover:bg-[var(--ease2event-bg-elevated)]/50'
           }
           text-sm font-bold uppercase tracking-tight
         `}
       >
-        <span className={selectedItem ? 'text-[var(--airion-text-primary)]' : 'text-[var(--airion-text-muted)]'}>
+        <span className={selectedItem ? 'text-[var(--ease2event-text-primary)]' : 'text-[var(--ease2event-text-muted)]'}>
           {selectedItem?.label || placeholder}
         </span>
         <ChevronDown
           size={18}
-          className={`text-[var(--airion-text-muted)] transition-transform duration-300 ${
-            isOpen ? 'rotate-180 text-[var(--airion-brand-primary)]' : ''
+          className={`text-[var(--ease2event-text-muted)] transition-transform duration-300 ${
+            isOpen ? 'rotate-180 text-[var(--ease2event-brand-primary)]' : ''
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute z-[999] top-full mt-2 w-full bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl shadow-[var(--airion-shadow-lg)] p-2 transition-all duration-200 animate-slideUp overflow-hidden">
+        <div className="absolute z-[999] top-full mt-2 w-full bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] p-2 transition-all duration-200 animate-slideUp overflow-hidden">
           <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
             {items.map((item) => (
               <button
@@ -85,15 +85,15 @@ export const Dropdown = ({
                   w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors select-none text-left
                   ${
                     selectedId === item.id
-                      ? 'bg-[var(--airion-bg-elevated)] text-[var(--airion-brand-primary)]'
-                      : 'text-[var(--airion-text-secondary)] hover:bg-[var(--airion-bg-elevated)]/50 hover:text-[var(--airion-text-primary)]'
+                      ? 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-brand-primary)]'
+                      : 'text-[var(--ease2event-text-secondary)] hover:bg-[var(--ease2event-bg-elevated)]/50 hover:text-[var(--ease2event-text-primary)]'
                   }
                   ${item.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}
                   font-bold uppercase tracking-tight text-xs
                 `}
               >
                 <div className="flex items-center gap-3">
-                  {item.icon && <span className="text-[var(--airion-text-muted)]">{item.icon}</span>}
+                  {item.icon && <span className="text-[var(--ease2event-text-muted)]">{item.icon}</span>}
                   {item.label}
                 </div>
                 {selectedId === item.id && <Check size={16} strokeWidth={3} />}

@@ -48,7 +48,7 @@ const auth = await vendorAuth.verifyLoginOTP({
 
 // Admin login with 2FA
 const adminResponse = await adminAuth.login({
-    email: 'admin@airion.com',
+    email: 'admin@ease2event.com',
     password: 'securepass',
     twoFactorCode: '123456'
 });

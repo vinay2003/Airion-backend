@@ -7,6 +7,8 @@ import { CreateVendorDto } from './dto/create-vendor.dto';
 import { User } from '../auth/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Booking } from '../bookings/entities/booking.entity';
+import { VendorAd } from './entities/vendor-ad.entity';
+import { VendorGallery } from './entities/vendor-gallery.entity';
 
 @Injectable()
 export class VendorsService {
@@ -19,6 +21,10 @@ export class VendorsService {
         private categoryRepository: Repository<Category>,
         @InjectRepository(Booking)
         private bookingRepository: Repository<Booking>,
+        @InjectRepository(VendorAd)
+        private adRepository: Repository<VendorAd>,
+        @InjectRepository(VendorGallery)
+        private galleryRepository: Repository<VendorGallery>,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
@@ -40,6 +46,40 @@ export class VendorsService {
         });
 
         return this.vendorRepository.save(vendor);
+    }
+
+    /**
+     * Complete vendor onboarding — saves business details and marks profile as complete.
+     * Called after vendor signup, from the onboarding form.
+     */
+    async completeOnboarding(userId: string, dto: {
+        businessName: string;
+        gstNumber?: string;
+        businessEmail?: string;
+        address?: string;
+        services?: string;
+        businessDescription?: string;
+    }): Promise<{ vendor: Vendor; isProfileComplete: boolean }> {
+        // Find or create vendor record for this user
+        let vendor = await this.vendorRepository.findOne({ where: { userId } });
+
+        if (!vendor) {
+            vendor = this.vendorRepository.create({ userId }) as Vendor;
+        }
+
+        // Assign onboarding fields
+        Object.assign(vendor, {
+            businessName: dto.businessName,
+            gstNumber: dto.gstNumber || null,
+            businessEmail: dto.businessEmail || null,
+            businessAddress: dto.address ? { street: dto.address, city: '', state: '', country: 'India', zipCode: '' } : null,
+            businessDescription: dto.businessDescription || null,
+            isProfileComplete: true,
+            verificationStatus: vendor.verificationStatus || 'pending',
+        });
+
+        const saved = await this.vendorRepository.save(vendor);
+        return { vendor: saved, isProfileComplete: true };
     }
 
     async trackActivity(userId: string, type: ActivityType, targetId?: string, metadata?: any): Promise<Activity> {
@@ -98,16 +138,30 @@ export class VendorsService {
         return this.vendorRepository.save(vendor);
     }
 
-    async findAll(status?: string): Promise<Vendor[]> {
+    async findAll(options: { 
+        status?: string; 
+        limit?: number; 
+        offset?: number; 
+        search?: string;
+    } = {}): Promise<{ vendors: Vendor[]; total: number }> {
+        const { status, limit = 10, offset = 0, search } = options;
+        
         const query = this.vendorRepository.createQueryBuilder('vendor')
             .leftJoinAndSelect('vendor.user', 'user')
-            .leftJoinAndSelect('vendor.category', 'category');
+            .leftJoinAndSelect('vendor.category', 'category')
+            .take(limit)
+            .skip(offset);
 
         if (status) {
-            query.where('vendor.verificationStatus = :status', { status });
+            query.andWhere('vendor.verificationStatus = :status', { status });
         }
 
-        return query.getMany();
+        if (search) {
+            query.andWhere('(vendor.businessName ILIKE :search OR user.name ILIKE :search)', { search: `%${search}%` });
+        }
+
+        const [vendors, total] = await query.getManyAndCount();
+        return { vendors, total };
     }
 
     async updateStatus(id: string, status: string): Promise<Vendor> {
@@ -122,124 +176,105 @@ export class VendorsService {
     }
 
     async getVendorStats(vendorId: string): Promise<any> {
-        const bookings = await this.bookingRepository.find({ 
-            where: { vendorId },
-            order: { createdAt: 'DESC' }
-        });
-
-        // Current business logic for stats
-        const pending = bookings.filter(b => b.status === 'pending').length;
-        const upcoming = bookings.filter(b => b.status === 'confirmed').length;
-        const events = bookings.filter(b => b.status === 'completed').length;
-        const revenueTotal = bookings
-            .filter(b => b.status === 'completed' || b.paymentStatus === 'paid')
-            .reduce((sum, b) => sum + Number(b.totalAmount), 0);
+        // ⚡ OPTIMIZED: Database-level aggregation (No O(N) loops)
+        const stats = await this.bookingRepository
+            .createQueryBuilder('booking')
+            .select([
+                "COUNT(*) FILTER (WHERE status = 'pending') as pending",
+                "COUNT(*) FILTER (WHERE status = 'confirmed') as upcoming",
+                "COUNT(*) FILTER (WHERE status = 'completed') as completed",
+                "SUM(total_amount) FILTER (WHERE status = 'completed' OR payment_status = 'paid') as revenue"
+            ])
+            .where('booking.vendorId = :vendorId', { vendorId })
+            .getRawOne();
 
         return {
-            pendingBookings: pending,
-            totalEvents: events,
-            upcomingBookings: upcoming,
-            totalEarnings: revenueTotal.toLocaleString('en-IN')
+            pendingBookings: Number(stats.pending || 0),
+            totalEvents: Number(stats.completed || 0),
+            upcomingBookings: Number(stats.upcoming || 0),
+            totalEarnings: Number(stats.revenue || 0).toLocaleString('en-IN')
         };
     }
 
     async getDetailedEarnings(vendorId: string): Promise<any> {
         const bookings = await this.bookingRepository.find({
             where: { vendorId },
-            order: { createdAt: 'DESC' }
+            order: { createdAt: 'DESC' },
+            take: 20 // Limit payload size
         });
 
-        const completedBookings = bookings.filter(b => b.status === 'completed' || b.paymentStatus === 'paid');
-        
-        // Calculate revenue stats
-        const totalBalance = completedBookings.reduce((sum, b) => sum + Number(b.totalAmount), 0);
-        
-        // Monthly trend (last 6 months)
-        const monthlyStats = [];
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        
-        for (let i = 5; i >= 0; i--) {
-            const date = new Date();
-            date.setMonth(date.getMonth() - i);
-            const monthLabel = monthNames[date.getMonth()];
-            const monthYear = date.getFullYear();
-            
-            const monthRevenue = completedBookings
-                .filter(b => {
-                    const bDate = new Date(b.createdAt);
-                    return bDate.getMonth() === date.getMonth() && bDate.getFullYear() === monthYear;
-                })
-                .reduce((sum, b) => sum + Number(b.totalAmount), 0);
-                
-            monthlyStats.push({ name: monthLabel, revenue: monthRevenue });
-        }
+        // ⚡ OPTIMIZED: DB Aggregation for monthly stats
+        const monthlyStats = await this.bookingRepository
+            .createQueryBuilder('booking')
+            .select([
+                "TO_CHAR(created_at, 'Mon') as name",
+                "SUM(total_amount) as revenue"
+            ])
+            .where('booking.vendorId = :vendorId', { vendorId })
+            .andWhere("booking.status = 'completed' OR booking.payment_status = 'paid'")
+            .andWhere("created_at > NOW() - INTERVAL '6 months'")
+            .groupBy("TO_CHAR(created_at, 'Mon'), DATE_TRUNC('month', created_at)")
+            .orderBy("DATE_TRUNC('month', created_at)", "ASC")
+            .getRawMany();
 
-        // Transactions (transformed for frontend)
-        const transactions = bookings.slice(0, 10).map(b => ({
-            id: `#TRX-${b.id?.split('-')[0].toUpperCase()}`,
-            service: 'Service Booking', // Should ideally fetch service title
-            client: 'Customer', // Should ideally fetch user name
-            date: new Date(b.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-            amount: `₹${Number(b.totalAmount).toLocaleString('en-IN')}`,
-            status: b.status.charAt(0).toUpperCase() + b.status.slice(1)
-        }));
+        const totalBalance = await this.bookingRepository
+            .createQueryBuilder('booking')
+            .select("SUM(total_amount)", "total")
+            .where('booking.vendorId = :vendorId', { vendorId })
+            .andWhere("booking.status = 'completed' OR booking.payment_status = 'paid'")
+            .getRawOne();
 
         return {
-            totalBalance,
-            monthlyRevenue: monthlyStats[monthlyStats.length - 1].revenue,
-            monthlyStats,
-            recentTransactions: transactions
+            totalBalance: Number(totalBalance?.total || 0),
+            monthlyStats: monthlyStats.map(s => ({ name: s.name, revenue: Number(s.revenue) })),
+            recentTransactions: bookings.map(b => ({
+                id: `#TRX-${b.id?.split('-')[0].toUpperCase()}`,
+                service: 'Service Booking', 
+                client: 'Customer', 
+                date: new Date(b.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+                amount: `₹${Number(b.totalAmount).toLocaleString('en-IN')}`,
+                status: b.status.charAt(0).toUpperCase() + b.status.slice(1)
+            }))
         };
     }
 
     // --- ADS MANAGEMENT ---
 
-    async createAd(userId: string, adData: any): Promise<Vendor> {
+    async createAd(userId: string, adData: any): Promise<VendorAd> {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
 
-        const newAd = {
-            id: Math.random().toString(36).substr(2, 9),
+        const ad = this.adRepository.create({
             ...adData,
-            status: 'Pending',
-            createdAt: new Date(),
-        };
+            vendorId: vendor.id,
+        });
 
-        vendor.ads = [...(vendor.ads || []), newAd];
-        return this.vendorRepository.save(vendor);
+        return this.adRepository.save(ad) as unknown as Promise<VendorAd>;
     }
 
-    async updateAd(userId: string, adId: string, updateData: any): Promise<Vendor> {
-        const vendor = await this.findByUserId(userId);
-        if (!vendor) throw new NotFoundException('Vendor profile not found');
+    async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {
+        const ad = await this.adRepository.findOne({ where: { id: adId } });
+        if (!ad) throw new NotFoundException('Ad not found');
 
-        vendor.ads = (vendor.ads || []).map(ad => 
-            ad.id === adId ? { ...ad, ...updateData } : ad
-        );
-        return this.vendorRepository.save(vendor);
+        Object.assign(ad, updateData);
+        return this.adRepository.save(ad);
     }
 
     // --- GALLERY MANAGEMENT ---
 
-    async addToGallery(userId: string, item: any): Promise<Vendor> {
+    async addToGallery(userId: string, item: any): Promise<VendorGallery> {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
 
-        const newItem = {
-            id: Math.random().toString(36).substr(2, 9),
+        const galleryItem = this.galleryRepository.create({
             ...item,
-            createdAt: new Date(),
-        };
+            vendorId: vendor.id,
+        });
 
-        vendor.gallery = [...(vendor.gallery || []), newItem];
-        return this.vendorRepository.save(vendor);
+        return this.galleryRepository.save(galleryItem) as unknown as Promise<VendorGallery>;
     }
 
-    async removeFromGallery(userId: string, itemId: string): Promise<Vendor> {
-        const vendor = await this.findByUserId(userId);
-        if (!vendor) throw new NotFoundException('Vendor profile not found');
-
-        vendor.gallery = (vendor.gallery || []).filter(item => item.id !== itemId);
-        return this.vendorRepository.save(vendor);
+    async removeFromGallery(userId: string, itemId: string): Promise<void> {
+        await this.galleryRepository.delete({ id: itemId });
     }
 }

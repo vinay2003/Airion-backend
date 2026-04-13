@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '@airion/shared';
+import { useAuth } from '@ease2event/shared';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;

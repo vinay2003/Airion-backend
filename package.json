@@ -1,5 +1,5 @@
 {
-  "name": "airion",
+  "name": "ease2event",
   "private": true,
   "packageManager": "npm@10.9.0",
   "workspaces": [
@@ -9,10 +9,10 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "build:user": "turbo build --filter=@airion/user-website",
-    "build:vendor": "turbo build --filter=@airion/vendor-dashboard",
-    "build:admin": "turbo build --filter=@airion/admin-panel",
-    "build:api": "turbo build --filter=@airion/api",
+    "build:user": "turbo build --filter=@ease2event/user-website",
+    "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
+    "build:admin": "turbo build --filter=@ease2event/admin-panel",
+    "build:api": "turbo build --filter=@ease2event/api",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

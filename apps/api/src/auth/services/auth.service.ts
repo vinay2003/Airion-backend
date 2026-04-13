@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
@@ -10,22 +10,28 @@ import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto, ResetPasswordDto } f
 import { SignupDto } from '../dto/signup.dto';
 
 import { SessionService } from './session.service';
+import { CryptoUtil } from '../../common/utils/crypto.util';
+import { RefreshToken } from '../entities/refresh-token.entity';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
         @InjectRepository(Otp)
         private otpRepository: Repository<Otp>,
+        @InjectRepository(RefreshToken)
+        private refreshTokenRepository: Repository<RefreshToken>,
         private jwtService: JwtService,
         private configService: ConfigService,
         private sessionService: SessionService,
     ) { }
 
-    // Generate 6-digit OTP
+    // Generate 6-digit secure OTP
     private generateOTP(): string {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+        return CryptoUtil.generateOTP(6);
     }
 
     // Send OTP for signup
@@ -41,10 +47,10 @@ export class AuthService {
         if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
         if (dto.email) whereConditions.push({ email: dto.email });
 
-        // Run existence check and cleanup in parallel to reduce network latency
+        // Run existence check and cleanup in parallel
         const [existingUser, _] = await Promise.all([
             this.userRepository.findOne({ where: whereConditions }),
-            this.otpRepository.delete({ identifier })
+            this.otpRepository.delete({ identifier, type: 'signup' })
         ]);
 
         if (existingUser) {
@@ -59,6 +65,7 @@ export class AuthService {
             identifier,
             otp: hashedOtp,
             expiresAt,
+            type: 'signup',
         });
         await this.otpRepository.save(otp);
 
@@ -73,18 +80,23 @@ export class AuthService {
     }
 
     // Verify OTP and create account
-    async verifySignupOTP(dto: VerifySignupOtpDto): Promise<{ access_token: string; refresh_token: string; user: Partial<User> }> {
+    async verifySignupOTP(dto: VerifySignupOtpDto): Promise<{ access_token: string; refresh_token: string; user: Partial<User>; isProfileComplete?: boolean }> {
         const identifier = (dto.phone || dto.email)?.trim()?.toLowerCase();
 
         if (!identifier) {
             throw new BadRequestException('Please provide either phone or email');
         }
 
+        // 🚨 SECURITY: Block admin role from signup — admins are created manually
+        if (dto.role === UserRole.ADMIN) {
+            throw new ForbiddenException('Admin accounts cannot be created via signup. Contact your system administrator.');
+        }
+
         const isDummy = (process.env.NODE_ENV !== 'production' || this.configService.get('NODE_ENV') !== 'production') && dto.otp === '000000';
 
         // Validate OTP
         const otpRecord = await this.otpRepository.findOne({
-            where: { identifier },
+            where: { identifier, type: 'signup' },
             order: { createdAt: 'DESC' },
         });
 
@@ -122,11 +134,15 @@ export class AuthService {
 
         await this.userRepository.save(user);
 
-        // Generate JWT token
+        // isProfileComplete is false for new vendor accounts (they must complete onboarding)
+        const isProfileComplete = false;
+
+        // Generate JWT token — include isProfileComplete for vendor routing decisions
         const payload = { 
             sub: user.id, 
             email: user.email, 
             role: user.role,
+            isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
             vendorId: (user as any).vendor?.id 
         };
         const access_token = this.jwtService.sign(payload);
@@ -135,12 +151,13 @@ export class AuthService {
         const { password, ...userWithoutPassword } = user;
 
         const refresh_token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        await this.sessionService.createSession(user.id, refresh_token, '0.0.0.0', 'Airion Gateway');
+        await this.sessionService.createSession(user.id, refresh_token, '0.0.0.0', 'Ease2event Gateway');
 
         return {
             access_token,
             refresh_token,
             user: userWithoutPassword as Partial<User>,
+            isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
         };
     }
 
@@ -161,7 +178,7 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: whereConditions });
         
         // Parallelize user check and OTP cleanup
-        await this.otpRepository.delete({ identifier });
+        await this.otpRepository.delete({ identifier, type: 'login' });
 
         const otpCode = this.generateOTP();
         const hashedOtp = await bcrypt.hash(otpCode, 10);
@@ -171,6 +188,7 @@ export class AuthService {
             identifier,
             otp: hashedOtp,
             expiresAt,
+            type: 'login',
         });
 
         await this.otpRepository.save(otp);
@@ -184,8 +202,53 @@ export class AuthService {
         };
     }
 
-    // Verify OTP and login
-    async verifyLoginOTP(dto: VerifyLoginOtpDto): Promise<{ access_token: string; refresh_token: string; user: Partial<User> }> {
+    // Send OTP for Admin Login
+    async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string }> {
+        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        
+        if (dto.phone !== adminPhone) {
+            this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
+            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+        }
+
+        // Check if admin user exists in DB
+        const adminUser = await this.userRepository.findOne({ 
+            where: { phoneNumber: dto.phone, role: UserRole.ADMIN } 
+        });
+
+        if (!adminUser) {
+            this.logger.warn(`🚨 SECURITY ALERT: Admin record missing for verified number ${dto.phone}`);
+            throw new ForbiddenException('Unauthorized user: No admin record found in database');
+        }
+
+        const identifier = dto.phone.trim();
+        await this.otpRepository.delete({ identifier });
+
+        const otpCode = this.generateOTP();
+        const hashedOtp = await bcrypt.hash(otpCode, 10);
+        const expiresAt = (Date.now() + 5 * 60 * 1000).toString();
+
+        const otp = this.otpRepository.create({
+            identifier,
+            otp: hashedOtp,
+            expiresAt,
+            attempts: 0
+        });
+
+        await this.otpRepository.save(otp);
+
+        // Production: Send SMS via provider
+        this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
+        console.log(`🔒 [ADMIN_SECURE] Admin Login OTP for ${identifier}: ${otpCode}`);
+
+        return {
+            message: 'OTP sent to your registered admin number',
+            ...(process.env.NODE_ENV !== 'production' && { _dev_otp: otpCode }),
+        };
+    }
+
+    // Verify OTP and login for normal users
+    async verifyLoginOTP(dto: VerifyLoginOtpDto): Promise<{ access_token: string; refresh_token: string; user: Partial<User>; isProfileComplete?: boolean }> {
         const identifier = (dto.phone || dto.email)?.trim()?.toLowerCase();
 
         if (!identifier) {
@@ -196,7 +259,7 @@ export class AuthService {
 
         // Get OTP Record
         const otpRecord = await this.otpRepository.findOne({
-            where: { identifier },
+            where: { identifier, type: 'login' },
             order: { createdAt: 'DESC' },
         });
 
@@ -222,7 +285,7 @@ export class AuthService {
             await this.otpRepository.delete({ identifier });
         }
 
-        // Get user
+        // Get user — load vendor relation to get isProfileComplete
         const whereConditions: any[] = [];
         if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
         if (dto.email) whereConditions.push({ email: dto.email });
@@ -260,32 +323,111 @@ export class AuthService {
         loggedInUser.lastLoginAt = new Date();
         await this.userRepository.save(loggedInUser);
 
-        // Generate JWT token
+        // Get vendor isProfileComplete status
+        const isProfileComplete = (loggedInUser as any).vendor?.isProfileComplete ?? false;
+        const vendorId = (loggedInUser as any).vendor?.id;
+
+        // Generate JWT token — include isProfileComplete for client-side routing
         const payload = { 
             sub: loggedInUser.id, 
             email: loggedInUser.email, 
             role: loggedInUser.role,
-            vendorId: (loggedInUser as any).vendor?.id 
+            isProfileComplete: loggedInUser.role === UserRole.VENDOR ? isProfileComplete : undefined,
+            vendorId,
         };
         const access_token = this.jwtService.sign(payload);
 
         // Return user without password
         const { password, ...userWithoutPassword } = loggedInUser;
 
-        // Generate Refresh Token & Session
-        const refresh_token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        await this.sessionService.createSession(loggedInUser.id, refresh_token, '0.0.0.0', 'Airion Gateway');
+        // 🔐 SECURE REFRESH SYSTEM: Generate Entropy-Rich Token
+        const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
+        const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
+        
+        // Persist session node
+        const refreshToken = this.refreshTokenRepository.create({
+            userId: loggedInUser.id,
+            tokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 Day TTL
+        });
+        await this.refreshTokenRepository.save(refreshToken);
 
         return {
             access_token,
-            refresh_token,
+            refresh_token: refreshTokenPlain,
             user: userWithoutPassword as Partial<User>,
+            isProfileComplete: loggedInUser.role === UserRole.VENDOR ? isProfileComplete : undefined,
+        };
+    }
+
+    // Verify OTP for Admin
+    async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
+        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        
+        if (dto.phone !== adminPhone) {
+            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+        }
+
+        const identifier = dto.phone.trim();
+        const otpRecord = await this.otpRepository.findOne({
+            where: { identifier },
+            order: { createdAt: 'DESC' },
+        });
+
+        if (!otpRecord) {
+            throw new UnauthorizedException('OTP not found or expired');
+        }
+
+        if (Number(otpRecord.expiresAt) < Date.now()) {
+            await this.otpRepository.delete({ identifier });
+            throw new UnauthorizedException('OTP expired');
+        }
+
+        // Check attempts
+        if (otpRecord.attempts >= 3) {
+            await this.otpRepository.delete({ identifier });
+            throw new ForbiddenException('Maximum attempts reached. Please request a new OTP.');
+        }
+
+        const isMatch = await bcrypt.compare(dto.otp, otpRecord.otp);
+        if (!isMatch) {
+            otpRecord.attempts += 1;
+            await this.otpRepository.save(otpRecord);
+            this.logger.warn(`🔒 [ADMIN_AUDIT] Failed verification attempt for Admin. Attempt ${otpRecord.attempts}/3`);
+            throw new UnauthorizedException(`Invalid OTP code. ${3 - otpRecord.attempts} attempts remaining.`);
+        }
+
+        // Success: Clear OTP
+        await this.otpRepository.delete({ identifier });
+
+        // Find existing admin record (Strict: No auto-create)
+        const adminUser = await this.userRepository.findOne({ 
+            where: { phoneNumber: identifier, role: UserRole.ADMIN } 
+        });
+
+        if (!adminUser) {
+            throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
+        }
+
+        const payload = { 
+            sub: adminUser.id, 
+            role: adminUser.role,
+            name: adminUser.name
+        };
+        const access_token = this.jwtService.sign(payload);
+
+        this.logger.log(`✅ [ADMIN_AUDIT] Successful login for Admin ID: ${adminUser.id}`);
+
+        return {
+            access_token,
+            user: { id: adminUser.id, name: adminUser.name, role: adminUser.role, phoneNumber: adminUser.phoneNumber }
         };
     }
 
     async getUserById(userId: string): Promise<Partial<User>> {
         const user = await this.userRepository.findOne({
             where: { id: userId },
+            relations: ['vendor'], // Load vendor to expose isProfileComplete
         });
 
         if (!user) {
@@ -361,6 +503,59 @@ export class AuthService {
         };
     }
 
+    /**
+     * 🔄 Secure Token Rotation
+     * Verifies current entropy-rich refresh token and issues a new synchronized pair.
+     */
+    async refreshToken(token: string): Promise<{ access_token: string; refresh_token: string }> {
+        if (!token) throw new UnauthorizedException('Identity cipher missing.');
+
+        const tokenHash = CryptoUtil.hashValue(token);
+        const refreshToken = await this.refreshTokenRepository.findOne({
+            where: { tokenHash, isRevoked: false },
+            relations: ['user', 'user.vendor']
+        });
+
+        if (!refreshToken || refreshToken.expiresAt < new Date()) {
+            if (refreshToken) {
+                refreshToken.isRevoked = true;
+                await this.refreshTokenRepository.save(refreshToken);
+            }
+            throw new UnauthorizedException('Identity synchronization expired. Re-authentication required.');
+        }
+
+        const user = refreshToken.user;
+        
+        // 🔐 ROTATE: Revoke old cipher immediately
+        refreshToken.isRevoked = true;
+        await this.refreshTokenRepository.save(refreshToken);
+
+        // Generate new atomic identity pair
+        const isProfileComplete = (user as any).vendor?.isProfileComplete ?? false;
+        const vendorId = (user as any).vendor?.id;
+
+        const payload = { 
+            sub: user.id, 
+            email: user.email, 
+            role: user.role,
+            isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
+            vendorId,
+        };
+        const access_token = this.jwtService.sign(payload);
+
+        const newRefreshTokenPlain = CryptoUtil.generateSecureToken(32);
+        const newTokenHash = CryptoUtil.hashValue(newRefreshTokenPlain);
+        
+        const newRefreshToken = this.refreshTokenRepository.create({
+            userId: user.id,
+            tokenHash: newTokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+        await this.refreshTokenRepository.save(newRefreshToken);
+
+        return { access_token, refresh_token: newRefreshTokenPlain };
+    }
+
     // Reset Password
     async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
         const { email, token, newPassword } = dto;
@@ -407,5 +602,18 @@ export class AuthService {
 
         Object.assign(user, dto);
         return this.userRepository.save(user);
+    }
+
+    async findAllUsers(role?: string): Promise<User[]> {
+        const where: any = {};
+        if (role) {
+            where.role = role;
+        }
+        
+        return this.userRepository.find({
+            where,
+            order: { createdAt: 'DESC' },
+            select: ['id', 'name', 'email', 'phoneNumber', 'createdAt', 'role', 'lastLoginAt']
+        });
     }
 }

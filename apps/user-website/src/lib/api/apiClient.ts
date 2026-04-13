@@ -32,7 +32,7 @@ export class ApiClient {
     // Request Interceptor: Auth Token Injection
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('airion_token');
+        const token = localStorage.getItem('ease2event_token');
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -60,7 +60,7 @@ export class ApiClient {
 
         // Handle 401 Unauthorized globally
         if (error.response?.status === 401) {
-          localStorage.removeItem('airion_token');
+          localStorage.removeItem('ease2event_token');
           // Optional: Dispatch event or redirect if window is available
           if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
             // window.location.href = '/login'; // Let consumer handle if needed

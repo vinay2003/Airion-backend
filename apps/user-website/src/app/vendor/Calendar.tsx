@@ -182,7 +182,7 @@ const CalendarPage: React.FC = () => {
                     </div>
 
                     {/* Progress Card */}
-                    <div className="bg-gradient-to-br from-[var(--airion-brand-primary)] to-[var(--airion-brand-secondary)] rounded-3xl p-6 text-white shadow-xl shadow-red-500/20 relative overflow-hidden group">
+                    <div className="bg-gradient-to-br from-[var(--ease2event-brand-primary)] to-[var(--ease2event-brand-secondary)] rounded-3xl p-6 text-white shadow-xl shadow-red-500/20 relative overflow-hidden group">
                         <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                         <div className="relative z-10">
                             <h3 className="font-black text-lg mb-4 leading-tight">Monthly Target<br />Achived 72%</h3>

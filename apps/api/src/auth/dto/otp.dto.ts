@@ -3,7 +3,7 @@ import {
   SendOtpSchema, 
   VerifyOtpSchema, 
   ResetPasswordSchema 
-} from '@airion/types';
+} from '@ease2event/types';
 
 export class SendOtpDto extends createZodDto(SendOtpSchema) {}
 export class VerifyOtpDto extends createZodDto(VerifyOtpSchema) {}

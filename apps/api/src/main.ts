@@ -26,7 +26,7 @@ async function bootstrap() {
                     winston.format.ms(),
                     isProduction
                         ? winston.format.json()
-                        : nestWinstonModuleUtilities.format.nestLike('Airion', { colors: true, prettyPrint: true }),
+                        : nestWinstonModuleUtilities.format.nestLike('Ease2event', { colors: true, prettyPrint: true }),
                 ),
             }),
         ],
@@ -43,9 +43,9 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
-                'https://airion.vercel.app',
-                'https://vendor.airion.vercel.app',
-                'https://admin.airion.vercel.app'
+                'https://ease2event.vercel.app',
+                'https://vendor.ease2event.vercel.app',
+                'https://admin.ease2event.vercel.app'
             ];
             const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
             if (isLocal || process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {

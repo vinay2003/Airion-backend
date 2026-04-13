@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider, ProtectedRoute } from '@airion/shared';
+import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +13,6 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Vendors = lazy(() => import('./pages/Vendors'));
 const Users = lazy(() => import('./pages/Users'));
 const Bookings = lazy(() => import('./pages/Bookings'));
-const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 const PageLoader = () => (
@@ -31,14 +30,20 @@ const App: React.FC = () => {
           <AuthProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/login" element={<AdminLogin />} />
-                <Route path="/" element={<ProtectedRoute allowedRoles={['admin']}><Layout /></ProtectedRoute>}>
+                <Route path="/" element={
+                  <ProtectedRoute 
+                    allowedRoles={['admin']} 
+                    redirectUrl="http://localhost:5173/admin/login"
+                  >
+                    <Layout />
+                  </ProtectedRoute>
+                }>
                   <Route index element={<Dashboard />} />
                   <Route path="vendors" element={<Vendors />} />
                   <Route path="users" element={<Users />} />
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="*" element={<div className="p-8 text-[var(--airion-text-primary)] font-medium">Page not found</div>} />
+                  <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>
               </Routes>
             </Suspense>

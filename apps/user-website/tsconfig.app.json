@@ -37,6 +37,18 @@
       ],
       "@shared": [
         "../../packages/shared"
+      ],
+      "@ease2event/shared/*": [
+        "../../packages/shared/*"
+      ],
+      "@ease2event/shared": [
+        "../../packages/shared"
+      ],
+      "@ease2event/ui/*": [
+        "../../packages/ui/*"
+      ],
+      "@ease2event/ui": [
+        "../../packages/ui"
       ]
     }
   },

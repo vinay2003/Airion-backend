@@ -13,19 +13,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const fetchUser = useCallback(async () => {
     // Check health in parallel with auth check
     const healthCheckPromise = commonAuth.healthCheck();
-    
+
     // 🔐 JWT Handshake Protocol: Multi-Portal Monorepo Handoff
     const urlParams = new URL(window.location.href).searchParams;
-    const urlToken = urlParams.get('token') || urlParams.get('airion_token');
-    
+    const urlToken = urlParams.get('token') || urlParams.get('ease2event_token');
+
     if (urlToken) {
       tokenService.setAccessToken(urlToken);
       // 🔥 Clean URL to prevent re-capturing token on reload or security leaks
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('token');
-      newUrl.searchParams.delete('airion_token');
+      newUrl.searchParams.delete('ease2event_token');
       window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
-      
+
       const returnPath = urlParams.get('redirect_to');
       if (returnPath) {
         window.location.href = returnPath;
@@ -36,6 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!tokenService.hasToken()) {
       const health = await healthCheckPromise;
       setBackendAvailable(health);
+      // 🔥 Only clear user if it wasn't set by a late login event
+      setUser(prev => prev);
       setIsLoading(false);
       return;
     }
@@ -45,13 +47,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         commonAuth.checkAuth(),
         healthCheckPromise
       ]);
-      setUser(userData);
+
+      // 🔥 RACE CONDITION FIX: Do not overwrite if a user is already set (by loginWithResponse)
+      setUser(prev => prev || userData);
       setBackendAvailable(health);
     } catch (error) {
       console.error('[SharedAuth] Auth check failed:', error);
-      tokenService.clearTokens();
-      setUser(null);
-      // Even if auth fails, the backend might still be up
+      // 🔥 Don't clear tokens if we just logged in! Only if we are not in login flow.
+      // We check if the current user exists; if not, then clear.
+      setUser(prev => {
+        if (!prev) tokenService.clearTokens();
+        return prev;
+      });
+
       const health = await healthCheckPromise;
       setBackendAvailable(health);
     } finally {
@@ -71,10 +79,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(async (email: string, password: string) => {
     const response = await commonAuth.login(email, password);
     tokenService.setAccessToken(response.access_token);
-    setUser(response.user);
     if (response.refresh_token) {
-        tokenService.setRefreshToken(response.refresh_token);
+      tokenService.setRefreshToken(response.refresh_token);
     }
+    setUser(response.user);
+    setIsLoading(false);
+  }, []);
+
+  const loginWithResponse = useCallback((response: any) => {
+    tokenService.setAccessToken(response.access_token);
+    if (response.refresh_token) {
+      tokenService.setRefreshToken(response.refresh_token);
+    }
+    // 🔥 CRITICAL FIX: Update state and CLEAR loading so ProtectedRoutes can render immediately
+    setUser(response.user);
+    setIsLoading(false);
   }, []);
 
   const logout = useCallback(async () => {
@@ -85,6 +104,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       tokenService.clearTokens();
       setUser(null);
+
+      // 🚀 Global Identity Reset: Redirect to Central Auth Portal
+      const isCentralAuth = window.location.port === '5173';
+      const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
+
+      if (!isCentralAuth) {
+        window.location.href = LOGIN_URL;
+      } else {
+        // If we are already on central auth, just navigating to login is enough
+        // We can use navigate if we're in a react-router context, but window.location is safer here
+        window.location.href = '/login';
+      }
     }
   }, []);
 
@@ -95,6 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     backendAvailable,
     login,
     loginWithToken,
+    loginWithResponse,
     logout,
     refreshUser: fetchUser,
   };

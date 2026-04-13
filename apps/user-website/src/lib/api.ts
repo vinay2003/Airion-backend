@@ -21,7 +21,7 @@ const mapServiceToEvent = (service: any): Event => {
 
 // Create axios instance with base URL
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:3000/api' : 'https://airion-backend.onrender.com/api'),
+    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:3000/api' : 'https://ease2event-backend.onrender.com/api'),
     headers: {
         'Content-Type': 'application/json',
     },
@@ -32,8 +32,8 @@ api.interceptors.request.use(
     (config) => {
         console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
 
-        // Add auth token if available
-        const token = localStorage.getItem('token');
+        // Add auth token if available (using consistent key)
+        const token = localStorage.getItem('ease2event_token');
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -54,10 +54,10 @@ api.interceptors.response.use(
         }
         return response;
     },
-    (error) => {
+    async (error) => {
         if (error.response?.status === 401) {
             // Unauthorized - clear token and redirect to login
-            localStorage.removeItem('token');
+            localStorage.removeItem('ease2event_token');
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
             }

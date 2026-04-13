@@ -24,9 +24,9 @@ async function createNestApp() {
     app.enableCors({
         origin: process.env.NODE_ENV === 'production'
             ? [
-                process.env.FRONTEND_URL || 'https://airion.vercel.app',
-                process.env.VENDOR_URL || 'https://airion.vercel.app',
-                process.env.ADMIN_URL || 'https://airion.vercel.app'
+                process.env.FRONTEND_URL || 'https://ease2event.vercel.app',
+                process.env.VENDOR_URL || 'https://ease2event.vercel.app',
+                process.env.ADMIN_URL || 'https://ease2event.vercel.app'
             ]
             : true,
         credentials: true,

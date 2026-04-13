@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# 🧹 Airion Project Cleanup Script
+# 🧹 Ease2event Project Cleanup Script
 # This script safely removes unused files and folders
 # Version: 1.0
 
 set -e  # Exit on error
 
-PROJECT_ROOT="/Users/vinaysharma/Desktop/airion"
+PROJECT_ROOT="/Users/vinaysharma/Desktop/ease2event"
 cd "$PROJECT_ROOT"
 
-echo "🧹 Starting Airion Project Cleanup..."
+echo "🧹 Starting Ease2event Project Cleanup..."
 echo "📁 Working directory: $(pwd)"
 echo ""
 

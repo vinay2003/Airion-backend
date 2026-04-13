@@ -13,7 +13,7 @@ export const Skeleton = ({
   width,
   height,
 }: SkeletonProps) => {
-  const baseClasses = 'animate-pulse bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)]';
+  const baseClasses = 'animate-pulse bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)]';
   const variantClasses = {
     text: 'h-4 rounded-full',
     rect: 'h-24 rounded-2xl',
@@ -30,7 +30,7 @@ export const Skeleton = ({
       className={`${baseClasses} ${variantClasses[variant]} ${className}`}
       style={style}
     >
-      <div className="w-full h-full bg-gradient-to-r from-transparent via-[var(--airion-bg-elevated)]/20 to-transparent animate-shimmer scale-y-150" />
+      <div className="w-full h-full bg-gradient-to-r from-transparent via-[var(--ease2event-bg-elevated)]/20 to-transparent animate-shimmer scale-y-150" />
     </div>
   );
 };

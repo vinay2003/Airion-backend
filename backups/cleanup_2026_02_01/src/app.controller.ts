@@ -16,7 +16,7 @@ export class AppController {
       status: 'ok',
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
-      service: 'airion-backend',
+      service: 'ease2event-backend',
     };
   }
 }

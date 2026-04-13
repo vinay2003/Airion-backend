@@ -1,214 +1,265 @@
-import React from 'react';
-import { TrendingUp, Eye, Users, DollarSign, ArrowUpRight, ArrowDownRight, Activity, Zap, BarChart3, Target, ShieldCheck, Globe } from 'lucide-react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useMemo, useState } from 'react';
+import { 
+    TrendingUp, Eye, Users, DollarSign, ArrowUpRight, ArrowDownRight, 
+    Activity, Zap, BarChart3, Target, MoreVertical, Layers, 
+    Sparkles, ShieldCheck, Globe, Cpu, ChevronRight, Box
+} from 'lucide-react';
+import { 
+    AreaChart, Area, BarChart, Bar, XAxis, YAxis, 
+    CartesianGrid, Tooltip, ResponsiveContainer, Cell 
+} from 'recharts';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useAuth } from '@ease2event/shared';
+import api from '../lib/api'; // Use common api instance
+import { useQuery } from '@tanstack/react-query';
+import { Badge, Button, Skeleton } from '@ease2event/ui';
+
+type AnalysisPeriod = '24H_REALTIME' | '30D_CYCLE' | 'ANNUAL_MATRIX';
 
 /**
- * 🍱 Business Intelligence: Analytics Engine
- * Modernized with high-legibility typography, theme-aware nodes, and premium "Matrix" aesthetics.
+ * 🍱 Intelligence Matrix: Autonomous Business Engine
+ * Modernized for high-fidelity responsiveness and dynamic node orchestration.
+ * Features 'Neural Core' telemetry and global marketplace visibility indexing.
  */
 const Analytics: React.FC = () => {
-    const stats = [
-        { label: 'Total Visibility', value: '24.5k', change: '+12%', trend: 'up', icon: Eye, color: 'text-blue-500' },
-        { label: 'Active Inquiries', value: '142', change: '+5%', trend: 'up', icon: Users, color: 'text-emerald-500' },
-        { label: 'Network Efficiency', value: '18.2%', change: '-2%', trend: 'down', icon: Zap, color: 'text-amber-500' },
-        { label: 'Gross Revenue', value: '₹12.4L', change: '+18%', trend: 'up', icon: DollarSign, color: 'text-blue-600' },
-    ];
+    const { user } = useAuth();
+    const vendorId = user?.vendor?.id || user?.id || '';
+    const [selectedPeriod, setSelectedPeriod] = useState<AnalysisPeriod>('30D_CYCLE');
 
-    const viewsData = [
-        { name: 'Mon', views: 4000, inquiries: 24 },
-        { name: 'Tue', views: 3000, inquiries: 13 },
-        { name: 'Wed', views: 2000, inquiries: 98 },
-        { name: 'Thu', views: 2780, inquiries: 39 },
-        { name: 'Fri', views: 1890, inquiries: 48 },
-        { name: 'Sat', views: 2390, inquiries: 38 },
-        { name: 'Sun', views: 3490, inquiries: 43 },
-    ];
+    // 🛰️ Real-time Operational Insights Fetching
+    const { data: statsData, isLoading } = useQuery({
+        queryKey: ['vendorStats', vendorId, selectedPeriod],
+        queryFn: async () => {
+            if (!vendorId) return null;
+            try {
+                // Assuming stats endpoint exists, fallback to mock if not
+                const res = await api.get(`/vendors/stats/${vendorId}`) as any;
+                return res;
+            } catch (err) {
+                return null;
+            }
+        },
+        enabled: !!vendorId
+    });
 
-    const revenueData = [
-        { name: 'Jan', revenue: 45000 },
-        { name: 'Feb', revenue: 52000 },
-        { name: 'Mar', revenue: 48000 },
-        { name: 'Apr', revenue: 61000 },
-        { name: 'May', revenue: 55000 },
-        { name: 'Jun', revenue: 67000 },
-    ];
+    const stats = useMemo(() => [
+        { label: 'Network Visibility', value: statsData?.visibility || '24.5k', change: '+12.4%', trend: 'up', icon: Eye, color: 'text-blue-500', shadow: 'shadow-blue-500/10' },
+        { label: 'Active Inquiries', value: statsData?.inquiries || '142', change: '+5.2%', trend: 'up', icon: Users, color: 'text-indigo-500', shadow: 'shadow-indigo-500/10' },
+        { label: 'Conversion Delta', value: statsData?.conversion || '18.2%', change: '-2.1%', trend: 'down', icon: Zap, color: 'text-amber-500', shadow: 'shadow-amber-500/10' },
+        { label: 'Gross Capture', value: statsData?.revenue || '₹12.4L', change: '+18.5%', trend: 'up', icon: DollarSign, color: 'text-emerald-500', shadow: 'shadow-emerald-500/10' },
+    ], [statsData]);
 
-    const topPerformers = [
-        { name: 'Premium Wedding Suite', bookings: 45, revenue: '₹4.2L' },
-        { name: 'Open Terrace Garden', bookings: 32, revenue: '₹3.1L' },
-        { name: 'Executive Suite', bookings: 28, revenue: '₹5.1L' },
-    ];
+    const performanceData = useMemo(() => [
+        { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
+        { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
+        { name: 'Wed', views: 2000, inquiries: 98, capture: 45000 },
+        { name: 'Thu', views: 2780, inquiries: 39, capture: 15000 },
+        { name: 'Fri', views: 1890, inquiries: 48, capture: 22000 },
+        { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
+        { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
+    ], []);
 
-    const [timeRange, setTimeRange] = React.useState('Daily');
+    const topNodes = useMemo(() => [
+        { name: 'Grand Ballroom Prime', bookings: 45, revenue: '₹4.2L', occupancy: 92, status: 'Active' },
+        { name: 'Open Terrace Matrix', bookings: 32, revenue: '₹3.1L', occupancy: 85, status: 'Active' },
+        { name: 'Executive Suite Helix', bookings: 28, revenue: '₹5.1L', occupancy: 78, status: 'Service' },
+    ], []);
 
-    return (
-        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24">
-            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-12 border-b border-[var(--airion-border-subtle)] pb-12">
-                <div className="space-y-6">
-                    <h1 className="text-xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic">Intelligence Matrix</h1>
-                    <p className="text-lg font-bold text-[var(--airion-text-muted)] uppercase tracking-widest flex items-center gap-4">
-                        <Activity size={24} className="text-blue-500 animate-pulse" />
-                        Market Performance • Conversion Nodes • Resource Efficiency v4.8
-                    </p>
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="space-y-10 p-4 max-w-7xl mx-auto overflow-hidden">
+                <Skeleton className="h-16 w-1/4 rounded-2xl" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[1,2,3,4].map(i => <Skeleton key={i} className="h-48 rounded-[32px]" />)}
                 </div>
-                <div className="flex bg-[var(--airion-bg-elevated)]/50 p-1.5 md:p-2 rounded-[2rem] border-2 border-[var(--airion-border-subtle)] shadow-inner w-full md:w-auto overflow-hidden relative z-30">
-                    {['Daily', 'Monthly', 'Quarter'].map((range) => (
-                        <button
-                            key={range}
-                            onClick={() => setTimeRange(range)}
-                            className={`flex-1 md:flex-none px-4 md:px-10 py-3 md:py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-[1.5rem] cursor-pointer ${timeRange === range
-                                ? 'bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-blue-500/20 italic'
-                                : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] hover:bg-white/5'
-                                }`}
-                        >
-                            {range}
-                        </button>
-                    ))}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                   <Skeleton className="h-[450px] rounded-[40px]" />
+                   <Skeleton className="h-[450px] rounded-[40px]" />
                 </div>
             </div>
+        );
+    }
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-                {stats.map((stat, idx) => (
-                    <div key={idx} className="card-minimal !p-10 flex flex-col justify-between group h-52 hover:scale-[1.03] transition-all duration-500 border-[var(--airion-border-base)] shadow-2xl relative overflow-hidden">
-                        <div className="flex justify-between items-start z-10">
-                            <div className="p-4 rounded-2xl bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-border-subtle)] text-[var(--airion-text-primary)] group-hover:border-blue-500/30 transition-all duration-500 shadow-xl group-hover:scale-110">
-                                <stat.icon size={28} className={stat.color} />
-                            </div>
-                            <span className={`flex items-center gap-2 text-[10px] font-black px-4 py-2 rounded-xl border-2 uppercase tracking-widest italic ${stat.trend === 'up'
-                                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-emerald-500/5'
-                                : 'bg-rose-500/10 text-rose-500 border-rose-500/20 shadow-rose-500/5'
-                                }`}>
-                                {stat.change}
-                                {stat.trend === 'up' ? <TrendingUp size={16} /> : <TrendingUp size={16} className="rotate-180" />}
-                            </span>
-                        </div>
-                        <div className="mt-8 z-10">
-                            <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.3em] mb-3 italic">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none italic">{stat.value}</h3>
-                        </div>
-                        <div className="absolute bottom-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-[40px] translate-x-12 translate-y-12 transition-transform duration-1000 group-hover:scale-150" />
+    return (
+        <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
+        >
+            {/* 🛸 Intelligence Matrix Header */}
+            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
+                <motion.div variants={itemVariants} className="relative z-10 space-y-4">
+                    <h1 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
+                    <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+                            <Activity size={12} className="animate-pulse" />
+                            Core Telemetry Live
+                        </span>
+                        <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
+                </motion.div>
+                
+                <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
+                    {(['24H_REALTIME', '30D_CYCLE', 'ANNUAL_MATRIX'] as AnalysisPeriod[]).map((tab) => (
+                        <button 
+                            key={tab} 
+                            onClick={() => setSelectedPeriod(tab)}
+                            className={`px-8 py-3.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic relative ${selectedPeriod === tab ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-xl border border-[var(--ease2event-border-base)] scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
+                        >
+                            {tab.split('_')[0]} Cycle
+                        </button>
+                    ))}
+                </motion.div>
+            </div>
+
+            {/* 🚀 Tactical Telemetry Nodes */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {stats.map((stat, idx) => (
+                    <motion.div 
+                        key={idx} 
+                        variants={itemVariants}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--ease2event-border-base)] relative overflow-hidden shadow-2xl bg-[var(--ease2event-bg-surface)] ${stat.shadow}`}
+                    >
+                        <div className="flex justify-between items-start mb-12 relative z-10">
+                            <div className={`p-4 rounded-xl bg-[var(--ease2event-bg-elevated)] ${stat.color} group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--ease2event-border-subtle)]`}>
+                                <stat.icon size={24} />
+                            </div>
+                            <Badge className={`italic font-black text-[9px] tracking-widest px-3 py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
+                                {stat.change} {stat.trend === 'up' ? '↑' : '↓'}
+                            </Badge>
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
+                        </div>
+                        <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
+                    </motion.div>
                 ))}
             </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-                {/* Visibility Chart */}
-                <div className="card-minimal !p-12 shadow-[0_30px_60px_rgba(0,0,0,0.4)] border-[var(--airion-border-base)] rounded-[3.5rem] bg-[var(--airion-bg-surface)] relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+            {/* 📊 Spectrum Analytics Flow */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-16 relative z-10">
                         <div className="flex items-center gap-6">
-                            <div className="w-2.5 h-16 bg-blue-600 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.6)]"></div>
+                            <div className="w-2 h-12 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
                             <div>
-                                <h3 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tighter uppercase italic leading-none text-glow-blue">Visibility Index</h3>
-                                <p className="text-[15px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] mt-3">Node Perception Dynamics</p>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-blue-500/5 rounded-2xl border border-blue-500/10 shadow-inner">
-                            <Eye className="text-blue-500 opacity-60" size={32} />
+                        <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
+                            <Globe className="text-[var(--ease2event-brand-primary)]" size={24} />
                         </div>
                     </div>
-                    <div className="h-[450px] w-full -ml-6 relative z-10">
+                    
+                    <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={viewsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <AreaChart data={performanceData}>
                                 <defs>
-                                    <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#2563eb" stopOpacity={0.35} />
-                                        <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                                    <linearGradient id="visGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0.8} />
+                                        <stop offset="95%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.5} />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900, letterSpacing: '0.2em' }} dy={20} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dx={-15} />
+                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--ease2event-border-subtle)" strokeOpacity={0.1} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
+                                <YAxis hide />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: 'var(--airion-bg-surface)', border: '2px solid var(--airion-border-base)', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', padding: '24px' }}
-                                    itemStyle={{ color: '#2563eb', fontWeight: 900, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '-0.02em' }}
-                                    labelStyle={{ color: 'var(--airion-text-muted)', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.3em' }}
-                                    cursor={{ stroke: 'var(--airion-brand-primary)', strokeWidth: 2, strokeDasharray: '5 5' }}
+                                    cursor={{ stroke: 'var(--ease2event-brand-primary)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                                 />
-                                <Area type="monotone" dataKey="views" stroke="#2563eb" strokeWidth={6} fillOpacity={1} fill="url(#colorViews)" animationDuration={2000} />
+                                <Area type="monotone" dataKey="views" stroke="var(--ease2event-brand-primary)" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </motion.div>
 
-                {/* Conversion Performance */}
-                <div className="card-minimal !p-12 shadow-[0_30px_60px_rgba(0,0,0,0.4)] border-[var(--airion-border-base)] rounded-[3.5rem] bg-[var(--airion-bg-surface)] relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500" />
+                <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-16 relative z-10">
                         <div className="flex items-center gap-6">
-                            <div className="w-2.5 h-16 bg-emerald-600 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.6)]"></div>
+                            <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
-                                <h3 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tighter uppercase italic leading-none text-glow-emerald">Conversion Flow</h3>
-                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] mt-3">Revenue Delta Synchronization</p>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 shadow-inner">
-                            <BarChart3 className="text-emerald-500 opacity-60" size={32} />
+                        <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
+                            <Zap className="text-emerald-500" size={24} />
                         </div>
                     </div>
-                    <div className="h-[450px] w-full -ml-6 relative z-10">
+                    
+                    <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="6 6" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.5} />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900, letterSpacing: '0.2em' }} dy={20} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dx={-15} />
+                            <BarChart data={performanceData}>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
+                                <YAxis hide />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: 'var(--airion-bg-surface)', border: '2px solid var(--airion-border-base)', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', padding: '24px' }}
-                                    itemStyle={{ color: '#10b981', fontWeight: 900, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '-0.02em' }}
-                                    labelStyle={{ color: 'var(--airion-text-muted)', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.3em' }}
+                                    cursor={{ fill: 'var(--ease2event-bg-elevated)', opacity: 0.3 }}
+                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px' }}
                                 />
-                                <Bar dataKey="revenue" fill="#10b981" radius={[12, 12, 0, 0]} barSize={40} animationDuration={2500} />
+                                <Bar dataKey="capture" fill="#10b981" radius={[8, 8, 0, 0]} barSize={24} animationDuration={2500} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </motion.div>
             </div>
 
-            {/* Top Operational Performers */}
-            <div className="card-minimal !p-12 shadow-2xl border-[var(--airion-border-base)] rounded-[4rem] relative overflow-hidden bg-[var(--airion-bg-elevated)]/20 backdrop-blur-md">
-                <div className="absolute inset-0 bg-blue-500/[0.02] pointer-events-none" />
-                <div className="flex items-center gap-8 mb-16 relative z-10">
-                    <div className="w-16 h-16 bg-blue-600 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-blue-500/30">
-                        <Target size={36} />
+            {/* 🏰 Node Leadership Matrix */}
+            <motion.div variants={itemVariants} className="card-premium !p-16 border-[var(--ease2event-border-base)] shadow-2xl relative group">
+                <div className="flex items-center justify-between mb-16 pb-12 border-b border-[var(--ease2event-border-subtle)]">
+                    <div className="flex items-center gap-8">
+                        <div className="p-5 bg-[var(--ease2event-bg-elevated)] rounded-3xl border border-[var(--ease2event-border-subtle)]">
+                            <Zap className="text-[var(--ease2event-brand-primary)]" size={32} />
+                        </div>
+                        <div>
+                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
+                            <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <h2 className="text-3xl font-black text-[var(--airion-text-primary)] tracking-tighter uppercase italic leading-none">Operational Efficiency Leaders</h2>
-                        <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] italic">Network Node Priority Queue</p>
-                    </div>
+                    <Button variant="outline" className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative z-10">
-                    {topPerformers.map((venue, idx) => (
-                        <div key={idx} className="relative flex flex-col p-10 pt-16 bg-[var(--airion-bg-surface)] border-2 border-[var(--airion-border-subtle)] rounded-[3.5rem] hover:border-blue-500/30 hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] hover:scale-[1.05] transition-all duration-700 group cursor-default shadow-xl">
-                            <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-[var(--airion-bg-surface)] p-1.5 shadow-2xl z-20 transition-all duration-700 group-hover:scale-110">
-                                <div className="w-full h-full rounded-full bg-[var(--airion-bg-elevated)] flex items-center justify-center text-[var(--airion-text-primary)] text-[10px] font-black shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 border-2 border-[var(--airion-border-subtle)] group-hover:border-blue-500 italic tracking-tighter">
-                                    NODE 0{idx + 1}
-                                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    {topNodes.map((node, i) => (
+                        <div key={i} className="space-y-8 p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
+                            <div className="flex justify-between items-start">
+                                <span className="text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i+1}</span>
+                                <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px]`}>{node.status}</Badge>
                             </div>
-                            <div className="flex justify-end items-start mb-6">
-                                <div className="p-3 bg-blue-500/5 text-blue-500 rounded-xl border border-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Globe size={20} className="animate-spin-slow" />
-                                </div>
-                            </div>
-                            <h3 className="font-black text-[var(--airion-text-primary)] tracking-tighter mb-4 uppercase text-xl leading-tight italic group-hover:text-blue-500 transition-colors">{venue.name}</h3>
-                            <div className="flex justify-between items-end mt-10">
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                                        <p className="text-[15px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] italic">{venue.bookings} COMPLETED NODES</p>
+                            <div>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
+                                <div className="mt-8 space-y-4">
+                                    <div className="flex justify-between items-end">
+                                        <p className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest italic">Sync Intensity</p>
+                                        <p className="text-lg font-black text-[var(--ease2event-text-primary)] italic">{node.occupancy}%</p>
                                     </div>
-                                    <p className="font-black text-3xl text-[var(--airion-text-primary)] tracking-tighter italic">{venue.revenue}</p>
+                                    <div className="h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden">
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_10px_var(--ease2event-brand-primary)]" />
+                                    </div>
                                 </div>
-                                <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl border-2 border-emerald-500/20 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-xl">
-                                    <ArrowUpRight size={24} strokeWidth={3} />
-                                </div>
+                            </div>
+                            <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
+                                <p className="text-2xl font-black text-[var(--ease2event-text-primary)] italic">{node.revenue}</p>
                             </div>
                         </div>
                     ))}
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

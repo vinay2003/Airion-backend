@@ -14,7 +14,7 @@ const SEO = ({
     description,
     keywords = "events, branding, user interface, web design",
     image = "/og-image.jpg",
-    url = "https://airion.com",
+    url = "https://ease2event.com",
     type = "website"
 }: SEOProps) => {
     const siteTitle = "Ease2event | Premium Event Planning & Venue Booking";

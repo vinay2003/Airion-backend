@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { events } from '../../data/events';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

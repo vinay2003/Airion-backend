@@ -9,10 +9,10 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  surface:  'bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)]',
-  elevated: 'bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-base)]',
-  glass:    'bg-[var(--airion-bg-surface)] backdrop-blur-md border border-[var(--airion-border-subtle)]',
-  premium:  'bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)]',
+  surface:  'bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)]',
+  elevated: 'bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)]',
+  glass:    'bg-[var(--ease2event-bg-surface)] backdrop-blur-md border border-[var(--ease2event-border-subtle)]',
+  premium:  'bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)]',
 };
 
 const paddingClasses = {
@@ -36,7 +36,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ) => {
     const baseClasses = 'rounded-2xl transition-all duration-300';
     const hoverClasses = hover
-      ? 'hover:-translate-y-[2px] hover:shadow-[var(--airion-shadow-md)] cursor-pointer'
+      ? 'hover:-translate-y-[2px] hover:shadow-[var(--ease2event-shadow-md)] cursor-pointer'
       : '';
 
     return (
@@ -59,7 +59,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   }
 );
 
-Card.displayName = 'AirionCard';
+Card.displayName = 'Ease2eventCard';
 
 /* ── Card sub-components ── */
 export const CardHeader = ({
@@ -78,7 +78,7 @@ export const CardTitle = ({
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) => (
   <h3
-    className={`text-lg font-bold text-[var(--airion-text-primary)] ${className}`}
+    className={`text-lg font-bold text-[var(--ease2event-text-primary)] ${className}`}
     {...props}
   >
     {children}
@@ -101,7 +101,7 @@ export const CardFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={`mt-6 pt-4 border-t border-[var(--airion-border-subtle)] flex items-center justify-between ${className}`}
+    className={`mt-6 pt-4 border-t border-[var(--ease2event-border-subtle)] flex items-center justify-between ${className}`}
     {...props}
   >
     {children}

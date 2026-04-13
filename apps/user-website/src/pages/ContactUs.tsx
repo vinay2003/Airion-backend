@@ -33,8 +33,8 @@ const ContactUs: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Email Us</h3>
-                                    <p className="text-gray-400">concierge@airion.app</p>
-                                    <p className="text-gray-400">enterprise@airion.app</p>
+                                    <p className="text-gray-400">concierge@ease2event.app</p>
+                                    <p className="text-gray-400">enterprise@ease2event.app</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">

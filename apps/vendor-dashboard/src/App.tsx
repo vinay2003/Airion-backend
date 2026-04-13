@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider, ProtectedRoute } from '@airion/shared';
+import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
 import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient();

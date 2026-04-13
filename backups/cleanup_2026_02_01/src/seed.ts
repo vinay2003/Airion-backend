@@ -11,7 +11,7 @@ async function bootstrap() {
     const dataSource = app.get(DataSource);
     const userRepository = dataSource.getRepository(User);
 
-    const email = 'admin@airion.com';
+    const email = 'admin@ease2event.com';
     const phone = '9999999999';
     const password = 'admin'; // Simple password for dev
 

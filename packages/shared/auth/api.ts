@@ -131,6 +131,19 @@ export const userAuth = {
 };
 
 /**
+ * User Dashboard APIs
+ */
+export const userDashboard = {
+    /**
+     * Get user dashboard overview data
+     */
+    getOverview: async (): Promise<any> => {
+        const response = await authApi.get(AUTH_ENDPOINTS.USER_DASHBOARD_OVERVIEW);
+        return response.data;
+    },
+};
+
+/**
  * OTP-based Authentication APIs (Common for Users & Vendors)
  */
 export const otpAuth = {

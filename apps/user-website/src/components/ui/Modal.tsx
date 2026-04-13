@@ -49,16 +49,16 @@ export const Modal = ({
       />
       <div
         className={[
-          'relative w-full bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-3xl shadow-[var(--airion-shadow-lg)] overflow-hidden transition-all duration-300 animate-slideUp',
+          'relative w-full bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl shadow-[var(--ease2event-shadow-lg)] overflow-hidden transition-all duration-300 animate-slideUp',
           sizeClasses[size],
           className,
         ]
           .filter(Boolean)
           .join(' ')}
       >
-        <div className="flex items-center justify-between px-8 py-5 border-b border-[var(--airion-border-subtle)]">
+        <div className="flex items-center justify-between px-8 py-5 border-b border-[var(--ease2event-border-subtle)]">
           {title ? (
-            <h3 className="text-xl font-black text-[var(--airion-text-primary)] uppercase tracking-tight">
+            <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tight">
               {title}
             </h3>
           ) : (
@@ -66,7 +66,7 @@ export const Modal = ({
           )}
           <button
             onClick={onClose}
-            className="p-2.5 rounded-2xl hover:bg-[var(--airion-bg-elevated)] text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all duration-200"
+            className="p-2.5 rounded-2xl hover:bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all duration-200"
           >
             <X size={20} strokeWidth={2.5} />
           </button>
@@ -77,7 +77,7 @@ export const Modal = ({
         </div>
 
         {footer && (
-          <div className="px-8 py-5 bg-[var(--airion-bg-elevated)]/50 border-t border-[var(--airion-border-subtle)] flex justify-end gap-3">
+          <div className="px-8 py-5 bg-[var(--ease2event-bg-elevated)]/50 border-t border-[var(--ease2event-border-subtle)] flex justify-end gap-3">
             {footer}
           </div>
         )}

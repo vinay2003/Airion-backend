@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 
 type Role = 'USER' | 'VENDOR' | 'ADMIN';
 

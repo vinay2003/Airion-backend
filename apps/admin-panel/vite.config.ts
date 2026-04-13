@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@shared': path.resolve(__dirname, '../../packages/shared'),
+      '@ease2event/ui': path.resolve(__dirname, '../../packages/ui'),
     },
   },
   server: {

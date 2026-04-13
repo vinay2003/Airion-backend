@@ -22,7 +22,7 @@ const MyBookings: React.FC = () => {
                     setBookings([
                         {
                             id: '1',
-                            bookingCode: 'AIRION-847291',
+                            bookingCode: 'E2E-847291',
                             eventDate: new Date(Date.now() + 864000000).toISOString(),
                             status: 'confirmed',
                             totalAmount: '250000',
@@ -30,7 +30,7 @@ const MyBookings: React.FC = () => {
                         },
                         {
                             id: '2',
-                            bookingCode: 'AIRION-392104',
+                            bookingCode: 'E2E-392104',
                             eventDate: new Date(Date.now() + 1728000000).toISOString(),
                             status: 'pending',
                             totalAmount: '45000',
@@ -38,7 +38,7 @@ const MyBookings: React.FC = () => {
                         },
                         {
                             id: '3',
-                            bookingCode: 'AIRION-109482',
+                            bookingCode: 'E2E-109482',
                             eventDate: new Date(Date.now() - 2592000000).toISOString(),
                             status: 'completed',
                             totalAmount: '120000',
@@ -46,7 +46,7 @@ const MyBookings: React.FC = () => {
                         },
                         {
                             id: '4',
-                            bookingCode: 'AIRION-558291',
+                            bookingCode: 'E2E-558291',
                             eventDate: new Date(Date.now() - 500000000).toISOString(),
                             status: 'cancelled',
                             totalAmount: '80000',

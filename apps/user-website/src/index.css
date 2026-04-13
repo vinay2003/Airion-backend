@@ -1,41 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@600;700&display=swap');
 
 /**
- * Airion User Website — Styles
+ * Ease2event User Website — Styles
  *
- * Imports the shared @airion/ui design system (tokens + Tailwind + base resets).
+ * Imports the shared @ease2event/ui design system (tokens + Tailwind + base resets).
  * Then applies LIGHT THEME surface overrides for the customer-facing portal.
  */
 
 /* ── 1. Load Tailwind v4 and Share Design System ─────────── */
 @import "tailwindcss";
-@import "@airion/ui/globals.css";
+@import "@ease2event/ui/globals.css";
 
 /* ── 2. Light Theme: activate for this portal ────────────── */
 :root {
   color-scheme: light;
 
   /* Override surfaces to light */
-  --airion-bg-base:        #FFFFFF;
-  --airion-bg-surface:     #F8F8FF;
-  --airion-bg-elevated:    #F0EFFE;
-  --airion-bg-sidebar:     #FAFAFA;
+  --ease2event-bg-base:        #FFFFFF;
+  --ease2event-bg-surface:     #F8F8FF;
+  --ease2event-bg-elevated:    #F0EFFE;
+  --ease2event-bg-sidebar:     #FAFAFA;
 
   /* Text for light mode */
-  --airion-text-primary:   #1A1A2E;
-  --airion-text-secondary: #4A4A6A;
-  --airion-text-muted:     #9090AA;
-  --airion-text-inverted:  #FFFFFF;
+  --ease2event-text-primary:   #1A1A2E;
+  --ease2event-text-secondary: #4A4A6A;
+  --ease2event-text-muted:     #9090AA;
+  --ease2event-text-inverted:  #FFFFFF;
 
   /* Borders for light mode */
-  --airion-border-subtle:  rgba(0, 0, 0, 0.05);
-  --airion-border-base:    rgba(0, 0, 0, 0.08);
+  --ease2event-border-subtle:  rgba(0, 0, 0, 0.05);
+  --ease2event-border-base:    rgba(0, 0, 0, 0.08);
 
   /* Refined multi-layered shadows for light mode */
-  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
-  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-  --airion-shadow-glow: 0 0 15px rgba(99, 102, 241, 0.1);
+  --ease2event-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
+  --ease2event-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --ease2event-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --ease2event-shadow-glow: 0 0 15px rgba(99, 102, 241, 0.1);
 
   /* Tailwind semantic aliases (light) */
   --background:  #FFFFFF;

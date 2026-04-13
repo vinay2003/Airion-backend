@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, Clock } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth } from '@airion/shared/auth';
+import { useAuth, otpAuth, commonAuth } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import OTPInput from '@airion/shared/components/OTPInput';
+import OTPInput from '@ease2event/shared/components/OTPInput';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();

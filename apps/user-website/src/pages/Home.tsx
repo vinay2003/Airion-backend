@@ -8,7 +8,7 @@ import CategorySection from '../components/CategorySection';
 import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
-import { useAuth } from '@shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 import FallingPetals from '../components/FallingPetals';
 
 import { fetchEvents } from '../lib/api';
@@ -324,7 +324,6 @@ const Home: React.FC = () => {
                                     Why Ease2event?
                                 </span>
                             </h2>
-
                             <div className="space-y-8">
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">

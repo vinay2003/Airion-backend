@@ -7,7 +7,7 @@ import { UserRole } from './types';
 
 // JWT Configuration
 export const JWT_CONFIG = {
-    TOKEN_KEY: 'airion_token',
+    TOKEN_KEY: 'ease2event_token',
     REFRESH_TOKEN_KEY: 'refresh_token',
     ACCESS_TOKEN_EXPIRY: 900, // 15 minutes (enhanced security)
     REFRESH_TOKEN_EXPIRY: 604800, // 7 days in seconds
@@ -53,6 +53,7 @@ export const AUTH_ENDPOINTS = {
     CHECK_AUTH: '/auth/me',
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh',
+    USER_DASHBOARD_OVERVIEW: '/user-dashboard/overview',
     HEALTH_CHECK: '/health',
 
     // Social Auth
@@ -128,7 +129,7 @@ export const AUTH_SUCCESS = {
 
 // Storage Keys
 export const STORAGE_KEYS = {
-    TOKEN: 'airion_token',
+    TOKEN: 'ease2event_token',
     USER: 'user',
     REMEMBER_ME: 'remember_me',
     VENDOR_BASIC_DETAILS: 'vendorBasicDetails',

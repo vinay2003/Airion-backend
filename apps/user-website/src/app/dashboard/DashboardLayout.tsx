@@ -10,8 +10,8 @@ import {
     LayoutDashboard,
     Settings,
 } from 'lucide-react';
-import { DashboardLayout, NavItem } from '@airion/ui';
-import { useAuth } from '@airion/shared/auth';
+import { DashboardLayout, NavItem } from '@ease2event/ui';
+import { useAuth } from '@ease2event/shared/auth';
 
 const UserDashboardLayout: React.FC = () => {
     const { user, logout } = useAuth();

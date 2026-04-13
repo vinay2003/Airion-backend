@@ -6,7 +6,7 @@ import {
     Clock, Globe, Wallet, CheckCircle2, Loader2, Phone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@airion/shared';
+import { useAuth } from '@ease2event/shared';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -143,7 +143,7 @@ const VendorSignupWizard: React.FC = () => {
                         // For now we simulate a successful persistent URL
                         console.log(`[Upload] Sending ${img} to mock cloud...`);
                         await new Promise(res => setTimeout(res, 300));
-                        return `https://storage.airion.com/portfolio/${Math.random().toString(36).substring(7)}.jpg`;
+                        return `https://storage.ease2event.com/portfolio/${Math.random().toString(36).substring(7)}.jpg`;
                     }
                     return img;
                 })
@@ -249,7 +249,7 @@ const VendorSignupWizard: React.FC = () => {
                         {currentStep === 2 && "Growth Intelligence"}
                         {currentStep === 3 && "Visual Showcase"}
                     </h1>
-                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Airion.</p>
+                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Ease2event.</p>
                 </div>
 
                 {renderProgress()}

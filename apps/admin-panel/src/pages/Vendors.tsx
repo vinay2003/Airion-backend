@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, MoreVertical, Check, X, Eye } from 'lucide-react';
+import { Search, MoreVertical, Check, X, Eye, Building2, MapPin, Calendar, ShieldCheck, Zap } from 'lucide-react';
 import api from '../lib/api';
+import toast from 'react-hot-toast';
 
 interface Vendor {
     id: string;
@@ -13,6 +14,11 @@ interface Vendor {
     createdAt: string;
 }
 
+/**
+ * 🏛️ Vendor Registry: Strategic Partnership Hub
+ * Orchestrates the onboarding and verification of marketplace service providers.
+ * Implements "Bento Box" grid aesthetics and high-visibility status monitoring.
+ */
 const Vendors: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -23,10 +29,17 @@ const Vendors: React.FC = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                const response = await api.get('/vendors');
-                setVendors(response.data);
+                const data = await api.get('/vendors') as any;
+                if (Array.isArray(data)) {
+                    setVendors(data);
+                } else if (data && Array.isArray(data.data)) {
+                    setVendors(data.data);
+                } else {
+                    setVendors([]);
+                }
             } catch (error: any) {
                 setError(error.message);
+                toast.error('Vendor registry sync failed: ' + error.message);
             } finally {
                 setLoading(false);
             }
@@ -35,124 +48,145 @@ const Vendors: React.FC = () => {
         fetchVendors();
     }, []);
 
-    const getStatusColor = (status: string) => {
+    const getStatusStyles = (status: string) => {
         switch (status) {
             case 'approved':
-                return 'bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400';
+                return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
             case 'pending':
-                return 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
+                return 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
             case 'rejected':
-                return 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400';
+                return 'bg-rose-500/10 text-rose-600 border-rose-500/20';
             default:
-                return 'bg-gray-100 dark:bg-gray-500/20 text-gray-700 dark:text-gray-400';
+                return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
         }
     };
 
     const handleAction = async (id: string, action: 'approve' | 'reject') => {
+        const targetStatus = action === 'approve' ? 'approved' : 'rejected';
         try {
-            await api.patch(`/vendors/${id}/status`, { status: action === 'approve' ? 'approved' : 'rejected' });
-            setVendors(prev => prev.map(v => v.id === id ? { ...v, verificationStatus: action === 'approve' ? 'approved' : 'rejected' } : v));
+            await api.patch(`/vendors/${id}/status`, { status: targetStatus });
+            setVendors(prev => (prev || []).map(v => v.id === id ? { ...v, verificationStatus: targetStatus } : v));
+            toast.success(`Vendor ${action === 'approve' ? 'Authorized' : 'Registry Restricted'}`);
         } catch (error: any) {
-            alert('Action failed: ' + error.message);
+            toast.error('Action failed: ' + error.message);
         }
     };
 
-    const filteredVendors = vendors.filter(vendor => {
+    const filteredVendors = (vendors || []).filter((vendor: any) => {
         const matchesFilter = filter === 'all' || vendor.verificationStatus === filter;
-        const matchesSearch = vendor.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            vendor.city?.toLowerCase().includes(searchQuery.toLowerCase());
+        const businessName = vendor.businessName || '';
+        const city = vendor.city || '';
+        const matchesSearch = businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            city.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-        </div>;
+        return (
+            <div className="flex justify-center items-center h-[60vh]">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-red-500/10 border-t-red-600 rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <Building2 className="text-red-600/40" size={24} />
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="space-y-10 animate-in fade-in duration-700">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Vendor Management</h1>
-                    <p className="text-gray-500 dark:text-slate-400">Manage and approve vendor registrations</p>
+                    <h1 className="text-5xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter font-display">Vendor Matrix</h1>
+                    <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.4em] italic mt-2">Registry Orchestration • {vendors.length} BUSINESS NODES ACTIVE</p>
                 </div>
-                <div className="flex gap-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={20} />
+                <div className="flex flex-wrap gap-4 w-full md:w-auto">
+                    <div className="relative group flex-1 md:flex-none">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors" size={20} />
                         <input
                             type="text"
-                            placeholder="Search by name or city..."
+                            placeholder="SEARCH_BUSINESS_TAG"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 pr-4 py-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200"
+                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-black text-xs uppercase italic tracking-widest dark:text-white"
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex bg-neutral-100 dark:bg-slate-900/50 p-1.5 rounded-[24px] w-fit border border-neutral-100 dark:border-slate-800">
                 {['all', 'pending', 'approved', 'rejected'].map((status) => (
                     <button
                         key={status}
                         onClick={() => setFilter(status as any)}
-                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all capitalize ${filter === status
-                            ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
-                            : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-800'
+                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${filter === status
+                            ? 'bg-white dark:bg-slate-800 text-red-600 shadow-xl border border-neutral-100 dark:border-slate-700'
+                            : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                     >
-                        {status}
+                        {status}_QUEUE
                     </button>
                 ))}
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-black/5 border border-gray-50 dark:border-slate-800 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Vendor</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Type</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">City</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Experience</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Status</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Actions</th>
+                        <thead>
+                            <tr className="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
+                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Business Entity</th>
+                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Genesis Info</th>
+                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Registry Status</th>
+                                <th className="px-10 py-6 text-right text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Handshake Controls</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-slate-800">
+                        <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                             {filteredVendors.map((vendor) => (
-                                <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-bold">
+                                <tr key={vendor.id} className="hover:bg-neutral-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                    <td className="px-10 py-8 whitespace-nowrap">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-[22px] bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-black text-xl shadow-xl shadow-indigo-500/20 uppercase italic">
                                                 {vendor.businessName?.[0] || 'V'}
                                             </div>
-                                            <div>
-                                                <div className="font-bold text-gray-900 dark:text-white">{vendor.businessName}</div>
-                                                <div className="text-xs text-gray-500">Joined: {new Date(vendor.createdAt).toLocaleDateString()}</div>
+                                            <div className="space-y-1">
+                                                <div className="font-black text-gray-900 dark:text-white uppercase italic tracking-tight">{vendor.businessName}</div>
+                                                <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest italic opacity-60">
+                                                    <Building2 size={12} />
+                                                    {vendor.businessType}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm capitalize">{vendor.businessType}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{vendor.city || 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{vendor.yearsInBusiness || 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${getStatusColor(vendor.verificationStatus)}`}>
+                                    <td className="px-10 py-8 whitespace-nowrap">
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-2 text-[11px] font-bold text-gray-600 dark:text-slate-400">
+                                                <MapPin size={14} className="text-gray-400" />
+                                                {vendor.city || 'GLOBAL_ZONE'}
+                                            </div>
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest italic opacity-60">
+                                                <Calendar size={12} />
+                                                {vendor.yearsInBusiness || 0} YRS_EXP
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-10 py-8 whitespace-nowrap">
+                                        <span className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] italic border ${getStatusStyles(vendor.verificationStatus)}`}>
                                             {vendor.verificationStatus}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2">
-                                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-600 dark:text-slate-400 transition-colors">
-                                                <Eye size={16} />
+                                    <td className="px-10 py-8 whitespace-nowrap text-right">
+                                        <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                                            <button className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-slate-800 hover:bg-[var(--ease2event-brand-primary)] hover:text-white rounded-xl text-gray-500 transition-all shadow-sm">
+                                                <Eye size={18} />
                                             </button>
                                             {vendor.verificationStatus === 'pending' && (
                                                 <>
-                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
-                                                        <Check size={16} />
+                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="w-12 h-12 flex items-center justify-center bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-xl transition-all shadow-sm border border-emerald-500/10">
+                                                        <Check size={18} />
                                                     </button>
-                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
-                                                        <X size={16} />
+                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="w-12 h-12 flex items-center justify-center bg-rose-500/10 text-rose-600 hover:bg-rose-500 hover:text-white rounded-xl transition-all shadow-sm border border-rose-500/10">
+                                                        <X size={18} />
                                                     </button>
                                                 </>
                                             )}
@@ -162,6 +196,17 @@ const Vendors: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                    {filteredVendors.length === 0 && (
+                        <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
+                            <div className="p-10 bg-neutral-50 dark:bg-slate-900 rounded-[50px] border border-neutral-100 dark:border-slate-800">
+                                <Zap size={64} className="text-gray-200 dark:text-slate-800" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">No Business Nodes</h3>
+                                <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest italic">Modify filters to sync registry data</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -169,3 +214,4 @@ const Vendors: React.FC = () => {
 };
 
 export default Vendors;
+

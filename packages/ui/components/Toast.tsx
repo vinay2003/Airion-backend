@@ -2,18 +2,18 @@ import React from 'react';
 import { toast, Toaster, ToastBar } from 'react-hot-toast';
 import { CheckCircle, XCircle, Info, Bell } from 'lucide-react';
 
-export const AirionToaster = () => (
+export const Ease2eventToaster = () => (
   <Toaster
     position="top-right"
     toastOptions={{
       duration: 4000,
-      className: 'bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] text-[var(--airion-text-primary)] rounded-3xl shadow-[var(--airion-shadow-lg)] px-6 py-4 font-bold uppercase tracking-tight text-xs flex items-center gap-3',
+      className: 'bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-primary)] rounded-3xl shadow-[var(--ease2event-shadow-lg)] px-6 py-4 font-bold uppercase tracking-tight text-xs flex items-center gap-3',
       style: {
-        background: 'var(--airion-bg-surface)',
-        color: 'var(--airion-text-primary)',
-        border: '1px solid var(--airion-border-subtle)',
+        background: 'var(--ease2event-bg-surface)',
+        color: 'var(--ease2event-text-primary)',
+        border: '1px solid var(--ease2event-border-subtle)',
         borderRadius: '1.5rem',
-        boxShadow: 'var(--airion-shadow-lg)',
+        boxShadow: 'var(--ease2event-shadow-lg)',
         padding: '1rem 1.5rem',
       },
       success: {
@@ -34,10 +34,10 @@ export const AirionToaster = () => (
             {t.type !== 'loading' && (
               <button
                 onClick={() => toast.dismiss(t.id)}
-                className="ml-2 p-1 hover:bg-[var(--airion-bg-elevated)] rounded-full transition-colors"
+                className="ml-2 p-1 hover:bg-[var(--ease2event-bg-elevated)] rounded-full transition-colors"
                 aria-label="Close"
               >
-                <XCircle size={14} className="text-[var(--airion-text-muted)]" />
+                <XCircle size={14} className="text-[var(--ease2event-text-muted)]" />
               </button>
             )}
           </div>
@@ -50,7 +50,7 @@ export const AirionToaster = () => (
 export const notify = {
   success: (msg: string) => toast.success(msg),
   error: (msg: string) => toast.error(msg),
-  info: (msg: string) => toast(msg, { icon: <Info className="text-[var(--airion-brand-primary)]" size={20} /> }),
+  info: (msg: string) => toast(msg, { icon: <Info className="text-[var(--ease2event-brand-primary)]" size={20} /> }),
   loading: (msg: string) => toast.loading(msg),
   dismiss: (id?: string) => toast.dismiss(id),
 };

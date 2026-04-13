@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Loader, CheckCircle2, ArrowLeft, Phone, Clock } from 'lucide-react';
-import { useAuth, otpAuth } from '@shared/auth';
+import { useAuth, otpAuth } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import OTPInput from '@shared/components/OTPInput';
+import OTPInput from '@ease2event/shared/components/OTPInput';
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();

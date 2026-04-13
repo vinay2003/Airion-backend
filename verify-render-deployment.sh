@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Airion Backend - Render Deployment Verification Script
+# Ease2event Backend - Render Deployment Verification Script
 # This script checks if your backend is ready for deployment to Render
 
-echo "🔍 Airion Backend - Deployment Verification"
+echo "🔍 Ease2event Backend - Deployment Verification"
 echo "=========================================="
 echo ""
 

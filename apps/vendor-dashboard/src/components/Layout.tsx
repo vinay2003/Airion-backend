@@ -28,7 +28,7 @@ const Layout: React.FC = () => {
     const pageTitle = getPageTitle(location.pathname);
 
     return (
-        <div className="flex min-h-screen bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] font-sans antialiased overflow-hidden transition-colors duration-300 relative">
+        <div className="flex min-h-screen bg-[var(--ease2event-bg-base)] text-[var(--ease2event-text-primary)] font-sans antialiased overflow-hidden transition-colors duration-300 relative">
             <div className="rgb-bg-container">
                 <div className="rgb-glow-node node-1" />
                 <div className="rgb-glow-node node-2" />

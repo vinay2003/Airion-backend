@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
 import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAuth } from '@airion/shared';
-import { Skeleton, Badge, Avatar, Button } from '@airion/ui';
+import { useAuth } from '@ease2event/shared';
+import { Skeleton, Badge, Avatar, Button } from '@ease2event/ui';
 
 const CHART_DATA = [
   { name: 'Mon', value: 2400 },
@@ -30,8 +30,8 @@ const StatCard = ({ title, value, trend, direction, icon: Icon, isLoading, curre
     ) : (
       <>
         <div className="space-y-4 z-10">
-          <p className="text-sm font-black text-[var(--airion-text-secondary)] uppercase tracking-widest leading-none">{title}</p>
-          <h3 className="text-4xl md:text-5xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none italic">
+          <p className="text-sm font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">{title}</p>
+          <h3 className="text-4xl md:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic">
             {currency}{value}
           </h3>
         </div>
@@ -43,7 +43,7 @@ const StatCard = ({ title, value, trend, direction, icon: Icon, isLoading, curre
               {trend}
             </div>
           ) : <div className="h-6" />}
-          <div className="p-3.5 rounded-2xl bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] text-[var(--airion-text-secondary)] group-hover:text-blue-500 group-hover:scale-110 transition-all duration-300">
+          <div className="p-3.5 rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-secondary)] group-hover:text-blue-500 group-hover:scale-110 transition-all duration-300">
             {Icon && <Icon size={20} />}
           </div>
         </div>
@@ -75,10 +75,10 @@ const Dashboard = () => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-12 pb-24">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--airion-border-subtle)] pb-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--ease2event-border-subtle)] pb-10">
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-[var(--airion-text-primary)] tracking-tight leading-loose">Intelligence Hub</h1>
-          <p className="text-lg font-semibold text-[var(--airion-text-secondary)] uppercase tracking-widest flex items-center gap-2">            <Zap size={16} className="text-blue-500" />
+          <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-loose">Intelligence Hub</h1>
+          <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)] uppercase tracking-widest flex items-center gap-2">            <Zap size={16} className="text-blue-500" />
             Neural Analytics & Global Visibility Node
           </p>
         </div>
@@ -107,12 +107,12 @@ const Dashboard = () => {
           <div className="card-minimal !p-10 overflow-hidden group">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-bold text-[var(--airion-text-primary)] tracking-tight uppercase">Operational Revenue</h2>
-                <p className="text-sm font-black text-[var(--airion-text-muted)] tracking-widest uppercase opacity-60">Global Currency Flow Index</p>
+                <h2 className="text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight uppercase">Operational Revenue</h2>
+                <p className="text-sm font-black text-[var(--ease2event-text-muted)] tracking-widest uppercase opacity-60">Global Currency Flow Index</p>
               </div>
-              <div className="flex bg-[var(--airion-bg-elevated)] p-1.5 rounded-xl border border-[var(--airion-border-subtle)]">
-                <button className="px-6 py-2.5 rounded-lg text-xs font-extrabold bg-[var(--airion-brand-primary)] text-white shadow-lg shadow-blue-500/20 uppercase tracking-wide">Live Stream</button>
-                <button className="px-6 py-2.5 text-xs font-bold text-[var(--airion-text-secondary)] hover:text-[var(--airion-text-primary)] transition-all uppercase tracking-wide">Archive</button>
+              <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-xl border border-[var(--ease2event-border-subtle)]">
+                <button className="px-6 py-2.5 rounded-lg text-xs font-extrabold bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20 uppercase tracking-wide">Live Stream</button>
+                <button className="px-6 py-2.5 text-xs font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all uppercase tracking-wide">Archive</button>
               </div>
             </div>
 
@@ -125,12 +125,12 @@ const Dashboard = () => {
                       <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--airion-border-subtle)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 11, fontWeight: 600 }} dy={15} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 11, fontWeight: 600 }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--ease2event-border-subtle)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 11, fontWeight: 600 }} dy={15} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 11, fontWeight: 600 }} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: 'var(--airion-bg-surface)', borderRadius: '16px', border: '1px solid var(--airion-border-subtle)', padding: '16px' }}
-                    itemStyle={{ color: 'var(--airion-text-primary)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase' }}
+                    contentStyle={{ backgroundColor: 'var(--ease2event-bg-surface)', borderRadius: '16px', border: '1px solid var(--ease2event-border-subtle)', padding: '16px' }}
+                    itemStyle={{ color: 'var(--ease2event-text-primary)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase' }}
                   />
                   <Area type="monotone" dataKey="value" stroke="#2563eb" strokeWidth={4} fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>
@@ -140,7 +140,7 @@ const Dashboard = () => {
 
           {/* Feature Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="card-minimal !p-10 space-y-8 group border-[var(--airion-border-subtle)] hover:border-blue-500/30">
+            <div className="card-minimal !p-10 space-y-8 group border-[var(--ease2event-border-subtle)] hover:border-blue-500/30">
               <div className="flex justify-between items-start">
                 <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-2xl text-blue-400">
                   <Sparkles size={32} />
@@ -148,8 +148,8 @@ const Dashboard = () => {
                 <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-widest px-4 py-2 h-auto rounded-full">Live Optimization</Badge>
               </div>
               <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-[var(--airion-text-primary)] tracking-tight uppercase leading-none">Neural Ad Engine</h3>
-                <p className="text-sm text-[var(--airion-text-secondary)] font-semibold leading-relaxed tracking-wide opacity-90">Initialize AI-powered marketing nodes for 2.8x higher throughput.</p>
+                <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight uppercase leading-none">Neural Ad Engine</h3>
+                <p className="text-sm text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed tracking-wide opacity-90">Initialize AI-powered marketing nodes for 2.8x higher throughput.</p>
               </div>
               <Button className="btn-primary w-full !h-14 text-sm font-black tracking-widest uppercase rounded-2xl">Initialize Node</Button>
             </div>
@@ -179,28 +179,28 @@ const Dashboard = () => {
           {/* Recent Signals */}
           <div className="card-minimal !p-8 space-y-10">
             <div className="flex justify-between items-center">
-              <h2 className="text-sm font-black text-[var(--airion-text-secondary)] uppercase tracking-widest leading-none">Incoming Signals</h2>
+              <h2 className="text-sm font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Incoming Signals</h2>
               <span className="chip chip-soft-blue h-9 px-6 text-[10px] font-black rounded-full uppercase tracking-tighter italic border border-blue-500/20 shadow-lg shadow-blue-500/10">4 NODES ACTIVE</span>
             </div>
 
             <div className="space-y-8">
               {enquiries.map((e, i) => (
-                <div key={i} className="flex items-center gap-5 group cursor-pointer p-2 -m-2 rounded-2xl hover:bg-[var(--airion-bg-elevated)] transition-all">
-                  <div className="w-14 h-14 rounded-2xl bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] flex items-center justify-center font-bold text-xl text-[var(--airion-text-primary)] group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                <div key={i} className="flex items-center gap-5 group cursor-pointer p-2 -m-2 rounded-2xl hover:bg-[var(--ease2event-bg-elevated)] transition-all">
+                  <div className="w-14 h-14 rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] flex items-center justify-center font-bold text-xl text-[var(--ease2event-text-primary)] group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                     {e.avatar}
                   </div>
                   <div className="flex-1 min-w-0 space-y-2">
-                    <h4 className="text-xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none italic">{e.name}</h4>
-                    <p className="text-sm text-[var(--airion-text-muted)] font-black uppercase tracking-tight">{e.event} • <span className="text-blue-500">{e.time}</span></p>
+                    <h4 className="text-xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic">{e.name}</h4>
+                    <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-tight">{e.event} • <span className="text-blue-500">{e.time}</span></p>
                   </div>
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] hover:bg-white/10 transition-all">
+                  <button className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-white/10 transition-all">
                     <MoreVertical size={20} />
                   </button>
                 </div>
               ))}
             </div>
 
-            <Button variant="ghost" className="w-full h-16 text-sm font-black text-[var(--airion-text-secondary)] uppercase tracking-[0.2em] border-[var(--airion-border-subtle)] hover:bg-[var(--airion-bg-elevated)] transition-all mt-8 border rounded-[1.5rem] italic">
+            <Button variant="ghost" className="w-full h-16 text-sm font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-all mt-8 border rounded-[1.5rem] italic">
               Enter Communication Hub
             </Button>
           </div>
@@ -210,14 +210,14 @@ const Dashboard = () => {
             <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
 
             <div className="space-y-4 z-10 relative">
-              <h2 className="text-2xl font-bold text-[var(--airion-text-primary)] leading-none uppercase tracking-tight">Visibility Index</h2>
-              <p className="text-sm font-black text-[var(--airion-text-muted)] tracking-widest uppercase opacity-80">Global Marketplace Ranking v4.0</p>
+              <h2 className="text-2xl font-bold text-[var(--ease2event-text-primary)] leading-none uppercase tracking-tight">Visibility Index</h2>
+              <p className="text-sm font-black text-[var(--ease2event-text-muted)] tracking-widest uppercase opacity-80">Global Marketplace Ranking v4.0</p>
             </div>
 
             <div className="space-y-10 z-10 relative">
               <div className="flex justify-between items-end h-32 gap-3">
                 {[40, 60, 45, 90, 65, 80, 70].map((h, i) => (
-                  <div key={i} className="flex-1 bg-[var(--airion-bg-elevated)] rounded-t-xl relative group overflow-hidden border-x border-t border-[var(--airion-border-subtle)]">
+                  <div key={i} className="flex-1 bg-[var(--ease2event-bg-elevated)] rounded-t-xl relative group overflow-hidden border-x border-t border-[var(--ease2event-border-subtle)]">
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{ height: `${h}%` }}
@@ -228,10 +228,10 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              <div className="flex justify-between items-center bg-[var(--airion-bg-elevated)] p-8 rounded-3xl border border-[var(--airion-border-subtle)]">
+              <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-8 rounded-3xl border border-[var(--ease2event-border-subtle)]">
                 <div className="space-y-2">
                   <p className="text-sm font-black uppercase tracking-widest opacity-80 leading-none">Growth Delta</p>
-                  <p className="text-3xl font-bold tracking-tight text-[var(--airion-text-primary)] leading-none">+24.8%</p>
+                  <p className="text-3xl font-bold tracking-tight text-[var(--ease2event-text-primary)] leading-none">+24.8%</p>
                 </div>
                 <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/20">
                   <Activity size={28} />
@@ -246,16 +246,16 @@ const Dashboard = () => {
               <Target size={24} className="text-amber-500" />
               <h2 className="text-sm font-black tracking-widest leading-none opacity-80 uppercase">Operational Target</h2>
             </div>
-            <div className="bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] p-8 rounded-3xl space-y-6 group hover:border-blue-500/30 transition-all duration-500">
+            <div className="bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] p-8 rounded-3xl space-y-6 group hover:border-blue-500/30 transition-all duration-500">
               <div className="flex justify-between items-start">
-                <p className="text-lg font-bold text-[var(--airion-text-primary)] tracking-tight leading-tight">Final Floral Node Protocol</p>
+                <p className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-tight">Final Floral Node Protocol</p>
                 <span className="text-sm font-black uppercase tracking-widest opacity-60">JAN 18</span>
               </div>
               <div className="flex items-center gap-5">
                 <div className="w-6 h-6 rounded-full border-2 border-blue-600/30 flex items-center justify-center">
                   <div className="w-3 h-3 rounded-full bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.8)] animate-pulse" />
                 </div>
-                <p className="text-md text-[var(--airion-text-secondary)] font-semibold opacity-90">Awaiting Curator Registry Signoff</p>
+                <p className="text-md text-[var(--ease2event-text-secondary)] font-semibold opacity-90">Awaiting Curator Registry Signoff</p>
               </div>
             </div>
           </div>

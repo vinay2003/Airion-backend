@@ -1,5 +1,5 @@
 /**
- * @airion/types — Barrel Export
+ * @ease2event/types — Barrel Export
  *
  * This package acts as the single source of truth for:
  *   - Zod validation schemas

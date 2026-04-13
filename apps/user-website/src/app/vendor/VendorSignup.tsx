@@ -6,7 +6,7 @@ import {
     Clock, Globe, Wallet, CheckCircle2, Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@airion/shared/auth/AuthContext';
+import { useAuth } from '@ease2event/shared/auth/AuthContext';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 

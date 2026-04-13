@@ -1,5 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from '../../auth/guards/ws-auth.guard';
 
 @WebSocketGateway({
   cors: {
@@ -13,13 +15,19 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Map user/vendor ID to their socket IDs
   private connectedClients = new Map<string, string>();
 
+  @UseGuards(WsJwtGuard)
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
-    const userId = client.handshake.query.userId as string;
-    if (userId) {
-      this.connectedClients.set(userId, client.id);
-      client.join(userId); // Join a room for strictly this user for easier messaging
+    const user = client.data.user;
+    if (!user) {
+        client.disconnect();
+        return;
     }
+    
+    const userId = user.userId || user.sub;
+    console.log(`Node synchronized: ${userId} (${client.id})`);
+    
+    this.connectedClients.set(userId, client.id);
+    client.join(userId); 
   }
 
   handleDisconnect(client: Socket) {

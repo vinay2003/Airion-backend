@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@airion/shared/auth/AuthContext';
+import { useAuth } from '@ease2event/shared/auth/AuthContext';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
-import OTPInput from '@airion/shared/components/OTPInput';
+import OTPInput from '@ease2event/shared/components/OTPInput';
 
 const VendorLogin: React.FC = () => {
     const navigate = useNavigate();
@@ -38,7 +38,7 @@ const VendorLogin: React.FC = () => {
                     <Shield className="text-white" size={32} />
                 </div>
                 <h2 className="text-2xl font-black text-white tracking-tight">Redirecting to Secure Login...</h2>
-                <p className="text-slate-400 font-medium">Please wait while we connect you to the Airion Auth System.</p>
+                <p className="text-slate-400 font-medium">Please wait while we connect you to the Ease2event Auth System.</p>
                 <div className="w-8 h-8 border-t-2 border-b-2 border-red-500 rounded-full mx-auto animate-spin"></div>
             </div>
         </div>

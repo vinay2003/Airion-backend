@@ -17,6 +17,24 @@ const Header: React.FC = () => {
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+    const navItems = [
+        { name: 'Home', path: '/' },
+        { name: 'Marketplace', path: '/search' },
+        { name: 'Packages', path: '/packages' },
+        { name: 'Inspiration', path: '/inspiration' },
+        { 
+            name: 'Events', 
+            path: '/category',
+            children: [
+                { name: 'Weddings', path: '/category/weddings' },
+                { name: 'Parties', path: '/category/parties' },
+                { name: 'Corporate', path: '/category/corporate' }
+            ]
+        },
+        { name: 'About Us', path: '/about' },
+        { name: 'Contact', path: '/contact' }
+    ];
+
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -157,46 +175,49 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
-                <Link
-                    to="/"
-                    className={`text-base font-semibold transition-colors ${isActivePath('/')
-                            ? 'text-red-600'
-                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
-                        }`}
-                >
-                    Home
-                </Link>
-
-                <Link
-                    to="/search"
-                    className={`text-base font-semibold transition-colors ${isActivePath('/search')
-                            ? 'text-red-600'
-                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
-                        }`}
-                >
-                    Marketplace
-                </Link>
-
-                <Link
-                    to="/packages"
-                    className={`text-base font-semibold transition-colors ${isActivePath('/packages')
-                            ? 'text-red-600'
-                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
-                        }`}
-                >
-                    Packages
-                </Link>
-
-                <Link
-                    to="/inspiration"
-                    className={`text-base font-semibold transition-colors ${isActivePath('/inspiration')
-                            ? 'text-red-600'
-                            : 'text-gray-800 dark:text-gray-200 hover:text-red-500'
-                        }`}
-                >
-                    Inspiration
-                </Link>
+            <nav className="hidden lg:flex items-center gap-1">
+                {navItems.map((item) => (
+                    <div key={item.name} className="relative group px-1">
+                        {item.children ? (
+                            <div className="flex items-center gap-1 group">
+                                <button className="flex items-center gap-1 text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-red-500 transition-all px-4 py-2 rounded-xl group-hover:bg-red-50 dark:group-hover:bg-red-900/20">
+                                    {item.name}
+                                    <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+                                </button>
+                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                                    <div className="p-2">
+                                        {item.children.map((child) => (
+                                            <Link
+                                                key={child.name}
+                                                to={child.path}
+                                                className="block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all"
+                                            >
+                                                {child.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <Link
+                                to={item.path}
+                                className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${
+                                    isActivePath(item.path)
+                                        ? 'text-red-600'
+                                        : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                                }`}
+                            >
+                                {item.name}
+                                {isActivePath(item.path) && (
+                                    <motion.div 
+                                        layoutId="nav-underline" 
+                                        className="absolute bottom-0 left-4 right-4 h-0.5 bg-red-500 rounded-full" 
+                                    />
+                                )}
+                            </Link>
+                        )}
+                    </div>
+                ))}
             </nav>
 
             {/* Desktop Actions */}
@@ -301,89 +322,46 @@ const Header: React.FC = () => {
                             </div>
 
                         {/* Menu Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
                             {/* Navigation Links */}
-                            <nav className="space-y-3">
-                                <Link
-                                    to="/search"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/search')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Marketplace
-                                </Link>
-                                <Link
-                                    to="/packages"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/packages')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Packages
-                                </Link>
-                                <Link
-                                    to="/plan-event"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/plan-event')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Plan Event
-                                </Link>
-                                <Link
-                                    to="/inspiration"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/inspiration')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Inspiration
-                                </Link>
-                                <Link
-                                    to="/category/weddings"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/category/weddings')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Weddings
-                                </Link>
-                                <Link
-                                    to="/category/parties"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/category/parties')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Parties
-                                </Link>
-                                <Link
-                                    to="/about"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/about')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    About Us
-                                </Link>
-                                <Link
-                                    to="/contact"
-                                    onClick={toggleMenu}
-                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${isActivePath('/contact')
-                                        ? 'bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400'
-                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-                                        }`}
-                                >
-                                    Contact Us
-                                </Link>
+                            <nav className="space-y-2">
+                                {navItems.map((item) => (
+                                    <div key={item.name} className="space-y-1">
+                                        {item.children ? (
+                                            <div className="space-y-1">
+                                                <div className="px-4 py-2 text-xs font-black uppercase tracking-widest text-gray-400 dark:text-slate-500 mt-4 first:mt-0">
+                                                    {item.name}
+                                                </div>
+                                                {item.children.map((child) => (
+                                                    <Link
+                                                        key={child.name}
+                                                        to={child.path}
+                                                        onClick={toggleMenu}
+                                                        className={`block text-lg font-bold py-3 px-4 rounded-xl transition-all ${
+                                                            isActivePath(child.path)
+                                                                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                                                                : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                                        }`}
+                                                    >
+                                                        {child.name}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <Link
+                                                to={item.path}
+                                                onClick={toggleMenu}
+                                                className={`block text-lg font-bold py-3 px-4 rounded-xl transition-all ${
+                                                    isActivePath(item.path)
+                                                        ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                                                        : 'text-gray-900 dark:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                                }`}
+                                            >
+                                                {item.name}
+                                            </Link>
+                                        )}
+                                    </div>
+                                ))}
                             </nav>
 
                             <hr className="border-gray-200 dark:border-slate-800" />
@@ -476,48 +454,45 @@ const Header: React.FC = () => {
                     >
                     <div className="max-w-2xl mx-auto px-6 py-8">
                         <nav className="grid grid-cols-2 gap-4 mb-8">
-                            <Link
-                                to="/plan-event"
-                                onClick={toggleMenu}
-                                className="text-center py-4 px-6 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-900 dark:text-slate-100 font-medium transition-colors"
-                            >
-                                Plan Event
-                            </Link>
-                            <Link
-                                to="/inspiration"
-                                onClick={toggleMenu}
-                                className="text-center py-4 px-6 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-900 dark:text-slate-100 font-medium transition-colors"
-                            >
-                                Inspiration
-                            </Link>
-                            <Link
-                                to="/category/weddings"
-                                onClick={toggleMenu}
-                                className="text-center py-4 px-6 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-900 dark:text-slate-100 font-medium transition-colors"
-                            >
-                                Weddings
-                            </Link>
-                            <Link
-                                to="/category/parties"
-                                onClick={toggleMenu}
-                                className="text-center py-4 px-6 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-900 dark:text-slate-100 font-medium transition-colors"
-                            >
-                                Parties
-                            </Link>
-                            <Link
-                                to="/about"
-                                onClick={toggleMenu}
-                                className="text-center py-4 px-6 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-900 dark:text-slate-100 font-medium transition-colors"
-                            >
-                                About Us
-                            </Link>
+                            {navItems.map((item) => (
+                                <React.Fragment key={item.name}>
+                                    {item.children ? (
+                                        item.children.map((child) => (
+                                            <Link
+                                                key={child.name}
+                                                to={child.path}
+                                                onClick={toggleMenu}
+                                                className={`text-center py-4 px-6 rounded-2xl transition-all font-bold ${
+                                                    isActivePath(child.path)
+                                                        ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                        : 'bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-slate-100 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                                }`}
+                                            >
+                                                {child.name}
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <Link
+                                            to={item.path}
+                                            onClick={toggleMenu}
+                                            className={`text-center py-4 px-6 rounded-2xl transition-all font-bold ${
+                                                isActivePath(item.path)
+                                                    ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                    : 'bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-slate-100 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                            }`}
+                                        >
+                                            {item.name}
+                                        </Link>
+                                    )}
+                                </React.Fragment>
+                            ))}
                         </nav>
                         <Link
-                            to="/contact"
+                            to="/plan-event"
                             onClick={toggleMenu}
-                            className="block w-full text-center py-4 px-6 rounded-xl border-2 border-red-500 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold transition-colors"
+                            className="block w-full text-center py-5 rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 text-white font-black text-lg shadow-xl shadow-red-500/30 hover:scale-[1.02] transition-all active:scale-[0.98]"
                         >
-                            List Your Business
+                            Plan Your Perfect Event
                         </Link>
                     </div>
                 </motion.div>

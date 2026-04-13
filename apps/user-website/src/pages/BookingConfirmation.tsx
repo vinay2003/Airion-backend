@@ -16,7 +16,7 @@ const BookingConfirmation: React.FC = () => {
         if (!location.state) {
             navigate('/');
         }
-        setBookingId(`AIRION-${Math.floor(Math.random() * 900000) + 100000}`);
+        setBookingId(`E2E-${Math.floor(Math.random() * 900000) + 100000}`);
     }, [location.state, navigate]);
 
     if (!location.state) return null;

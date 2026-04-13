@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider, ProtectedRoute } from '@airion/shared';
+import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
 
 const queryClient = new QueryClient();
 
@@ -43,7 +43,7 @@ const App: React.FC = () => {
                   <Route path="users" element={<Users />} />
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="*" element={<div className="p-8 text-[var(--airion-text-primary)] font-medium">Page not found</div>} />
+                  <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>
               </Routes>
             </Suspense>

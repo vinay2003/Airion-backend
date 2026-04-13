@@ -1,5 +1,5 @@
 {
-  "name": "@airion/admin-panel",
+  "name": "@ease2event/admin-panel",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@airion/types": "*",
-    "@airion/shared": "*",
-    "@airion/ui": "*",
+    "@ease2event/types": "*",
+    "@ease2event/shared": "*",
+    "@ease2event/ui": "*",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-label": "^2.1.8",

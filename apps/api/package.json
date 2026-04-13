@@ -1,5 +1,5 @@
 {
-  "name": "@airion/api",
+  "name": "@ease2event/api",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
-    "@airion/types": "*",
+    "@ease2event/types": "*",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",

@@ -10,7 +10,7 @@ async function seedAdmin() {
     });
 
     const ADMIN_PHONE = '1000000000';
-    const ADMIN_EMAIL = 'admin@airion.com';
+    const ADMIN_EMAIL = 'admin@ease2event.com';
 
     try {
         await client.connect();

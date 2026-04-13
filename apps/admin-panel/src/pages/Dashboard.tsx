@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Users, Store, DollarSign, ArrowUpRight } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
-import { Skeleton, SkeletonText } from '@airion/ui';
+import { Skeleton, SkeletonText } from '@ease2event/ui';
 
 const Dashboard: React.FC = () => {
     const { data: stats, isLoading: statsLoading } = useQuery<any[]>({
@@ -46,8 +46,8 @@ const Dashboard: React.FC = () => {
     return (
         <div className="animate-in fade-in duration-500 pb-12">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-2xl font-bold text-[var(--airion-text-primary)]">Platform Intel</h1>
-                <div className="text-xs font-bold text-[var(--airion-text-muted)] bg-[var(--airion-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--airion-border-subtle)] uppercase tracking-wider">Live System Status: Normal</div>
+                <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Platform Intel</h1>
+                <div className="text-xs font-bold text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)] uppercase tracking-wider">Live System Status: Normal</div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -68,15 +68,15 @@ const Dashboard: React.FC = () => {
                                 {stat.change} <ArrowUpRight size={14} />
                             </span>
                         </div>
-                        <p className="text-[var(--airion-text-secondary)] text-sm font-medium mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-[var(--airion-text-primary)] tracking-tight">{stat.value}</h3>
+                        <p className="text-[var(--ease2event-text-secondary)] text-sm font-medium mb-1">{stat.label}</p>
+                        <h3 className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{stat.value}</h3>
                     </div>
                 ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 <div className="lg:col-span-2 card-premium">
-                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Network Growth</h3>
+                    <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Network Growth</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={growthData}>
@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="card-premium">
-                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Market Share</h3>
+                    <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Market Share</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -116,7 +116,7 @@ const Dashboard: React.FC = () => {
                         </ResponsiveContainer>
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             {categoryData.map((entry, index) => (
-                                <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--airion-text-secondary)]">
+                                <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--ease2event-text-secondary)]">
                                     <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                                     {entry.name}
                                 </div>
@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
 
             <div className="card-premium mb-8">
                 <div className="flex justify-between items-center mb-8">
-                    <h3 className="text-lg font-bold text-[var(--airion-text-primary)]">Revenue Projections</h3>
+                    <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)]">Revenue Projections</h3>
                     <div className="flex gap-2">
                         <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg">Volume</div>
                         <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">Commission</div>
@@ -158,21 +158,21 @@ const Dashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="card-premium">
-                    <h2 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Verification Queue</h2>
+                    <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Verification Queue</h2>
                     <div className="space-y-4">
                         {[
                             { name: 'Glow Makeup Studio', type: 'Makeup Artist', city: 'Mumbai' },
                             { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
                             { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
                         ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-white border border-[var(--airion-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                            <div key={i} className="flex items-center justify-between p-4 bg-white border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
                                         {vendor.name[0]}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-[var(--airion-text-primary)]">{vendor.name}</p>
-                                        <p className="text-xs text-[var(--airion-text-muted)] font-medium">{vendor.type} • {vendor.city}</p>
+                                        <p className="font-bold text-[var(--ease2event-text-primary)]">{vendor.name}</p>
+                                        <p className="text-xs text-[var(--ease2event-text-muted)] font-medium">{vendor.type} • {vendor.city}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -184,7 +184,7 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="card-premium">
-                    <h2 className="text-lg font-bold text-[var(--airion-text-primary)] mb-6">Platform Pulse</h2>
+                    <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Platform Pulse</h2>
                     <div className="space-y-6">
                         {[
                             { user: 'Rahul S.', type: 'profile_view', target: 'Royal Palace', time: '10 mins ago' },
@@ -197,10 +197,10 @@ const Dashboard: React.FC = () => {
                                     {i < 2 && <div className="w-0.5 h-full bg-slate-100 my-1"></div>}
                                 </div>
                                 <div>
-                                    <p className="text-sm text-[var(--airion-text-secondary)]">
-                                        <span className="font-bold text-[var(--airion-text-primary)]">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-indigo-600 font-bold">{activity.target}</span>
+                                    <p className="text-sm text-[var(--ease2event-text-secondary)]">
+                                        <span className="font-bold text-[var(--ease2event-text-primary)]">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-indigo-600 font-bold">{activity.target}</span>
                                     </p>
-                                    <p className="text-[10px] font-bold text-[var(--airion-text-muted)] uppercase tracking-widest mt-1">{activity.time}</p>
+                                    <p className="text-[10px] font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest mt-1">{activity.time}</p>
                                 </div>
                             </div>
                         ))}

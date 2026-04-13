@@ -147,7 +147,7 @@ const Header: React.FC = () => {
                 className="text-3xl md:text-4xl font-black text-red-600 font-cursive z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0 tracking-tighter italic"
             >
                 <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
-                Airion
+                Ease2event
             </Link>
 
             {/* Desktop Navigation */}

@@ -7,11 +7,11 @@ export class VendorGallery {
     id: string;
 
     @ManyToOne(() => Vendor, vendor => vendor.gallery, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'vendor_id' })
+    @JoinColumn({ name: 'vendor_id', foreignKeyConstraintName: 'fk_vendor_gallery_vendor' })
     vendor: Vendor;
 
     @Index()
-    @Column({ name: 'vendor_id' })
+    @Column({ name: 'vendor_id', insert: false, update: false })
     vendorId: string;
 
     @Column('varchar', { length: 512 })

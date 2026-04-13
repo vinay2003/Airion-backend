@@ -53,7 +53,7 @@ const Home: React.FC = () => {
     return (
         <main className="min-h-screen">
 
-            <SEO title="Home" description="Find the perfect event vendors with Airion." />
+            <SEO title="Home" description="Find the perfect event vendors with Ease2event." />
 
             <Hero />
 

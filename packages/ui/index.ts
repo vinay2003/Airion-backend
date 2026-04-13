@@ -1,11 +1,11 @@
 /**
- * @airion/ui — Barrel Export
+ * @ease2event/ui — Barrel Export
  *
  * Import components:
- *   import { Button, Card, Input, Badge, Avatar, Spinner } from '@airion/ui';
+ *   import { Button, Card, Input, Badge, Avatar, Spinner } from '@ease2event/ui';
  *
  * Import styles (in your index.css):
- *   @import "@airion/ui/globals.css";
+ *   @import "@ease2event/ui/globals.css";
  */
 
 // Components
@@ -20,13 +20,13 @@ export { Modal } from './components/Modal';
 export { Dropdown } from './components/Dropdown';
 export { Table } from './components/Table';
 export { Tabs } from './components/Tabs';
-export { AirionToaster, notify } from './components/Toast';
+export { Ease2eventToaster, notify } from './components/Toast';
 
 // Default exports (for named convenience)
-export { default as AirionButton } from './components/Button';
-export { default as AirionCard } from './components/Card';
-export { default as AirionInput } from './components/Input';
-export { default as AirionBadge } from './components/Badge';
-export { default as AirionAvatar } from './components/Avatar';
-export { default as AirionSpinner } from './components/Spinner';
-export { default as AirionSkeleton } from './components/Skeleton';
+export { default as Ease2eventButton } from './components/Button';
+export { default as Ease2eventCard } from './components/Card';
+export { default as Ease2eventInput } from './components/Input';
+export { default as Ease2eventBadge } from './components/Badge';
+export { default as Ease2eventAvatar } from './components/Avatar';
+export { default as Ease2eventSpinner } from './components/Spinner';
+export { default as Ease2eventSkeleton } from './components/Skeleton';

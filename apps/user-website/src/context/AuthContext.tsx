@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/apiClient';
-import { initiateSocketConnection, disconnectSocket } from '@airion/shared/auth/socket';
-import type { User, UserRole } from '@airion/types';
+import { initiateSocketConnection, disconnectSocket } from '@ease2event/shared/auth/socket';
+import type { User, UserRole } from '@ease2event/types';
 
 
 interface AuthContextType {

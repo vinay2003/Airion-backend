@@ -39,14 +39,17 @@
       "@shared": [
         "../../packages/shared"
       ],
-      "@airion/shared": [
+      "@ease2event/shared": [
         "../../packages/shared"
       ],
-      "@airion/shared/*": [
+      "@ease2event/shared/*": [
         "../../packages/shared/*"
       ],
-      "@airion/ui/*": [
+      "@ease2event/ui/*": [
         "../../packages/ui/*"
+      ],
+      "@ease2event/ui": [
+        "../../packages/ui"
       ]
     }
   },

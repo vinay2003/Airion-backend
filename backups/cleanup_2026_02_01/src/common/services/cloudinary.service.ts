@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 export class CloudinaryService {
     constructor(private configService: ConfigService) { }
 
-    async uploadImage(filePath: string, folder: string = 'airion/vendors') {
+    async uploadImage(filePath: string, folder: string = 'ease2event/vendors') {
         return await cloudinary.uploader.upload(filePath, {
             folder: folder,
         });

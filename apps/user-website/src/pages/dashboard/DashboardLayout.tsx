@@ -79,7 +79,7 @@ const DashboardLayout: React.FC = () => {
             `}>
                 <div className="p-6 flex items-center justify-between border-b border-neutral-100 dark:border-slate-800">
                     <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
-                        <span className="text-red-500">Airion</span>
+                        <span className="text-red-500">Ease2event</span>
                     </h2>
                     <button className="lg:hidden text-neutral-500" onClick={() => setIsSidebarOpen(false)}>
                         <X size={20} />

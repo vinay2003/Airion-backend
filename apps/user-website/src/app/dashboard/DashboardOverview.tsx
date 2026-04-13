@@ -4,7 +4,7 @@ import { useDashboardStore, Booking } from '@/lib/store/useDashboardStore';
 import { Calendar, Clock, CreditCard, ArrowRight, Plus, MapPin, Heart, Star, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 
 const OCCASIONS = [
     { label: 'Wedding', emoji: '💍' },

@@ -60,7 +60,7 @@ const VendorDiscovery: React.FC = () => {
     return (
         <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 pt-24 pb-12 overflow-x-hidden">
             <FallingPetals />
-            <SEO title="Explore Vendors | Airion" description="Discover the perfect vendors for your next event." />
+            <SEO title="Explore Vendors | Ease2event" description="Discover the perfect vendors for your next event." />
 
             <div className="max-w-[1440px] mx-auto px-4 md:px-8">
                 {/* Header */}

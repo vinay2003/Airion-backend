@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 
 type Role = 'USER' | 'VENDOR' | 'ADMIN';
 
@@ -174,7 +174,7 @@ const SidebarContent: React.FC<{ items: NavItem[], currentPath: string, isCollap
                 <div className="w-12 h-12 bg-red-600 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-red-600/20 group-hover:rotate-6 group-hover:scale-110 transition-all ring-4 ring-red-50">A</div>
                 {!isCollapsed && (
                     <div className="flex flex-col">
-                        <span className="text-3xl font-black tracking-tighter uppercase text-slate-900 group-hover:text-red-600 transition-colors">Airion</span>
+                        <span className="text-3xl font-black tracking-tighter uppercase text-slate-900 group-hover:text-red-600 transition-colors">Ease2event</span>
                         <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300 leading-none mt-1">Core Terminal</span>
                     </div>
                 )}

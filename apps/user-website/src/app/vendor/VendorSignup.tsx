@@ -6,7 +6,7 @@ import {
     Clock, Globe, Wallet, CheckCircle2, Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@airion/shared/auth/AuthContext';
+import { useAuth } from '@ease2event/shared/auth/AuthContext';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -129,7 +129,7 @@ const VendorSignupWizard: React.FC = () => {
                 monthlyEventVolume: formData.monthlyEventVolume,
                 averageBookingPrice: formData.averageBookingPrice.toString(),
                 painPoints: formData.painPoints,
-                businessDescription: formData.businessDescription || 'Bridging the gap between vendors and events at Airion.',
+                businessDescription: formData.businessDescription || 'Bridging the gap between vendors and events at Ease2event.',
                 portfolioImages: formData.portfolioImages,
                 businessAddress: {
                     street: formData.businessAddress || 'Business Location',
@@ -189,7 +189,7 @@ const VendorSignupWizard: React.FC = () => {
                         {currentStep === 2 && "Growth Intelligence"}
                         {currentStep === 3 && "Visual Showcase"}
                     </h1>
-                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Airion.</p>
+                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Ease2event.</p>
                 </div>
 
                 {renderProgress()}

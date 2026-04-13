@@ -195,7 +195,7 @@ export const Support: React.FC = () => (
                         </div>
                         <div>
                             <h4 className="font-bold text-gray-900 dark:text-white">Email Support</h4>
-                            <p className="text-sm text-gray-500">support@airion.com</p>
+                            <p className="text-sm text-gray-500">support@ease2event.com</p>
                             <p className="text-xs text-gray-400 mt-1">We typically reply within 24 hours</p>
                         </div>
                     </div>

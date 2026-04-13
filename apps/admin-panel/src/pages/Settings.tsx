@@ -67,7 +67,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Platform Name</label>
                                         <input
                                             type="text"
-                                            defaultValue="Airion"
+                                            defaultValue="Ease2event"
                                             className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
                                         />
                                     </div>
@@ -75,7 +75,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Support Email</label>
                                         <input
                                             type="email"
-                                            defaultValue="support@airion.com"
+                                            defaultValue="support@ease2event.com"
                                             className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
                                         />
                                     </div>
@@ -99,7 +99,7 @@ const Settings: React.FC = () => {
                                                 </div>
                                                 <div>
                                                     <h3 className="font-medium text-gray-900 dark:text-white">Admin User {i}</h3>
-                                                    <p className="text-sm text-gray-500 dark:text-slate-400">admin{i}@airion.com</p>
+                                                    <p className="text-sm text-gray-500 dark:text-slate-400">admin{i}@ease2event.com</p>
                                                 </div>
                                             </div>
                                             <button className="px-4 py-2 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-500/30 transition-colors text-sm font-medium">

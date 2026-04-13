@@ -15,11 +15,11 @@ export class VendorAd {
     id: string;
 
     @ManyToOne(() => Vendor, vendor => vendor.ads, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'vendor_id' })
+    @JoinColumn({ name: 'vendor_id', foreignKeyConstraintName: 'fk_vendor_ads_vendor' })
     vendor: Vendor;
 
     @Index()
-    @Column({ name: 'vendor_id' })
+    @Column({ name: 'vendor_id', insert: false, update: false })
     vendorId: string;
 
     @Column('varchar', { length: 255 })

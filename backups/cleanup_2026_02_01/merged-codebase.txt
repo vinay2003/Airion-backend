@@ -1,6 +1,6 @@
 ==================================================================================
 MERGED CODEBASE - Generated on Sat Jan 31 11:42:14 IST 2026
-Source Directory: /Users/vinaysharma/Desktop/airion
+Source Directory: /Users/vinaysharma/Desktop/ease2event
 ==================================================================================
 
 
@@ -17,14 +17,14 @@ DATABASE_PASSWORD=npg_MQvRIeE8u1NP
 DATABASE_NAME=neondb
 
 # JWT Configuration
-JWT_SECRET=airion-production-secret-key-change-this-to-random-string
+JWT_SECRET=ease2event-production-secret-key-change-this-to-random-string
 
 # Application
 NODE_ENV=development
 PORT=3000
 
 # Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=airion
+CLOUDINARY_CLOUD_NAME=ease2event
 CLOUDINARY_API_KEY=575224158126418
 CLOUDINARY_API_SECRET=byLgblILT5qQaoE9PePIqkOk-yU
 
@@ -48,7 +48,7 @@ DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=your_password
-DATABASE_NAME=airion
+DATABASE_NAME=ease2event
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -172,8 +172,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-# airion-backend
-# Airion-backend
+# ease2event-backend
+# Ease2event-backend
 
 // END OF FILE: README.md
 
@@ -285,16 +285,16 @@ FILE: cleanup.sh
 
 #!/bin/bash
 
-# 🧹 Airion Project Cleanup Script
+# 🧹 Ease2event Project Cleanup Script
 # This script safely removes unused files and folders
 # Version: 1.0
 
 set -e  # Exit on error
 
-PROJECT_ROOT="/Users/vinaysharma/Desktop/airion"
+PROJECT_ROOT="/Users/vinaysharma/Desktop/ease2event"
 cd "$PROJECT_ROOT"
 
-echo "🧹 Starting Airion Project Cleanup..."
+echo "🧹 Starting Ease2event Project Cleanup..."
 echo "📁 Working directory: $(pwd)"
 echo ""
 
@@ -425,7 +425,7 @@ echo ""
 FILE: frontend/admin-panel/.env
 ==================================================================================
 
-VITE_API_URL=https://airion-backend.onrender.com
+VITE_API_URL=https://ease2event-backend.onrender.com
 
 // END OF FILE: frontend/admin-panel/.env
 
@@ -7048,7 +7048,7 @@ FILE: frontend/admin-panel/src/lib/api.ts
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://airion-backend.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'https://ease2event-backend.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -7170,7 +7170,7 @@ const AdminLogin: React.FC = () => {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="admin@airion.com"
+                                    placeholder="admin@ease2event.com"
                                     className="pl-10"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -7487,7 +7487,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Platform Name</label>
                                         <input
                                             type="text"
-                                            defaultValue="Airion"
+                                            defaultValue="Ease2event"
                                             className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
                                         />
                                     </div>
@@ -7495,7 +7495,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Support Email</label>
                                         <input
                                             type="email"
-                                            defaultValue="support@airion.com"
+                                            defaultValue="support@ease2event.com"
                                             className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
                                         />
                                     </div>
@@ -7519,7 +7519,7 @@ const Settings: React.FC = () => {
                                                 </div>
                                                 <div>
                                                     <h3 className="font-medium text-gray-900 dark:text-white">Admin User {i}</h3>
-                                                    <p className="text-sm text-gray-500 dark:text-slate-400">admin{i}@airion.com</p>
+                                                    <p className="text-sm text-gray-500 dark:text-slate-400">admin{i}@ease2event.com</p>
                                                 </div>
                                             </div>
                                             <button className="px-4 py-2 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-500/30 transition-colors text-sm font-medium">
@@ -8090,7 +8090,7 @@ export default defineConfig({
 FILE: frontend/user-website/.env
 ==================================================================================
 
-VITE_API_URL=https://airion-backend.onrender.com
+VITE_API_URL=https://ease2event-backend.onrender.com
 
 // END OF FILE: frontend/user-website/.env
 
@@ -8099,7 +8099,7 @@ VITE_API_URL=https://airion-backend.onrender.com
 FILE: frontend/user-website/.env.example
 ==================================================================================
 
-VITE_API_URL=https://api.airion.com/v1
+VITE_API_URL=https://api.ease2event.com/v1
 VITE_ENABLE_ANALYTICS=true
 
 // END OF FILE: frontend/user-website/.env.example
@@ -8260,10 +8260,10 @@ FILE: frontend/user-website/index.html
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Airion - Premium Event Planning & Venue Booking Platform" />
+  <meta name="description" content="Ease2event - Premium Event Planning & Venue Booking Platform" />
   <meta name="theme-color" content="#ef4444" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <title>Airion</title>
+  <title>Ease2event</title>
 </head>
 
 <body>
@@ -19881,7 +19881,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-slate-400">
-                    <p>&copy; 2024 Airion. All rights reserved.</p>
+                    <p>&copy; 2024 Ease2event. All rights reserved.</p>
                 </div>
             </div>
         </footer>
@@ -20330,7 +20330,7 @@ const Hero: React.FC = () => {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 font-cursive pr-2">
                                 Moments
                             </span>
-                            With Airion
+                            With Ease2event
                         </h1>
                         <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed">
                             Discover the world's best venues and services for weddings, parties, and corporate events.
@@ -20497,11 +20497,11 @@ const SEO = ({
     description,
     keywords = "events, branding, user interface, web design",
     image = "/og-image.jpg",
-    url = "https://airion.com",
+    url = "https://ease2event.com",
     type = "website"
 }: SEOProps) => {
-    const siteTitle = "Airion | Premium Event Planning & Venue Booking";
-    const fullTitle = title === "Home" ? siteTitle : `${title} | Airion`;
+    const siteTitle = "Ease2event | Premium Event Planning & Venue Booking";
+    const fullTitle = title === "Home" ? siteTitle : `${title} | Ease2event`;
 
     return (
         <Helmet>
@@ -22123,7 +22123,7 @@ import axios from 'axios';
 
 // API client for backend requests
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://airion-backend.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'https://ease2event-backend.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -22226,7 +22226,7 @@ import SEO from '../components/SEO';
 const AboutUs: React.FC = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="About Us" description="We bring your vision to life. Airion is your trusted partner for unforgettable events." />
+            <SEO title="About Us" description="We bring your vision to life. Ease2event is your trusted partner for unforgettable events." />
             {/* Hero Section */}
             <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
@@ -22235,7 +22235,7 @@ const AboutUs: React.FC = () => {
                         We Create <span className="text-red-500 font-cursive">Memories</span>
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Airion is your trusted partner in crafting unforgettable events. From intimate gatherings to grand celebrations, we bring your vision to life.
+                        Ease2event is your trusted partner in crafting unforgettable events. From intimate gatherings to grand celebrations, we bring your vision to life.
                     </p>
                 </div>
             </div>
@@ -22274,7 +22274,7 @@ const AboutUs: React.FC = () => {
                     <div className="md:w-1/2">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Story</h2>
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed mb-6">
-                            Founded by a team of passionate event enthusiasts, Airion was born out of a shared vision to make event planning an enjoyable and seamless experience. We understand the stress that comes with organizing special moments, and we're here to change that.
+                            Founded by a team of passionate event enthusiasts, Ease2event was born out of a shared vision to make event planning an enjoyable and seamless experience. We understand the stress that comes with organizing special moments, and we're here to change that.
                         </p>
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed">
                             What started as a small idea has grown into a comprehensive platform connecting thousands of people with the perfect venues and vendors for their celebrations.
@@ -22334,7 +22334,7 @@ const AboutUs: React.FC = () => {
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Naif Farooqui</h3>
                             <p className="text-red-500 font-medium mb-4">Lead Designer & Developer</p>
                             <p className="text-gray-600 dark:text-slate-400 text-sm">
-                                Passionate about creating intuitive and beautiful digital experiences. Leading the technical and design vision for Airion.
+                                Passionate about creating intuitive and beautiful digital experiences. Leading the technical and design vision for Ease2event.
                             </p>
                         </div>
                     </div>
@@ -22362,7 +22362,7 @@ import { Link } from 'react-router-dom';
 const BecomeVendor: React.FC = () => {
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="Become a Vendor" description="Join Airion and grow your business. Connect with thousands of customers planning their events." />
+            <SEO title="Become a Vendor" description="Join Ease2event and grow your business. Connect with thousands of customers planning their events." />
 
             {/* Hero Section */}
             <section className="relative h-[80vh] flex items-center bg-gray-900 text-white overflow-hidden">
@@ -22383,7 +22383,7 @@ const BecomeVendor: React.FC = () => {
                         className="max-w-3xl"
                     >
                         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                            Grow Your Business with Airion
+                            Grow Your Business with Ease2event
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-300 mb-10 leading-relaxed">
                             Join Bihar's fastest-growing event marketplace. Connect with verified leads and manage bookings effortlessly.
@@ -22468,7 +22468,7 @@ const BecomeVendor: React.FC = () => {
             <section className="pb-20 px-4 md:px-8">
                 <div className="max-w-5xl mx-auto bg-red-600 rounded-3xl p-12 md:p-20 text-center text-white shadow-2xl shadow-red-600/30">
                     <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Scale Your Business?</h2>
-                    <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Airion today. It takes less than 5 minutes to get started.</p>
+                    <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Ease2event today. It takes less than 5 minutes to get started.</p>
                     <a href="/vendor/signup" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105">
                         Join as a Vendor
                     </a>
@@ -23252,7 +23252,7 @@ const Home: React.FC = () => {
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
+            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Ease2event." />
             <Hero />
 
             {/* Shop by Category Grid */}
@@ -23391,7 +23391,7 @@ const Home: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Airion?</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Ease2event?</h2>
                             <div className="space-y-8">
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -24408,7 +24408,7 @@ const Signup: React.FC = () => {
                     </div>
                     <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
                     <CardDescription className="text-center">
-                        Join Airion to discover amazing events
+                        Join Ease2event to discover amazing events
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -24597,7 +24597,7 @@ const TrendingWeddings: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
-            <SEO title="Trending Weddings | Airion" description="Explore the most popular and trending wedding venues tailored for your special day." />
+            <SEO title="Trending Weddings | Ease2event" description="Explore the most popular and trending wedding venues tailored for your special day." />
 
             {/* Hero Section */}
             <div className="relative h-[40vh] min-h-[350px] overflow-hidden">
@@ -24734,7 +24734,7 @@ const DashboardLayout: React.FC = () => {
             `}>
                 <div className="p-6">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span className="text-red-500">Airion</span> User
+                        <span className="text-red-500">Ease2event</span> User
                     </h2>
                 </div>
 
@@ -25302,8 +25302,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Airion | Premium Event Planning',
-        short_name: 'Airion',
+        name: 'Ease2event | Premium Event Planning',
+        short_name: 'Ease2event',
         description: 'Discover the world\'s best venues and services for weddings, parties, and corporate events.',
         theme_color: '#ef4444',
         icons: [
@@ -25346,7 +25346,7 @@ export default defineConfig({
 FILE: frontend/vendor-dashboard/.env
 ==================================================================================
 
-VITE_API_URL=https://airion-backend.onrender.com
+VITE_API_URL=https://ease2event-backend.onrender.com
 
 // END OF FILE: frontend/vendor-dashboard/.env
 
@@ -32871,7 +32871,7 @@ FILE: frontend/vendor-dashboard/src/lib/api.ts
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://airion-backend.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'https://ease2event-backend.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -34939,7 +34939,7 @@ const VendorSignup: React.FC = () => {
                         </div>
                     </div>
                     <CardTitle className="text-3xl font-bold">Vendor Registration</CardTitle>
-                    <CardDescription>Join Airion Solutions - The Future of Event Management</CardDescription>
+                    <CardDescription>Join Ease2event Solutions - The Future of Event Management</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-10 space-y-8">
                     <form onSubmit={handleSubmit}>
@@ -35139,7 +35139,7 @@ const VendorSignup: React.FC = () => {
                             <h3 className={sectionTitleClass}><TrendingUp className="h-5 w-5" /> Section 4: Platform Interest</h3>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>16. Likelihood to join Airion (1-5)</Label>
+                                    <Label>16. Likelihood to join Ease2event (1-5)</Label>
                                     <div className="flex gap-6">
                                         {[1, 2, 3, 4, 5].map(num => (
                                             <label key={num} className="flex flex-col items-center cursor-pointer">
@@ -35234,7 +35234,7 @@ const VendorSignup: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>22. When will you join Airion?</Label>
+                                    <Label>22. When will you join Ease2event?</Label>
                                     <div className="flex gap-4 flex-wrap">
                                         {["Immediately", "Within 1 month", "After others join", "Not sure"].map(opt => (
                                             <label key={opt} className="flex items-center space-x-2 cursor-pointer">
@@ -35709,13 +35709,13 @@ FILE: package-lock.json
 ==================================================================================
 
 {
-    "name": "airion-backend",
+    "name": "ease2event-backend",
     "version": "1.0.0",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
-            "name": "airion-backend",
+            "name": "ease2event-backend",
             "version": "1.0.0",
             "hasInstallScript": true,
             "dependencies": {
@@ -40075,7 +40075,7 @@ FILE: package.json
 ==================================================================================
 
 {
-    "name": "airion-backend",
+    "name": "ease2event-backend",
     "version": "1.0.0",
     "scripts": {
         "postinstall": "sh setup.sh",
@@ -40202,7 +40202,7 @@ export class AppController {
       status: 'ok',
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
-      service: 'airion-backend',
+      service: 'ease2event-backend',
     };
   }
 }
@@ -40907,7 +40907,7 @@ import { ConfigService } from '@nestjs/config';
 export class CloudinaryService {
     constructor(private configService: ConfigService) { }
 
-    async uploadImage(filePath: string, folder: string = 'airion/vendors') {
+    async uploadImage(filePath: string, folder: string = 'ease2event/vendors') {
         return await cloudinary.uploader.upload(filePath, {
             folder: folder,
         });
@@ -41040,7 +41040,7 @@ async function bootstrap() {
     const dataSource = app.get(DataSource);
     const userRepository = dataSource.getRepository(User);
 
-    const email = 'admin@airion.com';
+    const email = 'admin@ease2event.com';
     const phone = '9999999999';
     const password = 'admin'; // Simple password for dev
 
@@ -41818,7 +41818,7 @@ FILE: verify-cleanup.sh
 
 set -e
 
-PROJECT_ROOT="/Users/vinaysharma/Desktop/airion"
+PROJECT_ROOT="/Users/vinaysharma/Desktop/ease2event"
 cd "$PROJECT_ROOT"
 
 echo "🧪 POST-CLEANUP VERIFICATION"

@@ -13,11 +13,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:   'bg-[var(--airion-brand-primary)] bg-gradient-to-br from-[#6366f1] to-[var(--airion-brand-primary)] text-white shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 border border-indigo-500/50 active:translate-y-0 transition-all',
-  secondary: 'bg-[var(--airion-bg-elevated)] text-[var(--airion-text-primary)] hover:bg-[var(--airion-border-base)] border border-[var(--airion-border-subtle)] shadow-sm',
-  outline:   'border-2 border-[var(--airion-border-active)] text-[var(--airion-brand-primary)] bg-transparent hover:bg-[var(--airion-brand-primary)]/5',
-  ghost:     'bg-[var(--airion-bg-elevated)]/30 text-[var(--airion-text-secondary)] hover:bg-[var(--airion-bg-elevated)] hover:text-[var(--airion-text-primary)] transition-colors',
-  danger:    'border border-[var(--airion-brand-danger)] text-[var(--airion-brand-danger)] bg-[var(--airion-brand-danger)]/5 hover:bg-[var(--airion-brand-danger)]/15',
+  primary:   'bg-[var(--ease2event-brand-primary)] bg-gradient-to-br from-[#6366f1] to-[var(--ease2event-brand-primary)] text-white shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 border border-indigo-500/50 active:translate-y-0 transition-all',
+  secondary: 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-border-base)] border border-[var(--ease2event-border-subtle)] shadow-sm',
+  outline:   'border-2 border-[var(--ease2event-border-active)] text-[var(--ease2event-brand-primary)] bg-transparent hover:bg-[var(--ease2event-brand-primary)]/5',
+  ghost:     'bg-[var(--ease2event-bg-elevated)]/30 text-[var(--ease2event-text-secondary)] hover:bg-[var(--ease2event-bg-elevated)] hover:text-[var(--ease2event-text-primary)] transition-colors',
+  danger:    'border border-[var(--ease2event-brand-danger)] text-[var(--ease2event-brand-danger)] bg-[var(--ease2event-brand-danger)]/5 hover:bg-[var(--ease2event-brand-danger)]/15',
   gradient:  'bg-gradient-to-br from-[#6C63FF] to-[#4ECDC4] text-white hover:-translate-y-[2px] shadow-lg hover:shadow-[0_0_25px_rgba(78,205,196,0.3)] active:translate-y-0',
 };
 
@@ -59,7 +59,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseClasses =
-      'inline-flex items-center justify-center font-semibold transition-all duration-200 cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--airion-brand-primary)] focus-visible:ring-offset-2';
+      'inline-flex items-center justify-center font-semibold transition-all duration-200 cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ease2event-brand-primary)] focus-visible:ring-offset-2';
 
     return (
       <button
@@ -88,5 +88,5 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'AirionButton';
+Button.displayName = 'Ease2eventButton';
 export default Button;

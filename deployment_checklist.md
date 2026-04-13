@@ -1,4 +1,4 @@
-# Airion Production Deployment Checklist 🚀
+# Ease2event Production Deployment Checklist 🚀
 
 Ensure these steps are completed before final rollout to Vercel/Render.
 
@@ -6,17 +6,17 @@ Ensure these steps are completed before final rollout to Vercel/Render.
 All portals must have these variables set in their respective platform dashboards.
 
 ### Frontend (User, Vendor, Admin)
-- [ ] `VITE_API_URL`: The production URL of your backend (e.g., `https://api.airion.com/api`)
-- [ ] `VITE_VENDOR_URL`: Main vendor subdomain (e.g., `https://vendor.airion.com`)
-- [ ] `VITE_ADMIN_URL`: Main admin subdomain (e.g., `https://admin.airion.com`)
+- [ ] `VITE_API_URL`: The production URL of your backend (e.g., `https://api.ease2event.com/api`)
+- [ ] `VITE_VENDOR_URL`: Main vendor subdomain (e.g., `https://vendor.ease2event.com`)
+- [ ] `VITE_ADMIN_URL`: Main admin subdomain (e.g., `https://admin.ease2event.com`)
 - [ ] `NODE_ENV`: Should be set to `production`
 
 ### Backend (NestJS)
 - [ ] `DATABASE_URL`: Your production NeonDB/Postgres connection string
 - [ ] `JWT_SECRET`: A high-entropy 64-character string
-- [ ] `FRONTEND_URL`: `https://airion.com`
-- [ ] `VENDOR_URL`: `https://vendor.airion.com`
-- [ ] `ADMIN_URL`: `https://admin.airion.com`
+- [ ] `FRONTEND_URL`: `https://ease2event.com`
+- [ ] `VENDOR_URL`: `https://vendor.ease2event.com`
+- [ ] `ADMIN_URL`: `https://admin.ease2event.com`
 
 ## 2. Infrastructure & Database
 - [ ] **Migrations**: Run `npm run typeorm:migration:run` against the production DB.
@@ -24,8 +24,8 @@ All portals must have these variables set in their respective platform dashboard
 - [ ] **SSL/HTTPS**: Ensure all URLs in environment variables use `https`.
 
 ## 3. Auth Flow Sanity Test
-- [ ] **Login Redirect**: Verify that logging in on `airion.com` as a vendor correctly handovers to the vendor subdomain with the token.
-- [ ] **Token Storage**: Confirm no `localStorage` keys except `airion_token` are being used for primary identity.
+- [ ] **Login Redirect**: Verify that logging in on `ease2event.com` as a vendor correctly handovers to the vendor subdomain with the token.
+- [ ] **Token Storage**: Confirm no `localStorage` keys except `ease2event_token` are being used for primary identity.
 - [ ] **Refresh Rate**: Ensure `JWT_EXPIRES_IN` is set to a reasonable production value (e.g., `7d`).
 
 ## 4. Performance & Assets

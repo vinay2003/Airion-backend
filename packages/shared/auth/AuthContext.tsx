@@ -16,14 +16,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     // 🔐 JWT Handshake Protocol: Multi-Portal Monorepo Handoff
     const urlParams = new URL(window.location.href).searchParams;
-    const urlToken = urlParams.get('token') || urlParams.get('airion_token');
+    const urlToken = urlParams.get('token') || urlParams.get('ease2event_token');
     
     if (urlToken) {
       tokenService.setAccessToken(urlToken);
       // 🔥 Clean URL to prevent re-capturing token on reload or security leaks
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('token');
-      newUrl.searchParams.delete('airion_token');
+      newUrl.searchParams.delete('ease2event_token');
       window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
       
       const returnPath = urlParams.get('redirect_to');
@@ -110,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
       
       if (!isCentralAuth) {
-          window.location.href = `${LOGIN_URL}?portal_logout=true`;
+          window.location.href = LOGIN_URL;
       } else {
           // If we are already on central auth, just navigating to login is enough
           // We can use navigate if we're in a react-router context, but window.location is safer here

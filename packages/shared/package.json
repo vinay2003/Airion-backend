@@ -1,11 +1,11 @@
 {
-  "name": "@airion/shared",
+  "name": "@ease2event/shared",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "main": "./index.ts",
   "dependencies": {
-    "@airion/types": "*",
+    "@ease2event/types": "*",
     "axios": "^1.14.0",
     "socket.io-client": "^4.8.3"
   },

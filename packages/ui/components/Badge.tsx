@@ -15,23 +15,23 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  confirmed:  'bg-[var(--airion-status-confirmed-bg)]  text-[var(--airion-status-confirmed)]',
-  pending:    'bg-[var(--airion-status-pending-bg)]    text-[var(--airion-status-pending)]',
-  cancelled:  'bg-[var(--airion-status-cancelled-bg)]  text-[var(--airion-status-cancelled)]',
-  new:        'bg-[var(--airion-status-new-bg)]        text-[var(--airion-status-new)]',
-  inprogress: 'bg-[var(--airion-status-inprogress-bg)] text-[var(--airion-status-inprogress)]',
-  verified:   'bg-[var(--airion-status-confirmed-bg)]  text-[var(--airion-status-verified)]',
-  default:    'bg-[var(--airion-bg-elevated)]           text-[var(--airion-text-secondary)]',
+  confirmed:  'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-confirmed)]',
+  pending:    'bg-[var(--ease2event-status-pending-bg)]    text-[var(--ease2event-status-pending)]',
+  cancelled:  'bg-[var(--ease2event-status-cancelled-bg)]  text-[var(--ease2event-status-cancelled)]',
+  new:        'bg-[var(--ease2event-status-new-bg)]        text-[var(--ease2event-status-new)]',
+  inprogress: 'bg-[var(--ease2event-status-inprogress-bg)] text-[var(--ease2event-status-inprogress)]',
+  verified:   'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-verified)]',
+  default:    'bg-[var(--ease2event-bg-elevated)]           text-[var(--ease2event-text-secondary)]',
 };
 
 const dotColors: Record<BadgeVariant, string> = {
-  confirmed:  'bg-[var(--airion-status-confirmed)]',
-  pending:    'bg-[var(--airion-status-pending)]',
-  cancelled:  'bg-[var(--airion-status-cancelled)]',
-  new:        'bg-[var(--airion-status-new)]',
-  inprogress: 'bg-[var(--airion-status-inprogress)]',
-  verified:   'bg-[var(--airion-status-verified)]',
-  default:    'bg-[var(--airion-text-muted)]',
+  confirmed:  'bg-[var(--ease2event-status-confirmed)]',
+  pending:    'bg-[var(--ease2event-status-pending)]',
+  cancelled:  'bg-[var(--ease2event-status-cancelled)]',
+  new:        'bg-[var(--ease2event-status-new)]',
+  inprogress: 'bg-[var(--ease2event-status-inprogress)]',
+  verified:   'bg-[var(--ease2event-status-verified)]',
+  default:    'bg-[var(--ease2event-text-muted)]',
 };
 
 export const Badge = ({

@@ -558,7 +558,7 @@ const VendorSignup: React.FC = () => {
                         </div>
                     </div>
                     <CardTitle className="text-3xl font-bold">Vendor Registration</CardTitle>
-                    <CardDescription>Join Airion Solutions - The Future of Event Management</CardDescription>
+                    <CardDescription>Join Ease2event Solutions - The Future of Event Management</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-10 space-y-8">
                     <form onSubmit={handleSubmit}>
@@ -758,7 +758,7 @@ const VendorSignup: React.FC = () => {
                             <h3 className={sectionTitleClass}><TrendingUp className="h-5 w-5" /> Section 4: Platform Interest</h3>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>16. Likelihood to join Airion (1-5)</Label>
+                                    <Label>16. Likelihood to join Ease2event (1-5)</Label>
                                     <div className="flex gap-6">
                                         {[1, 2, 3, 4, 5].map(num => (
                                             <label key={num} className="flex flex-col items-center cursor-pointer">
@@ -853,7 +853,7 @@ const VendorSignup: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>22. When will you join Airion?</Label>
+                                    <Label>22. When will you join Ease2event?</Label>
                                     <div className="flex gap-4 flex-wrap">
                                         {["Immediately", "Within 1 month", "After others join", "Not sure"].map(opt => (
                                             <label key={opt} className="flex items-center space-x-2 cursor-pointer">
@@ -918,7 +918,7 @@ DESCRIPTION: Axios configuration and interceptors
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://airion-backend.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'https://ease2event-backend.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -1572,7 +1572,7 @@ export class AppController {
       status: 'ok',
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
-      service: 'airion-backend',
+      service: 'ease2event-backend',
     };
   }
 }
@@ -1612,14 +1612,14 @@ DATABASE_PASSWORD=npg_MQvRIeE8u1NP
 DATABASE_NAME=neondb
 
 # JWT Configuration
-JWT_SECRET=airion-production-secret-key-change-this-to-random-string
+JWT_SECRET=ease2event-production-secret-key-change-this-to-random-string
 
 # Application
 NODE_ENV=development
 PORT=3000
 
 # Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=airion
+CLOUDINARY_CLOUD_NAME=ease2event
 CLOUDINARY_API_KEY=575224158126418
 CLOUDINARY_API_SECRET=byLgblILT5qQaoE9PePIqkOk-yU
 
@@ -1642,7 +1642,7 @@ DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=your_password
-DATABASE_NAME=airion
+DATABASE_NAME=ease2event
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -1732,7 +1732,7 @@ DESCRIPTION: Backend dependencies
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {
-    "name": "airion-backend",
+    "name": "ease2event-backend",
     "version": "1.0.0",
     "scripts": {
         "postinstall": "sh setup.sh",

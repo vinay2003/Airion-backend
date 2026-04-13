@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import api from '../../lib/api';
-import LoadingButton from '../@airion/shared/components/LoadingButton';
-import StatusAlert from '../@airion/shared/components/StatusAlert';
+import LoadingButton from '../@ease2event/shared/components/LoadingButton';
+import StatusAlert from '../@ease2event/shared/components/StatusAlert';
 
 const VendorSignupBasic: React.FC = () => {
     const navigate = useNavigate();
@@ -73,7 +73,7 @@ const VendorSignupBasic: React.FC = () => {
             // Store token
             const authData = response.data;
             if (authData.access_token) {
-                localStorage.setItem('airion_token', authData.access_token);
+                localStorage.setItem('ease2event_token', authData.access_token);
             }
 
             setSuccess('OTP verified! Redirecting to complete your profile...');

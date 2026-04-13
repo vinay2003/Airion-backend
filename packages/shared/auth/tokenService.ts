@@ -3,7 +3,7 @@
  * Abstracts access to persistent storage for JWT tokens
  */
 
-const ACCESS_TOKEN_KEY = 'airion_token';
+const ACCESS_TOKEN_KEY = 'ease2event_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 
 export const tokenService = {

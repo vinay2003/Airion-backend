@@ -142,7 +142,7 @@ const ProfileSettings: React.FC = () => {
                                             </div>
                                             <div className="flex-1">
                                                 <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Language</h3>
-                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Select your preferred language for the Airion interface.</p>
+                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Select your preferred language for the Ease2event interface.</p>
                                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                                     {LANGUAGES.map(lang => (
                                                         <button

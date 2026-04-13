@@ -1,12 +1,12 @@
 /**
- * Airion Vendor Dashboard — Styles (Modernized SaaS Registry)
+ * Ease2event Vendor Dashboard — Styles (Modernized SaaS Registry)
  * Implements high-fidelity "Bento Box" grid aesthetics and "Operational Matrix" dark modes.
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
-@import "@airion/ui/globals.css";
+@import "@ease2event/ui/globals.css";
 
 /* 🔘 SaaS Interactive Elements */
 @utility btn-standard {
@@ -17,55 +17,55 @@
 :root {
   color-scheme: light;
   
-  --airion-bg-base:        #f8fafc; /* Slate 50 */
-  --airion-bg-surface:     #ffffff; /* White */
-  --airion-bg-elevated:    #f1f5f9; /* Slate 100 */
-  --airion-bg-sidebar:     #ffffff;
+  --ease2event-bg-base:        #f8fafc; /* Slate 50 */
+  --ease2event-bg-surface:     #ffffff; /* White */
+  --ease2event-bg-elevated:    #f1f5f9; /* Slate 100 */
+  --ease2event-bg-sidebar:     #ffffff;
 
-  --airion-text-primary:   #0f172a; /* Slate 900 */
-  --airion-text-secondary: #475569; /* Slate 600 */
-  --airion-text-muted:     #94a3b8; /* Slate 400 */
-  --airion-text-inverted:  #ffffff;
+  --ease2event-text-primary:   #0f172a; /* Slate 900 */
+  --ease2event-text-secondary: #475569; /* Slate 600 */
+  --ease2event-text-muted:     #94a3b8; /* Slate 400 */
+  --ease2event-text-inverted:  #ffffff;
 
-  --airion-border-subtle:  rgba(0, 0, 0, 0.03);
-  --airion-border-base:    rgba(0, 0, 0, 0.08);
+  --ease2event-border-subtle:  rgba(0, 0, 0, 0.03);
+  --ease2event-border-base:    rgba(0, 0, 0, 0.08);
 
-  --airion-brand-primary:  #6366f1; /* Indigo 500 */
-  --airion-brand-secondary: #f43f5e; /* Rose 500 */
+  --ease2event-brand-primary:  #6366f1; /* Indigo 500 */
+  --ease2event-brand-secondary: #f43f5e; /* Rose 500 */
 
-  --airion-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.02);
-  --airion-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --airion-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --ease2event-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.02);
+  --ease2event-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --ease2event-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
 .dark, [data-theme='dark'] {
   color-scheme: dark !important;
   
-  --airion-bg-base:        #020617; /* Slate 950 */
-  --airion-bg-surface:     #0f172a; /* Slate 900 */
-  --airion-bg-elevated:    #1e293b; /* Slate 800 */
-  --airion-bg-sidebar:     #020617;
+  --ease2event-bg-base:        #020617; /* Slate 950 */
+  --ease2event-bg-surface:     #0f172a; /* Slate 900 */
+  --ease2event-bg-elevated:    #1e293b; /* Slate 800 */
+  --ease2event-bg-sidebar:     #020617;
 
-  --airion-text-primary:   #f8fafc; /* Slate 50 */
-  --airion-text-secondary: #94a3b8; /* Slate 400 */
-  --airion-text-muted:     #64748b; /* Slate 500 */
-  --airion-text-inverted:  #0f172a;
+  --ease2event-text-primary:   #f8fafc; /* Slate 50 */
+  --ease2event-text-secondary: #94a3b8; /* Slate 400 */
+  --ease2event-text-muted:     #64748b; /* Slate 500 */
+  --ease2event-text-inverted:  #0f172a;
 
-  --airion-border-subtle:  rgba(255, 255, 255, 0.05);
-  --airion-border-base:    rgba(255, 255, 255, 0.1);
+  --ease2event-border-subtle:  rgba(255, 255, 255, 0.05);
+  --ease2event-border-base:    rgba(255, 255, 255, 0.1);
   
-  --airion-shadow-sm:  0 4px 6px -1px rgba(0, 0, 0, 0.5);
-  --airion-shadow-md:  0 20px 40px -8px rgba(0, 0, 0, 0.6);
+  --ease2event-shadow-sm:  0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --ease2event-shadow-md:  0 20px 40px -8px rgba(0, 0, 0, 0.6);
 }
 
 body {
-  @apply bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] antialiased transition-colors duration-300;
+  @apply bg-[var(--ease2event-bg-base)] text-[var(--ease2event-text-primary)] antialiased transition-colors duration-300;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 h1, h2, h3, h4, .text-heading {
-  @apply font-bold tracking-tight text-[var(--airion-text-primary)];
+  @apply font-bold tracking-tight text-[var(--ease2event-text-primary)];
 }
 
 .font-display {
@@ -81,24 +81,24 @@ h1, h2, h3, h4, .text-heading {
 
   /* 📦 Professional SaaS Card */
   .card-minimal {
-    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl p-6 transition-all duration-300 shadow-[var(--airion-shadow-sm)] hover:border-[var(--airion-brand-primary)]/30;
+    @apply bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl p-6 transition-all duration-300 shadow-[var(--ease2event-shadow-sm)] hover:border-[var(--ease2event-brand-primary)]/30;
   }
 
   .card-premium {
-    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] rounded-3xl p-8 transition-all duration-500 shadow-[var(--airion-shadow-md)] hover:shadow-2xl hover:bg-[var(--airion-bg-elevated)]/30;
+    @apply bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-3xl p-8 transition-all duration-500 shadow-[var(--ease2event-shadow-md)] hover:shadow-2xl hover:bg-[var(--ease2event-bg-elevated)]/30;
   }
 
   /* 🚨 High-Visibility Input */
   .input-dark-glass {
-    @apply bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-xl h-12 px-5 text-[var(--airion-text-primary)] placeholder-[var(--airion-text-muted)] outline-none transition-all duration-300 focus:ring-4 focus:ring-[var(--airion-brand-primary)]/10 focus:border-[var(--airion-brand-primary)];
+    @apply bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl h-12 px-5 text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)] outline-none transition-all duration-300 focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 focus:border-[var(--ease2event-brand-primary)];
   }
 
   .btn-primary {
-    @apply btn-standard bg-[var(--airion-brand-primary)] hover:shadow-xl hover:shadow-[var(--airion-brand-primary)]/20 text-white font-bold italic uppercase tracking-widest;
+    @apply btn-standard bg-[var(--ease2event-brand-primary)] hover:shadow-xl hover:shadow-[var(--ease2event-brand-primary)]/20 text-white font-bold italic uppercase tracking-widest;
   }
 
   .btn-secondary {
-    @apply btn-standard bg-[var(--airion-bg-elevated)] hover:bg-[var(--airion-bg-base)] text-[var(--airion-text-primary)] border border-[var(--airion-border-base)] font-bold italic uppercase tracking-widest;
+    @apply btn-standard bg-[var(--ease2event-bg-elevated)] hover:bg-[var(--ease2event-bg-base)] text-[var(--ease2event-text-primary)] border border-[var(--ease2event-border-base)] font-bold italic uppercase tracking-widest;
   }
 
   /* 🧩 Chip / Tag Design */
@@ -132,7 +132,7 @@ h1, h2, h3, h4, .text-heading {
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-[var(--airion-brand-primary)] transition-colors;
+    @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-[var(--ease2event-brand-primary)] transition-colors;
   }
 }
 
@@ -140,7 +140,7 @@ h1, h2, h3, h4, .text-heading {
 .rgb-bg-container {
   @apply fixed inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000;
   z-index: 0;
-  background-color: var(--airion-bg-base);
+  background-color: var(--ease2event-bg-base);
 }
 
 .rgb-glow-node {

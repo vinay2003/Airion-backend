@@ -6,8 +6,8 @@ import {
     Globe, ShieldCheck, Star
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Button, Badge, Skeleton } from '@airion/ui';
-import { useAuth } from '@airion/shared';
+import { Button, Badge, Skeleton } from '@ease2event/ui';
+import { useAuth } from '@ease2event/shared';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -128,26 +128,26 @@ const Products: React.FC = () => {
                 className="w-full max-w-6xl mx-auto space-y-12 pb-32 px-4"
             >
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--airion-border-subtle)]">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                     <motion.div variants={itemVariants}>
-                        <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Configuration</h1>
+                        <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Configuration</h1>
                         <div className="flex items-center gap-3 mt-4">
                             <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase rounded-full border border-blue-500/20">
                                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                                 Node Protocol Active
                             </span>
-                            <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Asset Definition • Pricing Matrix</p>
+                            <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Asset Definition • Pricing Matrix</p>
                         </div>
                     </motion.div>
                     
                     <motion.div variants={itemVariants} className="flex items-center gap-4">
-                        <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] rounded-2xl font-black text-[10px] uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all">
+                        <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-black text-[10px] uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">
                             Discard
                         </Button>
                         <Button
                             onClick={handleCreateService}
                             disabled={submitting}
-                            className="px-10 h-12 bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-[var(--airion-brand-primary)]/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
+                            className="px-10 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
                         >
                             {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Synchronize Node'}
                         </Button>
@@ -157,69 +157,69 @@ const Products: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     <div className="lg:col-span-2 space-y-10">
                         {/* Section: Basic Intelligence */}
-                        <motion.div variants={itemVariants} className="card-minimal !p-10 space-y-10 bg-[var(--airion-bg-surface)] shadow-2xl">
-                            <div className="flex items-center gap-4 border-b border-[var(--airion-border-subtle)] pb-8">
+                        <motion.div variants={itemVariants} className="card-minimal !p-10 space-y-10 bg-[var(--ease2event-bg-surface)] shadow-2xl">
+                            <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-8">
                                 <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
                                     <Box size={24} />
                                 </div>
-                                <h3 className="text-xl font-black text-[var(--airion-text-primary)] italic uppercase font-display">Basic Intelligence</h3>
+                                <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display">Basic Intelligence</h3>
                             </div>
                             
                             <div className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic">Operational Protocol ID</label>
+                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Operational Protocol ID</label>
                                     <input 
                                         type="text" 
                                         value={formData.title}
                                         onChange={(e) => setFormData({...formData, title: e.target.value})}
                                         placeholder="E.G. GRAND_BALLROOM_SYNAPSE"
-                                        className="w-full h-14 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl px-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest"
+                                        className="w-full h-14 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-2xl px-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] uppercase tracking-widest"
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic">Capability Matrix Description</label>
+                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Capability Matrix Description</label>
                                     <textarea 
                                         rows={6}
                                         value={formData.description}
                                         onChange={(e) => setFormData({...formData, description: e.target.value})}
                                         placeholder="DESCRIBE_OPERATIONAL_PARAMETERS..."
-                                        className="w-full min-h-[180px] bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-3xl px-6 py-5 text-sm font-medium leading-relaxed outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)]"
+                                        className="w-full min-h-[180px] bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-3xl px-6 py-5 text-sm font-medium leading-relaxed outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
                                     />
                                 </div>
                             </div>
                         </motion.div>
 
                         {/* Section: Capacity Hub */}
-                        <motion.div variants={itemVariants} className="card-minimal !p-10 space-y-10 bg-[var(--airion-bg-surface)] shadow-2xl">
-                            <div className="flex items-center gap-4 border-b border-[var(--airion-border-subtle)] pb-8">
+                        <motion.div variants={itemVariants} className="card-minimal !p-10 space-y-10 bg-[var(--ease2event-bg-surface)] shadow-2xl">
+                            <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-8">
                                 <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
                                     <Layers size={24} />
                                 </div>
-                                <h3 className="text-xl font-black text-[var(--airion-text-primary)] italic uppercase font-display">Protocol Capacity</h3>
+                                <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display">Protocol Capacity</h3>
                             </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic">Base Capture (₹)</label>
+                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Base Capture (₹)</label>
                                     <div className="relative">
-                                         <DollarSign size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--airion-brand-primary)]" />
+                                         <DollarSign size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-brand-primary)]" />
                                          <input 
                                              type="number" 
                                              value={formData.basePrice}
                                              onChange={(e) => setFormData({...formData, basePrice: e.target.value})}
                                              placeholder="CAPTURE_VAL"
-                                             className="w-full h-14 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl pl-14 pr-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest"
+                                             className="w-full h-14 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-2xl pl-14 pr-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] uppercase tracking-widest"
                                          />
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic">Max Node Throughput</label>
+                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Max Node Throughput</label>
                                     <input 
                                         type="number" 
                                         placeholder="UNIT_CAP"
                                         value={formData.guestCapacity}
                                         onChange={(e) => setFormData({...formData, guestCapacity: e.target.value})}
-                                        className="w-full h-14 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl px-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest"
+                                        className="w-full h-14 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-2xl px-6 text-sm font-black italic outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] uppercase tracking-widest"
                                     />
                                 </div>
                             </div>
@@ -228,30 +228,30 @@ const Products: React.FC = () => {
 
                     <div className="space-y-10">
                         {/* Section: Asset Visuals */}
-                        <motion.div variants={itemVariants} className="card-minimal !p-8 space-y-8 bg-gradient-to-br from-[var(--airion-brand-primary)]/[0.03] to-transparent shadow-xl">
-                            <h3 className="text-lg font-black text-[var(--airion-text-primary)] italic uppercase font-display tracking-tight">Node Visuals</h3>
-                            <div className="aspect-video rounded-2xl border-2 border-dashed border-[var(--airion-border-subtle)] bg-[var(--airion-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-8 group cursor-pointer hover:bg-[var(--airion-bg-elevated)] hover:border-[var(--airion-brand-primary)]/30 transition-all">
-                                <Plus size={24} className="text-[var(--airion-text-muted)] group-hover:text-[var(--airion-brand-primary)] group-hover:scale-125 transition-all mb-4" />
-                                <p className="text-[9px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic">Synchronize Visual Node</p>
+                        <motion.div variants={itemVariants} className="card-minimal !p-8 space-y-8 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.03] to-transparent shadow-xl">
+                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Node Visuals</h3>
+                            <div className="aspect-video rounded-2xl border-2 border-dashed border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-8 group cursor-pointer hover:bg-[var(--ease2event-bg-elevated)] hover:border-[var(--ease2event-brand-primary)]/30 transition-all">
+                                <Plus size={24} className="text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-brand-primary)] group-hover:scale-125 transition-all mb-4" />
+                                <p className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Synchronize Visual Node</p>
                             </div>
                         </motion.div>
 
                         {/* Section: Operational Stats */}
-                        <motion.div variants={itemVariants} className="card-minimal !p-8 bg-[var(--airion-bg-surface)] shadow-xl relative overflow-hidden group">
+                        <motion.div variants={itemVariants} className="card-minimal !p-8 bg-[var(--ease2event-bg-surface)] shadow-xl relative overflow-hidden group">
                            <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                                <ShieldCheck size={120} />
                            </div>
-                           <h3 className="text-lg font-black text-[var(--airion-text-primary)] italic uppercase font-display mb-6 tracking-tight relative z-10">Registry Status</h3>
+                           <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase font-display mb-6 tracking-tight relative z-10">Registry Status</h3>
                            <div className="space-y-6 relative z-10">
-                                <div className="flex justify-between items-center py-2 border-b border-[var(--airion-border-subtle)]">
-                                    <span className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic">Sync Level</span>
-                                    <span className="text-[10px] font-black text-[var(--airion-brand-primary)] italic">ALPHA_CMD_01</span>
+                                <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
+                                    <span className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic">Sync Level</span>
+                                    <span className="text-[10px] font-black text-[var(--ease2event-brand-primary)] italic">ALPHA_CMD_01</span>
                                 </div>
-                                <div className="flex justify-between items-center py-2 border-b border-[var(--airion-border-subtle)]">
-                                    <span className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic">Throughput</span>
+                                <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
+                                    <span className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic">Throughput</span>
                                     <span className="text-[10px] font-black text-emerald-500 italic">NOMINAL</span>
                                 </div>
-                                <p className="text-[9px] text-[var(--airion-text-muted)] font-black uppercase italic tracking-tighter opacity-60 mt-4">
+                                <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase italic tracking-tighter opacity-60 mt-4">
                                     Synchronizing this node will propagate the registry across the marketplace matrix.
                                 </p>
                            </div>
@@ -262,7 +262,7 @@ const Products: React.FC = () => {
                 {/* Section: Multi-Tier Architecture */}
                 <motion.div variants={itemVariants} className="space-y-8">
                     <div className="flex items-center justify-between px-2">
-                        <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase font-display tracking-tight">Tier Architecture</h3>
+                        <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Tier Architecture</h3>
                         <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-black uppercase italic text-[10px] tracking-widest shadow-sm">Autonomous Tiering Active</Badge>
                     </div>
                     
@@ -271,25 +271,25 @@ const Products: React.FC = () => {
                             <motion.div 
                                 key={pkg.name} 
                                 whileHover={{ y: -8 }}
-                                className={`card-minimal !p-10 transition-all duration-500 border shadow-2xl relative overflow-hidden rounded-[2.5rem] ${pkg.isPopular ? 'bg-gradient-to-br from-[var(--airion-brand-primary)]/[0.05] to-transparent border-[var(--airion-brand-primary)]/30' : 'bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)]'}`}
+                                className={`card-minimal !p-10 transition-all duration-500 border shadow-2xl relative overflow-hidden rounded-[2.5rem] ${pkg.isPopular ? 'bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.05] to-transparent border-[var(--ease2event-brand-primary)]/30' : 'bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]'}`}
                             >
                                 <div className="space-y-10 relative z-10">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xl font-black text-[var(--airion-text-primary)] italic uppercase font-display">{pkg.name}</span>
-                                        {pkg.isPopular && <Badge className="bg-[var(--airion-brand-primary)] text-white text-[9px] font-black uppercase px-4 py-1.5 rounded-full shadow-2xl shadow-[var(--airion-brand-primary)]/30 italic">Priority Node</Badge>}
+                                        <span className="text-xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display">{pkg.name}</span>
+                                        {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-black uppercase px-4 py-1.5 rounded-full shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 italic">Priority Node</Badge>}
                                     </div>
                                     <div className="space-y-3">
-                                        <label className="text-[9px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] italic">Tier Capture (₹)</label>
+                                        <label className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Tier Capture (₹)</label>
                                         <input 
                                             type="number" 
                                             value={pkg.price}
                                             onChange={(e) => updatePackage(i, 'price', e.target.value)}
                                             placeholder="VAL"
-                                            className="w-full h-12 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-xl px-4 text-sm font-black italic outline-none text-[var(--airion-text-primary)] uppercase tracking-widest"
+                                            className="w-full h-12 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-sm font-black italic outline-none text-[var(--ease2event-text-primary)] uppercase tracking-widest"
                                         />
                                     </div>
                                     <div className="space-y-5">
-                                        <label className="text-[9px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] italic">Capability Modules</label>
+                                        <label className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Capability Modules</label>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['Catering', 'Decor', 'Audio', 'Visuals'].map(feat => (
                                                 <button 
@@ -299,7 +299,7 @@ const Products: React.FC = () => {
                                                         const next = current.includes(feat) ? current.filter(c => c !== feat) : [...current, feat];
                                                         updatePackage(i, 'features', next);
                                                     }}
-                                                    className={`text-[9px] py-2.5 rounded-xl border transition-all font-black uppercase tracking-widest italic ${pkg.features.includes(feat) ? 'bg-[var(--airion-brand-primary)] text-white border-[var(--airion-brand-primary)] shadow-xl shadow-[var(--airion-brand-primary)]/20' : 'bg-[var(--airion-bg-elevated)] text-[var(--airion-text-muted)] border-[var(--airion-border-subtle)] hover:text-[var(--airion-text-primary)]'}`}
+                                                    className={`text-[9px] py-2.5 rounded-xl border transition-all font-black uppercase tracking-widest italic ${pkg.features.includes(feat) ? 'bg-[var(--ease2event-brand-primary)] text-white border-[var(--ease2event-brand-primary)] shadow-xl shadow-[var(--ease2event-brand-primary)]/20' : 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-muted)] border-[var(--ease2event-border-subtle)] hover:text-[var(--ease2event-text-primary)]'}`}
                                                 >
                                                     {feat}
                                                 </button>
@@ -323,21 +323,21 @@ const Products: React.FC = () => {
             className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
         >
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--airion-border-subtle)]">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
-                    <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Registry</h1>
+                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Registry</h1>
                     <div className="flex items-center gap-3 mt-4">
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                             Inventory Synchronized
                         </span>
-                        <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Asset Throughput • Portfolio Matrix</p>
+                        <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Asset Throughput • Portfolio Matrix</p>
                     </div>
                 </motion.div>
                 <motion.div variants={itemVariants}>
                     <Button 
                         onClick={() => setIsAdding(true)} 
-                        className="h-14 px-10 bg-[var(--airion-brand-primary)] text-white shadow-2xl shadow-[var(--airion-brand-primary)]/30 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] hover:scale-105 transition-all italic active:scale-95"
+                        className="h-14 px-10 bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] hover:scale-105 transition-all italic active:scale-95"
                         leftIcon={<Plus size={18} />}
                     >
                         Sync New Node
@@ -346,23 +346,23 @@ const Products: React.FC = () => {
             </div>
 
             {/* Matrix Filters */}
-            <motion.div variants={itemVariants} className="flex flex-col xl:flex-row gap-6 p-4 bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-base)] rounded-3xl shadow-inner">
+            <motion.div variants={itemVariants} className="flex flex-col xl:flex-row gap-6 p-4 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] rounded-3xl shadow-inner">
                 <div className="relative flex-1 group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)] group-focus-within:text-[var(--airion-brand-primary)] transition-colors" size={24} />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-muted)] group-focus-within:text-[var(--ease2event-brand-primary)] transition-colors" size={24} />
                     <input 
                         type="text" 
                         placeholder="SEARCH_REGISTRY_NODES..." 
-                        className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold italic text-[var(--airion-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--airion-text-muted)] uppercase tracking-widest transition-all"
+                        className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold italic text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-muted)] uppercase tracking-widest transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex bg-[var(--airion-bg-surface)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-md">
+                <div className="flex bg-[var(--ease2event-bg-surface)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-md">
                     {['ALL_NODES', 'ACTIVE_SYNC', 'ARCHIVE_CMD'].map(tab => (
                         <button 
                             key={tab} 
                             onClick={() => {}}
-                            className={`px-8 py-3 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all italic ${tab === 'ALL_NODES' ? 'bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-indigo-500/20' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                            className={`px-8 py-3 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all italic ${tab === 'ALL_NODES' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-indigo-500/20' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                         >
                             {tab.replace('_', ' ')}
                         </button>
@@ -374,7 +374,7 @@ const Products: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {loading ? (
                     [1, 2, 3].map(i => (
-                        <div key={i} className="h-80 rounded-[3rem] border border-[var(--airion-border-subtle)] animate-pulse bg-[var(--airion-bg-surface)] shadow-lg"></div>
+                        <div key={i} className="h-80 rounded-[3rem] border border-[var(--ease2event-border-subtle)] animate-pulse bg-[var(--ease2event-bg-surface)] shadow-lg"></div>
                     ))
                 ) : (
                     <>
@@ -387,7 +387,7 @@ const Products: React.FC = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="card-minimal !p-0 overflow-hidden group border-[var(--airion-border-base)] shadow-2xl bg-[var(--airion-bg-surface)] hover:border-[var(--airion-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer rounded-[3rem]"
+                                className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] shadow-2xl bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer rounded-[3rem]"
                             >
                                 <div className="h-56 bg-slate-900 relative overflow-hidden">
                                     <img 
@@ -397,7 +397,7 @@ const Products: React.FC = () => {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
                                     <div className="absolute top-6 left-6">
-                                        <Badge className="bg-[var(--airion-brand-primary)]/20 backdrop-blur-xl border border-[var(--airion-brand-primary)]/30 text-white font-black italic uppercase text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
+                                        <Badge className="bg-[var(--ease2event-brand-primary)]/20 backdrop-blur-xl border border-[var(--ease2event-brand-primary)]/30 text-white font-black italic uppercase text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
                                             {prod.guestCapacity ? 'Operational Venue' : 'Service Unit'}
                                         </Badge>
                                     </div>
@@ -407,19 +407,19 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className="p-8 flex-1 flex flex-col space-y-6">
                                     <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-[var(--airion-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
-                                        <h3 className="text-xl font-black text-[var(--airion-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--airion-brand-primary)] transition-colors">{prod.title}</h3>
+                                        <p className="text-[10px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
+                                        <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
                                     </div>
-                                    <p className="text-xs text-[var(--airion-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
+                                    <p className="text-xs text-[var(--ease2event-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
                                     
-                                    <div className="mt-auto pt-8 flex items-center justify-between border-t border-[var(--airion-border-subtle)]">
+                                    <div className="mt-auto pt-8 flex items-center justify-between border-t border-[var(--ease2event-border-subtle)]">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.3em] italic opacity-50">Base Capture</span>
-                                            <span className="text-2xl font-black text-[var(--airion-text-primary)] mt-1 italic font-display tracking-tighter group-hover:scale-105 transition-transform origin-left">₹{Number(prod.basePrice).toLocaleString()}</span>
+                                            <span className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.3em] italic opacity-50">Base Capture</span>
+                                            <span className="text-2xl font-black text-[var(--ease2event-text-primary)] mt-1 italic font-display tracking-tighter group-hover:scale-105 transition-transform origin-left">₹{Number(prod.basePrice).toLocaleString()}</span>
                                         </div>
                                         <div className="flex -space-x-3 group-hover:space-x-1 transition-all">
                                             {[1,2,3].map(i => (
-                                                <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--airion-bg-elevated)] border-2 border-[var(--airion-bg-surface)] text-[10px] font-black text-[var(--airion-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--airion-brand-primary)]/10 transition-all italic">v{i}</div>
+                                                <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] text-[10px] font-black text-[var(--ease2event-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--ease2event-brand-primary)]/10 transition-all italic">v{i}</div>
                                             ))}
                                         </div>
                                     </div>
@@ -431,14 +431,14 @@ const Products: React.FC = () => {
                     <motion.div 
                         whileHover={{ y: -5, scale: 1.02 }}
                         onClick={() => setIsAdding(true)}
-                        className="card-minimal border-4 border-dashed border-[var(--airion-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--airion-brand-primary)]/40 hover:bg-[var(--airion-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl rounded-[3rem]"
+                        className="card-minimal border-4 border-dashed border-[var(--ease2event-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--ease2event-brand-primary)]/40 hover:bg-[var(--ease2event-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl rounded-[3rem]"
                     >
-                        <div className="w-16 h-16 rounded-3xl bg-[var(--airion-bg-elevated)] border border-[var(--airion-border-subtle)] flex items-center justify-center text-[var(--airion-text-muted)] group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-700 shadow-2xl">
+                        <div className="w-16 h-16 rounded-3xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] flex items-center justify-center text-[var(--ease2event-text-muted)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-700 shadow-2xl">
                             <Plus size={32} />
                         </div>
                         <div className="text-center space-y-3">
-                            <h3 className="text-lg font-black text-[var(--airion-text-primary)] italic uppercase tracking-widest font-display">Sync New Node</h3>
-                            <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
+                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-widest font-display">Sync New Node</h3>
+                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
                         </div>
                     </motion.div>
                    </>

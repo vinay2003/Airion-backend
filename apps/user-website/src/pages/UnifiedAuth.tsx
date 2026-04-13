@@ -4,15 +4,15 @@ import {
     Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, 
     Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck 
 } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } from '@airion/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import OTPInput from '@airion/shared/components/OTPInput';
+import OTPInput from '@ease2event/shared/components/OTPInput';
 
 type AuthMode = 'login' | 'signup';
 
 /**
- * 🔐 Unified Authentication Gateway: Airion Core
+ * 🔐 Unified Authentication Gateway: Ease2event Core
  * Reconciles Identity Registry for Users, Vendors, and Administrative Entities.
  * Implements Zero-Trust Protocols for Administrative Access (1000000000 restricted).
  */
@@ -55,20 +55,6 @@ const UnifiedAuth: React.FC = () => {
 
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
-        // Handle global logout synchronization
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('portal_logout') === 'true') {
-            const logoutGlobal = async () => {
-                tokenService.clearTokens();
-                // Clear the URL params
-                const newUrl = new URL(window.location.href);
-                newUrl.searchParams.delete('portal_logout');
-                window.history.replaceState({}, '', newUrl.pathname + newUrl.search);
-            };
-            logoutGlobal();
-            return;
-        }
-
         if (isAuthenticated && user && !authLoading) {
             const VENDOR_URL = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
             const ADMIN_URL = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
@@ -255,7 +241,7 @@ const UnifiedAuth: React.FC = () => {
                         <div className="w-14 h-14 bg-red-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
                             <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={32} />
                         </div>
-                        <span className="text-5xl font-black text-white tracking-tighter uppercase italic">Airion</span>
+                        <span className="text-5xl font-black text-white tracking-tighter uppercase italic">Ease2event</span>
                     </motion.div>
 
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
@@ -294,7 +280,7 @@ const UnifiedAuth: React.FC = () => {
                 <div className="w-full max-w-sm space-y-12">
                     <div className="lg:hidden flex items-center gap-4 justify-center mb-10">
                         <Sparkles className="text-red-600" size={32} />
-                        <span className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Airion</span>
+                        <span className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Ease2event</span>
                     </div>
 
                     {/* Mode Matrix */}
@@ -433,16 +419,40 @@ const UnifiedAuth: React.FC = () => {
                              >
                                 <div className="space-y-6">
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.3em] italic ml-2">Identity Tag (Full Name)</label>
-                                        <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)} placeholder="NEURAL_TAG" className="w-full h-16 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 rounded-2xl px-6 font-black italic text-lg outline-none focus:ring-4 focus:ring-red-600/10 transition-all uppercase" />
+                                        <label className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.3em] italic ml-4">Identity Tag (Full Name)</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-600 transition-colors">
+                                                <User size={20} />
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                required 
+                                                value={fullName} 
+                                                onChange={e => setFullName(e.target.value)} 
+                                                placeholder="NEURAL_TAG" 
+                                                className="w-full pl-16 pr-6 h-18 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-[24px] focus:ring-4 focus:ring-red-600/10 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-black text-neutral-900 dark:text-white text-lg tracking-wider italic uppercase" 
+                                            />
+                                        </div>
                                     </div>
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.3em] italic ml-2">Registry Mail (Email)</label>
-                                        <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="NODE@MATRIX.COM" className="w-full h-16 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 rounded-2xl px-6 font-black italic text-lg outline-none focus:ring-4 focus:ring-red-600/10 transition-all uppercase" />
+                                        <label className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.3em] italic ml-4">Registry Mail (Email)</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-600 transition-colors">
+                                                <Mail size={20} />
+                                            </div>
+                                            <input 
+                                                type="email" 
+                                                required 
+                                                value={email} 
+                                                onChange={e => setEmail(e.target.value)} 
+                                                placeholder="NODE@MATRIX.COM" 
+                                                className="w-full pl-16 pr-6 h-18 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-[24px] focus:ring-4 focus:ring-red-600/10 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-black text-neutral-900 dark:text-white text-lg tracking-wider italic uppercase" 
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                                <button type="submit" disabled={loading} className="w-full h-18 bg-red-600 text-white rounded-[24px] font-black uppercase text-[11px] tracking-[0.4em] italic shadow-2xl hover:scale-[1.02] active:scale-95 transition-all">
-                                    FINALIZE_SYNCHRONIZATION <ArrowRight size={20} className="ml-4 inline" />
+                                <button type="submit" disabled={loading} className="w-full h-20 bg-red-600 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.4em] italic shadow-2xl shadow-red-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                                    FINALIZE_SYNCHRONIZATION <ArrowRight size={20} />
                                 </button>
                              </motion.form>
                         )}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar as CalendarIcon, Search, Clock, Users, DollarSign, CheckCircle, AlertCircle, ChevronRight, User, Filter, XCircle } from 'lucide-react';
-import { useBookingStore } from '@airion/shared/lib/stores/useBookingStore';
-import { useAuth } from '@airion/shared/auth';
-import { Button, Card, Skeleton, notify } from '@airion/ui';
+import { useBookingStore } from '@ease2event/shared/lib/stores/useBookingStore';
+import { useAuth } from '@ease2event/shared/auth';
+import { Button, Card, Skeleton, notify } from '@ease2event/ui';
 
 const Bookings: React.FC = () => {
     const { user } = useAuth();
@@ -73,7 +73,7 @@ const Bookings: React.FC = () => {
                 {displayStats.map((stat, idx) => (
                     <Card key={idx} className="flex flex-col border-none shadow-sm hover:shadow-xl transition-all h-full justify-between group">
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`p-4 rounded-3xl bg-[var(--airion-bg-elevated)] text-${stat.color}-500/80 group-hover:scale-110 transition-transform`}>
+                            <div className={`p-4 rounded-3xl bg-[var(--ease2event-bg-elevated)] text-${stat.color}-500/80 group-hover:scale-110 transition-transform`}>
                                 <stat.icon size={28} />
                             </div>
                         </div>

@@ -58,7 +58,7 @@ const VendorDiscovery: React.FC = () => {
 
     return (
         <main className="min-h-screen bg-white transition-all duration-500 pt-32 pb-24 selection:bg-red-600 selection:text-white">
-            <SEO title="Explore Vendors | Airion" description="Discover the perfect verified vendors for your next premium event." />
+            <SEO title="Explore Vendors | Ease2event" description="Discover the perfect verified vendors for your next premium event." />
 
             <div className="max-w-[1400px] mx-auto px-6 md:px-10">
                 {/* Header */}

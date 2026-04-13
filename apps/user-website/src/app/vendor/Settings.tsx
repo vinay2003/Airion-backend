@@ -95,7 +95,7 @@ const Settings: React.FC = () => {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Bio</label>
                                         <textarea
                                             rows={4}
-                                            defaultValue="Professional event provider on Airion."
+                                            defaultValue="Professional event provider on Ease2event."
                                             className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all resize-none"
                                         />
                                     </div>

@@ -1,7 +1,7 @@
 services:
   # Backend Web Service
   - type: web
-    name: airion-backend
+    name: ease2event-backend
     env: node
     region: oregon  # Choose: oregon, frankfurt, singapore, ohio
     plan: free

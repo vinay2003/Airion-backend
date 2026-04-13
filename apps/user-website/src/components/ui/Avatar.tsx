@@ -47,7 +47,7 @@ export const Avatar = ({
       className={[
         container,
         'rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden',
-        'bg-gradient-to-br from-[var(--airion-brand-primary)] to-[var(--airion-brand-secondary)]',
+        'bg-gradient-to-br from-[var(--ease2event-brand-primary)] to-[var(--ease2event-brand-secondary)]',
         className,
       ]
         .filter(Boolean)

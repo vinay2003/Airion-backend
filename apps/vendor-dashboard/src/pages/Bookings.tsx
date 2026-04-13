@@ -16,7 +16,7 @@ import {
     Zap,
     Filter
 } from 'lucide-react';
-import { Tabs, Input, Button, Badge } from '@airion/ui';
+import { Tabs, Input, Button, Badge } from '@ease2event/ui';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface Booking {
@@ -125,21 +125,21 @@ const Bookings: React.FC = () => {
             className="space-y-10 pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
         >
             {/* Header: Operational Matrix */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--airion-border-subtle)]">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
-                    <h1 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Operational Matrix</h1>
+                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Operational Matrix</h1>
                     <div className="flex items-center gap-3 mt-4">
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase rounded-full border border-blue-500/20">
                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                             Registry Synchronization
                         </span>
-                        <p className="text-[var(--airion-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Venue Throughput • Client Coordination</p>
+                        <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Venue Throughput • Client Coordination</p>
                     </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-inner">
-                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] rounded-xl shadow-md border border-[var(--airion-border-base)] transition-all">Daily</button>
-                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)] transition-all">Weekly</button>
+                <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner">
+                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] rounded-xl shadow-md border border-[var(--ease2event-border-base)] transition-all">Daily</button>
+                    <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">Weekly</button>
                 </motion.div>
             </div>
 
@@ -150,17 +150,17 @@ const Bookings: React.FC = () => {
                         key={idx} 
                         variants={itemVariants}
                         whileHover={{ y: -5, scale: 1.02 }}
-                        className="card-minimal p-7 flex flex-col justify-between group cursor-pointer hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)]"
+                        className="card-minimal p-7 flex flex-col justify-between group cursor-pointer hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]"
                     >
                         <div className="flex justify-between items-start mb-8 relative z-10">
-                            <div className="p-4 rounded-2xl bg-[var(--airion-bg-elevated)] text-[var(--airion-brand-primary)] group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white transition-all duration-500 shadow-sm border border-[var(--airion-border-subtle)]">
+                            <div className="p-4 rounded-2xl bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-brand-primary)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 shadow-sm border border-[var(--ease2event-border-subtle)]">
                                 <stat.icon size={22} className="group-hover:rotate-12 transition-all duration-500" />
                             </div>
                             <span className="text-[10px] font-black px-2 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg">{stat.trend}</span>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[var(--airion-text-muted)] font-black text-[10px] uppercase tracking-[0.3em] mb-2 opacity-70 group-hover:opacity-100 transition-all italic">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter italic leading-none font-display">{stat.value}</h3>
+                            <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] uppercase tracking-[0.3em] mb-2 opacity-70 group-hover:opacity-100 transition-all italic">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display">{stat.value}</h3>
                         </div>
                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                             <stat.icon size={110} />
@@ -171,24 +171,24 @@ const Bookings: React.FC = () => {
 
             {/* Filters & Navigation */}
             <div className="flex flex-col xl:flex-row gap-8 justify-between items-start xl:items-center py-6">
-                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)] p-1.5 rounded-2xl border border-[var(--airion-border-subtle)] shadow-inner w-full xl:w-auto overflow-x-auto scrollbar-hide">
+                <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner w-full xl:w-auto overflow-x-auto scrollbar-hide">
                     {tabsData.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setFilter(tab.id as any)}
-                            className={`flex-1 sm:flex-none px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic whitespace-nowrap ${filter === tab.id ? 'bg-[var(--airion-brand-primary)] text-white shadow-xl shadow-[var(--airion-brand-primary)]/20' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                            className={`flex-1 sm:flex-none px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic whitespace-nowrap ${filter === tab.id ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                         >
                             {tab.label}
                         </button>
                     ))}
                 </motion.div>
                 <motion.div variants={itemVariants} className="relative w-full xl:w-96">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--airion-text-muted)]" size={18} />
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-muted)]" size={18} />
                     <input
                         placeholder="FILTER BY CLIENT / VENUE..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-14 pr-6 py-4 bg-[var(--airion-bg-elevated)]/50 border border-[var(--airion-border-subtle)] rounded-2xl text-[11px] font-black italic outline-none focus:ring-2 focus:ring-[var(--airion-brand-primary)]/20 transition-all text-[var(--airion-text-primary)] uppercase tracking-widest"
+                        className="w-full pl-14 pr-6 py-4 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-2xl text-[11px] font-black italic outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] uppercase tracking-widest"
                     />
                 </motion.div>
             </div>
@@ -204,18 +204,18 @@ const Bookings: React.FC = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            className="card-minimal !p-0 overflow-hidden hover:border-[var(--airion-brand-primary)]/40 transition-all duration-500 group bg-[var(--airion-bg-surface)] border-[var(--airion-border-base)] shadow-lg"
+                            className="card-minimal !p-0 overflow-hidden hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-500 group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] shadow-lg"
                         >
                             <div className="flex flex-col xl:flex-row xl:items-stretch">
                                 {/* Left Side: Branding */}
-                                <div className="xl:w-2/3 p-8 flex flex-col justify-between border-b xl:border-b-0 xl:border-r border-[var(--airion-border-subtle)]">
+                                <div className="xl:w-2/3 p-8 flex flex-col justify-between border-b xl:border-b-0 xl:border-r border-[var(--ease2event-border-subtle)]">
                                     <div className="flex justify-between items-start mb-10">
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] tracking-tighter italic font-display uppercase leading-tight group-hover:text-[var(--airion-brand-primary)] transition-colors">{booking.venueName}</h3>
+                                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{booking.venueName}</h3>
                                                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                                             </div>
-                                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.2em] italic opacity-60">PROTOCOL: {booking.eventType}</p>
+                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic opacity-60">PROTOCOL: {booking.eventType}</p>
                                         </div>
                                         <Badge className={`italic font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-[0.2em] border shadow-sm ${
                                             booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 
@@ -227,29 +227,29 @@ const Bookings: React.FC = () => {
 
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                                         <div className="space-y-1.5">
-                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Operational Hub</p>
-                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
-                                                <MapPin size={14} className="text-[var(--airion-brand-primary)]" />
+                                            <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Operational Hub</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--ease2event-text-secondary)] italic">
+                                                <MapPin size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 MAIN_LEVEL_HUB
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Node Sync Date</p>
-                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
-                                                <CalendarIcon size={14} className="text-[var(--airion-brand-primary)]" />
+                                            <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Node Sync Date</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--ease2event-text-secondary)] italic">
+                                                <CalendarIcon size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {booking.date}
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Unit Capacity</p>
-                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-secondary)] italic">
-                                                <Users size={14} className="text-[var(--airion-brand-primary)]" />
+                                            <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Unit Capacity</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--ease2event-text-secondary)] italic">
+                                                <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {booking.guests} NODES
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50">Capture Value</p>
-                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--airion-text-primary)] italic">
+                                            <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Capture Value</p>
+                                            <div className="flex items-center gap-2 text-xs font-black text-[var(--ease2event-text-primary)] italic">
                                                 <DollarSign size={14} className="text-emerald-500" />
                                                 {booking.amount}
                                             </div>
@@ -258,23 +258,23 @@ const Bookings: React.FC = () => {
                                 </div>
 
                                 {/* Right Side: Actions & Client */}
-                                <div className="xl:w-1/3 bg-[var(--airion-bg-elevated)]/30 p-8 flex flex-col justify-between">
+                                <div className="xl:w-1/3 bg-[var(--ease2event-bg-elevated)]/30 p-8 flex flex-col justify-between">
                                     <div className="flex justify-between items-start mb-6">
                                         <div className="space-y-1">
-                                            <p className="text-[8px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest opacity-50 italic">Registry Authority</p>
-                                            <h4 className="font-black text-sm text-[var(--airion-text-primary)] italic uppercase tracking-tight">{booking.clientName}</h4>
+                                            <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50 italic">Registry Authority</p>
+                                            <h4 className="font-black text-sm text-[var(--ease2event-text-primary)] italic uppercase tracking-tight">{booking.clientName}</h4>
                                         </div>
-                                        <button className="p-3 bg-[var(--airion-bg-surface)] rounded-2xl border border-[var(--airion-border-subtle)] text-[var(--airion-text-muted)] hover:text-[var(--airion-brand-primary)] transition-all">
+                                        <button className="p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
                                             <MoreVertical size={16} />
                                         </button>
                                     </div>
 
                                     <div className="flex gap-4">
-                                        <Button className="flex-1 h-12 bg-[var(--airion-bg-surface)] border border-[var(--airion-border-base)] text-[var(--airion-text-primary)] rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:bg-[var(--airion-bg-elevated)]">
+                                        <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:bg-[var(--ease2event-bg-elevated)]">
                                             View Logs
                                         </Button>
                                         {booking.status === 'Pending' && (
-                                            <Button className="flex-1 h-12 bg-[var(--airion-brand-primary)] text-white shadow-lg shadow-[var(--airion-brand-primary)]/20 rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:scale-105 transition-all">
+                                            <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[9px] font-black uppercase tracking-widest italic hover:scale-105 transition-all">
                                                 Confirm Sync
                                             </Button>
                                         )}
@@ -289,11 +289,11 @@ const Bookings: React.FC = () => {
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-center py-24 bg-[var(--airion-bg-elevated)]/30 rounded-3xl border border-[var(--airion-border-subtle)] border-dashed"
+                        className="text-center py-24 bg-[var(--ease2event-bg-elevated)]/30 rounded-3xl border border-[var(--ease2event-border-subtle)] border-dashed"
                     >
-                        <AlertCircle size={48} className="mx-auto text-[var(--airion-text-muted)] mb-6 opacity-40 animate-pulse" />
-                        <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase font-display tracking-tight">Registry Node Empty</h3>
-                        <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-widest mt-3 opacity-60">Modify filters for new unit synchronization</p>
+                        <AlertCircle size={48} className="mx-auto text-[var(--ease2event-text-muted)] mb-6 opacity-40 animate-pulse" />
+                        <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Registry Node Empty</h3>
+                        <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest mt-3 opacity-60">Modify filters for new unit synchronization</p>
                     </motion.div>
                 )}
             </div>

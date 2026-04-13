@@ -151,7 +151,7 @@ export class AuthService {
         const { password, ...userWithoutPassword } = user;
 
         const refresh_token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        await this.sessionService.createSession(user.id, refresh_token, '0.0.0.0', 'Airion Gateway');
+        await this.sessionService.createSession(user.id, refresh_token, '0.0.0.0', 'Ease2event Gateway');
 
         return {
             access_token,

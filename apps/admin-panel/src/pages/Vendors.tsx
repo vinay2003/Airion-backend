@@ -177,7 +177,7 @@ const Vendors: React.FC = () => {
                                     </td>
                                     <td className="px-10 py-8 whitespace-nowrap text-right">
                                         <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                                            <button className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-slate-800 hover:bg-[var(--airion-brand-primary)] hover:text-white rounded-xl text-gray-500 transition-all shadow-sm">
+                                            <button className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-slate-800 hover:bg-[var(--ease2event-brand-primary)] hover:text-white rounded-xl text-gray-500 transition-all shadow-sm">
                                                 <Eye size={18} />
                                             </button>
                                             {vendor.verificationStatus === 'pending' && (

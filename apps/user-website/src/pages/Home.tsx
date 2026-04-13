@@ -58,7 +58,7 @@ const Home: React.FC = () => {
     return (
         <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 overflow-x-hidden">
             <FallingPetals />
-            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Airion." />
+            <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Ease2event." />
             <Hero />
 
             {/* Dashboard Highlights for Logged-in Users */}
@@ -293,7 +293,7 @@ const Home: React.FC = () => {
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Airion?</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Ease2event?</h2>
                             <div className="space-y-8">
                                 <div className="flex gap-4">
                                     <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">

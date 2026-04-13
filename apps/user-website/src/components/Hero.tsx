@@ -100,7 +100,7 @@ const Hero: React.FC = () => {
                                     <span className="bg-gradient-to-r from-rose-500 via-red-400 to-orange-500 bg-clip-text text-transparent italic px-2">
                                         Moments
                                     </span>
-                                    With Airion
+                                    With Ease2event
                                 </>
                             )}
                         </h1>

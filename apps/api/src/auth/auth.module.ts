@@ -31,6 +31,6 @@ import { Vendor } from '../vendors/entities/vendor.entity';
     ],
     controllers: [AuthController, UsersController],
     providers: [AuthService, SessionService, AuditService, JwtStrategy],
-    exports: [AuthService, SessionService, AuditService],
+    exports: [AuthService, SessionService, AuditService, JwtModule],
 })
 export class AuthModule { }

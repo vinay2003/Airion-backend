@@ -5,7 +5,7 @@
 
 set -e
 
-PROJECT_ROOT="/Users/vinaysharma/Desktop/airion"
+PROJECT_ROOT="/Users/vinaysharma/Desktop/ease2event"
 cd "$PROJECT_ROOT"
 
 echo "🧪 POST-CLEANUP VERIFICATION"

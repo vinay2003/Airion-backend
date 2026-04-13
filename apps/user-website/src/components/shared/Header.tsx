@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { events } from '../../data/events';
-import { useAuth } from '@airion/shared/auth';
+import { useAuth } from '@ease2event/shared/auth';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -258,7 +258,7 @@ const Header: React.FC = () => {
                         <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
                             <span className="text-2xl font-black text-red-500 italic uppercase tracking-tighter flex items-center gap-2">
                                 <Sparkles size={24} />
-                                Airion
+                                Ease2event
                             </span>
                             <button
                                 onClick={toggleMenu}

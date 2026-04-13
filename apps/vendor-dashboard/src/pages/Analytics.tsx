@@ -9,10 +9,10 @@ import {
     CartesianGrid, Tooltip, ResponsiveContainer, Cell 
 } from 'recharts';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useAuth } from '@airion/shared';
+import { useAuth } from '@ease2event/shared';
 import api from '../lib/api'; // Use common api instance
 import { useQuery } from '@tanstack/react-query';
-import { Badge, Button, Skeleton } from '@airion/ui';
+import { Badge, Button, Skeleton } from '@ease2event/ui';
 
 type AnalysisPeriod = '24H_REALTIME' | '30D_CYCLE' | 'ANNUAL_MATRIX';
 
@@ -98,24 +98,24 @@ const Analytics: React.FC = () => {
             className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
         >
             {/* 🛸 Intelligence Matrix Header */}
-            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--airion-border-subtle)] relative overflow-hidden">
+            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <motion.div variants={itemVariants} className="relative z-10 space-y-4">
-                    <h1 className="text-5xl font-black text-[var(--airion-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
+                    <h1 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
                             <Activity size={12} className="animate-pulse" />
                             Core Telemetry Live
                         </span>
-                        <p className="text-[10px] text-[var(--airion-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
+                        <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="flex bg-[var(--airion-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--airion-border-subtle)] relative z-10">
+                <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
                     {(['24H_REALTIME', '30D_CYCLE', 'ANNUAL_MATRIX'] as AnalysisPeriod[]).map((tab) => (
                         <button 
                             key={tab} 
                             onClick={() => setSelectedPeriod(tab)}
-                            className={`px-8 py-3.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic relative ${selectedPeriod === tab ? 'bg-[var(--airion-bg-surface)] text-[var(--airion-brand-primary)] shadow-xl border border-[var(--airion-border-base)] scale-105 z-10' : 'text-[var(--airion-text-muted)] hover:text-[var(--airion-text-primary)]'}`}
+                            className={`px-8 py-3.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic relative ${selectedPeriod === tab ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-xl border border-[var(--ease2event-border-base)] scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                         >
                             {tab.split('_')[0]} Cycle
                         </button>
@@ -130,10 +130,10 @@ const Analytics: React.FC = () => {
                         key={idx} 
                         variants={itemVariants}
                         whileHover={{ y: -8, scale: 1.02 }}
-                        className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--airion-border-base)] relative overflow-hidden shadow-2xl bg-[var(--airion-bg-surface)] ${stat.shadow}`}
+                        className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--ease2event-border-base)] relative overflow-hidden shadow-2xl bg-[var(--ease2event-bg-surface)] ${stat.shadow}`}
                     >
                         <div className="flex justify-between items-start mb-12 relative z-10">
-                            <div className={`p-4 rounded-xl bg-[var(--airion-bg-elevated)] ${stat.color} group-hover:bg-[var(--airion-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--airion-border-subtle)]`}>
+                            <div className={`p-4 rounded-xl bg-[var(--ease2event-bg-elevated)] ${stat.color} group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--ease2event-border-subtle)]`}>
                                 <stat.icon size={24} />
                             </div>
                             <Badge className={`italic font-black text-[9px] tracking-widest px-3 py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
@@ -141,8 +141,8 @@ const Analytics: React.FC = () => {
                             </Badge>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-[var(--airion-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
+                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
+                            <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
                         </div>
                         <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
                     </motion.div>
@@ -154,14 +154,14 @@ const Analytics: React.FC = () => {
                 <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-16 relative z-10">
                         <div className="flex items-center gap-6">
-                            <div className="w-2 h-12 bg-[var(--airion-brand-primary)] rounded-full shadow-[0_0_15px_var(--airion-brand-primary)]"></div>
+                            <div className="w-2 h-12 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
                             <div>
-                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
-                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-[var(--airion-bg-elevated)] rounded-2xl border border-[var(--airion-border-subtle)]">
-                            <Globe className="text-[var(--airion-brand-primary)]" size={24} />
+                        <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
+                            <Globe className="text-[var(--ease2event-brand-primary)]" size={24} />
                         </div>
                     </div>
                     
@@ -170,18 +170,18 @@ const Analytics: React.FC = () => {
                             <AreaChart data={performanceData}>
                                 <defs>
                                     <linearGradient id="visGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="var(--airion-brand-primary)" stopOpacity={0.8} />
-                                        <stop offset="95%" stopColor="var(--airion-brand-primary)" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0.8} />
+                                        <stop offset="95%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--airion-border-subtle)" strokeOpacity={0.1} />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
+                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--ease2event-border-subtle)" strokeOpacity={0.1} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
                                 <YAxis hide />
                                 <Tooltip
-                                    cursor={{ stroke: 'var(--airion-brand-primary)', strokeWidth: 2, strokeDasharray: '4 4' }}
-                                    contentStyle={{ background: 'var(--airion-bg-surface)', border: '1px solid var(--airion-border-base)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
+                                    cursor={{ stroke: 'var(--ease2event-brand-primary)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                                 />
-                                <Area type="monotone" dataKey="views" stroke="var(--airion-brand-primary)" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
+                                <Area type="monotone" dataKey="views" stroke="var(--ease2event-brand-primary)" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -192,11 +192,11 @@ const Analytics: React.FC = () => {
                         <div className="flex items-center gap-6">
                             <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
-                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
-                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-[var(--airion-bg-elevated)] rounded-2xl border border-[var(--airion-border-subtle)]">
+                        <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
                             <Zap className="text-emerald-500" size={24} />
                         </div>
                     </div>
@@ -204,11 +204,11 @@ const Analytics: React.FC = () => {
                     <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={performanceData}>
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--airion-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 900 }} dy={20} />
                                 <YAxis hide />
                                 <Tooltip
-                                    cursor={{ fill: 'var(--airion-bg-elevated)', opacity: 0.3 }}
-                                    contentStyle={{ background: 'var(--airion-bg-surface)', border: '1px solid var(--airion-border-base)', borderRadius: '24px' }}
+                                    cursor={{ fill: 'var(--ease2event-bg-elevated)', opacity: 0.3 }}
+                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px' }}
                                 />
                                 <Bar dataKey="capture" fill="#10b981" radius={[8, 8, 0, 0]} barSize={24} animationDuration={2500} />
                             </BarChart>
@@ -218,15 +218,15 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* 🏰 Node Leadership Matrix */}
-            <motion.div variants={itemVariants} className="card-premium !p-16 border-[var(--airion-border-base)] shadow-2xl relative group">
-                <div className="flex items-center justify-between mb-16 pb-12 border-b border-[var(--airion-border-subtle)]">
+            <motion.div variants={itemVariants} className="card-premium !p-16 border-[var(--ease2event-border-base)] shadow-2xl relative group">
+                <div className="flex items-center justify-between mb-16 pb-12 border-b border-[var(--ease2event-border-subtle)]">
                     <div className="flex items-center gap-8">
-                        <div className="p-5 bg-[var(--airion-bg-elevated)] rounded-3xl border border-[var(--airion-border-subtle)]">
-                            <Zap className="text-[var(--airion-brand-primary)]" size={32} />
+                        <div className="p-5 bg-[var(--ease2event-bg-elevated)] rounded-3xl border border-[var(--ease2event-border-subtle)]">
+                            <Zap className="text-[var(--ease2event-brand-primary)]" size={32} />
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-[var(--airion-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
-                            <p className="text-[11px] font-black text-[var(--airion-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
+                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
+                            <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
                         </div>
                     </div>
                     <Button variant="outline" className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
@@ -234,26 +234,26 @@ const Analytics: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                     {topNodes.map((node, i) => (
-                        <div key={i} className="space-y-8 p-10 bg-[var(--airion-bg-elevated)]/20 border border-[var(--airion-border-subtle)] rounded-[40px] hover:bg-[var(--airion-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
+                        <div key={i} className="space-y-8 p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
                             <div className="flex justify-between items-start">
-                                <span className="text-4xl font-black text-[var(--airion-brand-primary)]/20 italic font-display group-hover/node:text-[var(--airion-brand-primary)] transition-colors">0{i+1}</span>
+                                <span className="text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i+1}</span>
                                 <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px]`}>{node.status}</Badge>
                             </div>
                             <div>
-                                <h3 className="text-2xl font-black text-[var(--airion-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
+                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
                                 <div className="mt-8 space-y-4">
                                     <div className="flex justify-between items-end">
-                                        <p className="text-[9px] font-black text-[var(--airion-text-muted)] uppercase tracking-widest italic">Sync Intensity</p>
-                                        <p className="text-lg font-black text-[var(--airion-text-primary)] italic">{node.occupancy}%</p>
+                                        <p className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest italic">Sync Intensity</p>
+                                        <p className="text-lg font-black text-[var(--ease2event-text-primary)] italic">{node.occupancy}%</p>
                                     </div>
-                                    <div className="h-2 w-full bg-[var(--airion-bg-elevated)] rounded-full overflow-hidden">
-                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--airion-brand-primary)] shadow-[0_0_10px_var(--airion-brand-primary)]" />
+                                    <div className="h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden">
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_10px_var(--ease2event-brand-primary)]" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="pt-8 border-t border-[var(--airion-border-subtle)] flex justify-between items-center">
-                                <p className="text-[10px] font-black text-[var(--airion-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
-                                <p className="text-2xl font-black text-[var(--airion-text-primary)] italic">{node.revenue}</p>
+                            <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
+                                <p className="text-2xl font-black text-[var(--ease2event-text-primary)] italic">{node.revenue}</p>
                             </div>
                         </div>
                     ))}

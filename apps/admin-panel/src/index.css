@@ -1,7 +1,7 @@
 /**
- * Airion Admin Panel — Styles
+ * Ease2event Admin Panel — Styles
  *
- * Imports the shared @airion/ui design system (tokens + Tailwind + base resets).
+ * Imports the shared @ease2event/ui design system (tokens + Tailwind + base resets).
  * Dark theme is the DEFAULT. Admin has no portal-specific classes right now.
  */
 
@@ -9,33 +9,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300..900;1,9..40,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@600;700&display=swap');
 
 @import "tailwindcss";
-@import "@airion/ui/globals.css";
+@import "@ease2event/ui/globals.css";
 
 /* ── 2. Light Theme Support ──────────────────────────────── */
 :root {
   color-scheme: light;
 
   /* Explicit Light Mode Surface Overrides — same as User Website */
-  --airion-bg-base:        #FFFFFF;
-  --airion-bg-surface:     #F8F8FF;
-  --airion-bg-elevated:    #F0EFFE;
-  --airion-bg-sidebar:     #FAFAFA;
+  --ease2event-bg-base:        #FFFFFF;
+  --ease2event-bg-surface:     #F8F8FF;
+  --ease2event-bg-elevated:    #F0EFFE;
+  --ease2event-bg-sidebar:     #FAFAFA;
 
   /* Text for light mode */
-  --airion-text-primary:   #1A1A2E;
-  --airion-text-secondary: #4A4A6A;
-  --airion-text-muted:     #9090AA;
-  --airion-text-inverted:  #FFFFFF;
+  --ease2event-text-primary:   #1A1A2E;
+  --ease2event-text-secondary: #4A4A6A;
+  --ease2event-text-muted:     #9090AA;
+  --ease2event-text-inverted:  #FFFFFF;
 
   /* Borders for light mode */
-  --airion-border-subtle:  rgba(0, 0, 0, 0.06);
-  --airion-border-base:    rgba(0, 0, 0, 0.12);
+  --ease2event-border-subtle:  rgba(0, 0, 0, 0.06);
+  --ease2event-border-base:    rgba(0, 0, 0, 0.12);
 
   /* Shadows for light mode */
-  --airion-shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
-  --airion-shadow-md:  0 6px 16px rgba(0, 0, 0, 0.12);
-  --airion-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.16);
-  --airion-shadow-glow: 0 0 24px rgba(108, 99, 255, 0.12);
+  --ease2event-shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
+  --ease2event-shadow-md:  0 6px 16px rgba(0, 0, 0, 0.12);
+  --ease2event-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.16);
+  --ease2event-shadow-glow: 0 0 24px rgba(108, 99, 255, 0.12);
 
   /* Tailwind semantic aliases (light) */
   --background:  #FFFFFF;
@@ -54,10 +54,10 @@
 @layer components {
   /* Data table rows */
   .table-row-hover {
-    @apply transition-colors hover:bg-[var(--airion-bg-elevated)] cursor-pointer;
+    @apply transition-colors hover:bg-[var(--ease2event-bg-elevated)] cursor-pointer;
   }
   /* Admin stat card */
   .admin-stat-card {
-    @apply bg-[var(--airion-bg-surface)] border border-[var(--airion-border-subtle)] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:border-[var(--airion-brand-primary)]/30;
+    @apply bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:border-[var(--ease2event-brand-primary)]/30;
   }
 }

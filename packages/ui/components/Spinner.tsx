@@ -28,7 +28,7 @@ const Ring = ({ px }: { px: number }) => (
     stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
-    className="animate-spin text-[var(--airion-brand-primary)]"
+    className="animate-spin text-[var(--ease2event-brand-primary)]"
     aria-hidden="true"
   >
     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
@@ -48,10 +48,10 @@ export const Spinner = ({
       <div
         role="status"
         aria-label={label}
-        className={`min-h-screen bg-[var(--airion-bg-base)] flex flex-col items-center justify-center gap-4 ${className}`}
+        className={`min-h-screen bg-[var(--ease2event-bg-base)] flex flex-col items-center justify-center gap-4 ${className}`}
       >
         <Ring px={px} />
-        <p className="text-sm text-[var(--airion-text-muted)] animate-pulse">{label}</p>
+        <p className="text-sm text-[var(--ease2event-text-muted)] animate-pulse">{label}</p>
       </div>
     );
   }
@@ -61,11 +61,11 @@ export const Spinner = ({
       <div
         role="status"
         aria-label={label}
-        className={`fixed inset-0 z-50 bg-[var(--airion-bg-overlay)] backdrop-blur-sm flex items-center justify-center ${className}`}
+        className={`fixed inset-0 z-50 bg-[var(--ease2event-bg-overlay)] backdrop-blur-sm flex items-center justify-center ${className}`}
       >
-        <div className="bg-[var(--airion-bg-surface)] rounded-2xl p-8 flex flex-col items-center gap-4 shadow-[var(--airion-shadow-lg)]">
+        <div className="bg-[var(--ease2event-bg-surface)] rounded-2xl p-8 flex flex-col items-center gap-4 shadow-[var(--ease2event-shadow-lg)]">
           <Ring px={px} />
-          <p className="text-sm text-[var(--airion-text-secondary)]">{label}</p>
+          <p className="text-sm text-[var(--ease2event-text-secondary)]">{label}</p>
         </div>
       </div>
     );

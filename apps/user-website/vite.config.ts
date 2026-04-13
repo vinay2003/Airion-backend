@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Airion | Premium Event Planning',
-        short_name: 'Airion',
+        name: 'Ease2event | Premium Event Planning',
+        short_name: 'Ease2event',
         description: 'Discover the world\'s best venues and services for weddings, parties, and corporate events.',
         theme_color: '#ef4444',
         icons: [
@@ -36,6 +36,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@shared': path.resolve(__dirname, '../../packages/shared'),
+      '@ease2event/ui': path.resolve(__dirname, '../../packages/ui'),
     },
   },
   server: {

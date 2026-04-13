@@ -2,11 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@airion/api": ["apps/api/src"],
-      "@airion/user-website": ["apps/user-website/src"],
-      "@airion/vendor-dashboard": ["apps/vendor-dashboard/src"],
-      "@airion/admin-panel": ["apps/admin-panel/src"],
-      "@airion/shared": ["packages/shared"]
+      "@ease2event/api": ["apps/api/src"],
+      "@ease2event/user-website": ["apps/user-website/src"],
+      "@ease2event/vendor-dashboard": ["apps/vendor-dashboard/src"],
+      "@ease2event/admin-panel": ["apps/admin-panel/src"],
+      "@ease2event/shared": ["packages/shared"]
     },
     "composite": true,
     "declaration": true,

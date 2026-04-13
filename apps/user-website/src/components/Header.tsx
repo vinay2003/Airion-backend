@@ -3,7 +3,6 @@ import { User as UserIcon, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronD
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { events } from '../data/events';
 import { useAuth } from '@ease2event/shared/auth';
 
 const Header: React.FC = () => {
@@ -267,29 +266,39 @@ const Header: React.FC = () => {
             </button>
 
             {/* Mobile Navigation Overlay */}
-            {isMenuOpen && (
-                <>
-                    {/* Backdrop */}
-                    <div
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-                        onClick={toggleMenu}
-                    />
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] md:hidden"
+                            onClick={toggleMenu}
+                        />
 
-                    {/* Menu Panel */}
-                    <div className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-slate-900 z-50 flex flex-col shadow-2xl md:hidden transform transition-transform duration-300 ease-out">
-                        {/* Menu Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-800">
-                            <span className="text-xl font-bold text-red-500 font-cursive flex items-center gap-2">
-                                <Sparkles size={20} />
-                                Menu
-                            </span>
-                            <button
-                                onClick={toggleMenu}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                            >
-                                <X size={24} className="text-gray-700 dark:text-slate-300" />
-                            </button>
-                        </div>
+                        {/* Menu Panel */}
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-[#0F172A] z-[70] flex flex-col shadow-2xl md:hidden border-l border-gray-100 dark:border-slate-800"
+                        >
+                            {/* Menu Header */}
+                            <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-[#0F172A]/80 backdrop-blur-sm sticky top-0 z-10">
+                                <span className="text-2xl font-black text-red-500 font-cursive flex items-center gap-2 italic">
+                                    <Sparkles size={24} className="animate-pulse" />
+                                    Menu
+                                </span>
+                                <button
+                                    onClick={toggleMenu}
+                                    className="p-2.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+                                >
+                                    <X size={24} className="text-gray-900 dark:text-white" />
+                                </button>
+                            </div>
 
                         {/* Menu Content */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -451,13 +460,20 @@ const Header: React.FC = () => {
                                 </>
                             )}
                         </div>
-                    </div>
+                    </motion.div>
                 </>
-            )}
+                )}
+            </AnimatePresence>
 
             {/* Tablet Menu Overlay (md to lg) */}
-            {isMenuOpen && (
-                <div className="hidden md:block lg:hidden fixed inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg z-40 pt-20">
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="hidden md:block lg:hidden fixed inset-0 bg-white dark:bg-[#0F172A] z-40 pt-24 px-8 overflow-y-auto"
+                    >
                     <div className="max-w-2xl mx-auto px-6 py-8">
                         <nav className="grid grid-cols-2 gap-4 mb-8">
                             <Link
@@ -504,8 +520,9 @@ const Header: React.FC = () => {
                             List Your Business
                         </Link>
                     </div>
-                </div>
+                </motion.div>
             )}
+        </AnimatePresence>
         </header>
     );
 };

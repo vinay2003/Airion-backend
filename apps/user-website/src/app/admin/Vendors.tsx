@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MoreVertical, Check, X, Eye, Filter, CheckCircle, XCircle, Clock, MapPin, IndianRupee, Layers, ExternalLink } from 'lucide-react';
-import api from '../lib/api';
+import api from '../../lib/api';
 
 interface Vendor {
     id: string;
@@ -23,21 +23,8 @@ const Vendors: React.FC = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                // Mock data for now if API fails or for demo
-                const mockVendors: Vendor[] = [
-                    { id: 'V001', businessName: 'Glow Makeup Studio', businessType: 'Makeup Artist', city: 'Mumbai', yearsInBusiness: '5', isVerified: false, verificationStatus: 'pending', createdAt: '2024-03-20' },
-                    { id: 'V002', businessName: 'Royal Palace Banquet', businessType: 'Venue', city: 'Delhi', yearsInBusiness: '12', isVerified: true, verificationStatus: 'approved', createdAt: '2024-02-15' },
-                    { id: 'V003', businessName: 'Flash Moments', businessType: 'Photography', city: 'Bangalore', yearsInBusiness: '3', isVerified: false, verificationStatus: 'rejected', createdAt: '2024-03-01' },
-                    { id: 'V004', businessName: 'Elegant Decor', businessType: 'Decoration', city: 'Pune', yearsInBusiness: '8', isVerified: false, verificationStatus: 'pending', createdAt: '2024-03-18' },
-                    { id: 'V005', businessName: 'Silver Spoon Catering', businessType: 'Catering', city: 'Hyderabad', yearsInBusiness: '15', isVerified: true, verificationStatus: 'approved', createdAt: '2024-01-10' },
-                ];
-                
-                try {
-                    const response: any = await api.get('/vendors');
-                    setVendors(response.data.length > 0 ? response.data : mockVendors);
-                } catch (e) {
-                    setVendors(mockVendors);
-                }
+                const response: any = await api.get('/vendors');
+                setVendors(response.data || []);
             } catch (error: any) {
                 setError(error.message);
             } finally {

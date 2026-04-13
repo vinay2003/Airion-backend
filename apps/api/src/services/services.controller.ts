@@ -20,10 +20,16 @@ export class ServicesController {
         @Query('category') category?: string,
         @Query('vendorId') vendorId?: string,
         @Query('search') search?: string,
+        @Query('location') location?: string,
+        @Query('priceMin') priceMin?: number,
+        @Query('priceMax') priceMax?: number,
+        @Query('rating') rating?: number,
         @Query('limit') limit?: number,
         @Query('offset') offset?: number,
+        @Query('sort') sort?: string,
+        @Query('order') order?: 'ASC' | 'DESC',
     ) {
-        return this.servicesService.findAll({ limit, offset, category, vendorId, search });
+        return this.servicesService.findAll({ limit, offset, category, vendorId, search, location, priceMin, priceMax, rating, sort, order });
     }
 
     @Get(':idOrSlug')

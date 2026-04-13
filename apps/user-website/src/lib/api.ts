@@ -69,16 +69,21 @@ api.interceptors.response.use(
 
 export default api;
 
-import { events as mockEvents } from '../data/events';
-
-export const fetchEvents = async (): Promise<Event[]> => {
-    // Return mock data instantly for Vercel deployment performance
-    return mockEvents as any[];
+export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Event[]> => {
+    const response = await api.get('/services', { params: filters });
+    // Assuming backend returns an array due to interceptor unwrapping {success, data}
+    const servicesList = Array.isArray(response.data) ? response.data : [];
+    return servicesList.map(mapServiceToEvent);
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {
-    // Return mock data instantly for Vercel deployment performance
-    return mockEvents.find(e => e.id === id) as any;
+    try {
+        const response = await api.get(`/services/${id}`);
+        if (!response.data) return undefined;
+        return mapServiceToEvent(response.data);
+    } catch (e) {
+        return undefined;
+    }
 };
 
 /**

@@ -4,6 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tool
 import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
+import api from '../lib/api';
 import { Skeleton, Badge, Avatar, Button } from '@ease2event/ui';
 
 const CHART_DATA = [
@@ -58,12 +59,22 @@ const Dashboard = () => {
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['vendor-stats', vendorId],
-    queryFn: () => Promise.resolve({
-      activeEnquiries: 14,
-      totalListings: 8,
-      confirmedBookings: 42,
-      revenue: '4.8L'
-    })
+    queryFn: async () => {
+        if (!vendorId || vendorId === 'mock-id') return null;
+        try {
+            const res: any = await api.get(`/vendors/${vendorId}/stats/bookings`);
+            return {
+                activeEnquiries: res?.pendingBookings || 0,
+                totalListings: res?.totalEvents || 0,
+                confirmedBookings: res?.upcomingBookings || 0,
+                revenue: res?.totalEarnings || '0'
+            };
+        } catch (e) {
+            console.error('Failed to fetch stats', e);
+            return { activeEnquiries: 0, totalListings: 0, confirmedBookings: 0, revenue: '0' };
+        }
+    },
+    enabled: vendorId !== 'mock-id',
   });
 
   const enquiries = [

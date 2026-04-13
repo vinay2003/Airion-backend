@@ -71,7 +71,7 @@ export class VendorsController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
     async findAll(@Query('status') status?: string) {
-        return this.vendorsService.findAll(status);
+        return this.vendorsService.findAll(status as any);
     }
 
     /**

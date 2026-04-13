@@ -33,16 +33,17 @@ const Gallery: React.FC = () => {
 
         try {
             for (const file of files) {
-                const reader = new FileReader();
-                const promise = new Promise((resolve) => {
-                    reader.onloadend = () => resolve(reader.result);
-                });
-                reader.readAsDataURL(file);
-                const base64 = await promise;
-                const imageUrl = base64 as string;
+                const uploadData = new FormData();
+                uploadData.append('file', file);
 
+                // Upload to our Cloudinary-backed endpoint
+                const uploadRes: any = await api.post('/uploads/image', uploadData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                // Add to gallery with the secure CDN URL
                 await api.post('/vendors/gallery', {
-                    imageUrl,
+                    imageUrl: uploadRes.url || uploadRes.data?.url,
                     title: file.name
                 });
             }

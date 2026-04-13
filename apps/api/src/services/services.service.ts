@@ -50,7 +50,7 @@ export class ServicesService {
         return finalSlug;
     }
 
-    async findAll(query: { category?: string; vendorId?: string; search?: string; limit?: number; offset?: number }) {
+    async findAll(query: { category?: string; vendorId?: string; search?: string; location?: string; priceMin?: number; priceMax?: number; rating?: number; limit?: number; offset?: number; sort?: string; order?: 'ASC' | 'DESC' }) {
         const qb = this.serviceRepository.createQueryBuilder('service')
             .leftJoinAndSelect('service.vendor', 'vendor')
             .leftJoinAndSelect('service.category', 'category')
@@ -68,12 +68,37 @@ export class ServicesService {
             qb.andWhere('(service.title ILIKE :search OR service.description ILIKE :search)', { search: `%${query.search}%` });
         }
 
+        if (query.location) {
+            qb.andWhere('(service.city ILIKE :loc OR :loc = ANY(service.availableLocations))', { loc: `%${query.location}%` });
+        }
+
+        if (query.priceMin !== undefined) {
+            qb.andWhere('service.basePrice >= :priceMin', { priceMin: query.priceMin });
+        }
+
+        if (query.priceMax !== undefined) {
+            qb.andWhere('service.basePrice <= :priceMax', { priceMax: query.priceMax });
+        }
+
+        if (query.rating !== undefined) {
+            qb.andWhere('vendor.rating >= :rating', { rating: query.rating });
+        }
+
+        // Sorting
+        if (query.sort) {
+            const orderPrefix = query.sort.includes('.') ? '' : 'service.';
+            qb.orderBy(`${orderPrefix}${query.sort}`, query.order || 'ASC');
+        } else {
+            qb.orderBy('service.createdAt', 'DESC');
+        }
+
         // Pagination
         const limit = query.limit ? Math.min(query.limit, 100) : 10;
         const offset = query.offset || 0;
         qb.take(limit).skip(offset);
 
-        return qb.getMany();
+        const [data, total] = await qb.getManyAndCount();
+        return { success: true, data, meta: { total, limit, offset } };
     }
 
     async findOne(idOrSlug: string): Promise<Service> {

@@ -60,8 +60,6 @@ const Header: React.FC = () => {
 
     const isActivePath = (path: string) => location.pathname === path;
 
-    const featuredVendors = events.slice(0, 3);
-
     const UserProfileMenu = () => (
         <div className="relative" ref={userMenuRef}>
             <button

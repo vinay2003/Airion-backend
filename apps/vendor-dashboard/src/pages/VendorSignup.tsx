@@ -55,7 +55,7 @@ const VendorSignupWizard: React.FC = () => {
             
             hasCheckedProfile.current = true;
             try {
-                const response = await api.get('/vendors/me');
+                const response: any = await api.get('/vendors/me');
                 if (response && response.id) {
                     console.log('[VendorSignup] Profile exists, redirecting to dashboard...');
                     navigate('/vendor');
@@ -97,14 +97,31 @@ const VendorSignupWizard: React.FC = () => {
         });
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            // Simulated upload (in real app, upload to S3/Cloudinary)
-            const newImages = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-            setFormData(prev => ({
-                ...prev,
-                portfolioImages: [...prev.portfolioImages, ...newImages].slice(0, 8)
-            }));
+            setSubmitting(true);
+            try {
+                const files = Array.from(e.target.files);
+                for (const file of files) {
+                    const uploadData = new FormData();
+                    uploadData.append('file', file);
+                    const uploadRes: any = await api.post('/uploads/image', uploadData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                    const url = uploadRes.url || uploadRes.data?.url;
+                    if (url) {
+                        setFormData(prev => ({
+                            ...prev,
+                            portfolioImages: [...prev.portfolioImages, url].slice(0, 8)
+                        }));
+                    }
+                }
+            } catch (err: any) {
+                toast.error('Failed to upload image(s).');
+                console.error(err);
+            } finally {
+                setSubmitting(false);
+            }
         }
     };
 
@@ -134,26 +151,14 @@ const VendorSignupWizard: React.FC = () => {
 
         setSubmitting(true);
         try {
-            // 1. Handle "Uploaded" Files (Simulated)
-            // Replace blob URLs with persistent paths (Simulated)
-            const uploadedImages = await Promise.all(
-                formData.portfolioImages.map(async (img) => {
-                    if (img.startsWith('blob:')) {
-                        // In a real app, you'd upload this file to S3/Cloudinary/etc.
-                        // For now we simulate a successful persistent URL
-                        console.log(`[Upload] Sending ${img} to mock cloud...`);
-                        await new Promise(res => setTimeout(res, 300));
-                        return `https://storage.ease2event.com/portfolio/${Math.random().toString(36).substring(7)}.jpg`;
-                    }
-                    return img;
-                })
-            );
+            // 1. Images are already uploaded during selection
+            const uploadedImages = formData.portfolioImages;
 
             // 2. Prepare Payload with correct types (Match Schema)
             const submissionData = {
                 businessName: formData.businessName.trim(),
                 businessEmail: formData.businessEmail?.trim() || user?.email || undefined,
-                businessPhone: (formData.businessPhone?.trim() || user?.phoneNumber || '+910000000000').replace(/[\s\(\)\-]/g, ''),
+                businessPhone: (formData.businessPhone?.trim() || user?.phoneNumber || '+910000000000').replace(/[\s()-]/g, ''),
                 city: formData.city.trim(),
                 yearsInBusiness: formData.yearsInBusiness || undefined,
                 gstNumber: formData.gstNumber.trim() || undefined,

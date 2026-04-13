@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MoreVertical, Mail, Phone, Calendar, Shield, Trash2, Ban, CheckCircle, XCircle } from 'lucide-react';
-import api from '../lib/api';
+import api from '../../lib/api';
 
 interface User {
     id: number;
@@ -21,21 +21,8 @@ const Users: React.FC = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                // Mock data for now if API fails or for demo
-                const mockUsers: User[] = [
-                    { id: 1, name: 'Rahul Sharma', email: 'rahul@example.com', phone: '+91 9876543210', joined: '2023-10-12', status: 'Active' },
-                    { id: 2, name: 'Priya Singh', email: 'priya@example.com', phone: '+91 8765432109', joined: '2023-11-05', status: 'Active' },
-                    { id: 3, name: 'Amit Verma', email: 'amit@example.com', phone: '+91 7654321098', joined: '2023-12-20', status: 'Banned' },
-                    { id: 4, name: 'Sneha Gupta', email: 'sneha@example.com', phone: '+91 6543210987', joined: '2024-01-15', status: 'Active' },
-                    { id: 5, name: 'Vikram Mehta', email: 'vikram@example.com', phone: '+91 5432109876', joined: '2024-02-10', status: 'Inactive' },
-                ];
-                
-                try {
-                    const response: any = await api.get('/users');
-                    setUsers(response.data.length > 0 ? response.data : mockUsers);
-                } catch (e) {
-                    setUsers(mockUsers);
-                }
+                const response: any = await api.get('/users');
+                setUsers(response.data || []);
             } catch (error: any) {
                 setError(error.message);
             } finally {

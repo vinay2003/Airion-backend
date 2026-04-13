@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FilterSidebar from '../components/FilterSidebar';
 import ListingCard from '../components/ListingCard';
 import SEO from '../components/SEO';
-import { events as mockEvents } from '../data/events';
+import { fetchEvents } from '../lib/api';
 import MapView from '../components/MapView';
 import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import type { Event } from '../types';
@@ -33,10 +33,19 @@ const VendorDiscovery: React.FC = () => {
     const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
     useEffect(() => {
-        setVendors(mockEvents as any[]);
-        setLoading(false);
-        // Simulate some active filter chips for demo
-        setActiveFilters(['Patna', 'Wedding']);
+        const loadVendors = async () => {
+            try {
+                const data = await fetchEvents();
+                setVendors(data);
+            } catch (err) {
+                console.error('Failed to fetch vendors:', err);
+            } finally {
+                setLoading(false);
+                // Simulate some active filter chips for demo
+                setActiveFilters(['Patna', 'Wedding']);
+            }
+        };
+        loadVendors();
     }, []);
 
     const sortedVendors = useMemo(() => {

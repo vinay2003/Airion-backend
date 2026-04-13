@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, MapPin, IndianRupee, Users, Image as ImageIcon, Save, CheckCircle } from 'lucide-react';
+import api from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ListingEditorModalProps {
@@ -111,9 +112,25 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
                                         type="file" 
                                         accept="image/*" 
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        onChange={(e) => {
-                                            // Mocking photo upload by injecting an unsplash string for demo
-                                            setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80' });
+                                        onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (!file) return;
+                                            
+                                            setLoading(true);
+                                            try {
+                                                const uploadData = new FormData();
+                                                uploadData.append('file', file);
+                                                
+                                                const res: any = await api.post('/uploads/image', uploadData, {
+                                                    headers: { 'Content-Type': 'multipart/form-data' }
+                                                });
+                                                setFormData(prev => ({ ...prev, image: res.url || res.data?.url }));
+                                            } catch (err: any) {
+                                                console.error('Upload failed', err);
+                                                alert('Failed to upload image: ' + (err.message || 'Unknown error'));
+                                            } finally {
+                                                setLoading(false);
+                                            }
                                         }}
                                     />
                                 </div>

@@ -156,13 +156,13 @@ const Earnings: React.FC = () => {
           </div>
         </motion.div>
         
-        <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 relative z-10">
-          <Button className="hidden sm:flex bg-[var(--ease2event-bg-elevated)] h-12 px-8 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-[11px] uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all hover:border-[var(--ease2event-brand-primary)]/30 active:scale-95">
-            <CalendarIcon size={16} className="mr-3" />
+        <motion.div variants={itemVariants} className="flex items-center gap-3 sm:gap-4 relative z-10 w-full lg:w-auto">
+          <Button className="flex-1 sm:flex-none flex items-center justify-center bg-[var(--ease2event-bg-elevated)] h-11 sm:h-12 px-4 sm:px-8 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-[9px] sm:text-[11px] uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all hover:border-[var(--ease2event-brand-primary)]/30 active:scale-95 whitespace-nowrap">
+            <CalendarIcon size={14} className="mr-2 sm:mr-3" />
             Custom Period
           </Button>
-          <Button className="h-12 px-10 rounded-2xl font-black text-[11px] uppercase tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/20 hover:scale-105 transition-all active:scale-95">
-            <Download size={16} className="mr-3" />
+          <Button className="flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-10 rounded-2xl font-black text-[9px] sm:text-[11px] uppercase tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/20 hover:scale-105 transition-all active:scale-95 whitespace-nowrap">
+            <Download size={14} className="mr-2 sm:mr-3" />
             Export Logs
           </Button>
         </motion.div>
@@ -174,19 +174,19 @@ const Earnings: React.FC = () => {
 
       {/* 🚀 Primary Intelligence Nodes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-10 flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
+        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-6 sm:p-10 flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
           <div>
-            <div className="flex justify-between items-start mb-10 relative">
-              <div className="p-5 bg-emerald-500/10 text-emerald-500 rounded-[24px] shadow-sm border border-emerald-500/10 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
-                <ShieldCheck size={28} />
+            <div className="flex justify-between items-start mb-6 sm:mb-10 relative">
+              <div className="p-4 sm:p-5 bg-emerald-500/10 text-emerald-500 rounded-[20px] sm:rounded-[24px] shadow-sm border border-emerald-500/10 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                <ShieldCheck size={24} className="sm:w-[28px] sm:h-[28px]" />
               </div>
-              <div className="flex items-center gap-2 text-[var(--ease2event-text-muted)] text-[10px] font-black px-4 py-2 uppercase tracking-widest border border-[var(--ease2event-border-subtle)] rounded-2xl bg-[var(--ease2event-bg-elevated)]">
+              <div className="flex items-center gap-2 text-[var(--ease2event-text-muted)] text-[9px] sm:text-[10px] font-black px-3 sm:px-4 py-1.5 sm:py-2 uppercase tracking-widest border border-[var(--ease2event-border-subtle)] rounded-2xl bg-[var(--ease2event-bg-elevated)] leading-none">
                 <span className="opacity-50">SYNCED :</span>
                 <span className="text-[var(--ease2event-text-primary)]">OCT 15, 2023</span>
               </div>
             </div>
-            <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] mb-4 opacity-50 italic">Secured Liquidity Node</p>
-            <h2 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.totalBalance.toLocaleString('en-IN')}</h2>
+            <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.4em] mb-3 sm:mb-4 opacity-50 italic">Secured Liquidity Node</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.totalBalance.toLocaleString('en-IN')}</h2>
           </div>
           <div className="mt-10 pt-8 border-t border-[var(--ease2event-border-subtle)]">
              <button className="flex items-center justify-between w-full p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2rem] transition-all group active:scale-95 shadow-inner hover:border-emerald-500/30">
@@ -199,41 +199,41 @@ const Earnings: React.FC = () => {
           </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-10 flex flex-col justify-between hover:border-[var(--ease2event-brand-primary)]/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
+        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-6 sm:p-10 flex flex-col justify-between hover:border-[var(--ease2event-brand-primary)]/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
           <div>
-            <div className="flex justify-between items-start mb-10 relative">
-              <div className="p-5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] rounded-[24px] shadow-sm border border-[var(--ease2event-brand-primary)]/10 group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500">
-                <TrendingUp size={28} />
+            <div className="flex justify-between items-start mb-6 sm:mb-10 relative">
+              <div className="p-4 sm:p-5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] rounded-[20px] sm:rounded-[24px] shadow-sm border border-[var(--ease2event-brand-primary)]/10 group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500">
+                <TrendingUp size={24} className="sm:w-[28px] sm:h-[28px]" />
               </div>
-              <div className="flex items-center gap-2 text-emerald-500 text-[11px] font-black bg-emerald-500/10 px-4 py-2 rounded-2xl border border-emerald-500/20 uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-emerald-500 text-[9px] sm:text-[11px] font-black bg-emerald-500/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-emerald-500/20 uppercase tracking-widest">
                 <ArrowBigUpDash size={16} />
                 <span>{displayData.growth}</span>
               </div>
             </div>
-            <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] mb-4 opacity-50 italic">{activePeriod} Gross Delta</p>
-            <h2 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.periodRevenue.toLocaleString('en-IN')}</h2>
+            <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.4em] mb-3 sm:mb-4 opacity-50 italic">{activePeriod} Gross Delta</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.periodRevenue.toLocaleString('en-IN')}</h2>
           </div>
-          <div className="flex items-center gap-4 mt-10 pt-8 border-t border-[var(--ease2event-border-subtle)]">
+          <div className="flex items-center gap-4 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-[var(--ease2event-border-subtle)]">
              <div className="flex -space-x-3">
-                 {[1,2,3,4].map(i => <div key={i} className="w-8 h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md hover:z-10 transition-all" />)}
+                 {[1,2,3,4].map(i => <div key={i} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md hover:z-10 transition-all" />)}
              </div>
-             <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60">Nodes Updated <span className="text-emerald-500">Live Telemetry</span></p>
+             <p className="text-[9px] sm:text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60 leading-none">Nodes Updated <span className="text-emerald-500">Live Telemetry</span></p>
           </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-10 flex flex-col justify-between hover:border-amber-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
-          <div className="flex justify-between items-start mb-8">
-            <div>
-                <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] mb-2 opacity-50 italic">Target Matrix</p>
-                <h3 className="text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-none">₹{displayData.payoutTarget.toLocaleString()} GOAL</h3>
+        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-6 sm:p-10 flex flex-col justify-between hover:border-amber-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
+          <div className="flex justify-between items-start mb-6 sm:mb-8">
+            <div className="flex-1">
+                <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.4em] mb-1 sm:mb-2 opacity-50 italic">Target Matrix</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-none">₹{displayData.payoutTarget.toLocaleString()} GOAL</h3>
             </div>
-            <div className="p-4 bg-amber-500/10 text-amber-500 rounded-[24px] border border-amber-500/20 shadow-sm transition-all duration-500">
-                <Clock size={28} />
+            <div className="p-3 sm:p-4 bg-amber-500/10 text-amber-500 rounded-[20px] sm:rounded-[24px] border border-amber-500/20 shadow-sm transition-all duration-500 shrink-0">
+                <Clock size={24} className="sm:w-[28px] sm:h-[28px]" />
             </div>
           </div>
           
-          <div className="space-y-6">
-              <div className="h-5 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-1.5 border border-[var(--ease2event-border-subtle)] shadow-inner">
+          <div className="space-y-4 sm:space-y-6">
+              <div className="h-4 sm:h-5 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-1 sm:p-1.5 border border-[var(--ease2event-border-subtle)] shadow-inner">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${displayData.payoutProgress}%` }}
@@ -241,15 +241,15 @@ const Earnings: React.FC = () => {
                   className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)]" 
                 />
               </div>
-              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-[var(--ease2event-text-muted)] italic">
+              <div className="flex justify-between items-center text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[var(--ease2event-text-muted)] italic leading-none">
                   <span>{displayData.payoutProgress}% SYNC_LEVEL</span>
                   <span className="text-[var(--ease2event-brand-primary)] tracking-tight">SETTLEMENT: {displayData.payoutDate}</span>
               </div>
           </div>
           
-          <button className="mt-10 flex items-center justify-between w-full p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2rem] transition-all group active:scale-95 shadow-inner">
-            <span className="text-[11px] font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest italic">Modify Target Matrix</span>
-            <ArrowRight size={18} className="text-[var(--ease2event-brand-primary)] group-hover:translate-x-2 transition-transform" />
+          <button className="mt-8 sm:mt-10 flex items-center justify-between w-full p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[1.5rem] sm:rounded-[2rem] transition-all group active:scale-95 shadow-inner">
+            <span className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest italic leading-none">Modify Target Matrix</span>
+            <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] text-[var(--ease2event-brand-primary)] group-hover:translate-x-2 transition-transform" />
           </button>
         </motion.div>
       </div>
@@ -262,12 +262,12 @@ const Earnings: React.FC = () => {
                     <h3 className="text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tight italic font-display uppercase leading-none">Revenue Trajectory</h3>
                     <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] mt-4 opacity-50 italic">High-Fidelity Performance Monitoring</p>
                 </div>
-                <div className="bg-[var(--ease2event-bg-elevated)] p-2 rounded-3xl border border-[var(--ease2event-border-subtle)] flex gap-1 shadow-inner relative z-20">
+                <div className="bg-[var(--ease2event-bg-elevated)] p-1.5 sm:p-2 rounded-[2rem] border border-[var(--ease2event-border-subtle)] flex gap-1 shadow-inner relative z-20 w-full sm:w-auto overflow-hidden">
                     {(['Daily', 'Weekly', 'Monthly'] as Period[]).map(period => (
                     <button 
                         key={period} 
                         onClick={() => setActivePeriod(period)}
-                        className={`px-10 py-4 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all duration-700 italic relative ${activePeriod === period ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
+                        className={`flex-1 sm:flex-none px-4 sm:px-10 py-3 sm:py-4 text-[9px] sm:text-[11px] font-black uppercase tracking-widest rounded-[1.5rem] transition-all duration-700 italic relative ${activePeriod === period ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                     >
                         {period}
                     </button>
@@ -374,22 +374,22 @@ const Earnings: React.FC = () => {
                 </button>
             </div>
 
-            <div className="card-minimal p-10 hover:shadow-2xl transition-all duration-700 bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]">
-                <div className="flex items-center gap-5 mb-10">
-                    <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/10 shadow-sm">
+            <div className="card-minimal p-6 sm:p-10 hover:shadow-2xl transition-all duration-700 bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]">
+                <div className="flex items-center gap-4 sm:gap-5 mb-8 sm:mb-10">
+                    <div className="p-3 sm:p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/10 shadow-sm">
                         <BarChart3 size={24} />
                     </div>
-                    <h3 className="font-black text-[var(--ease2event-text-primary)] tracking-tight italic uppercase text-xl font-display leading-none">Net Optimization</h3>
+                    <h3 className="font-black text-[var(--ease2event-text-primary)] tracking-tight italic uppercase text-lg sm:text-xl font-display leading-none">Net Optimization</h3>
                 </div>
-                <div className="space-y-8">
-                   <div className="flex justify-between items-end border-b border-[var(--ease2event-border-subtle)] pb-8">
-                      <div className="space-y-2">
-                        <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mb-1 pl-1 italic">Fee deduction (Avg)</p>
-                        <p className="font-black text-5xl text-[var(--ease2event-text-primary)] italic font-display leading-none">3.5%</p>
+                <div className="space-y-6 sm:space-y-8">
+                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-8">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <p className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mb-1 pl-1 italic leading-none opacity-50">Fee deduction (Avg)</p>
+                        <p className="font-black text-4xl sm:text-5xl text-[var(--ease2event-text-primary)] italic font-display leading-none">3.5%</p>
                       </div>
-                      <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black uppercase text-[10px] px-4 py-2 rounded-2xl tracking-[0.2em] shadow-sm">GLOBAL_MINIMUM</Badge>
+                      <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 italic font-black uppercase text-[9px] sm:text-[10px] px-4 py-2 rounded-2xl tracking-[0.2em] shadow-sm leading-none shrink-0">GLOBAL_MINIMUM</Badge>
                    </div>
-                   <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black uppercase italic tracking-tighter leading-relaxed opacity-60">
+                   <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-black uppercase italic tracking-tighter leading-relaxed opacity-60">
                        Operational telemetry suggests high liquidity efficiency. Settlement matrix optimized for current volume.
                    </p>
                 </div>

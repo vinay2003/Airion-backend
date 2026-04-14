@@ -95,11 +95,12 @@ const Ads: React.FC = () => {
 
                 <Button
                     onClick={() => setShowCreateModal(true)}
-                    className="btn-primary !h-16 px-14 rounded-2xl text-xs font-black tracking-[0.3em] uppercase shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all italic"
+                    className="btn-primary flex items-center justify-center h-12 md:h-16 px-6 md:px-14 rounded-2xl text-[10px] md:text-xs font-black tracking-wider md:tracking-[0.3em] uppercase shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all italic w-full md:w-auto"
                 >
-                    <Plus size={24} className="mr-3" />
-                    <span>Initialize New Campaign Node</span>
-                </Button>
+                    <Plus size={20} className="mr-2 md:mr-3" />
+                    <span className="text-base md:text-lg lg:text-xl font-semibold">
+                        Initialize New Campaign Node
+                    </span>                </Button>
             </div>
 
             {/* Matrix Stats */}
@@ -223,80 +224,81 @@ const Ads: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-8 bg-[var(--ease2event-bg-base)]/90 backdrop-blur-2xl"
+                        className="fixed inset-0 z-[100] bg-[var(--ease2event-bg-base)]/90 backdrop-blur-2xl overflow-y-auto"
                         onClick={() => setShowCreateModal(false)}
                     >
-                        <motion.div
-                            initial={{ scale: 0.9, y: 60, opacity: 0, rotateX: 10 }}
-                            animate={{ scale: 1, y: 0, opacity: 1, rotateX: 0 }}
-                            exit={{ scale: 0.9, y: 60, opacity: 0, rotateX: 10 }}
-                            className="card-minimal !p-12 md:!p-20 max-w-3xl w-full border-2 border-[var(--ease2event-border-base)] relative shadow-[0_50px_100px_rgba(0,0,0,0.5)] rounded-[4rem] bg-[var(--ease2event-bg-surface)]"
-                            onClick={e => e.stopPropagation()}
-                        >
+                        <div className="min-h-full flex items-center justify-center p-4 sm:p-8">
+                            <motion.div
+                                initial={{ scale: 0.9, y: 60, opacity: 0, rotateX: 10 }}
+                                animate={{ scale: 1, y: 0, opacity: 1, rotateX: 0 }}
+                                exit={{ scale: 0.9, y: 60, opacity: 0, rotateX: 10 }}
+                                className="card-minimal !p-6 sm:!p-12 md:!p-20 max-w-3xl w-full border-2 border-[var(--ease2event-border-base)] relative shadow-[0_50px_100px_rgba(0,0,0,0.5)] rounded-[2.5rem] sm:rounded-[4rem] bg-[var(--ease2event-bg-surface)] my-auto"
+                                onClick={e => e.stopPropagation()}
+                            >
                             <button
                                 onClick={() => setShowCreateModal(false)}
-                                className="absolute top-12 right-12 text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all"
+                                className="absolute top-6 right-6 sm:top-12 sm:right-12 text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all"
                             >
-                                <X size={40} className="p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40" />
+                                <X className="size-6 sm:size-10 p-1.5 sm:p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40" />
                             </button>
 
-                            <div className="space-y-16">
-                                <div className="space-y-6">
-                                    <div className="inline-flex items-center gap-4 px-6 py-3 bg-blue-500/10 text-blue-500 rounded-2xl border-2 border-blue-500/20 text-[10px] font-black uppercase tracking-[0.4em] italic animate-pulse">
-                                        <Rocket size={18} /> Matrix Protocol Alpha Initialization
+                            <div className="space-y-8 sm:space-y-16 mt-8 sm:mt-0">
+                                <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
+                                    <div className="inline-flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500/10 text-blue-500 rounded-xl sm:rounded-2xl border-2 border-blue-500/20 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] italic animate-pulse">
+                                        <Rocket className="size-4" /> Matrix Protocol Alpha Initialization
                                     </div>
-                                    <h2 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase leading-none italic">New Campaign Node</h2>
-                                    <p className="text-xs text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.3em] opacity-60">Global Reach Index Expansion v7.0</p>
+                                    <h2 className="text-3xl sm:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase leading-none italic">New Campaign Node</h2>
+                                    <p className="text-[10px] sm:text-xs text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] opacity-60">Global Reach Index Expansion v7.0</p>
                                 </div>
 
                                 <form onSubmit={handleCreateAd} className="space-y-12">
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] pl-2 italic">Campaign Descriptor Registry</label>
+                                    <div className="space-y-3 sm:space-y-4">
+                                        <label className="text-[9px] sm:text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em] pl-2 italic">Campaign Descriptor Registry</label>
                                         <input
                                             required
                                             placeholder="ENTER CAMPAIGN TITLE SEQUENCE..."
                                             value={adData.title}
                                             onChange={e => setAdData({ ...adData, title: e.target.value })}
-                                            className="input-dark-glass font-black text-lg h-16 rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all text-[var(--ease2event-text-primary)] placeholder-slate-500 italic"
+                                            className="input-dark-glass font-black text-sm sm:text-lg h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all text-[var(--ease2event-text-primary)] placeholder-slate-500 italic"
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] pl-2 italic">Daily Credits (₹)</label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+                                        <div className="space-y-3 sm:space-y-4">
+                                            <label className="text-[9px] sm:text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em] pl-2 italic">Daily Credits (₹)</label>
                                             <div className="relative group">
-                                                <DollarSign size={24} className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
+                                                <DollarSign className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
                                                 <input
                                                     required
                                                     type="number"
                                                     placeholder="500"
                                                     value={adData.budget}
                                                     onChange={e => setAdData({ ...adData, budget: e.target.value })}
-                                                    className="input-dark-glass !pl-16 font-black text-lg h-16 rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all italic"
+                                                    className="input-dark-glass !pl-12 sm:!pl-16 font-black text-sm sm:text-lg h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all italic"
                                                 />
                                             </div>
                                         </div>
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] pl-2 italic">Asset URL Link</label>
+                                        <div className="space-y-3 sm:space-y-4">
+                                            <label className="text-[9px] sm:text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em] pl-2 italic">Asset URL Link</label>
                                             <div className="relative group">
-                                                <ExternalLink size={24} className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
+                                                <ExternalLink className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
                                                 <input
                                                     placeholder="HTTPS://REPOSITORY.ASSET..."
                                                     value={adData.image}
                                                     onChange={e => setAdData({ ...adData, image: e.target.value })}
-                                                    className="input-dark-glass !pl-16 font-black text-lg h-16 rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all italic"
+                                                    className="input-dark-glass !pl-12 sm:!pl-16 font-black text-sm sm:text-lg h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all italic"
                                                 />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="card-minimal !bg-blue-600/5 !border-blue-500/20 !p-10 flex items-start gap-8 rounded-[2.5rem] shadow-inner">
-                                        <div className="p-5 bg-blue-600 text-white rounded-3xl shadow-2xl shadow-blue-500/30">
-                                            <Target size={32} />
+                                    <div className="card-minimal !bg-blue-600/5 !border-blue-500/20 p-6 sm:!p-10 flex flex-col sm:flex-row items-start gap-5 sm:gap-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-inner">
+                                        <div className="p-4 sm:p-5 bg-blue-600 text-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-500/30 shrink-0">
+                                            <Target className="size-6 sm:size-8" />
                                         </div>
-                                        <div className="space-y-4">
-                                            <p className="text-xs text-[var(--ease2event-text-primary)] font-black uppercase tracking-[0.3em] leading-none italic">Deployment Intelligence Protocol</p>
-                                            <p className="text-xs text-[var(--ease2event-text-muted)] font-bold leading-loose opacity-80">
+                                        <div className="space-y-3 sm:space-y-4">
+                                            <p className="text-[15px] sm:text-xs text-[var(--ease2event-text-primary)] font-black uppercase tracking-[0.3em] leading-none italic">Deployment Intelligence Protocol</p>
+                                            <p className="text-[14px] sm:text-xs text-[var(--ease2event-text-muted)] font-bold leading-relaxed sm:leading-loose opacity-80">
                                                 Nodes are verified for marketplace compliance by the Nexus Central Hive. Standard validation cycle: <strong className="text-[var(--ease2event-text-primary)]">2-6 Logged Cycles</strong>. Operation initializes immediately post-validation.
                                             </p>
                                         </div>
@@ -305,13 +307,14 @@ const Ads: React.FC = () => {
                                     <Button
                                         type="submit"
                                         disabled={submitting}
-                                        className="btn-primary w-full !h-20 text-sm font-black tracking-[0.5em] uppercase shadow-[0_20px_50px_rgba(37,99,235,0.4)] rounded-3xl active:scale-95 hover:scale-[1.02] transition-all italic"
+                                        className="btn-primary w-full h-16 sm:!h-20 text-[11px] sm:text-sm font-black tracking-wider sm:tracking-[0.5em] uppercase shadow-[0_20px_50px_rgba(37,99,235,0.4)] rounded-2xl sm:rounded-3xl active:scale-95 hover:scale-[1.02] transition-all italic"
                                     >
-                                        {submitting ? <Loader2 className="animate-spin" size={32} /> : "Initialize Campaign Node Deployment"}
+                                        {submitting ? <Loader2 className="animate-spin" size={24} /> : "Initialize Campaign Node Deployment"}
                                     </Button>
                                 </form>
                             </div>
-                        </motion.div>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

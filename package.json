@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build": "turbo build && mkdir -p dist/vendor dist/admin && cp -r apps/user-website/dist/* dist/ && cp -r apps/vendor-dashboard/dist/* dist/vendor/ && cp -r apps/admin-panel/dist/* dist/admin/",
     "build:user": "turbo build --filter=@ease2event/user-website",
     "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
     "build:admin": "turbo build --filter=@ease2event/admin-panel",

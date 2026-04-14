@@ -1,34 +1,53 @@
-# 🚀 Ease2event Production Deployment Guide: Vercel
+# 🚀 Ease2event Production Deployment Guide: Hybrid Setup (Vercel + Render)
 
-This guide outlines the professional-grade deployment strategy for the Ease2event monorepo. It ensures that the **User Website**, **Vendor Dashboard**, **Admin Panel**, and the **NestJS API** are synchronized under a single domain with optimal performance.
+This guide outlines the professional-grade deployment strategy for the Ease2event monorepo using a **Hybrid Architecture**:
+*   **Frontends (User, Vendor, Admin)**: Hosted on **Vercel** for optimal global delivery (Edge).
+*   **Backend (NestJS API)**: Hosted on **Render** as a persistent web service (ideal for WebSockets and long-running tasks).
 
 ---
 
-## 🏗️ 1. Project Configuration (Vercel Dashboard)
+## 🛠️ 1. Backend Deployment (Render)
 
-When importing the repository into Vercel, use these specific settings:
+1.  **Create Web Service**: In Render, create a new Web Service and link this repository.
+2.  **Configuration**: Render will automatically detect the `render.yaml`.
+    *   **Build Command**: `npm install && npm run build:api`
+    *   **Start Command**: `node apps/api/dist/main.js`
+3.  **Environment Variables**:
+    *   `DATABASE_URL`: Your Postgres connection string.
+    *   `JWT_SECRET`: Your secure secret.
+    *   `NODE_ENV`: `production`
+
+---
+
+## 🏗️ 2. Frontend Deployment (Vercel)
+
+When importing the repository into Vercel, use these settings:
 
 | Setting | Value |
 | :--- | :--- |
-| **Framework Preset** | `Other` (Do not select Turborepo; our root config is custom) |
+| **Framework Preset** | `Other` |
 | **Root Directory** | `./` |
 | **Build Command** | `npm run build` |
 | **Output Directory** | `dist` |
-| **Install Command** | `npm install` |
 
-### Environment Variables
-You **must** configure these variables in the Vercel Dashboard for both Build and Runtime:
-
-*   `VITE_API_URL`: `/api` (Essential for same-domain communication)
-*   `DATABASE_URL`: `postgresql://user:pass@host:5432/db`
-*   `JWT_SECRET`: `[High-Entropy-String]`
-*   `NODE_ENV`: `production`
+### Critical Environment Variables
+*   **`VITE_API_URL`**: Set this to your Render URL (e.g., `https://ease2event-backend.onrender.com/api`).
+    *   *Note: Ensure NO trailing slash.*
 
 ---
 
-## 🛰️ 2. Serverless API Entry Point (`api/index.ts`)
+## 🚦 3. Routing & Rewrites (`vercel.json`)
 
-NestJS requires a bridge to run on Vercel Serverless Functions. This file caches the application instance to minimize "cold start" latency.
+Since the API is on Render, the `vercel.json` rewrites are simplified. We can either proxy them or point `VITE_API_URL` directly to Render. 
+
+**Recommended (Direct)**: Point `VITE_API_URL` to Render and remove the `/api` rewrite from Vercel to avoid unnecessary proxy latency.
+
+---
+
+## 🛠️ 4. Updated build Orchestration
+
+I have updated the root `package.json` build script to ensure it correctly bundles all dashboard variants for Vercel.
+
 
 ```typescript
 // api/index.ts

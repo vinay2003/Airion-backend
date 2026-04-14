@@ -220,7 +220,7 @@ const Settings: React.FC = () => {
                 <div className="relative z-10 space-y-3">
                     <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase italic font-display leading-none">Registry Overhaul</h1>
                     <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-[10px] font-black uppercase rounded-full border border-[var(--ease2event-brand-primary)]/20">
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-black uppercase rounded-full border border-[var(--ease2event-brand-primary)]/20">
                             <Database size={12} />
                             Core Config v4.2
                         </span>
@@ -237,7 +237,7 @@ const Settings: React.FC = () => {
                         ))}
                     </div>
                     <div className="h-8 w-[1px] bg-[var(--ease2event-border-subtle)] mx-2" />
-                    <span className="text-[10px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic pr-4">Active Registry Node</span>
+                    <span className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic pr-4">Active Registry Node</span>
                 </div>
             </div>
 
@@ -315,7 +315,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div>
                                             <h2 className="text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Identity Core</h2>
-                                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Authentication & Identification Nexus</p>
+                                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Authentication & Identification Nexus</p>
                                         </div>
                                     </div>
 
@@ -329,13 +329,13 @@ const Settings: React.FC = () => {
                                         <div className="space-y-5 text-center md:text-left flex-1">
                                             <h3 className="font-black text-sm text-[var(--ease2event-text-primary)] uppercase tracking-[0.2em] italic">Visual Identity Node</h3>
                                             <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black italic uppercase leading-relaxed max-w-sm opacity-60">Provide a high-resolution visual registry for optimized vendor visibility across the network.</p>
-                                            <Button className="h-11 px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] font-black tracking-[0.2em] italic rounded-xl hover:bg-[var(--ease2event-bg-elevated)]">DEPLOY_VISUAL_ASSET</Button>
+                                            <Button className="h-11 px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-sm font-black tracking-[0.2em] italic rounded-xl hover:bg-[var(--ease2event-bg-elevated)]">DEPLOY_VISUAL_ASSET</Button>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                         <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Identity Tag (Full Name)</label>
+                                            <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Identity Tag (Full Name)</label>
                                             <input
                                                 value={personalData.name}
                                                 onChange={(e: any) => setPersonalData({ ...personalData, name: e.target.value })}
@@ -344,7 +344,7 @@ const Settings: React.FC = () => {
                                             />
                                         </div>
                                         <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Registry Contact (Neural Link)</label>
+                                            <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Registry Contact (Neural Link)</label>
                                             <input
                                                 value={personalData.phone}
                                                 onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
@@ -372,10 +372,10 @@ const Settings: React.FC = () => {
                                             </div>
                                             <div>
                                                 <h2 className="text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Operational Logic</h2>
-                                                <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">System Registry & Behavioral Parameters</p>
+                                                <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">System Registry & Behavioral Parameters</p>
                                             </div>
                                         </div>
-                                        <Badge className="bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-brand-primary)]/20 italic font-black text-[10px] px-4 py-2 rounded-2xl uppercase tracking-widest shadow-sm">
+                                        <Badge className="bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-brand-primary)]/20 italic font-black text-sm px-4 py-2 rounded-2xl uppercase tracking-widest shadow-sm">
                                             NODE_ID: {user?.id?.slice(0, 12)}
                                         </Badge>
                                     </div>
@@ -389,14 +389,14 @@ const Settings: React.FC = () => {
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Marketplace Domain</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Marketplace Domain</label>
                                                     <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Core Domain...</option>
                                                         {categories.map((c: any) => <option key={c._id || c.id} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Specialized Logic Node</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Specialized Logic Node</label>
                                                     <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
                                                         {subcategories.map((s: any) => <option key={s._id || s.id} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
@@ -413,11 +413,11 @@ const Settings: React.FC = () => {
                                             </h3>
                                             <div className="space-y-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Public Entity Designation</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Public Entity Designation</label>
                                                     <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-16 bg-[var(--ease2event-bg-elevated)] px-8 rounded-3xl border border-[var(--ease2event-border-subtle)] italic font-black text-xl outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="Entity Designation" />
                                                 </div>
                                                 <div className="space-y-6">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic ml-1">Registry Visual Clusters (Portfolio)</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic ml-1">Registry Visual Clusters (Portfolio)</label>
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-6 bg-[var(--ease2event-bg-elevated)]/20 p-10 rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                                         {businessData.portfolioImages.map((img, i) => (
                                                             <motion.div 
@@ -436,7 +436,7 @@ const Settings: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
                                                     <textarea value={businessData.description} onChange={(e: any) => setBusinessData({...businessData, description: e.target.value})} rows={6} className="w-full h-auto min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-8 py-8 rounded-[32px] border border-[var(--ease2event-border-subtle)] italic font-bold leading-relaxed text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
                                                 </div>
                                             </div>
@@ -450,11 +450,11 @@ const Settings: React.FC = () => {
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
                                                     <input value={businessData.city} onChange={(e: any) => setBusinessData({...businessData, city: e.target.value})} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
                                                 </div>
                                                 <div className="space-y-4">
-                                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
+                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
                                                     <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({...businessData, avgBookingPrice: e.target.value})} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
                                                 </div>
                                             </div>
@@ -478,14 +478,14 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div>
                                             <h2 className="text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Vault Access</h2>
-                                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Security Protocols & Encryption Keys</p>
+                                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Security Protocols & Encryption Keys</p>
                                         </div>
                                     </div>
                                     
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-12 rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-5">
-                                                <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.3em] ml-1">New Protocol Cipher (Password)</label>
+                                                <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.3em] ml-1">New Protocol Cipher (Password)</label>
                                                 <input type="password" placeholder="••••••••" className="w-full h-14 bg-[var(--ease2event-bg-surface)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black tracking-[1em] text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
                                             <Button className="h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] italic hover:scale-105 transition-all">ROTATE ACCESS CIPHER</Button>
@@ -517,7 +517,7 @@ const Settings: React.FC = () => {
                                                 <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Access Registry Logs</h3>
                                                 <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase mt-2 tracking-[0.3em] italic opacity-60">Node Synchronization History</p>
                                             </div>
-                                            <button className="text-[10px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic hover:underline flex items-center gap-3 group">
+                                            <button className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic hover:underline flex items-center gap-3 group">
                                                 <Eye size={14} className="group-hover:scale-125 transition-transform" />
                                                 ACCESS_FULL_REGISTRY
                                             </button>
@@ -527,10 +527,10 @@ const Settings: React.FC = () => {
                                             <table className="w-full text-left">
                                                 <thead>
                                                     <tr className="bg-[var(--ease2event-bg-elevated)]/40 border-b border-[var(--ease2event-border-subtle)]">
-                                                        <th className="px-10 py-6 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Terminal Node</th>
-                                                        <th className="px-10 py-6 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Access Protocol</th>
-                                                        <th className="px-10 py-6 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Timestamp</th>
-                                                        <th className="px-10 py-6 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic text-center">Status</th>
+                                                        <th className="px-10 py-6 text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Terminal Node</th>
+                                                        <th className="px-10 py-6 text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Access Protocol</th>
+                                                        <th className="px-10 py-6 text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic">Timestamp</th>
+                                                        <th className="px-10 py-6 text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic text-center">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--ease2event-border-subtle)]">
@@ -541,8 +541,8 @@ const Settings: React.FC = () => {
                                                     ].map((log, i) => (
                                                         <tr key={i} className="hover:bg-[var(--ease2event-brand-primary)]/[0.03] transition-all duration-500 cursor-pointer group">
                                                             <td className="px-10 py-7 font-black text-[11px] text-[var(--ease2event-text-primary)] tracking-tight italic uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
-                                                            <td className="px-10 py-7 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.type}</td>
-                                                            <td className="px-10 py-7 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.time}</td>
+                                                            <td className="px-10 py-7 text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.type}</td>
+                                                            <td className="px-10 py-7 text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.time}</td>
                                                             <td className="px-10 py-7">
                                                                 <div className="flex justify-center">
                                                                     <Badge className={`italic font-black text-[9px] px-5 py-2 rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${
@@ -570,7 +570,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div>
                                             <h2 className="text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Interface Matrix</h2>
-                                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Visual Spectrum & Rendering Config</p>
+                                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Visual Spectrum & Rendering Config</p>
                                         </div>
                                     </div>
                                     
@@ -591,7 +591,7 @@ const Settings: React.FC = () => {
                                                         </div>
                                                         <div className="text-left">
                                                             <p className="font-black text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest italic">{theme === 'light' ? 'DARK_PRIME_CORE' : 'LIGHT_NEURAL_FIELD'}</p>
-                                                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-2 tracking-tighter opacity-70 italic">Synchronize visual spectrum deployment</p>
+                                                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-2 tracking-tighter opacity-70 italic">Synchronize visual spectrum deployment</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight size={24} className="text-[var(--ease2event-text-muted)] group-hover/btn:translate-x-2 transition-transform duration-500" />
@@ -599,7 +599,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-4 p-5 bg-[var(--ease2event-bg-elevated)]/50 rounded-2xl border border-[var(--ease2event-border-subtle)]">
                                                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black italic uppercase tracking-widest opacity-60">
+                                                <p className="text-sm text-[var(--ease2event-text-muted)] font-black italic uppercase tracking-widest opacity-60">
                                                     System calibrated for high-fidelity interactive rendering protocols.
                                                 </p>
                                             </div>

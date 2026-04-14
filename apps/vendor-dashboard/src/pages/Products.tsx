@@ -132,7 +132,7 @@ const Products: React.FC = () => {
                     <motion.div variants={itemVariants}>
                         <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Configuration</h1>
                         <div className="flex items-center gap-3 mt-4">
-                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase rounded-full border border-blue-500/20">
+                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-sm font-black uppercase rounded-full border border-blue-500/20">
                                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                                 Node Protocol Active
                             </span>
@@ -141,13 +141,13 @@ const Products: React.FC = () => {
                     </motion.div>
                     
                     <motion.div variants={itemVariants} className="flex items-center gap-4">
-                        <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-black text-[10px] uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">
+                        <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-black text-sm uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">
                             Discard
                         </Button>
                         <Button
                             onClick={handleCreateService}
                             disabled={submitting}
-                            className="px-10 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
+                            className="px-10 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
                         >
                             {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Synchronize Node'}
                         </Button>
@@ -167,7 +167,7 @@ const Products: React.FC = () => {
                             
                             <div className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Operational Protocol ID</label>
+                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Operational Protocol ID</label>
                                     <input 
                                         type="text" 
                                         value={formData.title}
@@ -177,7 +177,7 @@ const Products: React.FC = () => {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Capability Matrix Description</label>
+                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Capability Matrix Description</label>
                                     <textarea 
                                         rows={6}
                                         value={formData.description}
@@ -200,7 +200,7 @@ const Products: React.FC = () => {
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Base Capture (₹)</label>
+                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Base Capture (₹)</label>
                                     <div className="relative">
                                          <DollarSign size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-brand-primary)]" />
                                          <input 
@@ -213,7 +213,7 @@ const Products: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Max Node Throughput</label>
+                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Max Node Throughput</label>
                                     <input 
                                         type="number" 
                                         placeholder="UNIT_CAP"
@@ -244,12 +244,12 @@ const Products: React.FC = () => {
                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase font-display mb-6 tracking-tight relative z-10">Registry Status</h3>
                            <div className="space-y-6 relative z-10">
                                 <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
-                                    <span className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic">Sync Level</span>
-                                    <span className="text-[10px] font-black text-[var(--ease2event-brand-primary)] italic">ALPHA_CMD_01</span>
+                                    <span className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic">Sync Level</span>
+                                    <span className="text-sm font-black text-[var(--ease2event-brand-primary)] italic">ALPHA_CMD_01</span>
                                 </div>
                                 <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
-                                    <span className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic">Throughput</span>
-                                    <span className="text-[10px] font-black text-emerald-500 italic">NOMINAL</span>
+                                    <span className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic">Throughput</span>
+                                    <span className="text-sm font-black text-emerald-500 italic">NOMINAL</span>
                                 </div>
                                 <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase italic tracking-tighter opacity-60 mt-4">
                                     Synchronizing this node will propagate the registry across the marketplace matrix.
@@ -263,7 +263,7 @@ const Products: React.FC = () => {
                 <motion.div variants={itemVariants} className="space-y-8">
                     <div className="flex items-center justify-between px-2">
                         <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Tier Architecture</h3>
-                        <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-black uppercase italic text-[10px] tracking-widest shadow-sm">Autonomous Tiering Active</Badge>
+                        <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-black uppercase italic text-sm tracking-widest shadow-sm">Autonomous Tiering Active</Badge>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -327,7 +327,7 @@ const Products: React.FC = () => {
                 <motion.div variants={itemVariants}>
                     <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Inventory Registry</h1>
                     <div className="flex items-center gap-3 mt-4">
-                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-sm font-black uppercase rounded-full border border-emerald-500/20">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                             Inventory Synchronized
                         </span>
@@ -407,7 +407,7 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className="p-8 flex-1 flex flex-col space-y-6">
                                     <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
+                                        <p className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
                                         <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
                                     </div>
                                     <p className="text-xs text-[var(--ease2event-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
@@ -419,7 +419,7 @@ const Products: React.FC = () => {
                                         </div>
                                         <div className="flex -space-x-3 group-hover:space-x-1 transition-all">
                                             {[1,2,3].map(i => (
-                                                <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] text-[10px] font-black text-[var(--ease2event-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--ease2event-brand-primary)]/10 transition-all italic">v{i}</div>
+                                                <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] text-sm font-black text-[var(--ease2event-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--ease2event-brand-primary)]/10 transition-all italic">v{i}</div>
                                             ))}
                                         </div>
                                     </div>
@@ -438,7 +438,7 @@ const Products: React.FC = () => {
                         </div>
                         <div className="text-center space-y-3">
                             <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-widest font-display">Sync New Node</h3>
-                            <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
+                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
                         </div>
                     </motion.div>
                    </>

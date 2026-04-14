@@ -174,34 +174,28 @@ const Earnings: React.FC = () => {
 
       {/* 🚀 Primary Intelligence Nodes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <motion.div 
-          variants={itemVariants}
-          whileHover={{ y: -8, scale: 1.02 }}
-          className="card-minimal !bg-[var(--ease2event-text-primary)] !text-[var(--ease2event-text-inverted)] p-10 relative overflow-hidden group border-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)]"
-        >
-          <div className="absolute right-0 bottom-0 p-12 opacity-10 transform translate-x-4 translate-y-4 group-hover:scale-125 group-hover:-translate-x-4 transition-transform duration-1000">
-            <CreditCard size={180} />
+        <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-10 flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
+          <div>
+            <div className="flex justify-between items-start mb-10 relative">
+              <div className="p-5 bg-emerald-500/10 text-emerald-500 rounded-[24px] shadow-sm border border-emerald-500/10 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                <ShieldCheck size={28} />
+              </div>
+              <div className="flex items-center gap-2 text-[var(--ease2event-text-muted)] text-[10px] font-black px-4 py-2 uppercase tracking-widest border border-[var(--ease2event-border-subtle)] rounded-2xl bg-[var(--ease2event-bg-elevated)]">
+                <span className="opacity-50">SYNCED :</span>
+                <span className="text-[var(--ease2event-text-primary)]">OCT 15, 2023</span>
+              </div>
+            </div>
+            <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.4em] mb-4 opacity-50 italic">Secured Liquidity Node</p>
+            <h2 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.totalBalance.toLocaleString('en-IN')}</h2>
           </div>
-          <div className="relative z-10 flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-6">
-                <ShieldCheck size={20} className="text-emerald-400" />
-                <p className="text-[var(--ease2event-text-inverted)]/50 font-black text-[11px] uppercase tracking-[0.4em] italic">Secured Liquidity Node</p>
-            </div>
-            <h2 className="text-6xl font-black mb-12 leading-none tracking-tighter italic font-display">₹{displayData.totalBalance.toLocaleString('en-IN')}</h2>
-            <div className="flex items-center justify-between mt-auto pt-8 border-t border-[var(--ease2event-text-inverted)]/10">
-                <div className="space-y-1.5">
-                    <p className="text-[var(--ease2event-text-inverted)]/30 text-[10px] font-black uppercase tracking-widest leading-none italic">Synchronized</p>
-                    <p className="text-sm font-black text-[var(--ease2event-text-inverted)]/90 leading-none shadow-sm">OCT 15, 2023</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button className="flex items-center gap-2 text-[10px] font-black bg-[var(--ease2event-text-inverted)]/10 hover:bg-blue-600 px-6 py-3 rounded-2xl border border-[var(--ease2event-text-inverted)]/10 transition-all uppercase tracking-[0.2em] italic active:scale-90">
-                      WITHDRAWAL
-                  </button>
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-blue-400 hover:bg-white/10 transition-all shadow-inner shrink-0">
-                    <CreditCard size={20} />
-                  </div>
-                </div>
-            </div>
+          <div className="mt-10 pt-8 border-t border-[var(--ease2event-border-subtle)]">
+             <button className="flex items-center justify-between w-full p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2rem] transition-all group active:scale-95 shadow-inner hover:border-emerald-500/30">
+               <span className="text-[11px] font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest italic flex items-center gap-3">
+                 <CreditCard size={18} className="text-emerald-500" />
+                 Withdrawal
+               </span>
+               <ArrowRight size={18} className="text-[var(--ease2event-text-muted)] group-hover:text-emerald-500 group-hover:translate-x-2 transition-all" />
+             </button>
           </div>
         </motion.div>
 

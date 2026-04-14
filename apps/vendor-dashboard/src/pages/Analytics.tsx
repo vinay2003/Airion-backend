@@ -102,11 +102,11 @@ const Analytics: React.FC = () => {
                 <motion.div variants={itemVariants} className="relative z-10 space-y-4">
                     <h1 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
                     <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-sm font-black uppercase rounded-full border border-emerald-500/20">
                             <Activity size={12} className="animate-pulse" />
                             Core Telemetry Live
                         </span>
-                        <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
+                        <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
                 </motion.div>
                 
@@ -141,7 +141,7 @@ const Analytics: React.FC = () => {
                             </Badge>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
+                            <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
                             <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
                         </div>
                         <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
@@ -157,7 +157,7 @@ const Analytics: React.FC = () => {
                             <div className="w-2 h-12 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
                             <div>
                                 <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
                             </div>
                         </div>
                         <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
@@ -193,7 +193,7 @@ const Analytics: React.FC = () => {
                             <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
                                 <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
                             </div>
                         </div>
                         <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
@@ -229,7 +229,7 @@ const Analytics: React.FC = () => {
                             <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
                         </div>
                     </div>
-                    <Button variant="outline" className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
+                    <Button variant="outline" className="h-14 px-8 rounded-2xl text-sm font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -252,7 +252,7 @@ const Analytics: React.FC = () => {
                                 </div>
                             </div>
                             <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
                                 <p className="text-2xl font-black text-[var(--ease2event-text-primary)] italic">{node.revenue}</p>
                             </div>
                         </div>

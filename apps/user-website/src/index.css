@@ -16,37 +16,37 @@
   color-scheme: light;
 
   /* Override surfaces to light */
-  --ease2event-bg-base:        #FFFFFF;
-  --ease2event-bg-surface:     #F8F8FF;
-  --ease2event-bg-elevated:    #F0EFFE;
-  --ease2event-bg-sidebar:     #FAFAFA;
+  --ease2event-bg-base: #FFFFFF;
+  --ease2event-bg-surface: #F8F8FF;
+  --ease2event-bg-elevated: #F0EFFE;
+  --ease2event-bg-sidebar: #FAFAFA;
 
   /* Text for light mode */
-  --ease2event-text-primary:   #1A1A2E;
+  --ease2event-text-primary: #1A1A2E;
   --ease2event-text-secondary: #4A4A6A;
-  --ease2event-text-muted:     #9090AA;
-  --ease2event-text-inverted:  #FFFFFF;
+  --ease2event-text-muted: #9090AA;
+  --ease2event-text-inverted: #FFFFFF;
 
   /* Borders for light mode */
-  --ease2event-border-subtle:  rgba(0, 0, 0, 0.05);
-  --ease2event-border-base:    rgba(0, 0, 0, 0.08);
+  --ease2event-border-subtle: rgba(0, 0, 0, 0.05);
+  --ease2event-border-base: rgba(0, 0, 0, 0.08);
 
   /* Refined multi-layered shadows for light mode */
-  --ease2event-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
-  --ease2event-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --ease2event-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --ease2event-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ease2event-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --ease2event-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
   --ease2event-shadow-glow: 0 0 15px rgba(99, 102, 241, 0.1);
 
   /* Tailwind semantic aliases (light) */
-  --background:  #FFFFFF;
-  --foreground:  #0F172A;
-  --card:        #FFFFFF;
+  --background: #FFFFFF;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
   --card-foreground: #0F172A;
-  --muted:       #F1F5F9;
+  --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --border:      rgba(0, 0, 0, 0.05);
-  --input:       rgba(0, 0, 0, 0.08);
-  --secondary:   #F1F5F9;
+  --border: rgba(0, 0, 0, 0.05);
+  --input: rgba(0, 0, 0, 0.08);
+  --secondary: #F1F5F9;
   --secondary-foreground: #475569;
 }
 
@@ -57,29 +57,36 @@ body {
 
 @layer utilities {
   .dark .aurora-bg {
-    background: linear-gradient(
-      -45deg,
-      #000000,
-      #1a0505,
-      #050a14,
-      #000000,
-      #140514,
-      #05140a,
-      #000000
-    );
+    background: linear-gradient(-45deg,
+        #000000,
+        #1a0505,
+        #050a14,
+        #000000,
+        #140514,
+        #05140a,
+        #000000);
     background-size: 400% 400%;
     animation: auroraAnim 30s ease infinite;
   }
 
   @keyframes auroraAnim {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
 
 /* ── 3. User Portal Specific Components ──────────────────── */
 @layer components {
+
   /* Minimal professional card with subtle lift */
   .card-minimal {
     @apply bg-white border border-gray-100 dark:border-slate-800 rounded-xl p-6 transition-all duration-300 hover:shadow-md hover:border-gray-200;
@@ -93,17 +100,26 @@ body {
 
 /* ── 4. User Portal Utilities ────────────────────────────── */
 @layer utilities {
+
   /* Airbnb-style card shadow for event listing cards */
-  .shadow-listing      { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); }
-  .shadow-listing-hover { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16); }
+  .shadow-listing {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .shadow-listing-hover {
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  }
 
   /* Red accent grid for hero section */
   .grid-bg {
     background-color: #fff5f5;
     background-image:
-      linear-gradient(rgba(108,99,255,0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(108,99,255,0.07) 1px, transparent 1px);
+      linear-gradient(rgba(108, 99, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108, 99, 255, 0.07) 1px, transparent 1px);
     background-size: 40px 40px;
   }
-  .transition-soft { @apply transition-all duration-300 ease-in-out; }
+
+  .transition-soft {
+    @apply transition-all duration-300 ease-in-out;
+  }
 }

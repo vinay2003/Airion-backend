@@ -34,7 +34,7 @@ const MyBookings: React.FC = () => {
                             eventDate: new Date(Date.now() + 1728000000).toISOString(),
                             status: 'pending',
                             totalAmount: '45000',
-                            vendor: { businessName: 'Aura Photography', city: 'Mumbai', portfolioImages: ['https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80'] }
+                            vendor: { businessName: 'Aura Photography', city: 'Mumbai', portfolioImages: ['https://images.unsplash.com/photo-1614447413359-5f87a652a269?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHBob3RvZ3JhcGh5JTIwZXhoaWJpdGlvbnxlbnwwfHwwfHx8MA%3D%3D'] }
                         },
                         {
                             id: '3',
@@ -50,7 +50,7 @@ const MyBookings: React.FC = () => {
                             eventDate: new Date(Date.now() - 500000000).toISOString(),
                             status: 'cancelled',
                             totalAmount: '80000',
-                            vendor: { businessName: 'Elite Decorators', city: 'Bangalore', portfolioImages: ['https://images.unsplash.com/photo-1519225468359-2996bc01c32c?q=80'] }
+                            vendor: { businessName: 'Elite Decorators', city: 'Bangalore', portfolioImages: ['https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTR8fGRlY29yfGVufDB8fDB8fHww'] }
                         }
                     ]);
                 }
@@ -103,8 +103,8 @@ const MyBookings: React.FC = () => {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === tab
-                                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-md'
-                                : 'bg-transparent text-neutral-500 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 hover:text-neutral-900 dark:hover:text-white'
+                            ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-md'
+                            : 'bg-transparent text-neutral-500 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 hover:text-neutral-900 dark:hover:text-white'
                             }`}
                     >
                         {tab}

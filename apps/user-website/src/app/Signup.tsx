@@ -101,7 +101,8 @@ const Signup: React.FC = () => {
             <div className="hidden lg:flex w-1/2 relative flex-col justify-end p-12 overflow-hidden bg-neutral-900 border-r border-neutral-200 dark:border-slate-800">
                 <div className="absolute inset-0">
                     <img
-                        src="https://images.unsplash.com/photo-1519225468359-2996bc01c32c?q=80"
+                        src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fGRlY29yfGVufDB8fDB8fHww"
+
                         alt="Event Decor"
                         className="w-full h-full object-cover opacity-60 mix-blend-overlay"
                     />

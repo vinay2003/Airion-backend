@@ -1,6 +1,7 @@
 {
   "name": "ease2event",
   "private": true,
+  "description": "Premium Event Planning Platform (Vercel Optimized)",
   "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",

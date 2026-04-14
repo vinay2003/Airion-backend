@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { fetchBudget as apiFetchBudget, updateBudget as apiUpdateBudget } from '../lib/api';
 
 export interface BudgetItem {
     id: string;
@@ -63,6 +64,7 @@ interface DashboardState {
     chatThreads: ChatThread[];
 
     // Actions
+    fetchBudget: () => Promise<void>;
     updateBudgetAllocation: (id: string, allocated: number) => void;
     addExpense: (id: string, amount: number) => void;
     markNotificationRead: (id: string) => void;
@@ -160,13 +162,37 @@ export const useDashboardStore = create<DashboardState>((set) => ({
         }
     ],
 
-    updateBudgetAllocation: (id, allocated) => set((state) => ({
-        budgetItems: state.budgetItems.map(item => item.id === id ? { ...item, allocated } : item)
-    })),
+    fetchBudget: async () => {
+        try {
+            const data = await apiFetchBudget();
+            if (data) {
+                set({ 
+                    totalBudget: parseFloat(data.totalBudget), 
+                    budgetItems: data.items 
+                });
+            }
+        } catch (error) {
+            console.error('Failed to fetch budget:', error);
+        }
+    },
 
-    addExpense: (id, amount) => set((state) => ({
-        budgetItems: state.budgetItems.map(item => item.id === id ? { ...item, spent: item.spent + amount } : item)
-    })),
+    updateBudgetAllocation: async (id, allocated) => {
+        set((state) => {
+            const newItems = state.budgetItems.map(item => item.id === id ? { ...item, allocated } : item);
+            // Async sync
+            apiUpdateBudget({ items: newItems }).catch(console.error);
+            return { budgetItems: newItems };
+        });
+    },
+
+    addExpense: async (id, amount) => {
+        set((state) => {
+            const newItems = state.budgetItems.map(item => item.id === id ? { ...item, spent: item.spent + amount } : item);
+             // Async sync
+             apiUpdateBudget({ items: newItems }).catch(console.error);
+            return { budgetItems: newItems };
+        });
+    },
 
     markNotificationRead: (id) => set((state) => ({
         notifications: state.notifications.map(n => n.id === id ? { ...n, read: true } : n)

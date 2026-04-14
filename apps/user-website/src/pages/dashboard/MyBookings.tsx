@@ -161,7 +161,14 @@ const MyBookings: React.FC = () => {
                                             <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip" title="Download Invoice">
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    window.open(`${import.meta.env.VITE_API_URL}/bookings/${booking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank');
+                                                }}
+                                                className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip" 
+                                                title="Download Invoice"
+                                            >
                                                 <FileText size={18} />
                                             </button>
                                             <button className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">

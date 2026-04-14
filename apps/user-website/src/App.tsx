@@ -17,7 +17,8 @@ import BudgetPlanner from './pages/dashboard/BudgetPlanner';
 import Inbox from './pages/dashboard/Inbox';
 import ProfileSettings from './pages/dashboard/ProfileSettings';
 
-import { Payments, GuestList, DigitalInvites, Support } from './pages/dashboard/Placeholders';
+import { Payments, DigitalInvites, Support } from './pages/dashboard/Placeholders';
+import GuestList from './pages/dashboard/GuestList';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'));

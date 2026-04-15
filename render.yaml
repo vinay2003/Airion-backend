@@ -6,7 +6,7 @@ services:
     region: oregon
     plan: free
     rootDirectory: .
-    buildCommand: npm install && npm run build:api
+    buildCommand: npm install --include=dev && npm run build:api
     startCommand: node apps/api/dist/main.js
     healthCheckPath: /api/health
     

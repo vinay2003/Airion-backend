@@ -13,8 +13,8 @@
     "build:user": "turbo build --filter=@ease2event/user-website",
     "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
     "build:admin": "turbo build --filter=@ease2event/admin-panel",
-    "build:api": "turbo build --filter=@ease2event/api --force",
-    "start:api": "cd apps/api && node dist/main.js",
+    "build:api": "turbo run build --filter=@ease2event/api --force",
+    "start:api": "ls -R apps/api/dist && cd apps/api && node dist/main.js",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

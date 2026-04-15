@@ -3,6 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    "noEmit": false,
+    "emitDeclarationOnly": false,
     "baseUrl": ".",
     "paths": {
       "@ease2event/types": ["../../packages/types/dist/index"]

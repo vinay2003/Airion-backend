@@ -1,41 +1,32 @@
 import { createZodDto } from 'nestjs-zod';
 import { 
   SendOtpSchema, 
-  VerifyOtpSchema, 
+  VerifyOtpBaseSchema,
+  VerifySignupOtpSchema,
+  VerifyLoginOtpSchema,
   ResetPasswordSchema 
 } from '@ease2event/types';
 
-export class SendOtpDto extends createZodDto(SendOtpSchema) {
-  phone?: string;
-  email?: string;
-}
+export class SendOtpDto extends createZodDto(SendOtpSchema) {}
 
-export class VerifyOtpDto extends createZodDto(VerifyOtpSchema) {
-  phone?: string;
-  email?: string;
-  otp: string;
-}
+/** 
+ * Base DTO for OTP verification.
+ * Note: We don't redeclare properties here; nestjs-zod handles inference.
+ */
+export class VerifyOtpDto extends createZodDto(VerifyOtpBaseSchema) {}
 
-export class ResetPasswordDto extends createZodDto(ResetPasswordSchema) {
-  email: string;
-  token: string;
-  newPassword: string;
-}
+/** 
+ * Specialized Signup DTO.
+ * Extends base schema logic without property shadowing.
+ */
+export class VerifySignupOtpDto extends createZodDto(VerifySignupOtpSchema) {}
 
-/** Legacy/Compatibility Aliases if needed by controllers */
-export class VerifySignupOtpDto extends VerifyOtpDto {
-  email?: string;
-  phone?: string;
-  otp: string;
-  name?: string;
-  password?: string;
-  role?: any;
-  marketingConsent?: boolean;
-}
+/** 
+ * Specialized Login DTO.
+ */
+export class VerifyLoginOtpDto extends createZodDto(VerifyLoginOtpSchema) {}
 
-export class VerifyLoginOtpDto extends VerifyOtpDto {
-  email?: string;
-  phone?: string;
-  otp: string;
-  role?: any;
-}
+/**
+ * Reset Password DTO.
+ */
+export class ResetPasswordDto extends createZodDto(ResetPasswordSchema) {}

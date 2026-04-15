@@ -43,10 +43,16 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
-                'https://ease2event.vercel.app',
-                'https://vendor.ease2event.vercel.app',
-                'https://admin.ease2event.vercel.app'
-            ];
+                // Production Vercel URLs
+                'https://airion-backend-admin-panel-1e98o3h6f-vinay2003s-projects.vercel.app',
+                'https://airion-backend-vendor-dashboard.vercel.app',
+                'https://airion-backend-admin-panel-eg56.vercel.app',
+                // Support env variable overrides for future URL changes
+                process.env.FRONTEND_URL,
+                process.env.VENDOR_URL,
+                process.env.ADMIN_URL,
+            ].filter(Boolean) as string[];
+
             const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
             if (isLocal || process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
                 callback(null, true);

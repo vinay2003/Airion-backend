@@ -5,10 +5,37 @@ import {
   ResetPasswordSchema 
 } from '@ease2event/types';
 
-export class SendOtpDto extends createZodDto(SendOtpSchema) {}
-export class VerifyOtpDto extends createZodDto(VerifyOtpSchema) {}
-export class ResetPasswordDto extends createZodDto(ResetPasswordSchema) {}
+export class SendOtpDto extends createZodDto(SendOtpSchema) {
+  phone?: string;
+  email?: string;
+}
+
+export class VerifyOtpDto extends createZodDto(VerifyOtpSchema) {
+  phone?: string;
+  email?: string;
+  otp: string;
+}
+
+export class ResetPasswordDto extends createZodDto(ResetPasswordSchema) {
+  email: string;
+  token: string;
+  newPassword: string;
+}
 
 /** Legacy/Compatibility Aliases if needed by controllers */
-export class VerifySignupOtpDto extends VerifyOtpDto {}
-export class VerifyLoginOtpDto extends VerifyOtpDto {}
+export class VerifySignupOtpDto extends VerifyOtpDto {
+  email?: string;
+  phone?: string;
+  otp: string;
+  name?: string;
+  password?: string;
+  role?: any;
+  marketingConsent?: boolean;
+}
+
+export class VerifyLoginOtpDto extends VerifyOtpDto {
+  email?: string;
+  phone?: string;
+  otp: string;
+  role?: any;
+}

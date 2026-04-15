@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json -r tsconfig-paths/register --respawn --transpile-only src/main.ts",
     "build": "tsc -p tsconfig.build.json",
+    "build:api": "npm run build",
     "start": "node dist/main.js"
   },
   "dependencies": {

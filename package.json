@@ -14,7 +14,7 @@
     "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
     "build:admin": "turbo build --filter=@ease2event/admin-panel",
     "build:api": "turbo build --filter=@ease2event/api --force",
-    "start:api": "ls -R apps/api/dist && node apps/api/dist/main.js",
+    "start:api": "cd apps/api && node dist/main.js",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

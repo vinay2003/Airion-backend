@@ -20,7 +20,10 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "strictBindCallApply": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@ease2event/types": ["../../packages/types/src/index.ts"]
+    }
   },
   "include": [
     "src/**/*"

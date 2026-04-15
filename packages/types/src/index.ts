@@ -7,7 +7,7 @@
  *   - Enums
  */
 
-export * from './user.js';
-export * from './vendor.js';
-export * from './booking.js';
-export * from './auth.js';
+export * from './user';
+export * from './vendor';
+export * from './booking';
+export * from './auth';

@@ -19,13 +19,13 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "turbo": "latest"
+    "turbo": "latest",
+    "vite": "^7.2.4",
+    "typescript": "~5.9.3",
+    "concurrently": "^8.2.0"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
-    "concurrently": "^8.2.0",
-    "vite": "^7.2.4",
-    "typescript": "~5.9.3",
     "eslint": "^9.39.1"
   }
 }

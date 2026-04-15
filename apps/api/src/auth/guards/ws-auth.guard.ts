@@ -31,8 +31,8 @@ export class WsJwtGuard implements CanActivate {
             client.data.user = payload;
             
             return true;
-        } catch (err) {
-            this.logger.error(`WS Authorization failure: ${err.message}`);
+        } catch (err: any) {
+            this.logger.error(`WS Authorization failure: ${err?.message || 'Unknown error'}`);
             throw new WsException('Unauthorized: Identity Sync failed');
         }
     }

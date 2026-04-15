@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserRole } from './user';
+import { UserRole } from './user.js';
 
 export const SendOtpSchema = z.object({
   phone: z.string().optional().nullable(),

@@ -7,7 +7,7 @@ services:
     plan: free
     rootDirectory: .
     buildCommand: npm install --include=dev && npm run build:api
-    startCommand: node apps/api/dist/main.js
+    startCommand: cd apps/api && node dist/main.js
     healthCheckPath: /api/health
     
     # Environment Variables (Add your actual values in Render Dashboard)

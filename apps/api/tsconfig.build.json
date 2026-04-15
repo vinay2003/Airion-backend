@@ -1,5 +1,13 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@ease2event/types": ["../../packages/types/dist/index"]
+    }
+  },
   "include": [
     "src/**/*"
   ],

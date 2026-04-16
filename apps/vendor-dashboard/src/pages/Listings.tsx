@@ -60,7 +60,7 @@ const Listings: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--ease2event-border-subtle)] pb-12">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-loose uppercase">Event Management</h1>
+                    <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-tight uppercase">Event Management</h1>
                     <p className="text-1.5xl font-bold text-[var(--ease2event-text-secondary)]">
                         Configure and monitor your active event listings.
                     </p>
@@ -129,7 +129,7 @@ const Listings: React.FC = () => {
                 ) : (
                     filteredListings.map((listing) => (
                         <div key={listing.id} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--ease2event-shadow-xl)] border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
-                            <div className="relative h-72 overflow-hidden">
+                            <div className="relative h-56 md:h-72 shrink-0 overflow-hidden">
                                 <img
                                     src={listing.image}
                                     alt={listing.title}

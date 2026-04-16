@@ -157,10 +157,17 @@ const Hero: React.FC = () => {
                         {SEARCH_TABS.map((tab) => (
                             <button
                                 key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold ${activeTab === tab
-                                    ? "bg-white text-black"
-                                    : "bg-black/20 text-white"
+                                onClick={() => {
+                                    setActiveTab(tab);
+                                    if (tab === 'All') {
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    } else {
+                                        navigate(`/category/${tab.toLowerCase()}`);
+                                    }
+                                }}
+                                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold transition-all ${activeTab === tab
+                                    ? "bg-white text-black drop-shadow-md"
+                                    : "bg-black/20 text-white hover:bg-black/40"
                                     }`}
                             >
                                 {tab}

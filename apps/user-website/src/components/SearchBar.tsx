@@ -93,7 +93,7 @@ const SearchBar = () => {
     return (
         <div className="bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto transition-shadow duration-500">
             {/* Location Selector */}
-            <div className="flex-1 relative group/input">
+            <div className="flex-1 relative group/input overflow-visible h-auto">
                 <Popover open={openLocation} onOpenChange={setOpenLocation}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
@@ -110,12 +110,14 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[300px]" align="start">
-                        <Command>
-                            <CommandInput placeholder="Search location..." />
-                            <CommandList>
-                                <CommandEmpty>No location found.</CommandEmpty>
-                                <CommandGroup heading="Suggestions">
+                    <PopoverContent side="bottom" sideOffset={10} className="p-0 w-64 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden z-[100] absolute mt-2 mb-4" align="start">
+                        <Command className="bg-transparent text-inherit border-none">
+                            <div className="border-b border-gray-200 dark:border-slate-800">
+                                <CommandInput placeholder="Search location..." className="border-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 placeholder:font-normal bg-transparent" />
+                            </div>
+                            <CommandList className="max-h-48">
+                                <CommandEmpty className="text-gray-500 py-4 text-center">No location found.</CommandEmpty>
+                                <CommandGroup heading="Suggestions" className="text-gray-500 [&_[cmdk-group-heading]]:text-gray-400 [&_[cmdk-group-heading]]:font-semibold">
                                     {POPULAR_LOCATIONS.map((loc) => (
                                         <CommandItem
                                             key={loc.value}
@@ -124,7 +126,7 @@ const SearchBar = () => {
                                                 setLocation(loc.value === location ? "" : loc.value);
                                                 setOpenLocation(false);
                                             }}
-                                            className="cursor-pointer"
+                                            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 aria-selected:bg-gray-100 dark:aria-selected:bg-slate-800 aria-selected:text-slate-900 dark:aria-selected:text-white data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-slate-800 data-[highlighted]:text-slate-900 dark:data-[highlighted]:text-white transition-colors"
                                         >
                                             <Check
                                                 className={cn(
@@ -142,10 +144,10 @@ const SearchBar = () => {
                 </Popover>
             </div>
 
-            <div className="hidden md:block w-px bg-gray-200 dark:bg-slate-700 my-2"></div>
+            <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Date Range Picker */}
-            <div className="flex-1 relative group/input">
+            <div className="flex-1 relative group/input overflow-visible h-auto">
                 <Popover open={openDate} onOpenChange={setOpenDate}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
@@ -168,24 +170,29 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent side="bottom" sideOffset={10} className="w-auto p-0 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden z-[100] absolute mt-2 mb-4" align="start">
                         <Calendar
                             initialFocus
                             mode="range"
                             defaultMonth={date?.from}
                             selected={date}
                             onSelect={setDate}
-                            numberOfMonths={2}
+                            numberOfMonths={1}
                             pagedNavigation
+                            onDayKeyDown={(_day, _modifiers, e) => {
+                                if (e.key === 'Enter') {
+                                    setOpenDate(false);
+                                }
+                            }}
                         />
                     </PopoverContent>
                 </Popover>
             </div>
 
-            <div className="hidden md:block w-px bg-gray-200 dark:bg-slate-700 my-2"></div>
+            <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Guest Counter */}
-            <div className="flex-1 relative group/input">
+            <div className="flex-1 relative group/input overflow-visible h-auto">
                 <Popover open={openGuests} onOpenChange={setOpenGuests}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
@@ -198,7 +205,16 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-60 p-4" align="start">
+                    <PopoverContent
+                        side="bottom"
+                        sideOffset={10}
+                        className="w-56 p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl z-[100] absolute mt-2 mb-4"
+                        align="start"
+                        onKeyDown={(e) => {
+                            if (e.key === 'ArrowLeft') setGuests((g) => Math.max(1, g - 1));
+                            if (e.key === 'ArrowRight') setGuests((g) => Math.min(500, g + 1));
+                        }}
+                    >
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">Guests</span>
                             <div className="flex items-center gap-3">

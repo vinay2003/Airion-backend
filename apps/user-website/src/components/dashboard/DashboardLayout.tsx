@@ -192,8 +192,8 @@ const SidebarContent: React.FC<{ items: NavItem[], currentPath: string, isCollap
                         to={item.path}
                         onClick={onClose}
                         className={`flex items-center gap-5 px-5 py-4 rounded-[1.5rem] transition-all relative group origin-left ${isActive
-                                ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/20 scale-105'
-                                : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
+                            ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/20 scale-105'
+                            : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
                             }`}
                     >
                         {isActive && !isCollapsed && (

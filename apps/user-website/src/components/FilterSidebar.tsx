@@ -4,12 +4,40 @@ import { Map, Search, Calendar, Users, MapPin } from 'lucide-react';
 const FilterSidebar: React.FC = () => {
     const [priceRange, setPriceRange] = useState(50000);
 
+    const openMap = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    window.open(
+                        `https://www.google.com/maps/search/event+venues/@${latitude},${longitude},14z`,
+                        '_blank'
+                    );
+                },
+                () => {
+                    // Fallback: open general event venues search in India
+                    window.open(
+                        'https://www.google.com/maps/search/event+venues+india/',
+                        '_blank'
+                    );
+                }
+            );
+        } else {
+            window.open('https://www.google.com/maps/search/event+venues+india/', '_blank');
+        }
+    };
+
     return (
         <div className="space-y-6">
             {/* Map Snippet */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl overflow-hidden relative h-32 border border-blue-100 dark:border-blue-800 cursor-pointer group shadow-sm">
+            <div
+                className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl overflow-hidden relative h-32 border border-blue-100 dark:border-blue-800 cursor-pointer group shadow-sm"
+            >
                 <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <button className="bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 px-5 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:scale-105 transition-transform flex items-center gap-2">
+                    <button
+                        onClick={openMap}
+                        className="bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 px-5 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:scale-105 transition-transform flex items-center gap-2"
+                    >
                         <Map size={16} />
                         View on Map
                     </button>

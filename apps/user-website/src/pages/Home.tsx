@@ -368,7 +368,7 @@ const Home: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+                        <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                             <img
                                 src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
                                 alt="Event Planning"

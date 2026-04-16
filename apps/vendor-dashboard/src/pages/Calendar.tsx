@@ -108,7 +108,7 @@ const CalendarPage: React.FC = () => {
         <div className="space-y-8 animate-in fade-in duration-700 pb-24">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[var(--ease2event-border-subtle)] pb-6">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tight leading-loose uppercase italic font-display">Operational Matrix</h1>
+                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tight leading-tight uppercase italic font-display">Operational Matrix</h1>
                     <p className="text-lg font-bold text-[var(--ease2event-text-muted)] flex items-center gap-3 uppercase tracking-widest italic opacity-60">
                         <Activity size={20} className="text-[var(--ease2event-brand-primary)]" />
                         Deployment Schedule • Resource Allocation • Performance Log
@@ -213,7 +213,7 @@ const CalendarPage: React.FC = () => {
                                 </div>
                                 <div className="px-6 space-y-2">
                                     <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic opacity-60">No Temporal Nodes Found</p>
-                                    <button className="text-sm font-black text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-[0.2em] transition-all underline decoration-2 underline-offset-8 italic">INITIATE BLOCK SEQUENCE</button>
+                                    <button className="text-sm font-black text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-[0.2em] transition-all underline decoration-2 underline-offset-8 italic leading-loose md:leading-normal">INITIATE BLOCK SEQUENCE</button>
                                 </div>
                             </div>
                         )}

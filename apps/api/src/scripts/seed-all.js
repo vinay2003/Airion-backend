@@ -53,11 +53,11 @@ async function seedAll() {
 
         // 3. Setup Vendors with unique Users
         console.log("Seeding Vendors...");
-        
+
         async function createVendorUser(name, email, businessName) {
             const uId = crypto.randomUUID();
             const vId = crypto.randomUUID();
-            
+
             const check = await client.query('SELECT id FROM users WHERE email = $1', [email]);
             let finalUserId = check.rows.length ? check.rows[0].id : null;
 
@@ -108,7 +108,7 @@ async function seedAll() {
                 slug: 'cinematic-pre-wedding-shoot',
                 description: 'Cinematic captures using high-res arrays framed by expert editors.',
                 basePrice: 35000,
-                images: ['https://images.unsplash.com/photo-1520390138845-ff2d1c34a31a?q=80'],
+                images: ['https://plus.unsplash.com/premium_photo-1770220958416-ce32ab890824?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHdlZWRpbmclMjBwaG90b2dyYXBoeXxlbnwwfHwwfHx8MA%3D%3D'],
                 features: [{ name: 'HD Video', included: true }, { name: 'Drone Shots', included: true }]
             }
         ];

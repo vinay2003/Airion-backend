@@ -16,6 +16,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // 🔐 JWT Handshake Protocol: Multi-Portal Monorepo Handoff
     const urlParams = new URL(window.location.href).searchParams;
+    const isLogout = urlParams.get('action') === 'logout';
+
+    if (isLogout) {
+      tokenService.clearTokens();
+
+      // Clean URL
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('action');
+      window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
+
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
     const urlToken = urlParams.get('token') || urlParams.get('ease2event_token');
 
     if (urlToken) {
@@ -102,19 +117,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (err) {
       console.warn('[SharedAuth] Logout request failed:', err);
     } finally {
+      // Clear tokens immediately
       tokenService.clearTokens();
-      setUser(null);
 
       // 🚀 Global Identity Reset: Redirect to Central Auth Portal
       const isCentralAuth = window.location.port === '5173';
       const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
 
       if (!isCentralAuth) {
-        window.location.href = LOGIN_URL;
+        // 🔥 Aggressive local cleanup
+        tokenService.clearTokens();
+        localStorage.clear(); // Clear everything just to be safe
+        setUser(null);
+        
+        // Redirect to homepage
+        window.location.href = '/?action=logout';
       } else {
-        // If we are already on central auth, just navigating to login is enough
-        // We can use navigate if we're in a react-router context, but window.location is safer here
-        window.location.href = '/login';
+        setUser(null);
+        window.location.href = LOGIN_URL + (LOGIN_URL.includes('?') ? '&' : '?') + 'action=logout';
       }
     }
   }, []);

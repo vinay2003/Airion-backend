@@ -85,14 +85,14 @@ const CalendarPage: React.FC = () => {
 
                     <div className="mt-4 space-y-2">
                         {hasBooking?.slice(0, 2).map((b) => (
-                            <div key={b.id} className={`px-4 py-1 rounded-lg text-[10px] font-black truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
+                            <div key={b.id} className={`px-4 py-1 rounded-lg text-sm font-black truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
                                 'bg-amber-500/5 text-amber-500 border-amber-500/20'
                                 }`}>
                                 {b.time} - {b.title}
                             </div>
                         ))}
                         {hasBooking && hasBooking.length > 2 && (
-                            <div className="text-[10px] text-[var(--ease2event-text-muted)] font-black italic ml-2">+{hasBooking.length - 2} NODES</div>
+                            <div className="text-sm text-[var(--ease2event-text-muted)] font-black italic ml-2">+{hasBooking.length - 2} NODES</div>
                         )}
                     </div>
                 </div>
@@ -108,7 +108,7 @@ const CalendarPage: React.FC = () => {
         <div className="space-y-8 animate-in fade-in duration-700 pb-24">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[var(--ease2event-border-subtle)] pb-6">
                 <div className="space-y-4">
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tight leading-loose uppercase italic font-display">Operational Matrix</h1>
+                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tight leading-tight uppercase italic font-display">Master Schedule</h1>
                     <p className="text-lg font-bold text-[var(--ease2event-text-muted)] flex items-center gap-3 uppercase tracking-widest italic opacity-60">
                         <Activity size={20} className="text-[var(--ease2event-brand-primary)]" />
                         Deployment Schedule • Resource Allocation • Performance Log
@@ -141,26 +141,11 @@ const CalendarPage: React.FC = () => {
                                 </div>
                                 <h2 className="text-xl md:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase italic truncate min-w-0 font-display">
                                     {monthNames[currentDate.getMonth()]}
-                                    <span className="text-[var(--ease2event-brand-primary)]/50 not-italic font-black ml-2 md:ml-4 tracking-widest text-sm md:text-lg">{currentDate.getFullYear()}</span>
-                                </h2>
+                                    <span className="text-[var(--ease2event-brand-primary)] font-black ml-2 md:ml-4 tracking-wide text-lg md:text-2xl">
+                                        {currentDate.getFullYear()}
+                                    </span>                                </h2>
                             </div>
-                            <div className="flex gap-2 md:gap-3 bg-[var(--ease2event-bg-surface)]/70 p-1.5 md:p-2.5 rounded-[1.5rem] border-2 border-[var(--ease2event-border-subtle)] w-full md:w-auto justify-center md:justify-start shadow-xl backdrop-blur-md">
-                                <button
-                                    onClick={() => setActiveView('portal')}
-                                    className={`cursor-pointer flex-1 md:flex-none px-6 md:px-9 py-2.5 md:py-3.5 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all rounded-2xl italic active:scale-95 ${activeView === 'portal' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)]'}`}>
-                                    Portal View
-                                </button>
-                                <button
-                                    onClick={() => setActiveView('phase')}
-                                    className={`cursor-pointer flex-1 md:flex-none px-6 md:px-9 py-2.5 md:py-3.5 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all rounded-2xl italic active:scale-95 ${activeView === 'phase' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)]'}`}>
-                                    Phase Matrix
-                                </button>
-                                <button
-                                    onClick={() => setActiveView('node')}
-                                    className={`cursor-pointer hidden sm:flex px-6 md:px-9 py-2.5 md:py-3.5 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all rounded-2xl italic active:scale-95 ${activeView === 'node' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)]'}`}>
-                                    Node Sequence
-                                </button>
-                            </div>
+
                         </div>
                     </div>
 
@@ -168,7 +153,7 @@ const CalendarPage: React.FC = () => {
                         <div className="min-w-[800px] flex flex-col">
                             <div className="grid grid-cols-7 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
                                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                                    <div key={day} className="py-4 text-center text-[10px] font-black uppercase tracking-[0.2em] text-[var(--ease2event-text-muted)]">{day}</div>
+                                    <div key={day} className="py-4 text-center text-sm font-black uppercase tracking-[0.2em] text-[var(--ease2event-text-muted)]">{day}</div>
                                 ))}
                             </div>
 
@@ -205,11 +190,11 @@ const CalendarPage: React.FC = () => {
                                             <button className="text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="flex items-center gap-3 text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest italic opacity-60">
+                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest italic opacity-60">
                                                 <Clock size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {ev.time}
                                             </div>
-                                            <div className="flex items-center gap-3 text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest italic opacity-60">
+                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest italic opacity-60">
                                                 <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {ev.client}
                                             </div>
@@ -227,8 +212,8 @@ const CalendarPage: React.FC = () => {
                                     <Target size={32} className="text-[var(--ease2event-text-muted)] relative z-10 opacity-40" />
                                 </div>
                                 <div className="px-6 space-y-2">
-                                    <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic opacity-60">No Temporal Nodes Found</p>
-                                    <button className="text-[10px] font-black text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-[0.2em] transition-all underline decoration-2 underline-offset-8 italic">INITIATE BLOCK SEQUENCE</button>
+                                    <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic opacity-60">No Temporal Nodes Found</p>
+                                    <button className="text-sm font-black text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-[0.2em] transition-all underline decoration-2 underline-offset-8 italic leading-loose md:leading-normal">INITIATE BLOCK SEQUENCE</button>
                                 </div>
                             </div>
                         )}

@@ -185,7 +185,7 @@ const UnifiedAuth: React.FC = () => {
         } catch (err: any) {
             const apiError = err.response?.data;
             const errorMsg = apiError?.error || apiError?.message || '';
-            
+
             // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
             if (errorMsg.includes('User not found') || err.response?.status === 401) {
                 toast.error('Identity Node not indexed. Reconciling to Genesis Protocol...');
@@ -196,7 +196,7 @@ const UnifiedAuth: React.FC = () => {
                 }, 1500);
                 return;
             }
-            
+
             toast.error(errorMsg || 'Verification failure. Node access denied.');
         } finally {
             setLoading(false);
@@ -241,19 +241,20 @@ const UnifiedAuth: React.FC = () => {
                         <div className="w-14 h-14 bg-red-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
                             <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={32} />
                         </div>
-                        <span className="text-4xl font-black text-white tracking-tight font-cursive">Ease2event</span>
-                    </motion.div>
+                        <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
+                            Ease2event
+                        </span>                    </motion.div>
 
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="text-6xl font-black text-white leading-tight tracking-tighter uppercase italic"
+                        className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter uppercase italic"
                     >
-                        {mode === 'login' ? 'Neural Sync Protocol.' : 'Nexus Genesis Protocol.'}
+                        {mode === 'login' ? 'Smart Login System .' : 'Nexus Genesis Protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-xl text-neutral-400 font-bold uppercase tracking-widest italic leading-relaxed opacity-60"
+                        className="text-lg text-neutral-400 font-bold uppercase tracking-widest italic leading-relaxed opacity-60"
                     >
-                        {mode === 'login' ? 'Synchronize your identity across the decentralized matrix nodes.' : 'Deploy your talent to the next-generation elite registry.'}
+                        {mode === 'login' ? 'Use your account from anywhere easily.' : 'Deploy your talent to the next-generation elite registry.'}
                     </motion.p>
                     <div className="flex items-center gap-8 pt-10 border-t border-white/5">
                         <div className="flex -space-x-4">
@@ -270,49 +271,56 @@ const UnifiedAuth: React.FC = () => {
             </div>
 
             {/* 🔐 Identity Registry Portal */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative bg-white dark:bg-slate-950">
-                <Link to="/" className="absolute top-10 left-10 flex items-center gap-3 text-neutral-400 hover:text-red-600 transition-all group z-20 text-[10px] font-black uppercase tracking-[0.4em] italic">
-                    <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" />
-                    Explorer Matrix
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-12 md:py-16 lg:py-24 relative bg-white dark:bg-slate-950 min-h-screen">
+                {/* 🧭 Navigation Link */}
+                <Link
+                    to="/"
+                    className="absolute top-6 left-6 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1.5 transition-transform" />
+                    Back to Marketplace
                 </Link>
 
-                <div className="w-full max-w-md mt-12 lg:mt-0 relative z-10">
-                    <div className="mb-12 lg:hidden flex items-center gap-2 justify-center">
-                        <Sparkles className="text-red-500" size={28} />
-                        <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight font-cursive tracking-wider">Ease2event</span>
+                <div className="w-full max-w-lg relative z-10 flex flex-col">
+                    {/* 📱 Mobile Branding */}
+                    <div className="mb-12 lg:hidden flex items-center gap-4 self-center">
+                        <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
+                            <Sparkles className="text-white" size={26} />
+                        </div>
+                        <span className="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight">Ease2event</span>
                     </div>
 
-                    {/* Mode Toggle Tabs */}
-                    <div className="flex p-1 bg-neutral-100 dark:bg-slate-900 rounded-2xl mb-10 w-full">
+                    {/* 🔄 Mode Toggle Tabs */}
+                    <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
                         <button
                             onClick={() => { setMode('login'); setStep('phone'); }}
-                            className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+                            className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
                             Log In
                         </button>
                         <button
                             onClick={() => { setMode('signup'); setStep('phone'); }}
-                            className={`flex-1 py-3 text-sm font-black rounded-xl transition-all ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
+                            className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
-                            Create Account
+                            Sign Up
                         </button>
                     </div>
 
-                    <div className="space-y-3">
-                        <h2 className="text-4xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none">
-                            {selectedRole === UserRole.ADMIN ? 'Vault Access' : (mode === 'login' ? 'Neural Sync' : 'Genesis Node')}
+                    {/* 🖋️ Header Section */}
+                    <div className="space-y-4 mb-10 text-center sm:text-left">
+                        <h2 className="text-2xl md:text-4xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
+                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Welcome back to Ease2event' : 'Create your secure account')}
                         </h2>
-                        <p className="text-[11px] text-neutral-400 font-black uppercase tracking-[0.3em] italic opacity-60">
-                            {step === 'phone' ? 'Secure, Passwordless Entry Protocol' : `Cipher dispatched to node: ${phone}`}
+                        <p className="text-sm md:text-lg text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
+                            {step === 'phone'
+                                ? 'Verify your identity to manage your event ecosystem.'
+                                : `Verification code dispatched via secure line to: ${phone}`}
                         </p>
-                       <p className="pt-20 text-[8px] text-center text-neutral-400 font-black uppercase tracking-[0.2em] italic opacity-40 max-w-[280px] mx-auto leading-relaxed">
-                        By continuing, you verify legal node age and agree to the <span className="underline">Terms of Network</span> and <span className="underline">Privacy Cipher</span>.
-                    </p>
                     </div>
 
-                    {/* Role Selector during Signup */}
+                    {/* 👤 Role Selector */}
                     {step === 'phone' && (
-                        <div className="grid grid-cols-3 gap-3 bg-neutral-50 dark:bg-slate-900/50 p-2 rounded-[32px] border border-neutral-100 dark:border-slate-800">
+                        <div className={`w-full grid ${mode === 'signup' ? 'grid-cols-2' : 'grid-cols-3'} gap-3.5 mb-10 bg-neutral-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-neutral-100 dark:border-slate-800/50`}>
                             {[
                                 { id: UserRole.USER, label: 'User', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
                                 { id: UserRole.VENDOR, label: 'Vendor', icon: Building, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=vendor` },
@@ -321,29 +329,33 @@ const UnifiedAuth: React.FC = () => {
                                 <button
                                     key={role.id}
                                     onClick={() => navigate(role.path)}
-                                    className={`flex flex-col items-center justify-center gap-3 p-5 rounded-[24px] transition-all duration-500 scale-95 hover:scale-100 ${
-                                        selectedRole === role.id 
-                                        ? 'bg-red-600 text-white shadow-[0_20px_40px_-10px_rgba(220,38,38,0.4)] font-black italic scale-105 z-10' 
-                                        : 'text-neutral-400 font-bold hover:bg-white dark:hover:bg-slate-800'
+                                    className={`flex flex-col items-center justify-center gap-3 py-4 rounded-xl transition-all duration-300 border ${selectedRole === role.id
+                                        ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20 font-bold'
+                                        : 'text-neutral-400 bg-transparent border-transparent font-medium hover:bg-white dark:hover:bg-slate-800 hover:border-neutral-200/50 dark:hover:border-slate-700'
                                         }`}
                                 >
-                                    <role.icon size={22} className={selectedRole === role.id ? 'scale-110' : ''} />
-                                    <span className="text-[8px] uppercase tracking-[0.3em]">{role.label}</span>
+                                    <role.icon size={26} className={selectedRole === role.id ? 'scale-110' : 'opacity-60'} />
+                                    <span className="text-xs uppercase font-bold tracking-widest">{role.label}</span>
                                 </button>
                             ))}
                         </div>
                     )}
 
+                    {/* 🛡️ Secure Forms */}
                     <AnimatePresence mode="wait">
                         {step === 'phone' && (
-                            <motion.form key="phone" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                                onSubmit={handleSendOTP} className="space-y-10"
+                            <motion.form key="phone"
+                                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+                                onSubmit={handleSendOTP} className="w-full space-y-8"
                             >
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.4em] italic ml-2">Registry Link (Phone Number)</label>
+                                <div className="space-y-5">
+                                    <div>
+                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone Number</label>
+
+                                    </div>
                                     <div className="relative group">
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-600 transition-colors">
-                                            <Phone size={24} />
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
+                                            <Phone size={22} />
                                         </div>
                                         <input
                                             type="tel"
@@ -354,58 +366,91 @@ const UnifiedAuth: React.FC = () => {
                                                 const val = e.target.value.replace(/\D/g, '');
                                                 if (val.length <= 10) setPhone(val);
                                             }}
-                                            className="w-full pl-16 pr-16 h-20 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-[28px] focus:ring-4 focus:ring-red-600/10 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-black text-neutral-900 dark:text-white text-2xl tracking-[0.2em] italic"
-                                            placeholder="NODE_CONNECTION"
+                                            className="w-full pl-12 pr-12 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-lg tracking-[0.2em] placeholder:text-neutral-400/50"
+                                            placeholder="000 - 000 - 0000"
                                         />
-                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                            {phone.length === 10 && <CheckCircle2 size={28} className="text-emerald-500" />}
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                                            {phone.length === 10 && <CheckCircle2 size={24} className="text-emerald-500 animate-in zoom-in duration-300" />}
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" disabled={loading} className="w-full h-20 bg-red-600 text-white rounded-[28px] font-black text-xs uppercase tracking-[0.5em] italic flex items-center justify-center gap-4 transition-all shadow-2xl shadow-red-600/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50">
-                                    {loading ? <Loader className="animate-spin" size={24} /> : <>INITIATE_HANDSHAKE <ArrowRight size={20} /></>}
-                                </button>
-                                {selectedRole !== UserRole.ADMIN && (
-                                    <div className="text-center">
-                                        <button type="button" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} className="text-[10px] font-black text-neutral-400 hover:text-red-600 uppercase tracking-widest italic transition-colors">
-                                            {mode === 'login' ? 'SWITCH_TO_GENESIS' : 'ALREADY_SYNCHRONIZED?'}
-                                        </button>
-                                    </div>
-                                )}
+                                <div className="space-y-5">
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full h-16 bg-red-600 text-white rounded-2xl font-bold text-base tracking-widest flex items-center justify-center gap-4 transition-all shadow-xl shadow-red-600/30 hover:bg-neutral-900 dark:hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                                    >
+                                        {loading ? (
+                                            <Loader className="animate-spin" size={24} />
+                                        ) : (
+                                            <>Verify Presence <ArrowRight size={22} /></>
+                                        )}
+                                    </button>
+
+                                    {selectedRole !== UserRole.ADMIN && (
+                                        <p className="w-full text-center text-sm md:text-base font-bold text-neutral-400 p-2">
+                                            {mode === 'login' ? (
+                                                <>
+                                                    Don't have an account?{" "}
+                                                    <span
+                                                        onClick={() => setMode('signup')}
+                                                        className="text-red-500 hover:text-red-600 underline underline-offset-4 cursor-pointer transition-colors"
+                                                    >
+                                                        Sign up
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Already have an account?{" "}
+                                                    <span
+                                                        onClick={() => setMode('login')}
+                                                        className="text-red-500 hover:text-red-600 underline underline-offset-4 cursor-pointer transition-colors"
+                                                    >
+                                                        Log in
+                                                    </span>
+                                                </>
+                                            )}
+                                        </p>
+                                    )}
+                                </div>
                             </motion.form>
                         )}
 
                         {step === 'otp' && (
-                            <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                                className="space-y-12 text-center"
+                            <motion.div key="otp"
+                                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                                className="w-full space-y-12 text-center"
                             >
-                                <div className="space-y-6">
-                                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.4em] italic mb-8 block">Verification Cipher</label>
+                                <div className="space-y-8">
+                                    <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 block">Verification Cipher</label>
                                     <div className="flex justify-center scale-110">
                                         <OTPInput length={6} onComplete={handleVerifyOTP} disabled={loading} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-6">
+                                <div className="space-y-5">
                                     <button
                                         type="button"
                                         onClick={() => handleVerifyOTP()}
                                         disabled={loading || otp.length < 6}
-                                        className="w-full h-18 bg-neutral-900 dark:bg-white dark:text-neutral-950 text-white rounded-[24px] font-black italic uppercase text-[11px] tracking-[0.4em] transition-all shadow-2xl active:scale-[0.98] disabled:opacity-30"
+                                        className="w-full h-16 bg-neutral-900 dark:bg-white dark:text-neutral-950 text-white rounded-2xl font-bold text-base tracking-widest transition-all shadow-2xl active:scale-[0.98] disabled:opacity-30"
                                     >
-                                        VERIFY_CIPHER
+                                        Verify Code
                                     </button>
-                                    <div className="flex flex-col items-center gap-4">
+                                    <div className="flex flex-col items-center gap-4 pt-4">
                                         <button
                                             type="button"
                                             onClick={() => { if (resendTimer === 0) handleSendOTP(); }}
                                             disabled={loading || resendTimer > 0}
-                                            className={`text-[9px] font-black uppercase tracking-widest italic flex items-center gap-3 ${resendTimer > 0 ? 'text-neutral-400' : 'text-red-600'}`}
+                                            className={`text-base font-bold flex items-center gap-3 transition-colors ${resendTimer > 0 ? 'text-neutral-400' : 'text-red-600 hover:text-neutral-900 dark:hover:text-white'}`}
                                         >
-                                            {resendTimer > 0 ? <><Clock size={14} /> RE-DISPATCH IN {resendTimer}S</> : 'CIPHER_NOT_RECEIVED?'}
+                                            {resendTimer > 0 ? <><Clock size={22} /> Resend in {resendTimer}s</> : "Didn't receive code? Resend"}
                                         </button>
-                                        <button onClick={() => setStep('phone')} className="text-[9px] font-black text-neutral-400 uppercase tracking-widest italic hover:underline">
-                                            MODIFY_ID_LINK
+                                        <button
+                                            onClick={() => setStep('phone')}
+                                            className="text-base font-bold text-neutral-400 hover:text-red-600 transition-colors"
+                                        >
+                                            Modify phone link
                                         </button>
                                     </div>
                                 </div>
@@ -413,50 +458,58 @@ const UnifiedAuth: React.FC = () => {
                         )}
 
                         {step === 'details' && (
-                             <motion.form key="details" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                                onSubmit={handleCompleteProfile} className="space-y-8"
-                             >
-                                <div className="space-y-6">
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.3em] italic ml-4">Identity Tag (Full Name)</label>
+                            <motion.form key="details"
+                                initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -25 }}
+                                onSubmit={handleCompleteProfile} className="w-full space-y-8"
+                            >
+                                <div className="space-y-5">
+                                    <div className="space-y-5">
+                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Full Name</label>
                                         <div className="relative group">
-                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-600 transition-colors">
-                                                <User size={20} />
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
+                                                <User size={22} />
                                             </div>
-                                            <input 
-                                                type="text" 
-                                                required 
-                                                value={fullName} 
-                                                onChange={e => setFullName(e.target.value)} 
-                                                placeholder="NEURAL_TAG" 
-                                                className="w-full pl-16 pr-6 h-18 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-[24px] focus:ring-4 focus:ring-red-600/10 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-black text-neutral-900 dark:text-white text-lg tracking-wider italic uppercase" 
+                                            <input
+                                                type="text"
+                                                required
+                                                value={fullName}
+                                                onChange={e => setFullName(e.target.value)}
+                                                placeholder="e.g. Alexander Pierce"
+                                                className="w-full pl-12 pr-6 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-lg"
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.3em] italic ml-4">Registry Mail (Email)</label>
+                                    <div className="space-y-5">
+                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Email Address</label>
                                         <div className="relative group">
-                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-600 transition-colors">
-                                                <Mail size={20} />
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
+                                                <Mail size={22} />
                                             </div>
-                                            <input 
-                                                type="email" 
-                                                required 
-                                                value={email} 
-                                                onChange={e => setEmail(e.target.value)} 
-                                                placeholder="NODE@MATRIX.COM" 
-                                                className="w-full pl-16 pr-6 h-18 bg-neutral-50 dark:bg-slate-900 border border-neutral-100 dark:border-slate-800 rounded-[24px] focus:ring-4 focus:ring-red-600/10 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all font-black text-neutral-900 dark:text-white text-lg tracking-wider italic uppercase" 
+                                            <input
+                                                type="email"
+                                                required
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                                placeholder="alexander@ease2event.com"
+                                                className="w-full pl-12 pr-6 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-lg"
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" disabled={loading} className="w-full h-20 bg-red-600 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.4em] italic shadow-2xl shadow-red-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                                    FINALIZE_SYNCHRONIZATION <ArrowRight size={20} />
+                                <button type="submit" disabled={loading} className="w-full h-16 bg-red-600 text-white rounded-2xl font-bold text-base tracking-widest shadow-xl shadow-red-600/30 hover:bg-neutral-900 active:scale-[0.98] transition-all flex items-center justify-center gap-4">
+                                    Finalize Synchronization <ArrowRight size={24} />
                                 </button>
-                             </motion.form>
+                            </motion.form>
                         )}
                     </AnimatePresence>
 
+                    {/* 📜 Legal Footprint */}
+                    <div className="mt-14 pt-10 border-t-2 border-neutral-100 dark:border-slate-800/80">
+                        <p className="text-sm md:text-base text-center text-neutral-500 dark:text-neutral-400 font-bold leading-relaxed max-w-2xl mx-auto">
+                            By proceeding, you verify you are of legal age and agree to our <br className="hidden sm:block" />
+                            <Link to="/terms" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Terms of Service</Link> and <Link to="/privacy" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Privacy Policy</Link>.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

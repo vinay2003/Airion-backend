@@ -36,8 +36,11 @@ const DashboardLayout: React.FC = () => {
     const unreadChats = chatThreads.filter(c => c.unread).length;
 
     const handleLogout = async () => {
-        await logout();
-        navigate('/login');
+        try {
+            await logout();
+        } catch (err) {
+            console.error('Logout failed:', err);
+        }
     };
 
     const toggleTheme = () => {

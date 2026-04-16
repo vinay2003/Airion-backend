@@ -17,12 +17,6 @@ const SORT_OPTIONS = [
     { label: 'Newest', value: 'newest' },
 ];
 
-const STATUS_BADGES: Record<number, { label: string; color: string }> = {
-    0: { label: 'FILLING FAST', color: 'bg-orange-100 text-orange-700' },
-    1: { label: 'TOP RATED', color: 'bg-green-100 text-green-700' },
-    2: { label: 'NEW', color: 'bg-blue-100 text-blue-700' },
-};
-
 const VendorDiscovery: React.FC = () => {
     const [vendors, setVendors] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -201,12 +195,6 @@ const VendorDiscovery: React.FC = () => {
                                             transition={{ duration: 0.35, delay: (idx % 9) * 0.05 }}
                                             className="relative"
                                         >
-                                            {/* Status badge overlay */}
-                                            {STATUS_BADGES[idx % 4] && idx % 4 !== 3 && (
-                                                <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider ${STATUS_BADGES[idx % 4].color}`}>
-                                                    {STATUS_BADGES[idx % 4].label}
-                                                </div>
-                                            )}
                                             <ListingCard
                                                 id={vendor.id}
                                                 image={vendor.image || vendor.images?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'}
@@ -218,6 +206,7 @@ const VendorDiscovery: React.FC = () => {
                                                 price={vendor.price}
                                                 description={vendor.description}
                                                 category={vendor.category}
+                                                marketplaceStatus={(idx % 4 === 0 ? 'FILLING_FAST' : idx % 4 === 1 ? 'TOP_RATED' : idx % 4 === 2 ? 'NEW' : 'AVAILABLE') as any}
                                                 tags={['Verified', 'Premium', 'Fast Response']}
                                             />
                                         </motion.div>

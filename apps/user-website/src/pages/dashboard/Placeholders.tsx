@@ -204,3 +204,33 @@ export const Support: React.FC = () => (
         </div>
     </div>
 );
+
+export const Terms: React.FC = () => (
+    <div className="max-w-4xl mx-auto py-12 px-6">
+        <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-8">Terms of Service</h1>
+        <div className="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
+            <p>Welcome to Ease2event. By accessing our platform, you agree to be bound by these terms.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">1. Use of Service</h2>
+            <p>You agree to use Ease2event only for lawful purposes related to event planning and execution. Any fraudulent activities, including fake bookings or dummy vendor profiles, will result in immediate termination.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">2. User Responsibilities</h2>
+            <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">3. Limitation of Liability</h2>
+            <p>Ease2event acts as a marketplace bridging users and vendors. We are not liable for quality disputes between parties, though we provide resolution support services.</p>
+        </div>
+    </div>
+);
+
+export const Privacy: React.FC = () => (
+    <div className="max-w-4xl mx-auto py-12 px-6">
+        <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-8">Privacy Policy</h1>
+        <div className="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
+            <p>Your privacy is paramount at Ease2event. We are committed to protecting your personal data across the decentralized matrix.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">1. Data Collection</h2>
+            <p>We collect essential identity parameters including phone numbers, emails, and event preferences to synthesize a personalized experience.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">2. Security Protocols</h2>
+            <p>We implement end-to-end encryption for all sensitive transactions and communications within the registry.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">3. Data Usage</h2>
+            <p>Your data is exclusively used for event orchestration and portal synchronization. We do not sell identity telemetry to external entities.</p>
+        </div>
+    </div>
+);

@@ -224,9 +224,9 @@ const UnifiedAuth: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 flex font-sans overflow-hidden">
+        <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col lg:flex-row items-start font-sans relative">
             {/* 🎨 Visual Narrative Engine */}
-            <div className="hidden lg:flex w-1/2 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
+            <div className="hidden lg:flex w-1/2 h-screen sticky top-0 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
                 <div className="absolute inset-0">
                     <img
                         src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80"
@@ -236,33 +236,34 @@ const UnifiedAuth: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                 </div>
 
-                <div className="relative z-10 max-w-xl space-y-10">
+                <div className="relative z-10 max-w-xl space-y-6">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-red-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
-                            <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={32} />
+                        <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
+                            <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={24} />
                         </div>
-                        <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
+                        <span className="text-2xl font-black tracking-widest font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
                             Ease2event
-                        </span>                    </motion.div>
+                        </span>
+                    </motion.div>
 
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter uppercase italic"
+                        className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest uppercase"
                     >
-                        {mode === 'login' ? 'Smart Login System .' : 'Nexus Genesis Protocol.'}
+                        {mode === 'login' ? 'Smart Login System' : 'Nexus Genesis Protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-lg text-neutral-400 font-bold uppercase tracking-widest italic leading-relaxed opacity-60"
+                        className="text-sm text-neutral-400 font-bold uppercase tracking-[0.2em] leading-relaxed opacity-60"
                     >
-                        {mode === 'login' ? 'Use your account from anywhere easily.' : 'Deploy your talent to the next-generation elite registry.'}
+                        {mode === 'login' ? 'Use your account from anywhere easily' : 'Deploy your talent to the next-generation elite registry.'}
                     </motion.p>
-                    <div className="flex items-center gap-8 pt-10 border-t border-white/5">
+                    <div className="flex items-center gap-6 pt-6 border-t border-white/5">
                         <div className="flex -space-x-4">
                             {[1, 2, 3, 4].map(i => (
-                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-14 h-14 rounded-2xl border-2 border-black shadow-xl" />
+                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-12 h-12 rounded-xl border-2 border-black shadow-xl" />
                             ))}
                         </div>
-                        <div className="text-xs font-black text-white uppercase tracking-[0.3em] italic">
+                        <div className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
                             <p className="text-red-500">540,128 NODES ACTIVE</p>
                             <p className="opacity-40 mt-1">Global Marketplace Telemetry</p>
                         </div>
@@ -271,19 +272,19 @@ const UnifiedAuth: React.FC = () => {
             </div>
 
             {/* 🔐 Identity Registry Portal */}
-            <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-12 md:py-16 lg:py-24 relative bg-white dark:bg-slate-950 min-h-screen">
+            <div className="w-full lg:w-1/2 flex flex-col flex-grow items-center justify-start md:justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-12 md:py-20 lg:py-24 relative bg-white dark:bg-slate-950 min-h-screen">
                 {/* 🧭 Navigation Link */}
                 <Link
                     to="/"
-                    className="absolute top-6 left-6 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
+                    className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-sm font-bold"
                 >
-                    <ArrowLeft size={20} className="group-hover:-translate-x-1.5 transition-transform" />
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                     Back to Marketplace
                 </Link>
 
                 <div className="w-full max-w-lg relative z-10 flex flex-col">
-                    {/* 📱 Mobile Branding */}
-                    <div className="mb-12 lg:hidden flex items-center gap-4 self-center">
+                    {/* 📱 Mobile Branding (Hidden on Phones, Visible on Tab/Laptop) */}
+                    <div className="mb-6 hidden md:flex lg:hidden items-center gap-4 self-center">
                         <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
                             <Sparkles className="text-white" size={26} />
                         </div>
@@ -291,7 +292,7 @@ const UnifiedAuth: React.FC = () => {
                     </div>
 
                     {/* 🔄 Mode Toggle Tabs */}
-                    <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
+                    <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mt-12 md:mt-0 lg:mt-6 mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
                         <button
                             onClick={() => { setMode('login'); setStep('phone'); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
@@ -309,7 +310,7 @@ const UnifiedAuth: React.FC = () => {
                     {/* 🖋️ Header Section */}
                     <div className="space-y-4 mb-10 text-center sm:text-left">
                         <h2 className="text-2xl md:text-4xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
-                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Welcome back to Ease2event' : 'Create your secure account')}
+                            {selectedRole === UserRole.ADMIN ? 'Login and Signup' : (mode === 'login' ? 'Welcome back to Ease2event' : 'Create your secure account')}
                         </h2>
                         <p className="text-sm md:text-lg text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
                             {step === 'phone'

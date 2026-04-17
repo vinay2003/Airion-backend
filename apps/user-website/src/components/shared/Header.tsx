@@ -180,7 +180,7 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-bold text-red-500 font-cursive z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                className="text-2xl md:text-3xl font-bold text-red-500 z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
                 <Sparkles size={24} className="text-red-500 hidden sm:block" />
                 aayojan
@@ -278,9 +278,9 @@ const Header: React.FC = () => {
                     >
                         {/* Menu Header (Solid) */}
                         <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 shrink-0">
-                            <span className="text-2xl font-black text-red-500 italic uppercase tracking-tighter flex items-center gap-2">
+                            <span className="text-2xl font-bold text-red-500 uppercase tracking-tighter flex items-center gap-2">
                                 <Sparkles size={24} />
-                                Ease2event
+                                aayojan
                             </span>
                             <button
                                 onClick={toggleMenu}

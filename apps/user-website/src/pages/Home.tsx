@@ -75,7 +75,7 @@ const Home: React.FC = () => {
                 >
                     <div className="bg-white/95 backdrop-blur-3xl dark:bg-slate-900/95 rounded-[2rem] shadow-xl shadow-black/10 border border-white/20 dark:border-white/10 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8">
                         <div className="flex-1 w-full text-center lg:text-left">
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase italic">Your Plan Hub</h2>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase">Your Plan Hub</h2>
                             <p className="text-sm text-gray-500 dark:text-slate-400 font-medium mb-6">Manage your dream event from your personalized dashboard.</p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0">
@@ -134,7 +134,7 @@ const Home: React.FC = () => {
                         className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Marketplace Categories</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">What you need for your event</h2>
                             <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
                                 Discover everything you need to make your next event truly unforgettable.
                             </p>
@@ -172,11 +172,11 @@ const Home: React.FC = () => {
                     <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                             <div className="space-y-1">
-                                <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight uppercase italic">Featured Events This Month</h2>
-                                <p className="text-s text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">Featured Events This Month</h2>
+                                <p className="text-s text-gray-400 font-black tracking-widest opacity-60">Handpicked Premium Experiences</p>
                             </div>
-                            <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-s uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
-                                View Marketplace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            <Link to="/marketplace" className="text-white dark:text-white hover:text-red-600 font-black flex items-center gap-2 group text-md tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
+                                See More <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -199,31 +199,37 @@ const Home: React.FC = () => {
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
 
                                 <div className="space-y-1">
-                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">
+                                    <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
                                         Market Place Evolution
                                     </h2>
 
-                                    <p className="text-s text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
                                         Real-time status tracking
                                     </p>
                                 </div>
 
                                 {/* 🔹 Tabs (FIXED) */}
-                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-full w-full md:w-auto shadow-inner border border-gray-100 dark:border-slate-700">
-
+                                <div className="flex items-center gap-3 md:gap-4 overflow-x-auto hide-scrollbar pb-2">
                                     {['All', 'Available', 'Filling', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`flex-1 px-2 py-2 rounded-full text-xs md:text-sm font-semibold uppercase tracking-wide text-center transition-all ${marketplaceTab === tab
-                                                ? 'bg-red-500 text-white shadow-md'
-                                                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                            className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${marketplaceTab === tab
+                                                ? 'text-gray-900 dark:text-white font-black'
+                                                : 'text-gray-500 font-semibold'
                                                 }`}
                                         >
-                                            {tab}
+                                            <span className="text-xs md:text-sm uppercase tracking-[0.2em] whitespace-nowrap">
+                                                {tab}
+                                            </span>
+                                            {marketplaceTab === tab && (
+                                                <motion.div
+                                                    layoutId="homeMarketUnderline"
+                                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
+                                                />
+                                            )}
                                         </button>
                                     ))}
-
                                 </div>
                             </div>
 
@@ -277,35 +283,35 @@ const Home: React.FC = () => {
                                     Planning your event has never been easier. Follow these simple steps to book your dream venue.
                                 </p>
                             </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                                    {[
-                                        { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.', path: '/search' },
-                                        { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date, fill in your details, and checkout securely.', path: '/search' },
-                                        { icon: Star, title: 'Enjoy Your Event', desc: 'Relax and celebrate. Your chosen vendor will take care of absolutely everything else.', path: '/inspiration' },
-                                    ].map((step, idx) => (
-                                        <motion.div
-                                            key={idx}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            viewport={{ once: true }}
-                                            transition={{ delay: idx * 0.2, duration: 0.5 }}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                                {[
+                                    { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.', path: '/search' },
+                                    { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date, fill in your details, and checkout securely.', path: '/search' },
+                                    { icon: Star, title: 'Enjoy Your Event', desc: 'Relax and celebrate. Your chosen vendor will take care of absolutely everything else.', path: '/inspiration' },
+                                ].map((step, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: idx * 0.2, duration: 0.5 }}
+                                    >
+                                        <Link
+                                            to={step.path}
+                                            className="block h-full bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center group cursor-pointer active:scale-95"
                                         >
-                                            <Link
-                                                to={step.path}
-                                                className="block h-full bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center group cursor-pointer active:scale-95"
-                                            >
-                                                <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
-                                                    <step.icon size={32} className="text-red-500 group-hover:text-white transition-colors" />
-                                                </div>
-                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-red-600 transition-colors">{step.title}</h3>
-                                                <p className="text-gray-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
-                                                <div className="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-red-500 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                                                    Get Started <ArrowRight size={16} />
-                                                </div>
-                                            </Link>
-                                        </motion.div>
-                                    ))}
-                                </div>
+                                            <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
+                                                <step.icon size={32} className="text-red-500 group-hover:text-white transition-colors" />
+                                            </div>
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-red-600 transition-colors">{step.title}</h3>
+                                            <p className="text-gray-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
+                                            <div className="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-red-500 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                                                Get Started <ArrowRight size={16} />
+                                            </div>
+                                        </Link>
+                                    </motion.div>
+                                ))}
+                            </div>
                         </div>
                     </motion.section>
                 </>
@@ -328,7 +334,7 @@ const Home: React.FC = () => {
             )}
 
             {/* Why Choose Us */}
-            <section className="bg-black/20 backdrop-blur-lg text-white py-20 relative z-10 border-t border-white/5">
+            <section className="bg-slate-50/50 dark:bg-black/20 backdrop-blur-lg text-slate-900 dark:text-white py-20 relative z-10 border-t border-slate-200 dark:border-white/5">
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
@@ -339,50 +345,50 @@ const Home: React.FC = () => {
                             </h2>
                             <div className="space-y-8">
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Shield size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">Verified Vendors</h3>
-                                        <p className="text-gray-400">
+                                        <p className="text-slate-600 dark:text-gray-400">
                                             Every venue and vendor is personally verified by our team to ensure quality and reliability.
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Heart size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">Best Price Guarantee</h3>
-                                        <p className="text-gray-400">
+                                        <p className="text-slate-600 dark:text-gray-400">
                                             We negotiate the best rates so you don't have to. Find a lower price? We'll match it.
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Star size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold mb-2">24/7 Support</h3>
-                                        <p className="text-gray-400">
+                                        <p className="text-slate-600 dark:text-gray-400">
                                             Our dedicated support team is available around the clock to assist you with any queries.
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+                        <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-gray-800">
                             <img
                                 src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
                                 alt="Event Planning"
                                 loading="lazy"
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-gray-900 via-transparent to-transparent opacity-60"></div>
                         </div>
                     </div>
                 </div>

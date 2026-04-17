@@ -97,7 +97,6 @@ const Header: React.FC = () => {
         { name: 'Home', path: '/' },
         { name: 'Marketplace', path: '/search' },
         { name: 'Packages', path: '/packages' },
-        { name: 'Inspiration', path: '/inspiration' },
         {
             name: 'Events',
             path: '/category',
@@ -176,17 +175,14 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link
                 to="/"
-                className="text-3xl md:text-4xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
                 <Sparkles
                     size={28}
                     className="text-red-600 hidden sm:block animate-pulse"
                 />
 
-                <span
-                    className="tracking-tight text-red-600"
-                    style={{ fontFamily: 'Kaushan Script, cursive' }}
-                >
+                <span className="text-red-600">
                     Ease2event
                 </span>
             </Link>
@@ -219,8 +215,8 @@ const Header: React.FC = () => {
                             <Link
                                 to={item.path}
                                 className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActivePath(item.path)
-                                        ? 'text-red-600'
-                                        : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                                    ? 'text-red-600'
+                                    : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
                                     }`}
                             >
                                 {item.name}
@@ -363,8 +359,8 @@ const Header: React.FC = () => {
                                                             to={child.path}
                                                             onClick={toggleMenu}
                                                             className={`flex items-center justify-between group py-3.5 px-4 rounded-2xl transition-all ${isActivePath(child.path)
-                                                                    ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
-                                                                    : 'bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-900/10'
+                                                                ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                                : 'bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-900/10'
                                                                 }`}
                                                         >
                                                             <span className="text-base font-bold">{child.name}</span>
@@ -377,8 +373,8 @@ const Header: React.FC = () => {
                                                     to={item.path}
                                                     onClick={toggleMenu}
                                                     className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${isActivePath(item.path)
-                                                            ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
-                                                            : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
+                                                        ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                        : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
                                                         }`}
                                                 >
                                                     <span className="text-lg font-black tracking-tight">{item.name}</span>

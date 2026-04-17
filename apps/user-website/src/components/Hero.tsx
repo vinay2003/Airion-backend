@@ -88,7 +88,7 @@ const Hero: React.FC = () => {
                         )}
 
                         {/* ✅ Dynamic Heading */}
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-relaxed drop-shadow-[0_10px_50px_rgba(0,0,0,1)]">
                             {isAuthenticated ? (
                                 <>
                                     Your Event Dashboard <br className="hidden md:block" />
@@ -99,10 +99,10 @@ const Hero: React.FC = () => {
                             ) : (
                                 <>
                                     Create Unforgettable <br className="hidden md:block" />
-                                    <span className="bg-gradient-to-r from-rose-500 via-red-400 to-orange-500 bg-clip-text text-transparent italic px-2">
+                                    <span>
                                         Moments
                                     </span>
-                                    With Ease2event
+                                    {" "}With Ease2event
                                 </>
                             )}
                         </h1>

@@ -6,6 +6,10 @@ const FilterSidebar: React.FC = () => {
     const [locationInput, setLocationInput] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
+    const [selectedCapacity, setSelectedCapacity] = useState('');
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
     // Mock data for city suggestions
     const cities = [
@@ -35,13 +39,35 @@ const FilterSidebar: React.FC = () => {
         }
     };
 
+    const handleEventTypeChange = (type: string) => {
+        setSelectedEventTypes(prev =>
+            prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+        );
+    };
+
+    const handleAmenityChange = (amenity: string) => {
+        setSelectedAmenities(prev =>
+            prev.includes(amenity) ? prev.filter(a => a !== amenity) : [...prev, amenity]
+        );
+    };
+
+    const handleClearAll = () => {
+        setPriceRange(50000);
+        setLocationInput('');
+        setSuggestions([]);
+        setShowSuggestions(false);
+        setSelectedDate('');
+        setSelectedEventTypes([]);
+        setSelectedCapacity('');
+        setSelectedAmenities([]);
+    };
+
     const selectLocation = (city: string) => {
         setLocationInput(city);
         setShowSuggestions(false);
     };
 
     const openMap = () => {
-        // ... (existing openMap logic)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
@@ -64,12 +90,12 @@ const FilterSidebar: React.FC = () => {
         <div className="space-y-6 pb-20 relative">
             {/* Map Snippet */}
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl overflow-hidden relative h-32 border border-blue-100 dark:border-blue-800 cursor-pointer group shadow-sm">
-                <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
                     <button
                         onClick={openMap}
-                        className="bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 px-5 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:scale-105 transition-transform flex items-center gap-2"
+                        className="bg-white/10 hover:bg-white/30 border-2 border-white text-white px-6 py-2.5 rounded-full text-sm font-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-110 hover:brightness-150 transition-all flex items-center gap-2 backdrop-blur-md"
                     >
-                        <Map size={16} />
+                        <Map size={18} className="drop-shadow-lg" />
                         View on Map
                     </button>
                 </div>
@@ -119,6 +145,8 @@ const FilterSidebar: React.FC = () => {
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                     <input
                         type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
                     />
                 </div>
@@ -130,7 +158,12 @@ const FilterSidebar: React.FC = () => {
                 <div className="space-y-3.5">
                     {['Wedding', 'Corporate', 'Birthday', 'Private Party', 'Engagement'].map((type, idx) => (
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <input
+                                type="checkbox"
+                                checked={selectedEventTypes.includes(type)}
+                                onChange={() => handleEventTypeChange(type)}
+                                className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800"
+                            />
                             <span className="text-neutral-600 dark:text-slate-300 text-sm group-hover:text-neutral-900 dark:group-hover:text-white transition-colors font-medium">{type}</span>
                         </label>
                     ))}
@@ -170,7 +203,13 @@ const FilterSidebar: React.FC = () => {
                         { label: 'Large Celebration', range: '200+ guests' }
                     ].map((cap, idx) => (
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="capacity" className="h-5 w-5 border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <input
+                                type="radio"
+                                name="capacity"
+                                checked={selectedCapacity === cap.label}
+                                onChange={() => setSelectedCapacity(cap.label)}
+                                className="h-5 w-5 border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800"
+                            />
                             <div className="flex flex-col">
                                 <span className="text-neutral-900 dark:text-white text-sm font-medium">{cap.label}</span>
                                 <span className="text-neutral-400 text-xs">{cap.range}</span>
@@ -186,7 +225,12 @@ const FilterSidebar: React.FC = () => {
                 <div className="flex flex-wrap gap-2">
                     {['Wifi', 'Parking', 'AC', 'Pool', 'Bar', 'Catering', 'Decor', 'Stage'].map((amenity, idx) => (
                         <label key={idx} className="cursor-pointer group">
-                            <input type="checkbox" className="hidden peer" />
+                            <input
+                                type="checkbox"
+                                checked={selectedAmenities.includes(amenity)}
+                                onChange={() => handleAmenityChange(amenity)}
+                                className="hidden peer"
+                            />
                             <span className="inline-block px-4 py-2 bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-slate-300 text-xs font-bold rounded-full peer-checked:bg-red-500 peer-checked:text-white transition-colors border border-transparent peer-checked:border-red-500 hover:bg-neutral-200 dark:hover:bg-slate-700">
                                 {amenity}
                             </span>
@@ -198,14 +242,14 @@ const FilterSidebar: React.FC = () => {
             {/* Action Buttons */}
             <div className="pt-4 space-y-3">
                 <button
-                    onClick={() => window.location.reload()} // Simplified apply action
+                    onClick={() => console.log('Filters Applied', { locationInput, priceRange, selectedDate, selectedEventTypes, selectedCapacity, selectedAmenities })}
                     className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <Search size={18} />
                     Apply Filters
                 </button>
                 <button
-                    onClick={() => window.location.reload()}
+                    onClick={handleClearAll}
                     className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-200 dark:hover:border-slate-700 font-bold text-xs uppercase tracking-widest rounded-2xl transition-all"
                 >
                     Clear All Filters

@@ -70,6 +70,33 @@ const CategorySlider: React.FC = () => {
         navigate(`/?${params.toString()}`);
     };
 
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeftState, setScrollLeftState] = useState(0);
+
+    const onMouseDown = (e: React.MouseEvent) => {
+        if (!scrollRef.current) return;
+        setIsDragging(true);
+        setStartX(e.pageX - scrollRef.current.offsetLeft);
+        setScrollLeftState(scrollRef.current.scrollLeft);
+    };
+
+    const onMouseLeave = () => {
+        setIsDragging(false);
+    };
+
+    const onMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const onMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging || !scrollRef.current) return;
+        e.preventDefault();
+        const x = e.pageX - scrollRef.current.offsetLeft;
+        const walk = (x - startX) * 2; // scroll-fast multiplier
+        scrollRef.current.scrollLeft = scrollLeftState - walk;
+    };
+
     return (
         <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8 bg-white dark:bg-slate-950 z-20">
             {/* Left fade/arrow */}
@@ -88,7 +115,11 @@ const CategorySlider: React.FC = () => {
             {/* Slider track */}
             <div
                 ref={scrollRef}
-                className="flex overflow-x-auto justify-between gap-2 md:gap-3 px-4 py-6 hide-scrollbar scroll-smooth snap-x -mx-4 sm:mx-0"
+                onMouseDown={onMouseDown}
+                onMouseLeave={onMouseLeave}
+                onMouseUp={onMouseUp}
+                onMouseMove={onMouseMove}
+                className={`flex overflow-x-auto justify-between gap-2 md:gap-3 px-4 py-6 hide-scrollbar -mx-4 sm:mx-0 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {CATEGORIES.map((category) => {
@@ -96,8 +127,8 @@ const CategorySlider: React.FC = () => {
                     return (
                         <button
                             key={category.id}
-                            onClick={() => handleCategoryClick(category.id)}
-                            className={`flex flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 group snap-start transition-all duration-300 rounded-full border shadow-sm hover:shadow-md whitespace-nowrap gap-2.5 ${isActive
+                            onClick={() => !isDragging && handleCategoryClick(category.id)}
+                            className={`flex flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 group transition-all duration-300 rounded-full border shadow-sm hover:shadow-md whitespace-nowrap gap-2.5 pointer-events-auto ${isActive
                                 ? 'bg-gradient-to-r from-red-600 to-red-500 border-red-500 text-white scale-105 shadow-red-500/20'
                                 : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-600 dark:text-gray-300 hover:border-red-200 dark:hover:border-red-900/50 hover:-translate-y-0.5'
                                 }`}

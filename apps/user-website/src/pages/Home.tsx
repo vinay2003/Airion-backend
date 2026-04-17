@@ -199,8 +199,8 @@ const Home: React.FC = () => {
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
 
                                 <div className="space-y-1">
-                                    <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
-                                        Market Place Evolution
+                                    <h2 className="text-xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                                        Plan Your Event Without Stress
                                     </h2>
 
                                     <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">

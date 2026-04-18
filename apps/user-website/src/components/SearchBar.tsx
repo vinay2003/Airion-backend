@@ -190,8 +190,7 @@ const SearchBar = () => {
                             defaultMonth={date?.from}
                             selected={date}
                             onSelect={setDate}
-                            numberOfMonths={2}
-                            pagedNavigation
+                            numberOfMonths={1}
                             className="bg-white dark:bg-slate-900"
                         />
                     </PopoverContent>

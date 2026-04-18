@@ -18,8 +18,8 @@ export class ChatController {
     }
 
     @Post('start')
-    async startConversation(@Req() req: any, @Body() data: { vendorId: string }) {
-        // Start conversation between user and vendor
-        return this.chatService.startConversation([req.user.userId, data.vendorId]);
+    async startConversation(@Req() req: any, @Body() data: { participantId: string }) {
+        // Ensure strictly two participants: caller and the target node
+        return this.chatService.startConversation([req.user.userId, data.participantId]);
     }
 }

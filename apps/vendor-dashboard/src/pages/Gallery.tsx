@@ -77,7 +77,7 @@ const Gallery: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 border-b border-[var(--ease2event-border-subtle)] padding-bottom-12">
                 <div className="space-y-6">
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic">Visual Repository</h1>
+                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Visual Repository</h1>
                     <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest flex items-center gap-4">
                         <Zap size={24} className="text-blue-500 animate-pulse" />
                         Neural Asset Management • Multi-Node Portfolio Sync v3.5

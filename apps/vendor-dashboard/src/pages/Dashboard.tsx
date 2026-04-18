@@ -60,19 +60,19 @@ const Dashboard = () => {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['vendor-stats', vendorId],
     queryFn: async () => {
-        if (!vendorId || vendorId === 'mock-id') return null;
-        try {
-            const res: any = await api.get(`/vendors/${vendorId}/stats/bookings`);
-            return {
-                activeEnquiries: res?.pendingBookings || 0,
-                totalListings: res?.totalEvents || 0,
-                confirmedBookings: res?.upcomingBookings || 0,
-                revenue: res?.totalEarnings || '0'
-            };
-        } catch (e) {
-            console.error('Failed to fetch stats', e);
-            return { activeEnquiries: 0, totalListings: 0, confirmedBookings: 0, revenue: '0' };
-        }
+      if (!vendorId || vendorId === 'mock-id') return null;
+      try {
+        const res: any = await api.get(`/vendors/${vendorId}/stats/bookings`);
+        return {
+          activeEnquiries: res?.pendingBookings || 0,
+          totalListings: res?.totalEvents || 0,
+          confirmedBookings: res?.upcomingBookings || 0,
+          revenue: res?.totalEarnings || '0'
+        };
+      } catch (e) {
+        console.error('Failed to fetch stats', e);
+        return { activeEnquiries: 0, totalListings: 0, confirmedBookings: 0, revenue: '0' };
+      }
     },
     enabled: vendorId !== 'mock-id',
   });
@@ -88,7 +88,7 @@ const Dashboard = () => {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--ease2event-border-subtle)] pb-10">
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-loose">Intelligence Hub</h1>
+          <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Intelligence Hub</h1>
           <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)] uppercase tracking-widest flex items-center gap-2">            <Zap size={16} className="text-blue-500" />
             Neural Analytics & Global Visibility Node
           </p>

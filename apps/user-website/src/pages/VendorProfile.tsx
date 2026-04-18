@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { 
-    Star, MapPin, ShieldCheck, Mail, Phone, 
-    Share2, Heart, Info, CheckCircle2, 
-    Loader2, Camera, Instagram, Facebook, Globe, 
+import {
+    Star, MapPin, ShieldCheck, Mail, Phone,
+    Share2, Heart, Info, CheckCircle2,
+    Loader2, Camera, Instagram, Facebook, Globe,
     Users, Tag, ChevronRight, MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -53,22 +53,22 @@ const VendorProfile: React.FC = () => {
         <div className="bg-white dark:bg-slate-950 min-h-screen text-slate-900 border-t border-gray-100">
             {/* Hero & Banner */}
             <div className="relative h-[300px] md:h-[450px] w-full overflow-hidden">
-                <img 
-                    src={vendor.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000'} 
-                    className="w-full h-full object-cover" 
-                    alt={vendor.businessName} 
+                <img
+                    src={vendor.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000'}
+                    className="w-full h-full object-cover"
+                    alt={vendor.businessName}
                 />
                 <div className="absolute inset-0 bg-black/30" />
-                
+
                 <div className="absolute bottom-6 left-0 w-full px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto flex justify-between items-end">
                         <div className="flex gap-4 items-center mb-2">
-                             <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
+                            <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
                                 <Heart size={18} />
-                             </Button>
-                             <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
+                            </Button>
+                            <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
                                 <Share2 size={18} />
-                             </Button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -76,10 +76,10 @@ const VendorProfile: React.FC = () => {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10 pb-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    
+
                     {/* Main Content Area */}
                     <div className="lg:col-span-2 space-y-12">
-                        
+
                         {/* Header Info Card */}
                         <div className="card-minimal space-y-8">
                             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
@@ -103,9 +103,9 @@ const VendorProfile: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                     <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white hover:scale-105 transition-soft shadow-xl shadow-primary/20">
+                                    <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white hover:scale-105 transition-soft shadow-xl shadow-primary/20">
                                         Book Consultation
-                                     </Button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -113,8 +113,8 @@ const VendorProfile: React.FC = () => {
                         {/* About Section */}
                         <section className="space-y-6">
                             <div className="flex items-center gap-3">
-                              <div className="w-1 h-3 bg-primary rounded-full"></div>
-                              <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Operational Narrative</h2>
+                                <div className="w-1 h-3 bg-primary rounded-full"></div>
+                                <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Operational Narrative</h2>
                             </div>
                             <p className="text-slate-500 font-bold leading-relaxed text-sm max-w-4xl">
                                 {vendor.businessDescription || "A professional service dedicated to providing high-quality experiences tailored to your events needs."}
@@ -143,18 +143,18 @@ const VendorProfile: React.FC = () => {
                         <section className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-1 h-3 bg-primary rounded-full"></div>
-                                  <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Work Portfolio</h2>
+                                    <div className="w-1 h-3 bg-primary rounded-full"></div>
+                                    <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Work Portfolio</h2>
                                 </div>
                                 <Badge className="bg-slate-50 text-slate-400 border-none text-[9px] font-black uppercase tracking-widest">{vendor.portfolioImages?.length || 0} CELLS</Badge>
                             </div>
                             <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                                 {vendor.portfolioImages?.map((img: string, i: number) => (
                                     <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border border-gray-100 group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500">
-                                        <img 
-                                            src={img} 
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                                            alt={`Work ${i + 1}`} 
+                                        <img
+                                            src={img}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            alt={`Work ${i + 1}`}
                                         />
                                     </div>
                                 ))}
@@ -269,7 +269,7 @@ const VendorProfile: React.FC = () => {
                     {/* Sidebar Area */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-10 space-y-8">
-                            
+
                             {/* Booking CTA Card */}
                             <div className="card-premium space-y-6 flex flex-col items-center text-center">
                                 <div className="space-y-2">
@@ -278,12 +278,12 @@ const VendorProfile: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4 w-full">
-                                     <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-soft">
+                                    <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-soft">
                                         Check Calendar
-                                     </Button>
-                                     <Button variant="outline" className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft">
+                                    </Button>
+                                    <Button variant="outline" className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft">
                                         Chat with Vendor
-                                     </Button>
+                                    </Button>
                                 </div>
 
                                 <div className="pt-6 border-t border-gray-100 space-y-4">

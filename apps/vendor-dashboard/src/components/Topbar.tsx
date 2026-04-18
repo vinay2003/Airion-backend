@@ -58,7 +58,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
                 >
                     <Menu size={20} />
                 </button>
-                <h1 className="text-lg md:text-2xl font-black font-display text-[var(--ease2event-text-primary)] hidden md:block tracking-tight truncate uppercase italic">
+                <h1 className="text-lg md:text-3xl font-normal text-[var(--ease2event-text-primary)] hidden md:block tracking-normal truncate normal-case not-italic">
                     {title}
                 </h1>
             </div>
@@ -126,8 +126,8 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
                             size="sm"
                         />
                         <div className="hidden md:block">
-                            <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase tracking-tight italic leading-tight">{user?.name || 'Vendor Profile'}</p>
-                            <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight capitalize font-black tracking-widest opacity-60 uppercase">{user?.role || 'Vendor'}</p>
+                            <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || 'Vendor Profile'}</p>
+                            <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight capitalize font-bold tracking-widest opacity-60 uppercase">{user?.role || 'Vendor'}</p>
                         </div>
                         <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
                     </div>

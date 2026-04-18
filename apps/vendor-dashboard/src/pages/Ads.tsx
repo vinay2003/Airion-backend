@@ -86,10 +86,10 @@ const Ads: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 border-b border-[var(--ease2event-border-subtle)] padding-bottom-12">
                 <div className="space-y-6">
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic">Campaign Matrix</h1>
+                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Campaign Matrix</h1>
                     <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest flex items-center gap-3">
-                        <Zap size={24} className="text-blue-500 animate-pulse" />
-                        Marketing Intelligence Node Deployment • Scaling v5.2
+                        <Zap size={20} className="text-blue-500 animate-pulse" />
+                        Marketing Intelligence Node Deployment
                     </p>
                 </div>
 

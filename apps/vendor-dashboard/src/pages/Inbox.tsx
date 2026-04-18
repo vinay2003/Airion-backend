@@ -155,7 +155,7 @@ const Inbox: React.FC = () => {
                                     </div>
                                     <div className="min-w-0 flex flex-col justify-center">
                                         <div className="flex items-center gap-1 md:gap-2">
-                                            <h3 className="font-bold text-sm md:text-xl text-[var(--ease2event-text-primary)] tracking-tight uppercase truncate">{activeUser?.name}</h3>
+                                            <h3 className="font-semibold text-sm md:text-xl text-[var(--ease2event-text-primary)] tracking-tight truncate">{activeUser?.name}</h3>
                                             <ShieldCheck size={14} className="text-blue-500 shrink-0" />
                                         </div>
                                         <p className="text-[8px] md:text-[10px] font-black text-[var(--ease2event-text-muted)] flex items-center gap-1.5 md:gap-2 uppercase tracking-widest truncate">
@@ -229,7 +229,7 @@ const Inbox: React.FC = () => {
                             <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-1000" />
                             <Send size={40} className="text-blue-500" />
                         </div>
-                        <p className="text-2xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tight italic">Initialize Communication</p>
+                        <p className="text-2xl font-normal text-[var(--ease2event-text-primary)] tracking-normal not-italic">Initialize Communication</p>
                         <p className="text-sm font-bold uppercase tracking-widest opacity-60 mt-2">Select a neural node to start messaging</p>
                     </div>
                 )}

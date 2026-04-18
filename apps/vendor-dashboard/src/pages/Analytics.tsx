@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { 
-    TrendingUp, Eye, Users, DollarSign, ArrowUpRight, ArrowDownRight, 
-    Activity, Zap, BarChart3, Target, MoreVertical, Layers, 
+import {
+    TrendingUp, Eye, Users, DollarSign, ArrowUpRight, ArrowDownRight,
+    Activity, Zap, BarChart3, Target, MoreVertical, Layers,
     Sparkles, ShieldCheck, Globe, Cpu, ChevronRight, Box
 } from 'lucide-react';
-import { 
-    AreaChart, Area, BarChart, Bar, XAxis, YAxis, 
-    CartesianGrid, Tooltip, ResponsiveContainer, Cell 
+import {
+    AreaChart, Area, BarChart, Bar, XAxis, YAxis,
+    CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
@@ -80,18 +80,18 @@ const Analytics: React.FC = () => {
             <div className="space-y-10 p-4 max-w-7xl mx-auto overflow-hidden">
                 <Skeleton className="h-16 w-1/4 rounded-2xl" />
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {[1,2,3,4].map(i => <Skeleton key={i} className="h-48 rounded-[32px]" />)}
+                    {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 rounded-[32px]" />)}
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                   <Skeleton className="h-[450px] rounded-[40px]" />
-                   <Skeleton className="h-[450px] rounded-[40px]" />
+                    <Skeleton className="h-[450px] rounded-[40px]" />
+                    <Skeleton className="h-[450px] rounded-[40px]" />
                 </div>
             </div>
         );
     }
 
     return (
-        <motion.div 
+        <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -100,7 +100,7 @@ const Analytics: React.FC = () => {
             {/* 🛸 Intelligence Matrix Header */}
             <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <motion.div variants={itemVariants} className="relative z-10 space-y-4">
-                    <h1 className="text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
+                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Intelligence Matrix</h1>
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
                             <Activity size={12} className="animate-pulse" />
@@ -109,11 +109,11 @@ const Analytics: React.FC = () => {
                         <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
                 </motion.div>
-                
+
                 <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
                     {(['24H_REALTIME', '30D_CYCLE', 'ANNUAL_MATRIX'] as AnalysisPeriod[]).map((tab) => (
-                        <button 
-                            key={tab} 
+                        <button
+                            key={tab}
                             onClick={() => setSelectedPeriod(tab)}
                             className={`px-8 py-3.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic relative ${selectedPeriod === tab ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-xl border border-[var(--ease2event-border-base)] scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                         >
@@ -126,8 +126,8 @@ const Analytics: React.FC = () => {
             {/* 🚀 Tactical Telemetry Nodes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, idx) => (
-                    <motion.div 
-                        key={idx} 
+                    <motion.div
+                        key={idx}
                         variants={itemVariants}
                         whileHover={{ y: -8, scale: 1.02 }}
                         className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--ease2event-border-base)] relative overflow-hidden shadow-2xl bg-[var(--ease2event-bg-surface)] ${stat.shadow}`}
@@ -164,7 +164,7 @@ const Analytics: React.FC = () => {
                             <Globe className="text-[var(--ease2event-brand-primary)]" size={24} />
                         </div>
                     </div>
-                    
+
                     <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={performanceData}>
@@ -200,7 +200,7 @@ const Analytics: React.FC = () => {
                             <Zap className="text-emerald-500" size={24} />
                         </div>
                     </div>
-                    
+
                     <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={performanceData}>
@@ -236,7 +236,7 @@ const Analytics: React.FC = () => {
                     {topNodes.map((node, i) => (
                         <div key={i} className="space-y-8 p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
                             <div className="flex justify-between items-start">
-                                <span className="text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i+1}</span>
+                                <span className="text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i + 1}</span>
                                 <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px]`}>{node.status}</Badge>
                             </div>
                             <div>

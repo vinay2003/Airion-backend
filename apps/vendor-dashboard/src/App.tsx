@@ -33,6 +33,15 @@ const PageLoader = () => (
 );
 
 const App: React.FC = () => {
+  // Check if we are outside the /vendor basename to avoid Router warnings
+  const isBasenameValid = window.location.pathname.startsWith('/vendor');
+
+  if (!isBasenameValid && (window.location.pathname === '/' || window.location.search.includes('logout'))) {
+    // If we've landed on the root or are logging out, we allow the browser to handle the redirect 
+    // or just render nothing to avoid React Router console errors.
+    return null;
+  }
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

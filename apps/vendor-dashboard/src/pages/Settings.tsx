@@ -209,16 +209,16 @@ const Settings: React.FC = () => {
     };
 
     return (
-        <motion.div 
-            initial="hidden" 
-            animate="visible" 
+        <motion.div
+            initial="hidden"
+            animate="visible"
             variants={containerVariants}
             className="space-y-10 max-w-7xl mx-auto pb-32 px-4 sm:px-6"
         >
             {/* Header: Matrix Genesis */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <div className="relative z-10 space-y-3">
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase italic font-display leading-none">Registry Overhaul</h1>
+                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Registry Overhaul</h1>
                     <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-[10px] font-black uppercase rounded-full border border-[var(--ease2event-brand-primary)]/20">
                             <Database size={12} />
@@ -227,10 +227,10 @@ const Settings: React.FC = () => {
                         <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] italic opacity-60">Autonomous Configuration Hub</p>
                     </div>
                 </div>
-                
+
                 <div className="relative z-10 flex items-center gap-4 bg-[var(--ease2event-bg-elevated)] p-2 rounded-2xl border border-[var(--ease2event-border-base)] shadow-lg">
                     <div className="flex -space-x-3 px-2">
-                        {[1,2,3].map(i => (
+                        {[1, 2, 3].map(i => (
                             <div key={i} className="w-8 h-8 rounded-full border-2 border-[var(--ease2event-bg-base)] bg-[var(--ease2event-brand-primary)] flex items-center justify-center text-[8px] font-black text-white shadow-md">
                                 {i}
                             </div>
@@ -267,7 +267,7 @@ const Settings: React.FC = () => {
                             )}
                         </motion.button>
                     ))}
-                    
+
                     <div className="mt-12 p-8 card-minimal !bg-[var(--ease2event-brand-primary)]/5 !border-[var(--ease2event-brand-primary)]/20 space-y-6 relative group overflow-hidden shadow-xl rounded-[2.5rem]">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all duration-700">
                             <TrendingUp size={100} />
@@ -282,11 +282,11 @@ const Settings: React.FC = () => {
                             </div>
                         </div>
                         <div className="h-2.5 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden border border-[var(--ease2event-border-subtle)] relative z-10 shadow-inner">
-                            <motion.div 
+                            <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${calculateStrength()}%` }}
                                 transition={{ duration: 1.5, type: "spring" }}
-                                className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_20px_var(--ease2event-brand-primary)]" 
+                                className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_20px_var(--ease2event-brand-primary)]"
                             />
                         </div>
                         <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black italic uppercase tracking-tighter relative z-10 leading-relaxed font-display opacity-70">
@@ -314,7 +314,7 @@ const Settings: React.FC = () => {
                                             <User size={32} />
                                         </div>
                                         <div>
-                                            <h2 className="text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Identity Core</h2>
+                                            <h2 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Identity Core</h2>
                                             <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Authentication & Identification Nexus</p>
                                         </div>
                                     </div>
@@ -356,7 +356,7 @@ const Settings: React.FC = () => {
 
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
                                         <Button onClick={handleSavePersonal} disabled={submitting} className="h-16 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-black tracking-[0.4em] italic rounded-2xl shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
-                                            {submitting ? <Loader2 className="animate-spin" /> : <><Save size={20} className="mr-4"/> COMMIT IDENTIFICATION</>}
+                                            {submitting ? <Loader2 className="animate-spin" /> : <><Save size={20} className="mr-4" /> COMMIT IDENTIFICATION</>}
                                         </Button>
                                     </div>
                                 </div>
@@ -384,8 +384,8 @@ const Settings: React.FC = () => {
                                         {/* Section: Indexing */}
                                         <div className="space-y-12">
                                             <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
-                                              <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                              SYNC_INDEX_PARAMETERS
+                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
+                                                SYNC_INDEX_PARAMETERS
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4">
@@ -408,8 +408,8 @@ const Settings: React.FC = () => {
                                         {/* Section: Branding */}
                                         <div className="space-y-12">
                                             <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
-                                              <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                              INSTITUTIONAL_DYNAMICS
+                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
+                                                INSTITUTIONAL_DYNAMICS
                                             </h3>
                                             <div className="space-y-12">
                                                 <div className="space-y-4">
@@ -420,13 +420,13 @@ const Settings: React.FC = () => {
                                                     <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic ml-1">Registry Visual Clusters (Portfolio)</label>
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-6 bg-[var(--ease2event-bg-elevated)]/20 p-10 rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                                         {businessData.portfolioImages.map((img, i) => (
-                                                            <motion.div 
-                                                                key={i} 
+                                                            <motion.div
+                                                                key={i}
                                                                 whileHover={{ scale: 1.1, rotate: 2 }}
                                                                 className="aspect-square rounded-2xl overflow-hidden bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] relative group transition-all duration-700 shadow-xl active:scale-95"
                                                             >
                                                                 <img src={img} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                                                                <button onClick={() => setBusinessData(p => ({...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i)}))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={24}/></button>
+                                                                <button onClick={() => setBusinessData(p => ({ ...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i) }))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={24} /></button>
                                                             </motion.div>
                                                         ))}
                                                         <button className="aspect-square rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-3 group">
@@ -437,7 +437,7 @@ const Settings: React.FC = () => {
                                                 </div>
                                                 <div className="space-y-4">
                                                     <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
-                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({...businessData, description: e.target.value})} rows={6} className="w-full h-auto min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-8 py-8 rounded-[32px] border border-[var(--ease2event-border-subtle)] italic font-bold leading-relaxed text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
+                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-8 py-8 rounded-[32px] border border-[var(--ease2event-border-subtle)] italic font-bold leading-relaxed text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
                                                 </div>
                                             </div>
                                         </div>
@@ -445,25 +445,25 @@ const Settings: React.FC = () => {
                                         {/* Section: Telemetry */}
                                         <div className="space-y-12">
                                             <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
-                                              <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                              OPERATIONAL_TELEMETRY
+                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
+                                                OPERATIONAL_TELEMETRY
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4">
                                                     <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
-                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({...businessData, city: e.target.value})} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
+                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
                                                 </div>
                                                 <div className="space-y-4">
                                                     <label className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
-                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({...businessData, avgBookingPrice: e.target.value})} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
+                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
                                         <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-black tracking-[0.5em] italic rounded-[24px] shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
-                                            {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={24} className="mr-4"/> DEPLOY REGISTRY MATRIX</>}
+                                            {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={24} className="mr-4" /> DEPLOY REGISTRY MATRIX</>}
                                         </Button>
                                     </div>
                                 </div>
@@ -481,7 +481,7 @@ const Settings: React.FC = () => {
                                             <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Security Protocols & Encryption Keys</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-12 rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-5">
@@ -522,7 +522,7 @@ const Settings: React.FC = () => {
                                                 ACCESS_FULL_REGISTRY
                                             </button>
                                         </div>
-                                        
+
                                         <div className="overflow-hidden border border-[var(--ease2event-border-subtle)] rounded-[32px] bg-[var(--ease2event-bg-elevated)]/10 shadow-2xl">
                                             <table className="w-full text-left">
                                                 <thead>
@@ -545,9 +545,8 @@ const Settings: React.FC = () => {
                                                             <td className="px-10 py-7 text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.time}</td>
                                                             <td className="px-10 py-7">
                                                                 <div className="flex justify-center">
-                                                                    <Badge className={`italic font-black text-[9px] px-5 py-2 rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${
-                                                                        log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/10'
-                                                                    }`}>
+                                                                    <Badge className={`italic font-black text-[9px] px-5 py-2 rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/10'
+                                                                        }`}>
                                                                         {log.status}
                                                                     </Badge>
                                                                 </div>
@@ -573,7 +572,7 @@ const Settings: React.FC = () => {
                                             <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase mt-3 tracking-[0.3em] italic opacity-60">Visual Spectrum & Rendering Config</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="max-w-2xl space-y-12 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.02] to-transparent p-12 rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-2xl relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000">
                                             <Sparkles size={160} />
@@ -581,8 +580,8 @@ const Settings: React.FC = () => {
                                         <div className="relative z-10 space-y-10">
                                             <div className="space-y-3">
                                                 <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] italic mb-8">Spectrum Protocol Configuration</p>
-                                                <button 
-                                                    onClick={toggleTheme} 
+                                                <button
+                                                    onClick={toggleTheme}
                                                     className="w-full flex items-center justify-between p-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[28px] hover:border-[var(--ease2event-brand-primary)]/50 transition-all duration-700 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] group/btn"
                                                 >
                                                     <div className="flex items-center gap-6">

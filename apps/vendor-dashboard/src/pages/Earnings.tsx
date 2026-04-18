@@ -146,7 +146,7 @@ const Earnings: React.FC = () => {
       {/* 🔮 Financial Matrix Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
         <motion.div variants={itemVariants} className="relative z-10">
-          <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tight leading-none uppercase italic font-display">Financial Intelligence</h1>
+          <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Financial Intelligence</h1>
           <div className="flex items-center gap-4 mt-6">
             <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
@@ -464,7 +464,7 @@ const Earnings: React.FC = () => {
                       <div className="flex justify-center translate-y-0 group-hover:-translate-y-1 transition-transform duration-500">
                         <Badge
                           className={`italic font-black text-[10px] px-6 py-2.5 rounded-2xl uppercase tracking-[0.3em] border shadow-md transition-all duration-700 ${trx.status.toLowerCase() === 'completed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 shadow-emerald-500/5' :
-                              trx.status.toLowerCase() === 'pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-amber-500/5' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/5'
+                            trx.status.toLowerCase() === 'pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-amber-500/5' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/5'
                             }`}
                         >
                           {trx.status}

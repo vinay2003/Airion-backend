@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-    Calendar as CalendarIcon, 
-    Search, 
-    Clock, 
-    MapPin, 
-    Users, 
-    DollarSign, 
-    CheckCircle, 
-    XCircle, 
+import {
+    Calendar as CalendarIcon,
+    Search,
+    Clock,
+    MapPin,
+    Users,
+    DollarSign,
+    CheckCircle,
+    XCircle,
     AlertCircle,
     ChevronRight,
     MoreVertical,
@@ -118,7 +118,7 @@ const Bookings: React.FC = () => {
     });
 
     return (
-        <motion.div 
+        <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -127,7 +127,7 @@ const Bookings: React.FC = () => {
             {/* Header: Operational Matrix */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
-                    <h1 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Operational Matrix</h1>
+                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Operational Matrix</h1>
                     <div className="flex items-center gap-3 mt-4">
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase rounded-full border border-blue-500/20">
                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
@@ -136,7 +136,7 @@ const Bookings: React.FC = () => {
                         <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Venue Throughput • Client Coordination</p>
                     </div>
                 </motion.div>
-                
+
                 <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner">
                     <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] rounded-xl shadow-md border border-[var(--ease2event-border-base)] transition-all">Daily</button>
                     <button className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">Weekly</button>
@@ -146,8 +146,8 @@ const Bookings: React.FC = () => {
             {/* Smart Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, idx) => (
-                    <motion.div 
-                        key={idx} 
+                    <motion.div
+                        key={idx}
                         variants={itemVariants}
                         whileHover={{ y: -5, scale: 1.02 }}
                         className="card-minimal p-7 flex flex-col justify-between group cursor-pointer hover:shadow-2xl transition-all duration-500 relative overflow-hidden bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]"
@@ -197,7 +197,7 @@ const Bookings: React.FC = () => {
             <div className="grid grid-cols-1 gap-6">
                 <AnimatePresence mode="popLayout">
                     {filteredBookings.map((booking, idx) => (
-                        <motion.div 
+                        <motion.div
                             key={booking.id}
                             layout
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -217,10 +217,9 @@ const Bookings: React.FC = () => {
                                             </div>
                                             <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic opacity-60">PROTOCOL: {booking.eventType}</p>
                                         </div>
-                                        <Badge className={`italic font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-[0.2em] border shadow-sm ${
-                                            booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 
-                                            booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
-                                        }`}>
+                                        <Badge className={`italic font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-[0.2em] border shadow-sm ${booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
+                                                booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
+                                            }`}>
                                             {booking.status}
                                         </Badge>
                                     </div>
@@ -286,7 +285,7 @@ const Bookings: React.FC = () => {
                 </AnimatePresence>
 
                 {filteredBookings.length === 0 && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="text-center py-24 bg-[var(--ease2event-bg-elevated)]/30 rounded-3xl border border-[var(--ease2event-border-subtle)] border-dashed"

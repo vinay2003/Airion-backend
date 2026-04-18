@@ -39,7 +39,7 @@ const UserProfileMenu = ({
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[60]"
+                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[1010]"
                 >
                     <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                         <p className="text-sm font-bold text-gray-900 dark:text-white">{user?.name}</p>
@@ -155,7 +155,7 @@ const Header: React.FC = () => {
 
     return (
         <header
-            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled || isSearchOpen
+            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled || isSearchOpen
                 ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
                 : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
@@ -301,28 +301,28 @@ const Header: React.FC = () => {
                 </button>
             </div>
 
-            {/* Mobile & Tablet Side Drawer Navigation */}
+            {/* Mobile & Tablet Side Drawer Navigation - FIXED LAYERED OVERLAY */}
             <AnimatePresence mode="wait">
                 {isMenuOpen && (
-                    <div key="mobile-menu-portal" className="relative z-[100]">
-                        {/* Backdrop with localized blur */}
+                    <div key="mobile-menu-portal" className="fixed inset-0 z-[9999]">
+                        {/* Backdrop with full-screen coverage and deep blur */}
                         <motion.div
                             key="menu-backdrop"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/50 backdrop-blur-xl z-[100] lg:hidden"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-2xl lg:hidden cursor-pointer"
                             onClick={toggleMenu}
                         />
 
-                        {/* Solid Menu Panel */}
+                        {/* Solid Menu Panel - High Performance Container */}
                         <motion.div
                             key="menu-panel"
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
-                            className="fixed inset-y-0 left-0 w-full xs:w-80 sm:w-96 bg-white/98 dark:bg-slate-950/98 backdrop-blur-xl z-[110] flex flex-col shadow-[20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-r border-gray-100 dark:border-slate-800"
+                            transition={{ type: 'spring', damping: 32, stiffness: 350, mass: 0.7 }}
+                            className="fixed inset-y-0 left-0 w-[85%] xs:w-80 sm:w-96 bg-white dark:bg-slate-950 flex flex-col shadow-[rgba(0,0,0,0.5)_20px_0_50px] lg:hidden border-r border-gray-100 dark:border-slate-800"
                         >
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
                             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">

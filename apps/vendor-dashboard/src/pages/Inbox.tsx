@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MoreVertical, Send, Paperclip, Smile, Phone, Video, Info, ArrowLeft, User, ShieldCheck } from 'lucide-react';
-import { Button } from '@ease2event/ui';
+import { Button, Badge } from '@ease2event/ui';
 import { leadService } from '@ease2event/shared/lib/services/leadService';
 import { useQuery } from '@tanstack/react-query';
 
@@ -21,7 +21,7 @@ const Inbox: React.FC = () => {
         lead.notes?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleChatSelect = (chatId: number) => {
+    const handleChatSelect = (chatId: string) => {
         setActiveChat(chatId);
         setShowMobileChat(true);
     };

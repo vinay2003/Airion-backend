@@ -110,10 +110,10 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[300px]" align="start">
-                        <Command>
-                            <CommandInput placeholder="Search location..." />
-                            <CommandList>
+                    <PopoverContent className="p-0 w-[320px] bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-gray-100 dark:border-slate-800 overflow-hidden" align="start">
+                        <Command className="bg-white dark:bg-slate-900">
+                            <CommandInput placeholder="Search location..." className="border-none focus:ring-0" />
+                            <CommandList className="bg-white dark:bg-slate-900">
                                 <CommandEmpty>No location found.</CommandEmpty>
                                 <CommandGroup heading="Suggestions">
                                     {POPULAR_LOCATIONS.map((loc) => (
@@ -168,15 +168,19 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-gray-100 dark:border-slate-800" align="start">
+                        <div className="md:hidden p-4 bg-gray-50 dark:bg-slate-800 border-b border-gray-100 dark:border-slate-800">
+                            <h3 className="text-sm font-bold">Select Dates</h3>
+                        </div>
                         <Calendar
                             initialFocus
                             mode="range"
                             defaultMonth={date?.from}
                             selected={date}
                             onSelect={setDate}
-                            numberOfMonths={2}
+                            numberOfMonths={typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 2}
                             pagedNavigation
+                            className="bg-white dark:bg-slate-900"
                         />
                     </PopoverContent>
                 </Popover>

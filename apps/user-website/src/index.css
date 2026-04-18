@@ -37,17 +37,27 @@
   --ease2event-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
   --ease2event-shadow-glow: 0 0 15px rgba(99, 102, 241, 0.1);
 
-  /* Tailwind semantic aliases (light) */
+  /* Shadcn UI Variables */
   --background: #FFFFFF;
   --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #E53935;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #0F172A;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --border: rgba(0, 0, 0, 0.05);
-  --input: rgba(0, 0, 0, 0.08);
-  --secondary: #F1F5F9;
-  --secondary-foreground: #475569;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
+  --destructive: #EF4444;
+  --destructive-foreground: #F8FAFC;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #E53935;
+  --radius: 0.5rem;
 }
 
 body {

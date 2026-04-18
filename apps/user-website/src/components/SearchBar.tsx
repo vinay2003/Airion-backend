@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus, Sparkles } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
 import { cn } from '../lib/utils';

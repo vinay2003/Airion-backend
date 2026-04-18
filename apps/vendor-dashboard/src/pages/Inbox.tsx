@@ -284,7 +284,7 @@ const Inbox: React.FC = () => {
                                                     <div className="w-1/3 h-12 bg-gray-200 animate-pulse rounded-2xl self-end" />
                                                 </div>
                                             ) : (
-                                                messages.map((m) => (
+                                                messages.map((m: Message) => (
                                                     <div key={m.id} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
                                                         <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm md:text-md shadow-sm relative
                                                             ${m.senderId === user?.id 

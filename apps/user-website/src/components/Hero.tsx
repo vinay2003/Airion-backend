@@ -87,8 +87,8 @@ const Hero: React.FC = () => {
                             </div>
                         )}
 
-                        {/* ✅ Dynamic Heading */}
-                        <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
+                        {/* ✅ Dynamic Heading — MOBILE FIX: Responsive scale */}
+                        <h1 className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                             {isAuthenticated ? (
                                 <>
                                     Your Event Dashboard <br className="hidden md:block" />

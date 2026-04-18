@@ -294,10 +294,10 @@ const Header: React.FC = () => {
 
                 <button
                     onClick={toggleMenu}
-                    className="p-2 text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+                    className="flex h-11 w-11 items-center justify-center text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all active:scale-90"
                     aria-label="Toggle menu"
                 >
-                    {isMenuOpen ? <X size={24} className="text-gray-900 dark:text-white" /> : <Menu size={24} />}
+                    {isMenuOpen ? <X size={26} className="text-gray-900 dark:text-white" /> : <Menu size={26} />}
                 </button>
             </div>
 

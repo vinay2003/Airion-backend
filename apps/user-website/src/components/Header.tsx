@@ -96,7 +96,7 @@ const Header: React.FC = () => {
     const navItems = [
         { name: 'Home', path: '/' },
         { name: 'Marketplace', path: '/search' },
-        { name: 'Inspiration', path: '/inspiration' },
+        // { name: 'Inspiration', path: '/inspiration' },
         { name: 'Packages', path: '/packages' },
         {
             name: 'Events',
@@ -385,7 +385,7 @@ const Header: React.FC = () => {
                                         </div>
                                     ))}
 
-                                    {/* Additional CTA: Plan Your Event - Commented as per request */}
+                                    {/* Additional CTA: Plan Your Event - Removed as per request */}
                                     {/* <Link
                                         to="/plan-event"
                                         onClick={toggleMenu}

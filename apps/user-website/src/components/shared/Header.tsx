@@ -191,17 +191,17 @@ const Header: React.FC = () => {
                 <Link to="/" className={`text-sm font-medium transition-colors ${isActivePath('/') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Home</Link>
                 <Link to="/search" className={`text-sm font-medium transition-colors ${isActivePath('/search') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Marketplace</Link>
                 <Link to="/packages" className={`text-sm font-medium transition-colors ${isActivePath('/packages') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Packages</Link>
-                <Link to="/inspiration" className={`text-sm font-medium transition-colors ${isActivePath('/inspiration') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Inspiration</Link>
+                {/* <Link to="/inspiration" className={`text-sm font-medium transition-colors ${isActivePath('/inspiration') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Inspiration</Link> */}
             </nav>
 
             {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+            {/* <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
                 <Link
                     to="/plan-event"
                     className="text-sm font-medium text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-slate-800 px-4 py-2.5 rounded-full transition-all"
                 >
                     Plan Your Event
-                </Link>
+                </Link> */}
                 {isAuthenticated ? (
                     <UserProfileMenu
                         user={user}

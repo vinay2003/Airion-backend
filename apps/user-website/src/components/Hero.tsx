@@ -39,8 +39,6 @@ const Hero: React.FC = () => {
 
     return (
         <div className="relative w-full">
-
-        <div className="relative w-full">
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
             <div className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
 

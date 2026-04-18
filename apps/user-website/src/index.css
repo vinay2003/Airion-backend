@@ -171,7 +171,15 @@ body {
     -ms-overflow-style: none !important;
     -webkit-overflow-scrolling: touch;
   }
-  .overflow-x-auto::-webkit-scrollbar {
+  .overflow-x-auto::-webkit-scrollbar, .hide-scrollbar::-webkit-scrollbar {
     display: none !important;
   }
+}
+
+/* FIX: Search Dropdown Layering (Global) */
+.popover-content {
+  z-index: 1000 !important;
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
 }

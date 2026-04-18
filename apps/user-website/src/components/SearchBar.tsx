@@ -91,12 +91,12 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto transition-shadow duration-500">
+        <div className="relative z-[100] bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500">
             {/* Location Selector */}
-            <div className="flex-1 relative group/input w-full">
+            <div className="flex-1 relative group/input w-full border-b md:border-b-0 border-gray-100 dark:border-slate-800">
                 <Popover open={openLocation} onOpenChange={setOpenLocation}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
+                        <div className="h-full px-4 md:px-6 py-4 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Location</label>
@@ -188,7 +188,7 @@ const SearchBar = () => {
             <div className="flex-1 relative group/input w-full">
                 <Popover open={openGuests} onOpenChange={setOpenGuests}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
+                        <div className="h-full px-4 md:px-6 py-4 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <Users className={`w-5 h-5 shrink-0 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Guests</label>

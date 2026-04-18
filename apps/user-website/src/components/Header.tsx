@@ -318,11 +318,11 @@ const Header: React.FC = () => {
                         {/* Solid Menu Panel */}
                         <motion.div
                             key="menu-panel"
-                            initial={{ x: '100%' }}
+                            initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
-                            exit={{ x: '100%' }}
+                            exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
-                            className="fixed inset-y-0 right-0 w-full xs:w-80 sm:w-96 bg-white dark:bg-slate-950 z-[110] flex flex-col shadow-[-20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-l border-gray-100 dark:border-slate-800"
+                            className="fixed inset-y-0 left-0 w-full xs:w-80 sm:w-96 bg-white/98 dark:bg-slate-950/98 backdrop-blur-xl z-[110] flex flex-col shadow-[20px_0_50px_-10px_rgba(0,0,0,0.3)] lg:hidden border-r border-gray-100 dark:border-slate-800"
                         >
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
                             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
@@ -332,7 +332,7 @@ const Header: React.FC = () => {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Explore</span>
-                                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Airion Menu</span>
+                                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Ease2event Navigation</span>
                                     </div>
                                 </div>
                                 <button

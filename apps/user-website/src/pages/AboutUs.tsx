@@ -13,8 +13,7 @@ const AboutUs: React.FC = () => {
                         We<span className="ml-1"></span> Create <span className="ml-1">Memories</span>
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold text-xs tracking-widest">
-                        Ease2event is the premier digital ecosystem for orchestrating unforgettable events. From intimate gatherings to grand celebrations, we execute your vision with precision.
-                    </p>
+                        We help you turn your ideas into a well-planned event with simple steps and no confusion                    </p>
                 </div>
             </div>
 

@@ -234,12 +234,7 @@ const Header: React.FC = () => {
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-                <Link
-                    to="/plan-event"
-                    className="text-sm font-medium text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-slate-800 px-4 py-2.5 rounded-full transition-all"
-                >
-                    Plan Your Event
-                </Link>
+
                 {isAuthenticated ? (
                     <UserProfileMenu
                         user={user}
@@ -384,16 +379,7 @@ const Header: React.FC = () => {
                                         </div>
                                     ))}
 
-                                    {/* Additional CTA: Plan Your Event */}
-                                    <Link
-                                        to="/plan-event"
-                                        onClick={toggleMenu}
-                                        className={`mt-4 flex items-center justify-between group py-5 px-5 rounded-2xl transition-all bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-xl shadow-red-500/40 relative overflow-hidden`}
-                                    >
-                                        <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                        <span className="text-lg font-black tracking-tight uppercase relative z-10">Plan Your Event</span>
-                                        <Sparkles size={20} className="text-white/80 group-hover:rotate-12 transition-transform" />
-                                    </Link>
+
                                 </nav>
 
                                 {/* Theme & Settings */}

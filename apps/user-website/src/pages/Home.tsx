@@ -53,13 +53,7 @@ const Home: React.FC = () => {
         showToast('Successfully subscribed to newsletter!', 'success');
     };
 
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
 
-    if (error) {
-        return <div className="flex justify-center items-center h-screen">Error: {error}</div>;
-    }
 
     return (
         <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 overflow-x-hidden">

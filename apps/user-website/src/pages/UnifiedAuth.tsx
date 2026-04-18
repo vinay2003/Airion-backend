@@ -310,7 +310,7 @@ const UnifiedAuth: React.FC = () => {
                     {/* 🖋️ Header Section */}
                     <div className="space-y-4 mb-10 text-center">
                         <h2 className="text-2xl md:text-4xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
-                            {selectedRole === UserRole.ADMIN ? 'Login and Signup' : (mode === 'login' ? 'Login and Signup' : 'Create your secure account')}
+                            {selectedRole === UserRole.ADMIN ? 'Login to continue' : (mode === 'login' ? 'Login to continue' : 'Create your secure account')}
                         </h2>
                         <p className="text-sm md:text-lg text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
                             {step === 'phone'

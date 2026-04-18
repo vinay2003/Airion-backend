@@ -137,7 +137,7 @@ const Inbox: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Badge variant="outline" className="px-4 py-2 rounded-full border-blue-500/20 text-blue-500 invisible md:visible bg-white/5 backdrop-blur-md">
+                                    <Badge variant="default" className="px-4 py-2 rounded-full border border-blue-500/20 text-blue-500 invisible md:visible bg-white/5 backdrop-blur-md">
                                         ₹{activeUser?.budget?.toLocaleString()}
                                     </Badge>
                                 </div>

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, MoreVertical, Send, Paperclip, Smile, Phone, Video, Info, ArrowLeft, User, ShieldCheck, MessageSquare, CheckCheck } from 'lucide-react';
+import { Search, Send, Paperclip, Phone, Info, ArrowLeft, ShieldCheck, MessageSquare, CheckCheck, MoreVertical, Smile, Video, User } from 'lucide-react';
 import { Button, Badge } from '@ease2event/ui';
 import { leadService } from '@ease2event/shared/lib/services/leadService';
 import { messageService, Message } from '@ease2event/shared/lib/services/messageService';
-import { initiateSocketConnection, getSocket } from '@ease2event/shared/auth';
-import { useAuth } from '@ease2event/shared/auth';
+import { initiateSocketConnection, getSocket, useAuth } from '@ease2event/shared/auth';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -201,7 +200,12 @@ const Inbox: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex items-center gap-2">
+                                    {activeLead?.budget && (
+                                        <Badge variant="default" className="px-4 py-2 rounded-full border border-blue-500/20 text-blue-500 bg-white/5 backdrop-blur-md hidden lg:flex">
+                                            ₹{activeLead.budget.toLocaleString()}
+                                        </Badge>
+                                    )}
                                     {viewMode === 'details' ? (
                                         <Button 
                                             onClick={initializeChat}

@@ -1,6 +1,7 @@
 {
   "name": "ease2event",
   "private": true,
+  "description": "Premium Event Planning Platform (Vercel Optimized)",
   "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
@@ -8,18 +9,25 @@
   ],
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build": "turbo build && rm -rf dist && mkdir -p dist/vendor dist/admin && cp -r apps/user-website/dist/* dist/ && cp -r apps/vendor-dashboard/dist/* dist/vendor/ && cp -r apps/admin-panel/dist/* dist/admin/",
     "build:user": "turbo build --filter=@ease2event/user-website",
     "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
     "build:admin": "turbo build --filter=@ease2event/admin-panel",
-    "build:api": "turbo build --filter=@ease2event/api",
+    "build:api": "turbo run build --filter=@ease2event/api --force",
+    "start:api": "ls -R apps/api/dist && cd apps/api && node dist/main.js",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "devDependencies": {
+  "dependencies": {
     "turbo": "latest",
+    "vite": "^7.2.4",
+    "typescript": "~5.9.3",
+    "concurrently": "^8.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
     "prettier": "^3.0.0",
-    "concurrently": "^8.2.0"
+    "eslint": "^9.39.1"
   }
 }

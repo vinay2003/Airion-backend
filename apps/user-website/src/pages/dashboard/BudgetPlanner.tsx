@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDashboardStore, BudgetItem } from '../../store/useDashboardStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
@@ -7,10 +7,14 @@ import { Plus, Download, AlertCircle, CheckCircle, TrendingUp, DollarSign } from
 const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'];
 
 const BudgetPlanner: React.FC = () => {
-    const { budgetItems, totalBudget, updateBudgetAllocation, addExpense } = useDashboardStore();
+    const { budgetItems, totalBudget, updateBudgetAllocation, addExpense, fetchBudget } = useDashboardStore();
     const [isAddingExpense, setIsAddingExpense] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [expenseAmount, setExpenseAmount] = useState<string>('');
+
+    useEffect(() => {
+        fetchBudget();
+    }, [fetchBudget]);
     
     const totalSpent = budgetItems.reduce((acc, item) => acc + item.spent, 0);
     const remainingBudget = totalBudget - totalSpent;

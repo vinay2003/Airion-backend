@@ -24,7 +24,7 @@ const ContactUs: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Visit Us</h3>
-                                    <p className="text-gray-400">Kareli, Allahabad<br />Uttar Pradesh, India - 211016</p>
+                                    <p className="text-gray-400">Patna, Bihar 800001</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
@@ -33,8 +33,7 @@ const ContactUs: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Email Us</h3>
-                                    <p className="text-gray-400">concierge@ease2event.app</p>
-                                    <p className="text-gray-400">enterprise@ease2event.app</p>
+                                    <p className="text-gray-400">contact@ease2event.com</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
@@ -43,7 +42,7 @@ const ContactUs: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Call Us</h3>
-                                    <p className="text-gray-400">+91 123 456 7890</p>
+                                    <p className="text-gray-400">+91 81306 07796</p>
                                     <p className="text-gray-400">Mon-Fri from 8am to 5pm</p>
                                 </div>
                             </div>

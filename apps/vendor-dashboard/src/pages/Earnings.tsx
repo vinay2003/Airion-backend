@@ -43,9 +43,8 @@ const Earnings: React.FC = () => {
 
   // 🛰️ Real-time Data Fetching
   const { data: earningsData, isLoading } = useQuery({
-    queryKey: ['earnings', vendorId, activePeriod],
-    queryFn: () => vendorId ? bookingService.getEarnings(vendorId).catch(() => null) : Promise.resolve(null),
-    enabled: !!vendorId
+    queryKey: ['earnings', activePeriod],
+    queryFn: () => bookingService.getEarnings().catch(() => null),
   });
 
   // 📊 Dynamic Chart Aggregation (Fallback to Matrix Mock)
@@ -155,7 +154,7 @@ const Earnings: React.FC = () => {
             <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Liquidity Matrix • Revenue Protocol</p>
           </div>
         </motion.div>
-
+        
         <motion.div variants={itemVariants} className="flex items-center gap-3 sm:gap-4 relative z-10 w-full lg:w-auto">
           <Button className="flex-1 sm:flex-none flex items-center justify-center bg-[var(--ease2event-bg-elevated)] h-11 sm:h-12 px-4 sm:px-8 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-[9px] sm:text-[11px] uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all hover:border-[var(--ease2event-brand-primary)]/30 active:scale-95 whitespace-nowrap">
             <CalendarIcon size={14} className="mr-2 sm:mr-3" />
@@ -214,39 +213,38 @@ const Earnings: React.FC = () => {
             <h2 className="text-4xl sm:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none italic font-display">₹{displayData.periodRevenue.toLocaleString('en-IN')}</h2>
           </div>
           <div className="flex items-center gap-4 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-[var(--ease2event-border-subtle)]">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map(i => <div key={i} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md hover:z-10 transition-all" />)}
-            </div>
-            <p className="text-[9px] sm:text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60 leading-none">Nodes Updated <span className="text-emerald-500">Live Telemetry</span></p>
+             <div className="flex -space-x-3">
+                 {[1, 2, 3, 4].map(i => <div key={i} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md hover:z-10 transition-all" />)}
+             </div>
+             <p className="text-[9px] sm:text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] italic opacity-60 leading-none">Nodes Updated <span className="text-emerald-500">Live Telemetry</span></p>
           </div>
         </motion.div>
 
         <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-6 sm:p-10 flex flex-col justify-between hover:border-amber-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
           <div className="flex justify-between items-start mb-6 sm:mb-8">
             <div className="flex-1">
-              <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.4em] mb-1 sm:mb-2 opacity-50 italic">Target Matrix</p>
-              <h3 className="text-2xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-none">₹{displayData.payoutTarget.toLocaleString()} GOAL</h3>
+                <p className="text-[var(--ease2event-text-muted)] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.4em] mb-1 sm:mb-2 opacity-50 italic">Target Matrix</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-none">₹{displayData.payoutTarget.toLocaleString()} GOAL</h3>
             </div>
             <div className="p-3 sm:p-4 bg-amber-500/10 text-amber-500 rounded-[20px] sm:rounded-[24px] border border-amber-500/20 shadow-sm transition-all duration-500 shrink-0">
-              <Clock size={24} className="sm:w-[28px] sm:h-[28px]" />
+                <Clock size={24} className="sm:w-[28px] sm:h-[28px]" />
             </div>
           </div>
-
+          
           <div className="space-y-4 sm:space-y-6">
-            <div className="h-4 sm:h-5 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-1 sm:p-1.5 border border-[var(--ease2event-border-subtle)] shadow-inner">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${displayData.payoutProgress}%` }}
-                transition={{ duration: 1.8, type: 'spring' }}
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)]"
-              />
-            </div>
-            <div className="flex justify-between items-center text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[var(--ease2event-text-muted)] italic leading-none">
-              <span>{displayData.payoutProgress}% SYNC_LEVEL</span>
-              <span className="text-[var(--ease2event-brand-primary)] tracking-tight">SETTLEMENT: {displayData.payoutDate}</span>
-            </div>
+              <div className="h-4 sm:h-5 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-1 sm:p-1.5 border border-[var(--ease2event-border-subtle)] shadow-inner">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${displayData.payoutProgress}%` }}
+                  transition={{ duration: 1.8, type: 'spring' }}
+                  className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)]" 
+                />
+              </div>
+              <div className="flex justify-between items-center text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[var(--ease2event-text-muted)] italic leading-none">
+                  <span>{displayData.payoutProgress}% SYNC_LEVEL</span>
+                  <span className="text-[var(--ease2event-brand-primary)] tracking-tight">SETTLEMENT: {displayData.payoutDate}</span>
+              </div>
           </div>
-
           <button className="mt-8 sm:mt-10 flex items-center justify-between w-full p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[1.5rem] sm:rounded-[2rem] transition-all group active:scale-95 shadow-inner">
             <span className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest italic leading-none">Modify Target Matrix</span>
             <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] text-[var(--ease2event-brand-primary)] group-hover:translate-x-2 transition-transform" />
@@ -257,23 +255,25 @@ const Earnings: React.FC = () => {
       {/* 📊 High-Fidelity Trajectory Chart */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
         <motion.div variants={itemVariants} className="xl:col-span-2 card-minimal !p-10 flex flex-col bg-[var(--ease2event-bg-surface)] shadow-2xl overflow-hidden relative">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-10 mb-16 relative z-10">
-            <div>
-              <h3 className="text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tight italic font-display uppercase leading-none">Revenue Trajectory</h3>
-              <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] mt-4 opacity-50 italic">High-Fidelity Performance Monitoring</p>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-10 mb-16 relative z-10">
+                <div>
+                    <h3 className="text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tight italic font-display uppercase leading-none">Revenue Trajectory</h3>
+                    <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] mt-4 opacity-50 italic">High-Fidelity Performance Monitoring</p>
+                </div>
+                <div className="bg-[var(--ease2event-bg-elevated)] p-1.5 sm:p-2 rounded-[2rem] border border-[var(--ease2event-border-subtle)] flex gap-1 shadow-inner relative z-20 w-full sm:w-auto overflow-hidden">
+                    {(['Daily', 'Weekly', 'Monthly'] as Period[]).map(period => (
+                    <button 
+                        key={period} 
+                        onClick={() => setActivePeriod(period)}
+                        className={`flex-1 sm:flex-none px-4 sm:px-10 py-3 sm:py-4 text-[9px] sm:text-[11px] font-black uppercase tracking-widest rounded-[1.5rem] transition-all duration-700 italic relative ${activePeriod === period ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
+                    >
+                        {period}
+                    </button>
+                    ))}
+                </div>
             </div>
-            <div className="bg-[var(--ease2event-bg-elevated)] p-1.5 sm:p-2 rounded-[2rem] border border-[var(--ease2event-border-subtle)] flex gap-1 shadow-inner relative z-20 w-full sm:w-auto overflow-hidden">
-              {(['Daily', 'Weekly', 'Monthly'] as Period[]).map(period => (
-                <button
-                  key={period}
-                  onClick={() => setActivePeriod(period)}
-                  className={`flex-1 sm:flex-none px-4 sm:px-10 py-3 sm:py-4 text-[9px] sm:text-[11px] font-black uppercase tracking-widest rounded-[1.5rem] transition-all duration-700 italic relative ${activePeriod === period ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 scale-105 z-10' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
-                >
-                  {period}
-                </button>
-              ))}
-            </div>
-          </div>
+
 
           <div className="h-[450px] w-full -ml-4 flex-1 relative z-10">
             <ResponsiveContainer width="100%" height="100%">

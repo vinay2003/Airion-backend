@@ -241,7 +241,7 @@ const UnifiedAuth: React.FC = () => {
                         <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
                             <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={24} />
                         </div>
-                        <span className="text-2xl font-black tracking-widest font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
+                        <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
                             Ease2event
                         </span>
                     </motion.div>
@@ -272,19 +272,19 @@ const UnifiedAuth: React.FC = () => {
             </div>
 
             {/* 🔐 Identity Registry Portal */}
-            <div className="w-full lg:w-1/2 flex flex-col flex-grow items-center justify-start md:justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-12 md:py-20 lg:py-24 relative bg-white dark:bg-slate-950 min-h-screen">
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-12 md:py-16 lg:py-24 relative bg-white dark:bg-slate-950 min-h-screen">
                 {/* 🧭 Navigation Link */}
                 <Link
                     to="/"
-                    className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-sm font-bold"
+                    className="absolute top-6 left-6 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
                 >
-                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                    Back
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1.5 transition-transform" />
+                    Back to Marketplace
                 </Link>
 
                 <div className="w-full max-w-lg relative z-10 flex flex-col">
-                    {/* 📱 Mobile Branding (Hidden on Phones, Visible on Tab/Laptop) */}
-                    <div className="mb-6 hidden md:flex lg:hidden items-center gap-4 self-center">
+                    {/* 📱 Mobile Branding */}
+                    <div className="mb-12 lg:hidden flex items-center gap-4 self-center">
                         <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
                             <Sparkles className="text-white" size={26} />
                         </div>
@@ -292,7 +292,7 @@ const UnifiedAuth: React.FC = () => {
                     </div>
 
                     {/* 🔄 Mode Toggle Tabs */}
-                    <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mt-12 md:mt-0 lg:mt-6 mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
+                    <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
                         <button
                             onClick={() => { setMode('login'); setStep('phone'); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
@@ -308,11 +308,11 @@ const UnifiedAuth: React.FC = () => {
                     </div>
 
                     {/* 🖋️ Header Section */}
-                    <div className="space-y-4 mb-10 text-center">
-                        <h2 className="text-2xl md:text-4xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
-                            {selectedRole === UserRole.ADMIN ? 'Login to continue' : (mode === 'login' ? 'Login to continue' : 'Create your secure account')}
+                    <div className="space-y-4 mb-10 text-center sm:text-left">
+                        <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
+                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Welcome back to Ease2event' : 'Create your secure account')}
                         </h2>
-                        <p className="text-sm md:text-lg text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
+                        <p className="text-base md:text-xl text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
                             {step === 'phone'
                                 ? 'Verify your identity to manage your event ecosystem.'
                                 : `Verification code dispatched via secure line to: ${phone}`}
@@ -351,7 +351,7 @@ const UnifiedAuth: React.FC = () => {
                             >
                                 <div className="space-y-5">
                                     <div>
-                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone Number</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone Number</label>
 
                                     </div>
                                     <div className="relative group">
@@ -367,7 +367,7 @@ const UnifiedAuth: React.FC = () => {
                                                 const val = e.target.value.replace(/\D/g, '');
                                                 if (val.length <= 10) setPhone(val);
                                             }}
-                                            className="w-full pl-12 pr-12 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-lg tracking-[0.2em] placeholder:text-neutral-400/50"
+                                            className="w-full pl-12 pr-12 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-xl tracking-[0.2em] placeholder:text-neutral-400/50"
                                             placeholder="000 - 000 - 0000"
                                         />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center">
@@ -389,7 +389,7 @@ const UnifiedAuth: React.FC = () => {
                                     </button>
 
                                     {selectedRole !== UserRole.ADMIN && (
-                                        <p className="w-full text-center text-sm md:text-base font-bold text-neutral-400 p-2">
+                                        <p className="w-full text-center text-base font-bold text-neutral-400 p-2">
                                             {mode === 'login' ? (
                                                 <>
                                                     Don't have an account?{" "}
@@ -423,7 +423,7 @@ const UnifiedAuth: React.FC = () => {
                                 className="w-full space-y-12 text-center"
                             >
                                 <div className="space-y-8">
-                                    <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 block">Verification Cipher</label>
+                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Verification Cipher</label>
                                     <div className="flex justify-center scale-110">
                                         <OTPInput length={6} onComplete={handleVerifyOTP} disabled={loading} />
                                     </div>
@@ -465,7 +465,7 @@ const UnifiedAuth: React.FC = () => {
                             >
                                 <div className="space-y-5">
                                     <div className="space-y-5">
-                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Full Name</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Full Name</label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
                                                 <User size={22} />
@@ -481,7 +481,7 @@ const UnifiedAuth: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-5">
-                                        <label className="text-lg font-bold text-neutral-700 dark:text-slate-300 ml-1">Email Address</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Email Address</label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
                                                 <Mail size={22} />
@@ -506,7 +506,7 @@ const UnifiedAuth: React.FC = () => {
 
                     {/* 📜 Legal Footprint */}
                     <div className="mt-14 pt-10 border-t-2 border-neutral-100 dark:border-slate-800/80">
-                        <p className="text-sm md:text-base text-center text-neutral-500 dark:text-neutral-400 font-bold leading-relaxed max-w-2xl mx-auto">
+                        <p className="text-base md:text-lg text-center text-neutral-500 dark:text-neutral-400 font-bold leading-relaxed max-w-2xl mx-auto">
                             By proceeding, you verify you are of legal age and agree to our <br className="hidden sm:block" />
                             <Link to="/terms" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Terms of Service</Link> and <Link to="/privacy" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Privacy Policy</Link>.
                         </p>

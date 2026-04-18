@@ -125,16 +125,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
 
       if (!isCentralAuth) {
-        // 🔥 Aggressive local cleanup
-        tokenService.clearTokens();
-        localStorage.clear(); // Clear everything just to be safe
-        setUser(null);
-        
-        // Redirect to homepage
-        window.location.href = '/?action=logout';
+        // 🔥 CRITICAL FIX: Do not call setUser(null) here!
+        // Calling setUser(null) synchronously triggers ProtectedRoute to Navigate to local /login.
+        // The local /login (e.g. VendorLogin) unconditionally redirects to /login?portal=vendor,
+        // creating a race condition that overrides this action=logout redirect!
+        window.location.href = LOGIN_URL + (LOGIN_URL.includes('?') ? '&' : '?') + 'action=logout';
       } else {
         setUser(null);
-        window.location.href = LOGIN_URL + (LOGIN_URL.includes('?') ? '&' : '?') + 'action=logout';
+        window.location.href = '/login?action=logout';
       }
     }
   }, []);

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle } from 'lucide-react';
+import { User as UserIcon, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@shared/auth/AuthContext';
+import { updateProfile, uploadImage } from '../../lib/api';
+import { toast } from 'react-hot-toast';
 
 const LANGUAGES = [
     { code: 'en', name: 'English (US)' },
@@ -15,28 +18,58 @@ const LANGUAGES = [
 const CURRENCIES = ['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'];
 
 const ProfileSettings: React.FC = () => {
+    const { user, refreshUser } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Form State
-    const [name, setName] = useState('Vinay Sharma');
-    const [email, setEmail] = useState('vinay@example.com');
-    const [phone, setPhone] = useState('+91 9876543210');
-    const [location, setLocation] = useState('Mumbai, IN');
-    const [language, setLanguage] = useState('en');
+    const [name, setName] = useState(user?.name || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [phone] = useState(user?.phoneNumber || '');
+    const [location, setLocation] = useState(user?.location || 'Mumbai, IN');
+    const [language, setLanguage] = useState(user?.language || 'en');
     const [currency, setCurrency] = useState('INR (₹)');
 
-    const handleSave = (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
+        try {
+            await updateProfile({
+                name,
+                email,
+                location,
+                language,
+            });
+            await refreshUser();
+            toast.success('Profile updated successfully');
+        } catch (error) {
+            toast.error('Failed to update profile');
+        } finally {
             setLoading(false);
-            alert('Settings saved successfully!');
-        }, 1000);
+        }
+    };
+
+    const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const { url } = await uploadImage(file);
+            await updateProfile({ avatar: url });
+            await refreshUser();
+            toast.success('Photo uploaded successfully');
+        } catch (error) {
+            toast.error('Upload failed');
+        } finally {
+            setUploading(false);
+        }
     };
 
     const tabs = [
-        { id: 'profile', label: 'Personal Info', icon: <User size={18} /> },
+        { id: 'profile', label: 'Personal Info', icon: <UserIcon size={18} /> },
         { id: 'preferences', label: 'Preferences', icon: <Globe size={18} /> },
         { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
         { id: 'security', label: 'Security', icon: <Shield size={18} /> },
@@ -89,11 +122,25 @@ const ProfileSettings: React.FC = () => {
                             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-neutral-200 dark:border-slate-800">
                                 <div className="relative">
                                     <div className="w-24 h-24 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center overflow-hidden">
-                                        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                                        {uploading ? (
+                                            <Loader className="animate-spin text-red-500" size={32} />
+                                        ) : (
+                                            <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`} alt="Profile" className="w-full h-full object-cover" />
+                                        )}
                                     </div>
-                                    <button className="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-colors">
+                                    <button 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-colors"
+                                    >
                                         <Camera size={14} />
                                     </button>
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        className="hidden" 
+                                        accept="image/*" 
+                                        onChange={handlePhotoUpload} 
+                                    />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg text-neutral-900 dark:text-white">Profile Photo</h3>
@@ -113,7 +160,7 @@ const ProfileSettings: React.FC = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Phone Number</label>
-                                        <Input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-500" disabled />
+                                        <Input type="tel" value={phone} className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-500" disabled />
                                         <p className="text-xs text-neutral-400 mt-1">Phone number is used for OTP logins.</p>
                                     </div>
                                     <div className="space-y-2">

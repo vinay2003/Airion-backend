@@ -8,18 +8,32 @@
             "maxDuration": 30
         }
     },
+    "cleanUrls": true,
+    "trailingSlash": true,
     "rewrites": [
         {
             "source": "/api/:path*",
             "destination": "/api/index.ts"
         },
         {
+            "source": "/vendor/assets/:path*",
+            "destination": "/vendor/assets/:path*"
+        },
+        {
             "source": "/vendor/:path*",
             "destination": "/vendor/index.html"
         },
         {
+            "source": "/admin/assets/:path*",
+            "destination": "/admin/assets/:path*"
+        },
+        {
             "source": "/admin/:path*",
             "destination": "/admin/index.html"
+        },
+        {
+            "source": "/assets/:path*",
+            "destination": "/assets/:path*"
         },
         {
             "source": "/:path*",

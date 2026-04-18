@@ -49,15 +49,25 @@ const Analytics: React.FC = () => {
         { label: 'Gross Capture', value: `₹${statsData?.totalEarnings || '0'}`, change: '+18.5%', trend: 'up', icon: DollarSign, color: 'text-emerald-500', shadow: 'shadow-emerald-500/10' },
     ], [statsData]);
 
-    const performanceData = useMemo(() => [
-        { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
-        { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
-        { name: 'Wed', views: 2000, inquiries: 98, capture: 45000 },
-        { name: 'Thu', views: 2780, inquiries: 39, capture: 15000 },
-        { name: 'Fri', views: 1890, inquiries: 48, capture: 22000 },
-        { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
-        { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
-    ], []);
+    // 🛸 Performance Telemetry Flow
+    const { data: performanceRes } = useQuery({
+        queryKey: ['vendorPerformance', vendorId],
+        queryFn: () => vendorId ? api.get(`/vendors/${vendorId}/performance`) : Promise.resolve(null),
+        enabled: !!vendorId
+    });
+
+    const performanceData = useMemo(() => {
+        if (Array.isArray(performanceRes)) return performanceRes;
+        return [
+            { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
+            { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
+            { name: 'Wed', views: 2000, inquiries: 98, capture: 45000 },
+            { name: 'Thu', views: 2780, inquiries: 39, capture: 15000 },
+            { name: 'Fri', views: 1890, inquiries: 48, capture: 22000 },
+            { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
+            { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
+        ];
+    }, [performanceRes]);
 
     const topNodes = useMemo(() => [
         { name: 'Grand Ballroom Prime', bookings: 45, revenue: '₹4.2L', occupancy: 92, status: 'Active' },
@@ -98,15 +108,15 @@ const Analytics: React.FC = () => {
             className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
         >
             {/* 🛸 Intelligence Matrix Header */}
-            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
-                <motion.div variants={itemVariants} className="relative z-10 space-y-4">
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Intelligence Matrix</h1>
-                    <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 sm:gap-10 py-6 sm:py-12 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
+                <motion.div variants={itemVariants} className="relative z-10 space-y-3 sm:space-y-4">
+                    <h1 className="text-3xl sm:text-5xl font-black text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase italic font-display">Intelligence Matrix</h1>
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] sm:text-sm font-black uppercase rounded-full border border-emerald-500/20">
                             <Activity size={12} className="animate-pulse" />
                             Core Telemetry Live
                         </span>
-                        <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Genesis Hub v4.8 • Regional Monitoring Active</p>
+                        <p className="text-[9px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
                     </div>
                 </motion.div>
 
@@ -124,25 +134,25 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* 🚀 Tactical Telemetry Nodes */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 {stats.map((stat, idx) => (
                     <motion.div
                         key={idx}
                         variants={itemVariants}
                         whileHover={{ y: -8, scale: 1.02 }}
-                        className={`card-minimal !p-10 flex flex-col justify-between group cursor-pointer border-[var(--ease2event-border-base)] relative overflow-hidden shadow-2xl bg-[var(--ease2event-bg-surface)] ${stat.shadow}`}
+                        className={`card-minimal p-6 sm:!p-10 flex flex-col justify-between group cursor-pointer border-[var(--ease2event-border-base)] relative overflow-hidden shadow-2xl bg-[var(--ease2event-bg-surface)] ${stat.shadow}`}
                     >
-                        <div className="flex justify-between items-start mb-12 relative z-10">
-                            <div className={`p-4 rounded-xl bg-[var(--ease2event-bg-elevated)] ${stat.color} group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--ease2event-border-subtle)]`}>
-                                <stat.icon size={24} />
+                        <div className="flex justify-between items-start mb-8 sm:mb-12 relative z-10">
+                            <div className={`p-3 sm:p-4 rounded-xl bg-[var(--ease2event-bg-elevated)] ${stat.color} group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--ease2event-border-subtle)]`}>
+                                <stat.icon size={20} className="sm:w-[24px] sm:h-[24px]" />
                             </div>
-                            <Badge className={`italic font-black text-[9px] tracking-widest px-3 py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
+                            <Badge className={`italic font-black text-[8px] sm:text-[9px] tracking-widest px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
                                 {stat.change} {stat.trend === 'up' ? '↑' : '↓'}
                             </Badge>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-3 opacity-40 italic">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
+                            <p className="text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] mb-2 sm:mb-3 opacity-40 italic">{stat.label}</p>
+                            <h3 className="text-3xl sm:text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display origin-left transition-transform group-hover:scale-110">{stat.value}</h3>
                         </div>
                         <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
                     </motion.div>
@@ -151,17 +161,17 @@ const Analytics: React.FC = () => {
 
             {/* 📊 Spectrum Analytics Flow */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <motion.div variants={itemVariants} className="card-premium !p-12 relative overflow-hidden group">
-                    <div className="flex items-center justify-between mb-16 relative z-10">
-                        <div className="flex items-center gap-6">
-                            <div className="w-2 h-12 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
+                <motion.div variants={itemVariants} className="card-premium p-6 sm:!p-12 relative overflow-hidden group">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-16 relative z-10 gap-6 sm:gap-0">
+                        <div className="flex items-center gap-4 sm:gap-6">
+                            <div className="w-1.5 sm:w-2 h-10 sm:h-12 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
                             <div>
-                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
+                                <h3 className="text-xl sm:text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Visibility Spectrum</h3>
+                                <p className="text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em] mt-1 sm:mt-2 opacity-50 italic">Marketplace Interaction Delta</p>
                             </div>
                         </div>
-                        <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
-                            <Globe className="text-[var(--ease2event-brand-primary)]" size={24} />
+                        <div className="p-3 sm:p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)] w-fit">
+                            <Globe className="text-[var(--ease2event-brand-primary)] size-5 sm:size-6" />
                         </div>
                     </div>
 
@@ -193,7 +203,7 @@ const Analytics: React.FC = () => {
                             <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
                                 <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-tight font-display">Revenue Velocity</h3>
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.4em] mt-2 opacity-50 italic">Financial Throughput Matrix</p>
                             </div>
                         </div>
                         <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
@@ -218,42 +228,42 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* 🏰 Node Leadership Matrix */}
-            <motion.div variants={itemVariants} className="card-premium !p-16 border-[var(--ease2event-border-base)] shadow-2xl relative group">
-                <div className="flex items-center justify-between mb-16 pb-12 border-b border-[var(--ease2event-border-subtle)]">
-                    <div className="flex items-center gap-8">
-                        <div className="p-5 bg-[var(--ease2event-bg-elevated)] rounded-3xl border border-[var(--ease2event-border-subtle)]">
-                            <Zap className="text-[var(--ease2event-brand-primary)]" size={32} />
+            <motion.div variants={itemVariants} className="card-premium p-6 sm:!p-16 border-[var(--ease2event-border-base)] shadow-2xl relative group">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between mb-8 sm:mb-16 pb-8 sm:pb-12 border-b border-[var(--ease2event-border-subtle)] gap-8">
+                    <div className="flex items-center gap-5 sm:gap-8">
+                        <div className="p-4 sm:p-5 bg-[var(--ease2event-bg-elevated)] rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shrink-0">
+                            <Zap className="text-[var(--ease2event-brand-primary)] size-6 sm:size-8" />
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
-                            <p className="text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.5em] mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
+                            <h2 className="text-2xl sm:text-4xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display leading-none tracking-tight">Performance Sovereignty</h2>
+                            <p className="text-[9px] sm:text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.5em] mt-3 sm:mt-4 opacity-40 italic">Top Performing Localized Marketplace Nodes</p>
                         </div>
                     </div>
-                    <Button variant="outline" className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-display">SYNC_GLOBAL_REGISTRY</Button>
+                    <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-sm font-black uppercase tracking-wider sm:tracking-[0.3em] font-display w-full xl:w-auto">SYNC_GLOBAL_REGISTRY</Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
                     {topNodes.map((node, i) => (
-                        <div key={i} className="space-y-8 p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
+                        <div key={i} className="space-y-6 sm:space-y-8 p-6 sm:p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[32px] sm:rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
                             <div className="flex justify-between items-start">
-                                <span className="text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i + 1}</span>
-                                <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px]`}>{node.status}</Badge>
+                                <span className="text-3xl sm:text-4xl font-black text-[var(--ease2event-brand-primary)]/20 italic font-display group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i+1}</span>
+                                <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[8px] px-2 py-0.5`}>{node.status}</Badge>
                             </div>
                             <div>
-                                <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
-                                <div className="mt-8 space-y-4">
+                                <h3 className="text-xl sm:text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase leading-tight font-display">{node.name}</h3>
+                                <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
                                     <div className="flex justify-between items-end">
-                                        <p className="text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest italic">Sync Intensity</p>
-                                        <p className="text-lg font-black text-[var(--ease2event-text-primary)] italic">{node.occupancy}%</p>
+                                        <p className="text-[8px] sm:text-[9px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest italic leading-none">Sync Intensity</p>
+                                        <p className="text-base sm:text-lg font-black text-[var(--ease2event-text-primary)] italic leading-none">{node.occupancy}%</p>
                                     </div>
-                                    <div className="h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden">
-                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_10px_var(--ease2event-brand-primary)]" />
+                                    <div className="h-1.5 sm:h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-0.5">
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_10px_var(--ease2event-brand-primary)]" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
-                                <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
-                                <p className="text-2xl font-black text-[var(--ease2event-text-primary)] italic">{node.revenue}</p>
+                            <div className="pt-6 sm:pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
+                                <p className="text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest">{node.bookings} BOOKINGS</p>
+                                <p className="text-xl sm:text-2xl font-black text-[var(--ease2event-text-primary)] italic">{node.revenue}</p>
                             </div>
                         </div>
                     ))}

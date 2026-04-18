@@ -96,28 +96,6 @@ const AboutUs: React.FC = () => {
                 </div>
             </div>
 
-            {/* Team Section */}
-            <div className="bg-gray-50 dark:bg-slate-900 py-24">
-                <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12">Meet the Team</h2>
-                    <div className="flex justify-center">
-                        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-gray-100 dark:border-slate-700 max-w-sm hover:-translate-y-2 transition-transform duration-300">
-                            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-6 border-4 border-red-50 dark:border-red-900/20">
-                                <img
-                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop"
-                                    alt="Naif Farooqui"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Naif Farooqui</h3>
-                            <p className="text-red-500 font-medium mb-4">Lead Designer & Developer</p>
-                            <p className="text-gray-600 dark:text-slate-400 text-sm">
-                                Passionate about creating intuitive and beautiful digital experiences. Leading the technical and design vision for Ease2event.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

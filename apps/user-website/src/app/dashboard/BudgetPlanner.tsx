@@ -11,7 +11,7 @@ const BudgetPlanner: React.FC = () => {
     const [isAddingExpense, setIsAddingExpense] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [expenseAmount, setExpenseAmount] = useState<string>('');
-    
+
     const totalSpent = budgetItems.reduce((acc, item) => acc + item.spent, 0);
     const remainingBudget = totalBudget - totalSpent;
     const spentPercentage = (totalSpent / totalBudget) * 100;
@@ -41,10 +41,10 @@ const BudgetPlanner: React.FC = () => {
                     <p className="text-neutral-500 dark:text-slate-400 mt-1">Track allocations, spent costs, and auto vendor-cost sync.</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-slate-800 rounded-xl font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-slate-800 transition">
+                    <button className="flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-xl font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-slate-800 transition">
                         <Download size={16} /> Export PDF
                     </button>
-                    <button 
+                    <button
                         onClick={() => setIsAddingExpense(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/10 font-semibold text-sm hover:bg-red-600 transition"
                     >
@@ -188,12 +188,12 @@ const BudgetPlanner: React.FC = () => {
                             <h3 className="text-xl font-bold text-neutral-900 dark:text-white flex items-center gap-2">
                                 <AlertCircle size={20} className="text-red-500" /> Add Expense
                             </h3>
-                            
+
                             <div className="space-y-4 mt-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-neutral-700 dark:text-slate-300">Category</label>
-                                    <select 
-                                        value={selectedCategory} 
+                                    <select
+                                        value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                         className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200"
                                     >
@@ -203,12 +203,12 @@ const BudgetPlanner: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-neutral-700 dark:text-slate-300">Amount (₹)</label>
-                                    <input 
-                                        type="number" 
-                                        value={expenseAmount} 
+                                    <input
+                                        type="number"
+                                        value={expenseAmount}
                                         onChange={(e) => setExpenseAmount(e.target.value)}
-                                        placeholder="Enter spent amount..." 
-                                        className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200" 
+                                        placeholder="Enter spent amount..."
+                                        className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200"
                                     />
                                 </div>
                                 <div className="flex gap-3 pt-2">

@@ -39,9 +39,8 @@ const Hero: React.FC = () => {
 
     return (
         <div className="relative w-full">
-
-            {/* Hero Container */}
-            <div className="relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900">
+            {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
+            <div className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
 
                 {/* Carousel */}
                 <AnimatePresence>
@@ -71,7 +70,7 @@ const Hero: React.FC = () => {
                         initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
                         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                         transition={{ duration: 1, delay: 0.2 }}
-                        className="space-y-6 max-w-4xl"
+                        className="relative z-10 space-y-6 max-w-4xl"
                     >
 
                         {/* ✅ Welcome badge */}
@@ -87,8 +86,8 @@ const Hero: React.FC = () => {
                             </div>
                         )}
 
-                        {/* ✅ Dynamic Heading */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-relaxed drop-shadow-[0_10px_50px_rgba(0,0,0,1)]">
+                        {/* ✅ Dynamic Heading — MOBILE FIX: Responsive scale */}
+                        <h1 className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                             {isAuthenticated ? (
                                 <>
                                     Your Event Dashboard <br className="hidden md:block" />
@@ -154,15 +153,15 @@ const Hero: React.FC = () => {
             >
                 <div className={`transition ${isSearchFocused ? "scale-[1.02]" : ""}`}>
 
-                    {/* Tabs */}
-                    <div className="flex flex-wrap gap-2 mb-6 justify-center">
+                    {/* Tabs - MOBILE FIX: Horizontal Scroll */}
+                    <div className="filter-tabs flex flex-nowrap md:flex-wrap gap-2 mb-6 justify-start md:justify-center overflow-x-auto md:overflow-hidden whitespace-nowrap hide-scrollbar px-4 md:px-0">
                         {SEARCH_TABS.map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold ${activeTab === tab
-                                    ? "bg-white text-black"
-                                    : "bg-black/20 text-white"
+                                className={`text-xs md:text-sm px-6 py-2 rounded-full font-bold transition-all flex-shrink-0 ${activeTab === tab
+                                    ? "bg-white text-black shadow-lg"
+                                    : "bg-black/20 text-white hover:bg-black/30"
                                     }`}
                             >
                                 {tab}

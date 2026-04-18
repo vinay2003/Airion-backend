@@ -19,6 +19,9 @@ import { WishlistsModule } from './wishlists/wishlists.module';
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CorrelationMiddleware } from './infrastructure/middleware/correlation.middleware';
+import { BudgetModule } from './budget/budget.module';
+import { GuestsModule } from './guests/guests.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
     imports: [
@@ -74,6 +77,9 @@ import { CorrelationMiddleware } from './infrastructure/middleware/correlation.m
         WishlistsModule,
         UserDashboardModule,
         UploadsModule,
+        BudgetModule,
+        GuestsModule,
+        ChatModule,
     ],
     controllers: [AppController],
 })

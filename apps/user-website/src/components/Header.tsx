@@ -1,22 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User as UserIcon, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronDown, LayoutDashboard, LogOut, Settings, ArrowRight } from 'lucide-react';
+import {
+    User as UserIcon, Globe, Moon, Sun,
+    Sparkles, ChevronDown, LayoutDashboard, LogOut,
+    Settings, ArrowRight, X, Menu
+} from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared/auth';
 
+// ─────────────────────────────────────────────
+// UserProfileMenu — unchanged from original
+// ─────────────────────────────────────────────
 const UserProfileMenu = ({
     user,
     isUserMenuOpen,
     setIsUserMenuOpen,
     userMenuRef,
-    logout
+    logout,
 }: {
-    user: any,
-    isUserMenuOpen: boolean,
-    setIsUserMenuOpen: (o: boolean) => void,
-    userMenuRef: React.RefObject<HTMLDivElement>,
-    logout: () => Promise<void>
+    user: any;
+    isUserMenuOpen: boolean;
+    setIsUserMenuOpen: (o: boolean) => void;
+    userMenuRef: React.RefObject<HTMLDivElement>;
+    logout: () => Promise<void>;
 }) => (
     <div className="relative" ref={userMenuRef}>
         <button
@@ -30,7 +37,10 @@ const UserProfileMenu = ({
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">{user?.name}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Account</p>
             </div>
-            <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+                size={14}
+                className={`text-gray-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`}
+            />
         </button>
 
         <AnimatePresence>
@@ -39,7 +49,7 @@ const UserProfileMenu = ({
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[60]"
+                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[1010]"
                 >
                     <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                         <p className="text-sm font-bold text-gray-900 dark:text-white">{user?.name}</p>
@@ -81,17 +91,22 @@ const UserProfileMenu = ({
     </div>
 );
 
+
+// ─────────────────────────────────────────────
+// Header Component
+// ─────────────────────────────────────────────
 const Header: React.FC = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
     const { theme, toggleTheme } = useTheme();
     const { user, isAuthenticated, logout } = useAuth();
     const location = useLocation();
     const userMenuRef = useRef<HTMLDivElement>(null);
 
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     const navItems = [
         { name: 'Home', path: '/' },
@@ -103,91 +118,57 @@ const Header: React.FC = () => {
             children: [
                 { name: 'Weddings', path: '/category/weddings' },
                 { name: 'Parties', path: '/category/parties' },
-                { name: 'Corporate', path: '/category/corporate' }
-            ]
+                { name: 'Corporate', path: '/category/corporate' },
+            ],
         },
         { name: 'About Us', path: '/about' },
-        { name: 'Contact', path: '/contact' }
+        { name: 'Contact', path: '/contact' },
     ];
 
-    // Close dropdowns when clicking outside
+    // Close user dropdown on outside click
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        const handle = (e: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
                 setIsUserMenuOpen(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', handle);
+        return () => document.removeEventListener('mousedown', handle);
     }, []);
 
-    // Handle scroll effect
+    // Scroll detection
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
-            if (window.scrollY > 20 && isSearchOpen) setIsSearchOpen(false);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isSearchOpen]);
+        const handle = () => setIsScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handle, { passive: true });
+        return () => window.removeEventListener('scroll', handle);
+    }, []);
 
-    // Close mobile menu on route change
     useEffect(() => {
-        setIsMenuOpen(false);
-        setIsSearchOpen(false);
         setIsUserMenuOpen(false);
+        setIsMenuOpen(false);
     }, [location]);
 
-    // Prevent body scroll when mobile menu is open
-    useEffect(() => {
-        if (isMenuOpen || isSearchOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isMenuOpen, isSearchOpen]);
 
-    const isActivePath = (path: string) => location.pathname === path;
+    const isActive = (path: string) => location.pathname === path;
+
 
     return (
         <header
-            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-50 transition-all duration-300 ${isScrolled || isSearchOpen
-                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
-                : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
+            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
+                    ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
+                    : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
         >
-            {/* Backdrop for Mega Menu Search */}
-            <AnimatePresence>
-                {isSearchOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 top-[72px] bg-black/40 backdrop-blur-sm z-40 hidden lg:block"
-                        onClick={() => setIsSearchOpen(false)}
-                    />
-                )}
-            </AnimatePresence>
-
-            {/* Logo */}
+            {/* ── Logo ── */}
             <Link
                 to="/"
                 className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <Sparkles
-                    size={28}
-                    className="text-red-600 hidden sm:block animate-pulse"
-                />
-
-                <span className="text-red-600">
-                    Ease2event
-                </span>
+                <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
+                <span className="text-red-600">Ease2event</span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* ── Desktop Nav ── */}
             <nav className="hidden lg:flex items-center gap-3">
                 {navItems.map((item) => (
                     <div key={item.name} className="relative group px-1">
@@ -197,7 +178,7 @@ const Header: React.FC = () => {
                                     {item.name}
                                     <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
                                 </button>
-                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
                                     <div className="p-2">
                                         {item.children.map((child) => (
                                             <Link
@@ -214,13 +195,13 @@ const Header: React.FC = () => {
                         ) : (
                             <Link
                                 to={item.path}
-                                className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActivePath(item.path)
-                                    ? 'text-red-600'
-                                    : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                                className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActive(item.path)
+                                        ? 'text-red-600'
+                                        : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
                                     }`}
                             >
                                 {item.name}
-                                {isActivePath(item.path) && (
+                                {isActive(item.path) && (
                                     <motion.div
                                         layoutId="nav-underline"
                                         className="absolute bottom-0 left-4 right-4 h-0.5 bg-red-500 rounded-full"
@@ -232,9 +213,7 @@ const Header: React.FC = () => {
                 ))}
             </nav>
 
-            {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-
                 {isAuthenticated ? (
                     <UserProfileMenu
                         user={user}
@@ -259,14 +238,21 @@ const Header: React.FC = () => {
                 </button>
             </div>
 
-            {/* Mobile & Tablet Toggle Action Container */}
-            <div className="flex lg:hidden items-center gap-2 items-center">
+            <div className="flex lg:hidden items-center gap-2">
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
                     aria-label="Toggle theme"
                 >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+
+                <button
+                    onClick={toggleMenu}
+                    className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all active:scale-95"
+                    aria-label="Toggle menu"
+                >
+                    {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
 
                 {isAuthenticated ? (
@@ -280,19 +266,11 @@ const Header: React.FC = () => {
                 ) : (
                     <Link
                         to="/login"
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-lg shadow-red-500/20"
+                        className="bg-red-500 hover:bg-red-600 text-white px-5 h-[38px] flex items-center justify-center rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-500/30 whitespace-nowrap"
                     >
                         Login
                     </Link>
                 )}
-
-                <button
-                    onClick={toggleMenu}
-                    className="p-2 text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-all"
-                    aria-label="Toggle menu"
-                >
-                    {isMenuOpen ? <X size={24} className="text-gray-900 dark:text-white" /> : <Menu size={24} />}
-                </button>
             </div>
 
             {/* Mobile & Tablet Side Drawer Navigation */}
@@ -353,13 +331,13 @@ const Header: React.FC = () => {
                                                             key={child.name}
                                                             to={child.path}
                                                             onClick={toggleMenu}
-                                                            className={`flex items-center justify-between group py-3.5 px-4 rounded-2xl transition-all ${isActivePath(child.path)
+                                                            className={`flex items-center justify-between group py-3.5 px-4 rounded-2xl transition-all ${isActive(child.path)
                                                                 ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
                                                                 : 'bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-900/10'
                                                                 }`}
                                                         >
                                                             <span className="text-base font-bold">{child.name}</span>
-                                                            <ArrowRight size={16} className={`transition-transform group-hover:translate-x-1 ${isActivePath(child.path) ? 'opacity-100' : 'opacity-0'}`} />
+                                                            <ArrowRight size={16} className={`transition-transform group-hover:translate-x-1 ${isActive(child.path) ? 'opacity-100' : 'opacity-0'}`} />
                                                         </Link>
                                                     ))}
                                                 </div>
@@ -367,13 +345,13 @@ const Header: React.FC = () => {
                                                 <Link
                                                     to={item.path}
                                                     onClick={toggleMenu}
-                                                    className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${isActivePath(item.path)
+                                                    className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${isActive(item.path)
                                                         ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
                                                         : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
                                                         }`}
                                                 >
                                                     <span className="text-lg font-black tracking-tight">{item.name}</span>
-                                                    <ArrowRight size={18} className={`transition-transform group-hover:translate-x-1 ${isActivePath(item.path) ? 'opacity-100' : 'opacity-30'}`} />
+                                                    <ArrowRight size={18} className={`transition-transform group-hover:translate-x-1 ${isActive(item.path) ? 'opacity-100' : 'opacity-30'}`} />
                                                 </Link>
                                             )}
                                         </div>

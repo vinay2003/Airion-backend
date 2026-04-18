@@ -1,38 +1,36 @@
-import { api } from '../apiClient';
+import api from '../apiClient';
 
 export interface Message {
   id: string;
   senderId: string;
-  receiverId: string;
-  content: string;
-  timestamp: string;
-  isRead: boolean;
+  conversationId: string;
+  body: string;
+  createdAt: string;
+  sender?: {
+    id: string;
+    name: string;
+  };
 }
 
-export interface ChatThread {
+export interface Conversation {
   id: string;
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
+  participantIds: string[];
   lastMessage?: string;
-  unreadCount: number;
+  lastMessageAt?: string;
+  createdAt: string;
   updatedAt: string;
 }
 
 export const messageService = {
-  getThreads: async () => {
-    return api.get<ChatThread[]>('/chats');
+  getConversations: async () => {
+    return api.get<Conversation[]>('/chat/conversations');
   },
   
-  getMessages: async (threadId: string) => {
-    return api.get<Message[]>(`/chats/${threadId}/messages`);
+  getMessages: async (conversationId: string) => {
+    return api.get<Message[]>(`/chat/messages/${conversationId}`);
   },
   
-  sendMessage: async (threadId: string, content: string) => {
-    return api.post<Message>(`/chats/${threadId}/messages`, { content });
-  },
-  
-  markAsRead: async (threadId: string) => {
-    return api.patch<void>(`/chats/${threadId}/read`);
+  startConversation: async (participantId: string) => {
+    return api.post<Conversation>('/chat/start', { participantId });
   }
 };

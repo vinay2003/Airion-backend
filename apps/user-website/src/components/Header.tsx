@@ -255,7 +255,7 @@ const Header: React.FC = () => {
                 ) : (
                     <Link
                         to="/login"
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-lg shadow-red-500/20"
+                        className="bg-red-500 hover:bg-red-600 text-white px-5 h-[38px] flex items-center justify-center rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-500/30 whitespace-nowrap"
                     >
                         Login
                     </Link>

@@ -77,7 +77,7 @@ const SearchBar = () => {
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     const [openDate, setOpenDate] = useState(false);
 
-    const [guests, setGuests] = useState(1);
+    const [guests, setGuests] = useState(0);
     const [openGuests, setOpenGuests] = useState(false);
 
     const handleSearch = () => {
@@ -110,7 +110,7 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[350px] overflow-hidden" align="start">
+                    <PopoverContent className="p-0 w-[400px] overflow-hidden" align="start" sideOffset={12}>
                         <Command className="border-none bg-white dark:bg-slate-900">
                             <CommandInput placeholder="Where are you heading?" className="h-14 font-medium" />
                             <CommandList className="max-h-[300px] py-2">
@@ -176,7 +176,7 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 border-none shadow-2xl overflow-hidden rounded-[2rem]" align="start">
+                    <PopoverContent className="w-auto p-0 border-none shadow-2xl overflow-hidden rounded-[2rem]" align="center" sideOffset={12}>
                         <div className="bg-white dark:bg-slate-900 p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
                              <span className="text-sm font-black uppercase tracking-widest text-gray-400">Select Dates</span>
                              <div className="flex gap-2">
@@ -207,13 +207,13 @@ const SearchBar = () => {
                             <Users className={`w-5 h-5 shrink-0 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Guests</label>
-                                <p className="text-base text-gray-900 dark:text-white font-bold truncate">
-                                    {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                                <p className={`text-base truncate ont-bold ${guests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
+                                    {guests === 0 ? 'Add Guests' : `${guests} ${guests === 1 ? 'Guest' : 'Guests'}`}
                                 </p>
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[320px] p-0 overflow-hidden" align="start">
+                    <PopoverContent className="w-[320px] p-0 overflow-hidden" align="end" sideOffset={12}>
                         <div className="p-6 space-y-6 bg-white dark:bg-slate-900">
                             <div className="flex items-center justify-between">
                                 <div className="flex flex-col">

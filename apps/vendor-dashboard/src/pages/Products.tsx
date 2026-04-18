@@ -380,8 +380,9 @@ const Products: React.FC = () => {
                         <div key={i} className="h-80 rounded-[3rem] border border-[var(--ease2event-border-subtle)] animate-pulse bg-[var(--ease2event-bg-surface)] shadow-lg"></div>
                     ))
                 ) : (
-                                 <AnimatePresence mode="popLayout">
-                        {filteredProducts.map((prod: any, idx: number) => (
+                    <>
+                        <AnimatePresence mode="popLayout">
+                            {filteredProducts.map((prod: any, idx: number) => (
                             <motion.div 
                                 key={prod.id} 
                                 layout

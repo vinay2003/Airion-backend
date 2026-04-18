@@ -1,22 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User as UserIcon, Menu, X, Globe, Moon, Sun, Search, Sparkles, ChevronDown, LayoutDashboard, LogOut, Settings, ArrowRight } from 'lucide-react';
+import {
+    User as UserIcon, Menu, X, Globe, Moon, Sun,
+    Sparkles, ChevronDown, LayoutDashboard, LogOut,
+    Settings, ArrowRight, Home, ShoppingBag, Package,
+    CalendarDays, Info, Phone
+} from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared/auth';
 
+// ─────────────────────────────────────────────
+// UserProfileMenu — unchanged from original
+// ─────────────────────────────────────────────
 const UserProfileMenu = ({
     user,
     isUserMenuOpen,
     setIsUserMenuOpen,
     userMenuRef,
-    logout
+    logout,
 }: {
-    user: any,
-    isUserMenuOpen: boolean,
-    setIsUserMenuOpen: (o: boolean) => void,
-    userMenuRef: React.RefObject<HTMLDivElement>,
-    logout: () => Promise<void>
+    user: any;
+    isUserMenuOpen: boolean;
+    setIsUserMenuOpen: (o: boolean) => void;
+    userMenuRef: React.RefObject<HTMLDivElement>;
+    logout: () => Promise<void>;
 }) => (
     <div className="relative" ref={userMenuRef}>
         <button
@@ -30,7 +38,10 @@ const UserProfileMenu = ({
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">{user?.name}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Account</p>
             </div>
-            <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+                size={14}
+                className={`text-gray-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`}
+            />
         </button>
 
         <AnimatePresence>
@@ -81,22 +92,41 @@ const UserProfileMenu = ({
     </div>
 );
 
+// ─────────────────────────────────────────────
+// Nav icon map for mobile drawer
+// ─────────────────────────────────────────────
+const navIconMap: Record<string, React.ReactNode> = {
+    Home: <Home size={18} />,
+    Marketplace: <ShoppingBag size={18} />,
+    Packages: <Package size={18} />,
+    Events: <CalendarDays size={18} />,
+    Weddings: <CalendarDays size={16} />,
+    Parties: <CalendarDays size={16} />,
+    Corporate: <CalendarDays size={16} />,
+    'About Us': <Info size={18} />,
+    Contact: <Phone size={18} />,
+};
+
+// ─────────────────────────────────────────────
+// Header Component
+// ─────────────────────────────────────────────
 const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
     const { theme, toggleTheme } = useTheme();
     const { user, isAuthenticated, logout } = useAuth();
     const location = useLocation();
     const userMenuRef = useRef<HTMLDivElement>(null);
 
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const openMenu = () => setIsMenuOpen(true);
+    const closeMenu = () => { setIsMenuOpen(false); setOpenAccordion(null); };
 
     const navItems = [
         { name: 'Home', path: '/' },
         { name: 'Marketplace', path: '/search' },
-        // { name: 'Inspiration', path: '/inspiration' },
         { name: 'Packages', path: '/packages' },
         {
             name: 'Events',
@@ -104,91 +134,72 @@ const Header: React.FC = () => {
             children: [
                 { name: 'Weddings', path: '/category/weddings' },
                 { name: 'Parties', path: '/category/parties' },
-                { name: 'Corporate', path: '/category/corporate' }
-            ]
+                { name: 'Corporate', path: '/category/corporate' },
+            ],
         },
         { name: 'About Us', path: '/about' },
-        { name: 'Contact', path: '/contact' }
+        { name: 'Contact', path: '/contact' },
     ];
 
-    // Close dropdowns when clicking outside
+    // Close user dropdown on outside click
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        const handle = (e: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
                 setIsUserMenuOpen(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', handle);
+        return () => document.removeEventListener('mousedown', handle);
     }, []);
 
-    // Handle scroll effect
+    // Scroll detection
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
-            if (window.scrollY > 20 && isSearchOpen) setIsSearchOpen(false);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isSearchOpen]);
+        const handle = () => setIsScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handle, { passive: true });
+        return () => window.removeEventListener('scroll', handle);
+    }, []);
 
-    // Close mobile menu on route change
+    // Close on route change
     useEffect(() => {
-        setIsMenuOpen(false);
-        setIsSearchOpen(false);
+        closeMenu();
         setIsUserMenuOpen(false);
     }, [location]);
 
-    // Prevent body scroll when mobile menu is open
+    // Lock body scroll when drawer is open
     useEffect(() => {
-        if (isMenuOpen || isSearchOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isMenuOpen, isSearchOpen]);
+        document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
 
-    const isActivePath = (path: string) => location.pathname === path;
+    const isActive = (path: string) => location.pathname === path;
+
+    // ── stagger variants for nav items ──
+    const listVariants: Variants = {
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.055, delayChildren: 0.1 } },
+    };
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, x: -16 },
+        visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 400, damping: 30 } },
+    };
 
     return (
         <header
-            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled || isSearchOpen
-                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
-                : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
+            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
+                    ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
+                    : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
         >
-            {/* Backdrop for Mega Menu Search */}
-            <AnimatePresence>
-                {isSearchOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 top-[72px] bg-black/40 backdrop-blur-sm z-40 hidden lg:block"
-                        onClick={() => setIsSearchOpen(false)}
-                    />
-                )}
-            </AnimatePresence>
-
-            {/* Logo */}
+            {/* ── Logo ── */}
             <Link
                 to="/"
                 className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <Sparkles
-                    size={28}
-                    className="text-red-600 hidden sm:block animate-pulse"
-                />
-
-                <span className="text-red-600">
-                    Ease2event
-                </span>
+                <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
+                <span className="text-red-600">Ease2event</span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* ── Desktop Nav ── */}
             <nav className="hidden lg:flex items-center gap-3">
                 {navItems.map((item) => (
                     <div key={item.name} className="relative group px-1">
@@ -198,7 +209,7 @@ const Header: React.FC = () => {
                                     {item.name}
                                     <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
                                 </button>
-                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
                                     <div className="p-2">
                                         {item.children.map((child) => (
                                             <Link
@@ -215,13 +226,13 @@ const Header: React.FC = () => {
                         ) : (
                             <Link
                                 to={item.path}
-                                className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActivePath(item.path)
-                                    ? 'text-red-600'
-                                    : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                                className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActive(item.path)
+                                        ? 'text-red-600'
+                                        : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
                                     }`}
                             >
                                 {item.name}
-                                {isActivePath(item.path) && (
+                                {isActive(item.path) && (
                                     <motion.div
                                         layoutId="nav-underline"
                                         className="absolute bottom-0 left-4 right-4 h-0.5 bg-red-500 rounded-full"
@@ -233,14 +244,8 @@ const Header: React.FC = () => {
                 ))}
             </nav>
 
-            {/* Mapping for Desktop Actions */}
+            {/* ── Desktop Actions ── */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-                {/* <Link
-                    to="/plan-event"
-                    className="text-sm font-medium text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-slate-800 px-4 py-2.5 rounded-full transition-all"
-                >
-                    Plan Your Event
-                </Link> */}
                 {isAuthenticated ? (
                     <UserProfileMenu
                         user={user}
@@ -265,8 +270,8 @@ const Header: React.FC = () => {
                 </button>
             </div>
 
-            {/* Mobile & Tablet Toggle Action Container */}
-            <div className="flex lg:hidden items-center gap-2 items-center">
+            {/* ── Mobile Top-Bar Actions ── */}
+            <div className="flex lg:hidden items-center gap-2">
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
@@ -292,188 +297,316 @@ const Header: React.FC = () => {
                     </Link>
                 )}
 
+                {/* Hamburger */}
                 <button
-                    onClick={toggleMenu}
-                    className="flex h-11 w-11 items-center justify-center text-gray-700 dark:text-slate-300 z-50 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all active:scale-90"
-                    aria-label="Toggle menu"
+                    onClick={openMenu}
+                    className="flex h-10 w-10 items-center justify-center text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all active:scale-90"
+                    aria-label="Open menu"
                 >
-                    {isMenuOpen ? <X size={26} className="text-gray-900 dark:text-white" /> : <Menu size={26} />}
+                    <Menu size={24} />
                 </button>
             </div>
 
-            {/* Mobile & Tablet Side Drawer Navigation - FIXED LAYERED OVERLAY */}
-            <AnimatePresence mode="wait">
+            {/* ════════════════════════════════════════
+                MOBILE SIDE DRAWER
+                FIX: position:fixed overlay — does NOT
+                push content down. Uses flex col so
+                footer always stays pinned at bottom.
+            ════════════════════════════════════════ */}
+            <AnimatePresence>
                 {isMenuOpen && (
-                    <div key="mobile-menu-portal" className="fixed inset-0 z-[9999]">
-                        {/* Backdrop with full-screen coverage and deep blur */}
+                    /* Portal-level wrapper */
+                    <div className="fixed inset-0 z-[9999] lg:hidden">
+
+                        {/* Dim backdrop */}
                         <motion.div
-                            key="menu-backdrop"
+                            key="backdrop"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-2xl lg:hidden cursor-pointer"
-                            onClick={toggleMenu}
+                            transition={{ duration: 0.22 }}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                            onClick={closeMenu}
                         />
 
-                        {/* Solid Menu Panel - High Performance Container */}
+                        {/* ── Drawer Panel ── */}
                         <motion.div
-                            key="menu-panel"
+                            key="drawer"
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', damping: 32, stiffness: 350, mass: 0.7 }}
-                            className="fixed inset-y-0 left-0 w-[85%] xs:w-80 sm:w-96 bg-white dark:bg-slate-950 flex flex-col shadow-[rgba(0,0,0,0.5)_20px_0_50px] lg:hidden border-r border-gray-100 dark:border-slate-800"
+                            transition={{ type: 'spring', damping: 30, stiffness: 320, mass: 0.8 }}
+                            /* 
+                              KEY FIX:
+                              - w-[82vw] max-w-[340px] → fits small phones (360px) perfectly
+                              - h-full (= 100dvh fallback via inset-y-0) 
+                              - flex flex-col → header / scroll-area / footer stack correctly
+                              - overflow-hidden on panel itself so children control scroll
+                            */
+                            className="absolute inset-y-0 left-0 w-[82vw] max-w-[340px] h-full flex flex-col
+                                       bg-white dark:bg-slate-950
+                                       shadow-[20px_0_60px_rgba(0,0,0,0.35)]
+                                       border-r border-gray-100 dark:border-slate-800
+                                       overflow-hidden"
                         >
-                            {/* Drawer Header - FORCED SOLID BACKGROUND */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
+                            {/* ── Drawer Header ── */}
+                            <div className="flex-shrink-0 flex items-center justify-between px-5 py-4
+                                            border-b border-gray-100 dark:border-slate-800
+                                            bg-white dark:bg-slate-950">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/20">
-                                        <Sparkles size={20} className="text-white animate-pulse" />
+                                    <div className="w-9 h-9 bg-red-500 rounded-xl flex items-center justify-center shadow-md shadow-red-500/30">
+                                        <Sparkles size={18} className="text-white" />
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Explore</span>
-                                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Ease2event Navigation</span>
+                                    <div>
+                                        {/* FIX: was "AIRION MENU" — corrected to brand name */}
+                                        <p className="text-base font-black text-gray-900 dark:text-white leading-none">
+                                            Ease2event
+                                        </p>
+                                        <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-0.5">
+                                            Navigation
+                                        </p>
                                     </div>
                                 </div>
                                 <button
-                                    onClick={toggleMenu}
-                                    className="p-3 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white hover:border-red-500 transition-all active:scale-90"
+                                    onClick={closeMenu}
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl
+                                               bg-gray-100 dark:bg-slate-800
+                                               text-gray-700 dark:text-white
+                                               hover:bg-red-50 dark:hover:bg-red-900/20
+                                               hover:text-red-500 transition-all active:scale-90"
+                                    aria-label="Close menu"
                                 >
-                                    <X size={20} />
+                                    <X size={18} />
                                 </button>
                             </div>
 
-                            {/* Drawer Content - FORCED SOLID BACKGROUND */}
-                            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-white dark:bg-slate-950 custom-scrollbar">
-                                {/* Core Navigation */}
-                                <nav className="space-y-1.5 px-1">
+                            {/* ── Scrollable Body ── 
+                                FIX: flex-1 + overflow-y-auto ensures this area
+                                fills the middle and scrolls independently,
+                                so footer never overlaps content.
+                            ── */}
+                            <div className="flex-1 overflow-y-auto overscroll-contain
+                                            bg-white dark:bg-slate-950
+                                            px-4 py-5 space-y-2
+                                            [-webkit-overflow-scrolling:touch]">
+
+                                {/* Nav Items */}
+                                <motion.nav
+                                    variants={listVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    className="space-y-1"
+                                >
                                     {navItems.map((item) => (
-                                        <div key={item.name} className="space-y-1.5">
+                                        <motion.div key={item.name} variants={itemVariants}>
                                             {item.children ? (
-                                                <div className="space-y-1.5 py-3">
-                                                    <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 dark:text-slate-500">
-                                                        {item.name}
-                                                    </div>
-                                                    {item.children.map((child) => (
-                                                        <Link
-                                                            key={child.name}
-                                                            to={child.path}
-                                                            onClick={toggleMenu}
-                                                            className={`flex items-center justify-between group py-3.5 px-4 rounded-2xl transition-all ${isActivePath(child.path)
-                                                                ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
-                                                                : 'bg-gray-50/50 dark:bg-slate-900/50 text-gray-900 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-900/10'
-                                                                }`}
-                                                        >
-                                                            <span className="text-base font-bold">{child.name}</span>
-                                                            <ArrowRight size={16} className={`transition-transform group-hover:translate-x-1 ${isActivePath(child.path) ? 'opacity-100' : 'opacity-0'}`} />
-                                                        </Link>
-                                                    ))}
+                                                /* Accordion for children */
+                                                <div>
+                                                    <button
+                                                        onClick={() =>
+                                                            setOpenAccordion(
+                                                                openAccordion === item.name ? null : item.name
+                                                            )
+                                                        }
+                                                        className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all
+                                                            ${openAccordion === item.name
+                                                                ? 'bg-red-50 dark:bg-red-900/15 text-red-600 dark:text-red-400'
+                                                                : 'bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 hover:bg-red-50 dark:hover:bg-red-900/10'
+                                                            }`}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={`${openAccordion === item.name ? 'text-red-500' : 'text-gray-400 dark:text-slate-500'}`}>
+                                                                {navIconMap[item.name]}
+                                                            </span>
+                                                            <span className="text-sm font-bold">{item.name}</span>
+                                                        </div>
+                                                        <ChevronDown
+                                                            size={15}
+                                                            className={`text-gray-400 transition-transform duration-300
+                                                                ${openAccordion === item.name ? 'rotate-180 text-red-500' : ''}`}
+                                                        />
+                                                    </button>
+
+                                                    <AnimatePresence>
+                                                        {openAccordion === item.name && (
+                                                            <motion.div
+                                                                initial={{ height: 0, opacity: 0 }}
+                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                exit={{ height: 0, opacity: 0 }}
+                                                                transition={{ duration: 0.22, ease: 'easeInOut' }}
+                                                                className="overflow-hidden"
+                                                            >
+                                                                <div className="pl-4 pr-1 pt-1.5 pb-1 space-y-1">
+                                                                    {item.children.map((child) => (
+                                                                        <Link
+                                                                            key={child.name}
+                                                                            to={child.path}
+                                                                            onClick={closeMenu}
+                                                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all
+                                                                                ${isActive(child.path)
+                                                                                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/25'
+                                                                                    : 'text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/15 hover:text-red-600 dark:hover:text-red-400'
+                                                                                }`}
+                                                                        >
+                                                                            <span className={isActive(child.path) ? 'text-white/80' : 'text-gray-400'}>
+                                                                                {navIconMap[child.name]}
+                                                                            </span>
+                                                                            {child.name}
+                                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
                                                 </div>
                                             ) : (
                                                 <Link
                                                     to={item.path}
-                                                    onClick={toggleMenu}
-                                                    className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${isActivePath(item.path)
-                                                        ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
-                                                        : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
+                                                    onClick={closeMenu}
+                                                    className={`flex items-center justify-between group px-4 py-3.5 rounded-2xl transition-all
+                                                        ${isActive(item.path)
+                                                            ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
+                                                            : 'bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-600'
                                                         }`}
                                                 >
-                                                    <span className="text-lg font-black tracking-tight">{item.name}</span>
-                                                    <ArrowRight size={18} className={`transition-transform group-hover:translate-x-1 ${isActivePath(item.path) ? 'opacity-100' : 'opacity-30'}`} />
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={isActive(item.path) ? 'text-white/80' : 'text-gray-400 dark:text-slate-500'}>
+                                                            {navIconMap[item.name]}
+                                                        </span>
+                                                        <span className="text-sm font-bold">{item.name}</span>
+                                                    </div>
+                                                    <ArrowRight
+                                                        size={15}
+                                                        className={`transition-transform group-hover:translate-x-1
+                                                            ${isActive(item.path) ? 'opacity-100 text-white' : 'opacity-30'}`}
+                                                    />
                                                 </Link>
                                             )}
-                                        </div>
+                                        </motion.div>
                                     ))}
+                                </motion.nav>
 
-                                    {/* Additional CTA: Plan Your Event - Removed as per request */}
-                                    {/* <Link
-                                        to="/plan-event"
-                                        onClick={toggleMenu}
-                                        className={`mt-4 flex items-center justify-between group py-5 px-5 rounded-2xl transition-all bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-xl shadow-red-500/40 relative overflow-hidden`}
-                                    >
-                                        <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                        <span className="text-lg font-black tracking-tight uppercase relative z-10">Plan Your Event</span>
-                                        <Sparkles size={20} className="text-white/80 group-hover:rotate-12 transition-transform" />
-                                    </Link> */}
-                                </nav>
+                                {/* Divider */}
+                                <div className="h-px bg-gray-100 dark:bg-slate-800 mx-1" />
 
-                                {/* Theme & Settings */}
-                                <div className="grid grid-cols-1 gap-3 p-1">
-                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                {/* Settings Tiles */}
+                                <div className="space-y-2 pt-1">
+                                    {/* Theme toggle */}
+                                    <div className="flex items-center justify-between px-4 py-3.5
+                                                    bg-gray-50 dark:bg-slate-900
+                                                    rounded-2xl border border-gray-100 dark:border-slate-800">
                                         <div className="flex items-center gap-3">
-                                            {theme === 'dark' ? <Moon size={20} className="text-blue-500" /> : <Sun size={20} className="text-yellow-500" />}
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">Appearance</span>
+                                            {theme === 'dark'
+                                                ? <Moon size={17} className="text-blue-400" />
+                                                : <Sun size={17} className="text-yellow-500" />}
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                                {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                                            </span>
                                         </div>
+                                        {/* Toggle pill */}
                                         <button
                                             onClick={toggleTheme}
-                                            className="w-12 h-6 bg-gray-200 dark:bg-slate-700 rounded-full relative transition-colors"
+                                            aria-label="Toggle theme"
+                                            className={`relative w-11 h-6 rounded-full transition-colors duration-300
+                                                ${theme === 'dark' ? 'bg-blue-500' : 'bg-gray-200'}`}
                                         >
-                                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${theme === 'dark' ? 'left-7' : 'left-1'}`} />
+                                            <span
+                                                className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm
+                                                    transition-all duration-300
+                                                    ${theme === 'dark' ? 'left-6' : 'left-1'}`}
+                                            />
                                         </button>
                                     </div>
 
-
-                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                    {/* Language */}
+                                    <div className="flex items-center justify-between px-4 py-3.5
+                                                    bg-gray-50 dark:bg-slate-900
+                                                    rounded-2xl border border-gray-100 dark:border-slate-800">
                                         <div className="flex items-center gap-3">
-                                            <Globe size={20} className="text-gray-400" />
+                                            <Globe size={17} className="text-gray-400" />
                                             <span className="text-sm font-bold text-gray-900 dark:text-white">Language</span>
                                         </div>
-                                        <span className="text-xs font-black text-red-500 uppercase tracking-widest">English</span>
+                                        <span className="text-[11px] font-black text-red-500 uppercase tracking-widest">
+                                            English
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Drawer Footer - FORCED SOLID BACKGROUND */}
-                            <div className="mt-auto p-6 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 sticky bottom-0 z-[120]">
+                            {/* ── Drawer Footer ──
+                                FIX: flex-shrink-0 keeps footer pinned at bottom.
+                                No longer bleeds into nav content area.
+                            ── */}
+                            <div className="flex-shrink-0 px-4 py-5
+                                            border-t border-gray-100 dark:border-slate-800
+                                            bg-gray-50 dark:bg-slate-900">
                                 {isAuthenticated ? (
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-red-500 flex items-center justify-center text-white text-xl font-black">
+                                    <div className="space-y-3">
+                                        {/* User info row */}
+                                        <div className="flex items-center gap-3 px-1 pb-1">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-black text-base">
                                                 {user?.name?.[0]}
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-black text-gray-900 dark:text-white">{user?.name}</span>
-                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Member ID: #2384</span>
+                                            <div>
+                                                <p className="text-sm font-black text-gray-900 dark:text-white leading-none">{user?.name}</p>
+                                                <p className="text-[10px] text-gray-500 font-semibold mt-0.5">{user?.email}</p>
                                             </div>
                                         </div>
+
                                         <Link
                                             to="/dashboard"
-                                            onClick={toggleMenu}
-                                            className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
+                                            onClick={closeMenu}
+                                            className="flex items-center justify-center gap-2 w-full
+                                                       bg-gray-900 dark:bg-white
+                                                       text-white dark:text-gray-900
+                                                       py-3.5 rounded-2xl font-black text-sm
+                                                       uppercase tracking-widest transition-all
+                                                       hover:bg-red-600 dark:hover:bg-red-50 active:scale-[0.98]"
                                         >
-                                            <LayoutDashboard size={18} />
-                                            Access Dashboard
+                                            <LayoutDashboard size={16} />
+                                            Dashboard
                                         </Link>
+
                                         <button
-                                            onClick={async () => {
-                                                toggleMenu();
-                                                await logout();
-                                            }}
-                                            className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border-2 border-red-500/10 text-red-500 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all"
+                                            onClick={async () => { closeMenu(); await logout(); }}
+                                            className="w-full flex items-center justify-center gap-2
+                                                       bg-white dark:bg-slate-800
+                                                       border border-red-200 dark:border-red-900/40
+                                                       text-red-500 py-3 rounded-2xl font-bold text-sm
+                                                       uppercase tracking-wider transition-all
+                                                       hover:bg-red-50 dark:hover:bg-red-900/20 active:scale-[0.98]"
                                         >
-                                            <LogOut size={18} />
+                                            <LogOut size={16} />
                                             Log Out
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-1 gap-4">
+                                    <div className="space-y-3">
                                         <Link
                                             to="/login"
-                                            onClick={toggleMenu}
-                                            className="w-full bg-red-600 hover:bg-black text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest text-center shadow-xl shadow-red-500/30"
+                                            onClick={closeMenu}
+                                            className="block w-full bg-red-600 hover:bg-red-700 active:scale-[0.98]
+                                                       text-white py-3.5 rounded-2xl font-black text-sm
+                                                       uppercase tracking-widest text-center
+                                                       shadow-lg shadow-red-500/25 transition-all"
                                         >
-                                            LOGIN / SIGNUP
+                                            Login / Sign Up
                                         </Link>
                                         <Link
                                             to="/contact"
-                                            onClick={toggleMenu}
-                                            className="w-full border-2 border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                                            onClick={closeMenu}
+                                            className="block w-full border border-gray-200 dark:border-slate-700
+                                                       text-gray-700 dark:text-white py-3 rounded-2xl font-bold text-sm
+                                                       uppercase tracking-wider text-center
+                                                       hover:bg-gray-100 dark:hover:bg-slate-800
+                                                       active:scale-[0.98] transition-all"
                                         >
-                                            CONTACT SUPPORT
+                                            Contact Support
                                         </Link>
                                     </div>
                                 )}
                             </div>
+
                         </motion.div>
                     </div>
                 )}

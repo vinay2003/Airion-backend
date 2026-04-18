@@ -130,9 +130,13 @@ const SearchBar = () => {
                                                 <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
                                                     <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold text-gray-900 dark:text-white group-hover:text-red-600">{loc.label}</span>
-                                                    <span className="text-xs text-gray-400">Experience the best of {loc.label}</span>
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate">
+                                                        {loc.label.split(',')[0]}
+                                                    </span>
+                                                    <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                                                        {loc.label.split(',')[1]?.trim() || "Local Destination"}
+                                                    </span>
                                                 </div>
                                                 <Check
                                                     className={cn(

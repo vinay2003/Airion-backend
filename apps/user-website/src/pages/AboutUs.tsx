@@ -9,17 +9,17 @@ const AboutUs: React.FC = () => {
             <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
-                    <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tighter italic">
-                        We Create <span className="text-red-600 font-cursive not-italic">Memories</span>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter">
+                        We<span className="ml-1"></span> Create <span className="ml-1">Memories</span>
                     </h1>
-                    <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold uppercase text-xs tracking-widest">
+                    <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold text-xs tracking-widest">
                         Ease2event is the premier digital ecosystem for orchestrating unforgettable events. From intimate gatherings to grand celebrations, we execute your vision with precision.
                     </p>
                 </div>
             </div>
 
             {/* Stats Section */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-10 relative z-20">
+            <div className="max-w-6xl mx-auto px-4 md:px-8 -mt-10 relative z-18">
                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-8 border border-gray-100 dark:border-slate-700">
                     {[
                         { label: 'Events Planned', value: '500+' },

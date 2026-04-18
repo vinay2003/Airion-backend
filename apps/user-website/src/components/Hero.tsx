@@ -6,12 +6,12 @@ import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
 
 const HERO_IMAGES = [
-    "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=2400&auto=format&fit=crop&q=95",
+    "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=1600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=600&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1616431629879-af0e95bf9f88?w=2400&auto=format&fit=crop&q=100",
-    "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=2400&auto=format&fit=crop&q=100",
+    "https://images.unsplash.com/photo-1616431629879-af0e95bf9f88?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=1600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=600&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=2400&auto=format&fit=crop&q=95",
+    "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1600&auto=format&fit=crop&q=80",
 ];
 
 const SEARCH_TABS = ["All", "Venues", "Services", "Experiences"];
@@ -57,6 +57,8 @@ const Hero: React.FC = () => {
                             src={HERO_IMAGES[currentImageIndex]}
                             className="w-full h-full object-cover"
                             alt="event"
+                            fetchPriority="high"
+                            decoding="async"
                         />
                         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
                     </motion.div>
@@ -97,10 +99,10 @@ const Hero: React.FC = () => {
                             ) : (
                                 <>
                                     Create Unforgettable <br className="hidden md:block" />
-                                    <span className="bg-gradient-to-r from-rose-500 via-red-400 to-orange-500 bg-clip-text text-transparent italic px-2">
+                                    <span>
                                         Moments
                                     </span>
-                                    With Ease2event
+                                    {" "}With Ease2event
                                 </>
                             )}
                         </h1>

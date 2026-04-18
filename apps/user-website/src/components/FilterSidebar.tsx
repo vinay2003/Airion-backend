@@ -3,14 +3,99 @@ import { Map, Search, Calendar, Users, MapPin } from 'lucide-react';
 
 const FilterSidebar: React.FC = () => {
     const [priceRange, setPriceRange] = useState(50000);
+    const [locationInput, setLocationInput] = useState('');
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
+    const [selectedCapacity, setSelectedCapacity] = useState('');
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+    // Mock data for city suggestions
+    const cities = [
+        'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Ahmedabad', 'Chennai', 'Kolkata', 'Pune',
+        'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore', 'Thane', 'Bhopal', 'Visakhapatnam',
+        'Pimpri-Chinchwad', 'Patna', 'Vadodara', 'Ghaziabad', 'Ludhiana', 'Agra', 'Nashik', 'Ranchi',
+        'Faridabad', 'Meerut', 'Rajkot', 'Kalyan-Dombivli', 'Vasai-Virar', 'Varanasi', 'Srinagar',
+        'Aurangabad', 'Dhanbad', 'Amritsar', 'Navi Mumbai', 'Allahabad', 'Howrah', 'Gwalior',
+        'Jabalpur', 'Coimbatore', 'Vijayawada', 'Jodhpur', 'Madurai', 'Raipur', 'Chandigarh', 'Guntur',
+        'Guwahati', 'Solapur', 'Hubli-Dharwad', 'Mysore', 'Tiruchirappalli', 'Bareilly', 'Aligarh',
+        'Tiruppur', 'Gurgaon', 'Moradabad', 'Jalandhar', 'Bhubaneswar', 'Salem', 'Warangal', 'Mira-Bhayandar',
+        'Jalgaon', 'Gota', 'Panjim', 'Pondicherry'
+    ];
+
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setLocationInput(value);
+        if (value.length > 0) {
+            const filtered = cities.filter(city =>
+                city.toLowerCase().startsWith(value.toLowerCase())
+            ).slice(0, 5);
+            setSuggestions(filtered);
+            setShowSuggestions(true);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleEventTypeChange = (type: string) => {
+        setSelectedEventTypes(prev =>
+            prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+        );
+    };
+
+    const handleAmenityChange = (amenity: string) => {
+        setSelectedAmenities(prev =>
+            prev.includes(amenity) ? prev.filter(a => a !== amenity) : [...prev, amenity]
+        );
+    };
+
+    const handleClearAll = () => {
+        setPriceRange(50000);
+        setLocationInput('');
+        setSuggestions([]);
+        setShowSuggestions(false);
+        setSelectedDate('');
+        setSelectedEventTypes([]);
+        setSelectedCapacity('');
+        setSelectedAmenities([]);
+    };
+
+    const selectLocation = (city: string) => {
+        setLocationInput(city);
+        setShowSuggestions(false);
+    };
+
+    const openMap = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    window.open(
+                        `https://www.google.com/maps/search/event+venues/@${latitude},${longitude},14z`,
+                        '_blank'
+                    );
+                },
+                () => {
+                    window.open('https://www.google.com/maps/search/event+venues+india/', '_blank');
+                }
+            );
+        } else {
+            window.open('https://www.google.com/maps/search/event+venues+india/', '_blank');
+        }
+    };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-20 relative">
             {/* Map Snippet */}
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl overflow-hidden relative h-32 border border-blue-100 dark:border-blue-800 cursor-pointer group shadow-sm">
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <button className="bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 px-5 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:scale-105 transition-transform flex items-center gap-2">
-                        <Map size={16} />
+                <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 group-hover:bg-black/20 transition-colors">
+                    <button
+                        onClick={openMap}
+                        className="bg-white/10 hover:bg-white/30 border-2 border-white text-white px-6 py-2.5 rounded-full text-sm font-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-110 hover:brightness-150 transition-all flex items-center gap-2 backdrop-blur-md"
+                    >
+                        <Map size={18} className="drop-shadow-lg" />
                         View on Map
                     </button>
                 </div>
@@ -22,15 +107,34 @@ const FilterSidebar: React.FC = () => {
             </div>
 
             {/* Location Filter */}
-            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm relative z-20">
                 <h3 className="font-extrabold text-neutral-900 dark:text-white mb-3">Location</h3>
                 <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                     <input
                         type="text"
                         placeholder="Search city, region..."
+                        value={locationInput}
+                        onChange={handleLocationChange}
+                        onFocus={() => locationInput.length > 0 && setShowSuggestions(true)}
                         className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
                     />
+
+                    {/* Suggestions List */}
+                    {showSuggestions && suggestions.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                            {suggestions.map((city, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => selectLocation(city)}
+                                    className="w-full text-left px-4 py-3 text-sm font-bold text-neutral-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-3"
+                                >
+                                    <MapPin size={14} className="opacity-40" />
+                                    {city}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -41,7 +145,9 @@ const FilterSidebar: React.FC = () => {
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                     <input
                         type="date"
-                        className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium text-neutral-400"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
                     />
                 </div>
             </div>
@@ -52,7 +158,12 @@ const FilterSidebar: React.FC = () => {
                 <div className="space-y-3.5">
                     {['Wedding', 'Corporate', 'Birthday', 'Private Party', 'Engagement'].map((type, idx) => (
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <input
+                                type="checkbox"
+                                checked={selectedEventTypes.includes(type)}
+                                onChange={() => handleEventTypeChange(type)}
+                                className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800"
+                            />
                             <span className="text-neutral-600 dark:text-slate-300 text-sm group-hover:text-neutral-900 dark:group-hover:text-white transition-colors font-medium">{type}</span>
                         </label>
                     ))}
@@ -92,7 +203,13 @@ const FilterSidebar: React.FC = () => {
                         { label: 'Large Celebration', range: '200+ guests' }
                     ].map((cap, idx) => (
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="capacity" className="h-5 w-5 border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800" />
+                            <input
+                                type="radio"
+                                name="capacity"
+                                checked={selectedCapacity === cap.label}
+                                onChange={() => setSelectedCapacity(cap.label)}
+                                className="h-5 w-5 border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800"
+                            />
                             <div className="flex flex-col">
                                 <span className="text-neutral-900 dark:text-white text-sm font-medium">{cap.label}</span>
                                 <span className="text-neutral-400 text-xs">{cap.range}</span>
@@ -103,18 +220,40 @@ const FilterSidebar: React.FC = () => {
             </div>
 
             {/* Amenities Filter */}
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-neutral-200/60 dark:border-slate-800 shadow-sm mb-6">
                 <h3 className="font-extrabold text-neutral-900 dark:text-white mb-4">Amenities</h3>
                 <div className="flex flex-wrap gap-2">
                     {['Wifi', 'Parking', 'AC', 'Pool', 'Bar', 'Catering', 'Decor', 'Stage'].map((amenity, idx) => (
                         <label key={idx} className="cursor-pointer group">
-                            <input type="checkbox" className="hidden peer" />
+                            <input
+                                type="checkbox"
+                                checked={selectedAmenities.includes(amenity)}
+                                onChange={() => handleAmenityChange(amenity)}
+                                className="hidden peer"
+                            />
                             <span className="inline-block px-4 py-2 bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-slate-300 text-xs font-bold rounded-full peer-checked:bg-red-500 peer-checked:text-white transition-colors border border-transparent peer-checked:border-red-500 hover:bg-neutral-200 dark:hover:bg-slate-700">
                                 {amenity}
                             </span>
                         </label>
                     ))}
                 </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-4 space-y-3">
+                <button
+                    onClick={() => console.log('Filters Applied', { locationInput, priceRange, selectedDate, selectedEventTypes, selectedCapacity, selectedAmenities })}
+                    className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                    <Search size={18} />
+                    Apply Filters
+                </button>
+                <button
+                    onClick={handleClearAll}
+                    className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-200 dark:hover:border-slate-700 font-bold text-xs uppercase tracking-widest rounded-2xl transition-all"
+                >
+                    Clear All Filters
+                </button>
             </div>
         </div>
     );

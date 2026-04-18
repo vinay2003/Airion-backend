@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="space-y-6">
-                        <Link to="/" className="text-3xl font-black text-red-500 font-cursive tracking-tighter hover:scale-105 transition-transform inline-block">Ease2event</Link>
+                        <Link to="/" className="text-3xl font-black text-red-500 hover:scale-105 transition-transform inline-block">Ease2event</Link>
                         <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>

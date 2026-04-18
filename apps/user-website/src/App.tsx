@@ -17,7 +17,7 @@ import BudgetPlanner from './pages/dashboard/BudgetPlanner';
 import Inbox from './pages/dashboard/Inbox';
 import ProfileSettings from './pages/dashboard/ProfileSettings';
 
-import { Payments, DigitalInvites, Support } from './pages/dashboard/Placeholders';
+import { Payments, DigitalInvites, Support, Terms, Privacy } from './pages/dashboard/Placeholders';
 import GuestList from './pages/dashboard/GuestList';
 
 // Lazy load pages
@@ -129,6 +129,8 @@ const App: React.FC = () => {
                         <Route path="/contact" element={<ContactUs />} />
                         <Route path="/packages" element={<Packages />} />
                         <Route path="/become-vendor" element={<BecomeVendor />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/privacy" element={<Privacy />} />
                       </Routes>
                     </Suspense>
                   </div>

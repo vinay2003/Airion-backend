@@ -17,12 +17,6 @@ const SORT_OPTIONS = [
     { label: 'Newest', value: 'newest' },
 ];
 
-const STATUS_BADGES: Record<number, { label: string; color: string }> = {
-    0: { label: 'FILLING FAST', color: 'bg-orange-100 text-orange-700' },
-    1: { label: 'TOP RATED', color: 'bg-green-100 text-green-700' },
-    2: { label: 'NEW', color: 'bg-blue-100 text-blue-700' },
-};
-
 const VendorDiscovery: React.FC = () => {
     const [vendors, setVendors] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -75,8 +69,8 @@ const VendorDiscovery: React.FC = () => {
                 {/* Header */}
                 <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200/60 dark:border-slate-800 pb-6">
                     <div>
-                        <h1 className="text-3xl md:text-6xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight italic">
-                            MARKETPLACE <span className="text-blue-600 not-italic">MATRIX</span>
+                        <h1 className="text-2xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-wide leading-tight">
+                            Plan Your Event{" "}
                         </h1>
                         <p className="text-neutral-500 dark:text-slate-400 font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
                             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
@@ -102,10 +96,16 @@ const VendorDiscovery: React.FC = () => {
                         <div className="relative">
                             <button
                                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                                className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#545353] text-sm font-bold shadow-sm bg-[#545353] text-white hover:bg-[#3f3e3e] transition-colors"                            >
-                                <ArrowUpDown size={15} className="text-neutral-400" />
-                                {currentSortLabel}
-                                <ChevronDown size={14} className={`text-neutral-400 transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
+                                className={`group relative flex items-center gap-2 py-2 px-1 transition-all duration-300 hover:scale-110 hover:brightness-150 ${showSortDropdown ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}`}
+                            >
+                                <ArrowUpDown size={15} className={showSortDropdown ? 'text-red-500' : 'text-neutral-400'} />
+                                <span className="text-xs font-black uppercase tracking-[0.2em]">
+                                    {currentSortLabel}
+                                </span>
+                                <ChevronDown size={14} className={`text-neutral-400 transition-transform duration-300 ${showSortDropdown ? 'rotate-180 text-red-500' : ''}`} />
+                                {sortBy !== 'recommended' && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full" />
+                                )}
                             </button>
 
                             <AnimatePresence>
@@ -131,18 +131,36 @@ const VendorDiscovery: React.FC = () => {
                         </div>
 
                         {/* Map/List Toggle */}
-                        <div className="flex bg-neutral-100 dark:bg-slate-800 p-1 rounded-full border border-neutral-200/50 dark:border-slate-700/50">
+                        <div className="flex items-center gap-6 px-1">
                             <button
                                 onClick={() => setIsMapView(false)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${!isMapView ? 'bg-white dark:bg-slate-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-slate-300'}`}
+                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${!isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
-                                <List size={16} /> List
+                                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em]">
+                                    <List size={16} className={!isMapView ? 'text-red-500' : ''} />
+                                    List
+                                </div>
+                                {!isMapView && (
+                                    <motion.div
+                                        layoutId="viewUnderline"
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
+                                    />
+                                )}
                             </button>
                             <button
                                 onClick={() => setIsMapView(true)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${isMapView ? 'bg-white dark:bg-slate-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-slate-300'}`}
+                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
-                                <Map size={16} /> Map
+                                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em]">
+                                    <Map size={16} className={isMapView ? 'text-red-500' : ''} />
+                                    Map
+                                </div>
+                                {isMapView && (
+                                    <motion.div
+                                        layoutId="viewUnderline"
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
+                                    />
+                                )}
                             </button>
                         </div>
                     </div>
@@ -201,12 +219,6 @@ const VendorDiscovery: React.FC = () => {
                                             transition={{ duration: 0.35, delay: (idx % 9) * 0.05 }}
                                             className="relative"
                                         >
-                                            {/* Status badge overlay */}
-                                            {STATUS_BADGES[idx % 4] && idx % 4 !== 3 && (
-                                                <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider ${STATUS_BADGES[idx % 4].color}`}>
-                                                    {STATUS_BADGES[idx % 4].label}
-                                                </div>
-                                            )}
                                             <ListingCard
                                                 id={vendor.id}
                                                 image={vendor.image || vendor.images?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'}
@@ -218,6 +230,7 @@ const VendorDiscovery: React.FC = () => {
                                                 price={vendor.price}
                                                 description={vendor.description}
                                                 category={vendor.category}
+                                                marketplaceStatus={(idx % 4 === 0 ? 'FILLING_FAST' : idx % 4 === 1 ? 'TOP_RATED' : idx % 4 === 2 ? 'NEW' : 'AVAILABLE') as any}
                                                 tags={['Verified', 'Premium', 'Fast Response']}
                                             />
                                         </motion.div>
@@ -235,7 +248,7 @@ const VendorDiscovery: React.FC = () => {
 
                         {!loading && sortedVendors.length > 0 && (
                             <div className="mt-20 flex justify-center">
-                                <button className="px-12 py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all italic border-2 border-white/10">
+                                <button className="px-12 py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
                                     Expand Network Results
                                 </button>
                             </div>

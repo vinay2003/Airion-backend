@@ -119,7 +119,7 @@ const OnboardingFlow: React.FC = () => {
                                 <Sparkles size={48} className="text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white tracking-tight mb-4 font-cursive">Welcome to Ease2event</h1>
+                                <h1 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white tracking-tight mb-4">Welcome to Ease2event</h1>
                                 <p className="text-xl text-neutral-500 dark:text-neutral-400 font-medium">Let's craft your perfect experience.</p>
                             </div>
                         </motion.div>

@@ -256,30 +256,38 @@ const EventDetails: React.FC = () => {
                                     { title: 'Gold', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
                                     { title: 'Platinum', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
                                 ].map((pkg, idx) => (
-                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all cursor-pointer border-gray-100 hover:border-red-500 dark:border-slate-800 dark:hover:border-red-500 shadow-sm hover:shadow-xl relative overflow-hidden group">
+                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all border-gray-100 hover:border-red-500 dark:border-slate-800 dark:hover:border-red-500 shadow-sm hover:shadow-xl relative overflow-hidden group flex flex-col h-full">
                                         {idx === 1 && (
-                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                                                 Most Popular
                                             </div>
                                         )}
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{pkg.title}</h3>
-                                        <div className="items-baseline gap-1 mb-4 flex">
-                                            <span className="text-2xl font-bold text-red-500">{pkg.price}</span>
+                                        <div className="mb-4">
+                                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 uppercase tracking-tight">{pkg.title}</h3>
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-2xl font-black text-red-500">{pkg.price}</span>
+                                                <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
+                                            </div>
                                         </div>
-                                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 min-h-[40px] leading-relaxed">
+                                        
+                                        <p className="text-xs text-gray-500 dark:text-slate-400 mb-6 min-h-[32px] leading-relaxed">
                                             {pkg.desc}
                                         </p>
-                                        <ul className="space-y-3 mb-8">
-                                            {pkg.features.map((feature, fIdx) => (
-                                                <li key={fIdx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300">
-                                                    <Check size={16} className="text-green-500 shrink-0 mt-0.5" />
-                                                    <span>{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+
+                                        <div className="flex-1">
+                                            <ul className="space-y-3 mb-6">
+                                                {pkg.features.map((feature, fIdx) => (
+                                                    <li key={fIdx} className="flex items-start gap-2 text-xs text-gray-600 dark:text-slate-300">
+                                                        <Check size={14} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                        <span className="font-medium">{feature}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all italic"
+                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all italic"
                                         >
                                             Initialize {pkg.title} Protocol
                                         </button>

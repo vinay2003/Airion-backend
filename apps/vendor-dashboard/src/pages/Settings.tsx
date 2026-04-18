@@ -224,7 +224,7 @@ const Settings: React.FC = () => {
                             <Database size={12} />
                             Core Config v4.2
                         </span>
-                        <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] italic opacity-60">Autonomous Configuration Hub</p>
+                        <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Autonomous Configuration Hub</p>
                     </div>
                 </div>
 

@@ -331,7 +331,7 @@ const Products: React.FC = () => {
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                             Inventory Synchronized
                         </span>
-                        <p className="text-[var(--ease2event-text-muted)] font-black text-[11px] uppercase tracking-[0.3em] leading-none opacity-60">Asset Throughput • Portfolio Matrix</p>
+                        <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Asset Throughput • Portfolio Matrix</p>
                     </div>
                 </motion.div>
                 <motion.div variants={itemVariants}>

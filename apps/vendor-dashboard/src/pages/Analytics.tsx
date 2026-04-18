@@ -106,7 +106,7 @@ const Analytics: React.FC = () => {
                             <Activity size={12} className="animate-pulse" />
                             Core Telemetry Live
                         </span>
-                        <p className="text-[10px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] opacity-40 italic">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
+                        <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Genesis Hub v4.8 • Regional Monitoring Active</p>
                     </div>
                 </motion.div>
 

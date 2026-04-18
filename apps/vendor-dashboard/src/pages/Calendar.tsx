@@ -109,7 +109,7 @@ const CalendarPage: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[var(--ease2event-border-subtle)] pb-6">
                 <div className="space-y-4">
                     <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Master Schedule</h1>
-                    <p className="text-lg font-bold text-[var(--ease2event-text-muted)] flex items-center gap-3 uppercase tracking-widest italic opacity-60">
+                    <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">
                         <Activity size={20} className="text-[var(--ease2event-brand-primary)]" />
                         Deployment Schedule • Resource Allocation • Performance Log
                     </p>

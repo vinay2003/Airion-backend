@@ -61,7 +61,7 @@ const Listings: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--ease2event-border-subtle)] pb-12">
                 <div className="space-y-4">
                     <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Event Management</h1>
-                    <p className="text-1.5xl font-bold text-[var(--ease2event-text-secondary)]">
+                    <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">
                         Configure and monitor your active event listings.
                     </p>
                 </div>

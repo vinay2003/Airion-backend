@@ -152,7 +152,7 @@ const Earnings: React.FC = () => {
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
               Live Settlement active
             </span>
-            <p className="text-[var(--ease2event-text-muted)] font-black text-[12px] uppercase tracking-[0.4em] leading-none opacity-50 italic">Liquidity Matrix • Revenue Protocol</p>
+            <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Liquidity Matrix • Revenue Protocol</p>
           </div>
         </motion.div>
 

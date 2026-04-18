@@ -110,29 +110,37 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[320px] bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-gray-100 dark:border-slate-800 overflow-hidden" align="start">
-                        <Command className="bg-white dark:bg-slate-900">
-                            <CommandInput placeholder="Search location..." className="border-none focus:ring-0" />
-                            <CommandList className="bg-white dark:bg-slate-900">
-                                <CommandEmpty>No location found.</CommandEmpty>
-                                <CommandGroup heading="Suggestions">
+                    <PopoverContent className="p-0 w-[350px] overflow-hidden" align="start">
+                        <Command className="border-none bg-white dark:bg-slate-900">
+                            <CommandInput placeholder="Where are you heading?" className="h-14 font-medium" />
+                            <CommandList className="max-h-[300px] py-2">
+                                <CommandEmpty className="py-6 text-sm text-gray-400">No matching destinations found.</CommandEmpty>
+                                <CommandGroup heading={<span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Popular Destinations</span>}>
                                     {POPULAR_LOCATIONS.map((loc) => (
                                         <CommandItem
                                             key={loc.value}
-                                            value={loc.label} // Search by label
+                                            value={loc.label}
                                             onSelect={() => {
                                                 setLocation(loc.value === location ? "" : loc.value);
                                                 setOpenLocation(false);
                                             }}
-                                            className="cursor-pointer"
+                                            className="cursor-pointer mx-2 rounded-xl my-1 p-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all"
                                         >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    location === loc.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                            {loc.label}
+                                            <div className="flex items-center gap-4 w-full">
+                                                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
+                                                    <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-gray-900 dark:text-white group-hover:text-red-600">{loc.label}</span>
+                                                    <span className="text-xs text-gray-400">Experience the best of {loc.label}</span>
+                                                </div>
+                                                <Check
+                                                    className={cn(
+                                                        "ml-auto h-5 w-5 text-red-500",
+                                                        location === loc.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                            </div>
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
@@ -168,9 +176,13 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-gray-100 dark:border-slate-800" align="start">
-                        <div className="md:hidden p-4 bg-gray-50 dark:bg-slate-800 border-b border-gray-100 dark:border-slate-800">
-                            <h3 className="text-sm font-bold">Select Dates</h3>
+                    <PopoverContent className="w-auto p-0 border-none shadow-2xl overflow-hidden rounded-[2rem]" align="start">
+                        <div className="bg-white dark:bg-slate-900 p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
+                             <span className="text-sm font-black uppercase tracking-widest text-gray-400">Select Dates</span>
+                             <div className="flex gap-2">
+                                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                                <span className="text-[10px] font-bold text-red-500">LIVE AVAILABILITY</span>
+                             </div>
                         </div>
                         <Calendar
                             initialFocus
@@ -178,7 +190,7 @@ const SearchBar = () => {
                             defaultMonth={date?.from}
                             selected={date}
                             onSelect={setDate}
-                            numberOfMonths={typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 2}
+                            numberOfMonths={2}
                             pagedNavigation
                             className="bg-white dark:bg-slate-900"
                         />
@@ -202,33 +214,52 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-60 p-4" align="start">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">Guests</span>
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.max(1, guests - 1))}
-                                    disabled={guests <= 1}
-                                >
-                                    <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="w-4 text-center text-sm font-bold">{guests}</span>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.min(500, guests + 1))}
-                                >
-                                    <Plus className="h-4 w-4" />
-                                </Button>
+                    <PopoverContent className="w-[320px] p-0 overflow-hidden" align="start">
+                        <div className="p-6 space-y-6 bg-white dark:bg-slate-900">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="font-black text-gray-900 dark:text-white">Total Guests</span>
+                                    <span className="text-xs text-gray-400 font-medium leading-relaxed">Include all adults and children</span>
+                                </div>
+                                <div className="flex items-center gap-4 bg-gray-50 dark:bg-slate-800 p-1.5 rounded-full border border-gray-100 dark:border-slate-700">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setGuests(Math.max(1, guests - 1));
+                                        }}
+                                        disabled={guests <= 1}
+                                    >
+                                        <Minus className="h-4 w-4 text-gray-900 dark:text-white" />
+                                    </Button>
+                                    <span className="w-6 text-center text-lg font-black text-gray-900 dark:text-white">{guests}</span>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setGuests(Math.min(500, guests + 1));
+                                        }}
+                                    >
+                                        <Plus className="h-4 w-4 text-gray-900 dark:text-white" />
+                                    </Button>
+                                </div>
+                            </div>
+                            
+                            <div className="p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
+                                        <Sparkles className="w-4 h-4 text-red-600" />
+                                    </div>
+                                    <p className="text-xs text-red-900 dark:text-red-300 font-bold leading-tight">
+                                        Capacity validation active for selected venues.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-3 text-center">
-                            Max capacity varies by venue.
-                        </p>
                     </PopoverContent>
                 </Popover>
             </div>

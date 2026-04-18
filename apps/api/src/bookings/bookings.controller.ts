@@ -51,6 +51,14 @@ export class BookingsController {
         return this.bookingsService.findAllByVendorUserId(req.user.userId);
     }
 
+    @Get('vendor/earnings')
+    async getVendorEarnings(@Req() req: any) {
+        if (req.user.role !== 'vendor') {
+            throw new BadRequestException('Access denied: Only vendors can see earnings');
+        }
+        return this.bookingsService.getEarningsStats(req.user.userId);
+    }
+
     /**
      * Get single booking details
      */

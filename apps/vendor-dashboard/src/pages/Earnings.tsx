@@ -43,9 +43,8 @@ const Earnings: React.FC = () => {
 
   // 🛰️ Real-time Data Fetching
   const { data: earningsData, isLoading } = useQuery({
-    queryKey: ['earnings', vendorId, activePeriod],
-    queryFn: () => vendorId ? bookingService.getEarnings(vendorId).catch(() => null) : Promise.resolve(null),
-    enabled: !!vendorId
+    queryKey: ['earnings', activePeriod],
+    queryFn: () => bookingService.getEarnings().catch(() => null),
   });
 
   // 📊 Dynamic Chart Aggregation (Fallback to Matrix Mock)

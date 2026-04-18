@@ -145,4 +145,49 @@ export class BookingsService {
             order: { createdAt: 'DESC' },
         });
     }
+
+    /**
+     * compute complex financial intelligence stats for a vendor
+     */
+    async getEarningsStats(userId: string) {
+        const bookings = await this.bookingsRepository.find({
+            where: { vendor: { userId }, paymentStatus: 'paid' },
+            order: { createdAt: 'ASC' }
+        });
+
+        const totalEarnings = bookings.reduce((sum, b) => sum + Number(b.totalAmount), 0);
+        const pendingPayouts = 0; // Integration with Payouts entity would go here
+
+        // Compute Monthly Chart Data
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const currentYear = new Date().getFullYear();
+        const chartData = months.map((month, idx) => {
+            const monthlyBookings = bookings.filter(b => {
+                const date = new Date(b.createdAt);
+                return date.getMonth() === idx && date.getFullYear() === currentYear;
+            });
+            return {
+                name: month,
+                revenue: monthlyBookings.reduce((sum, b) => sum + Number(b.totalAmount), 0)
+            };
+        });
+
+        // Recent transactions
+        const transactions = bookings.slice(-5).reverse().map(b => ({
+            id: `#TRX-${b.id.substring(0,6).toUpperCase()}`,
+            service: b.serviceId || 'Service Protocol',
+            client: 'Customer Node', // Ideally load relationship
+            date: b.createdAt.toLocaleDateString(),
+            amount: `₹${Number(b.totalAmount).toLocaleString()}`,
+            status: 'Completed',
+            method: b.paymentId ? 'System Link' : 'Direct'
+        }));
+
+        return {
+            totalEarnings,
+            pendingPayouts,
+            chartData,
+            transactions
+        };
+    }
 }

@@ -67,24 +67,7 @@ const FilterSidebar: React.FC = () => {
         setShowSuggestions(false);
     };
 
-    const openMap = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const { latitude, longitude } = pos.coords;
-                    window.open(
-                        `https://www.google.com/maps/search/event+venues/@${latitude},${longitude},14z`,
-                        '_blank'
-                    );
-                },
-                () => {
-                    window.open('https://www.google.com/maps/search/event+venues+india/', '_blank');
-                }
-            );
-        } else {
-            window.open('https://www.google.com/maps/search/event+venues+india/', '_blank');
-        }
-    };
+
 
     const openMap = () => {
         if (navigator.geolocation) {

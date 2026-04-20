@@ -22,6 +22,7 @@ import { CorrelationMiddleware } from './infrastructure/middleware/correlation.m
 import { BudgetModule } from './budget/budget.module';
 import { GuestsModule } from './guests/guests.module';
 import { ChatModule } from './chat/chat.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
     imports: [
@@ -80,6 +81,7 @@ import { ChatModule } from './chat/chat.module';
         BudgetModule,
         GuestsModule,
         ChatModule,
+        WalletModule,
     ],
     controllers: [AppController],
 })

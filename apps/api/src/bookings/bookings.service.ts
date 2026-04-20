@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
 import { NotificationsService } from '../notifications/notifications.service';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class BookingsService {
@@ -10,6 +11,7 @@ export class BookingsService {
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
         private notificationsService: NotificationsService,
+        private walletService: WalletService,
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
@@ -97,6 +99,20 @@ export class BookingsService {
         }
         
         const savedBooking = await this.bookingsRepository.save(booking);
+
+        // --- NEW: Financial Reconciliation (Step 1 of Production Roadmap) ---
+        if (savedBooking.paymentStatus === 'paid' && savedBooking.vendorId) {
+            try {
+                await this.walletService.creditEarning(
+                    savedBooking.vendorId,
+                    savedBooking.totalAmount,
+                    savedBooking.id,
+                    `Payment for booking ${savedBooking.bookingCode}`
+                );
+            } catch (walletErr) {
+                console.error('[Financial Error] Wallet credit failed for booking:', savedBooking.id, walletErr);
+            }
+        }
 
         // Notify User
         try {

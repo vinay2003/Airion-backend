@@ -19,14 +19,18 @@ export class WalletController {
     async getOverview(@Req() req: any) {
         const vendor = await this.vendorsService.findByUserId(req.user.id);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
-        return this.walletService.getWalletOverview(vendor.id);
+        
+        const overview = await this.walletService.getWalletOverview(vendor.id);
+        const payoutHistory = await this.walletService.getPayoutHistory(vendor.id);
+        
+        return { ...overview, payoutHistory };
     }
 
     @Post('withdraw')
     @Roles(UserRole.VENDOR)
-    async withdraw(@Req() req: any, @Body() body: { amount: number }) {
+    async withdraw(@Req() req: any, @Body() body: { amount: number, bankDetails?: any }) {
         const vendor = await this.vendorsService.findByUserId(req.user.id);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
-        return this.walletService.requestWithdrawal(vendor.id, body.amount);
+        return this.walletService.requestWithdrawal(vendor.id, body.amount, body.bankDetails);
     }
 }

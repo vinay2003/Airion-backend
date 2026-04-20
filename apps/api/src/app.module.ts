@@ -23,6 +23,7 @@ import { BudgetModule } from './budget/budget.module';
 import { GuestsModule } from './guests/guests.module';
 import { ChatModule } from './chat/chat.module';
 import { WalletModule } from './wallet/wallet.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
     imports: [
@@ -82,6 +83,7 @@ import { WalletModule } from './wallet/wallet.module';
         GuestsModule,
         ChatModule,
         WalletModule,
+        AnalyticsModule,
     ],
     controllers: [AppController],
 })

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet, WalletTransaction } from './entities/wallet.entity';
+import { PayoutRequest } from './entities/payout-request.entity';
 
 @Injectable()
 export class WalletService {
@@ -10,6 +11,8 @@ export class WalletService {
         private readonly walletRepository: Repository<Wallet>,
         @InjectRepository(WalletTransaction)
         private readonly transactionRepository: Repository<WalletTransaction>,
+        @InjectRepository(PayoutRequest)
+        private readonly payoutRepository: Repository<PayoutRequest>,
     ) {}
 
     async getOrCreateWallet(vendorId: string): Promise<Wallet> {
@@ -70,26 +73,45 @@ export class WalletService {
         return this.transactionRepository.save(transaction);
     }
 
-    async requestWithdrawal(vendorId: string, amount: number) {
+    async requestWithdrawal(vendorId: string, amount: number, bankDetails?: any) {
         const wallet = await this.getOrCreateWallet(vendorId);
         
-        if (wallet.currentBalance < amount) {
+        if (Number(wallet.currentBalance) < Number(amount)) {
             throw new BadRequestException('Insufficient balance for withdrawal');
         }
 
-        // Deduct from current balance
-        wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
-        wallet.totalWithdrawn = Number(wallet.totalWithdrawn) + Number(amount);
-        await this.walletRepository.save(wallet);
-
+        // 1. Create Transaction (Type: WITHDRAWAL, Status: pending)
         const transaction = this.transactionRepository.create({
             walletId: wallet.id,
             type: 'WITHDRAWAL',
             amount,
-            status: 'pending', // Awaiting admin approval
-            description: 'Withdrawal request initiated by vendor',
+            status: 'pending',
+            description: 'Payout request initiated',
         });
+        const savedTx = await this.transactionRepository.save(transaction);
 
-        return this.transactionRepository.save(transaction);
+        // 2. Create Payout Request
+        const payout = this.payoutRepository.create({
+            walletId: wallet.id,
+            amount,
+            status: 'pending',
+            bankDetails: bankDetails || {},
+        });
+        const savedPayout = await this.payoutRepository.save(payout);
+
+        // 3. Move balance to 'pending_balance' instead of just deducting
+        wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
+        wallet.pendingBalance = Number(wallet.pendingBalance) + Number(amount);
+        await this.walletRepository.save(wallet);
+
+        return { success: true, payoutId: savedPayout.id, transactionId: savedTx.id };
+    }
+
+    async getPayoutHistory(vendorId: string) {
+        const wallet = await this.getOrCreateWallet(vendorId);
+        return this.payoutRepository.find({
+            where: { walletId: wallet.id },
+            order: { createdAt: 'DESC' },
+        });
     }
 }

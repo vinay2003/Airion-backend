@@ -1,13 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { events } from '../data/events';
+import { fetchEvents } from '../lib/api';
+import type { Event as EventType } from '../types';
 import ListingCard from '../components/ListingCard';
 import FilterSidebar from '../components/FilterSidebar';
 import { ArrowLeft, ChevronDown, Search } from 'lucide-react';
 
 const CategoryPage: React.FC = () => {
     const { category } = useParams<{ category: string }>();
-    const categoryEvents = events.filter(e => e.category.toLowerCase() === category?.toLowerCase());
+    const [categoryEvents, setCategoryEvents] = useState<EventType[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const load = async () => {
+            setLoading(true);
+            try {
+                const allEvents = await fetchEvents();
+                setCategoryEvents(allEvents.filter(e => {
+                    const dbCat = e.category.toLowerCase();
+                    const targetCat = category?.toLowerCase();
+                    if (targetCat === 'parties' && dbCat === 'birthdays') return true;
+                    if (targetCat === 'birthdays' && dbCat === 'parties') return true;
+                    return dbCat === targetCat;
+                }));
+            } catch (err) {
+                console.error(err);
+                setCategoryEvents([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
+    }, [category]);
 
     const getCategoryHeroImage = (cat: string | undefined) => {
         switch (cat?.toLowerCase()) {
@@ -18,6 +42,14 @@ const CategoryPage: React.FC = () => {
             default: return 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop';
         }
     };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
+                <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     if (categoryEvents.length === 0) {
         return (

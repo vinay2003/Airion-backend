@@ -65,18 +65,20 @@ const DashboardOverview: React.FC = () => {
     return (
         <div className="space-y-8 pb-10">
             {/* ⚡ High-Fidelity Header */}
-            <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                <motion.div 
+            <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pt-2 sm:pt-4 pb-2 sm:pb-4 border-b border-[var(--ease2event-border-subtle)]/50 sm:border-none">
+                <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                 >
-                    <div className="flex items-center gap-3 mb-1">
-                        <span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span>
+                    <div className="flex items-center gap-3 mb-4">
+                        <div><span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span> </div>
                     </div>
-                    <h1 className="text-4xl font-black text-neutral-900 dark:text-white tracking-tight italic">
-                        Ease2event Matrix, <span className="text-red-500">Welcome {firstName}</span>
-                    </h1>
-                    <p className="text-neutral-500 dark:text-slate-400 font-medium">Synchronizing your event lifecycle in real-time.</p>
+                    <div className="space-y-1">
+                        <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight italic leading-tight">
+                            Ease2event Matrix, <span className="text-red-500">Welcome {firstName}</span>
+                        </h1>
+                        <p className="text-xs sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Synchronizing your event lifecycle in real-time.</p>
+                    </div>
                 </motion.div>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -107,10 +109,10 @@ const DashboardOverview: React.FC = () => {
                     >
                         <Link
                             to={stat.link}
-                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
+                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.title}</p>
+                                <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.title}</p>
                                 <h3 className="text-4xl font-black text-neutral-900 dark:text-white italic">{stat.value}</h3>
                             </div>
                             <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all group-hover:rotate-12 ${stat.bg} ${stat.text}`}>
@@ -171,7 +173,7 @@ const DashboardOverview: React.FC = () => {
                             <motion.div
                                 key={booking.id}
                                 whileHover={{ y: -5 }}
-                                className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all group relative overflow-hidden"
+                                className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all group relative overflow-hidden"
                             >
                                 <div className="w-full sm:w-40 sm:h-40 aspect-square rounded-[2rem] overflow-hidden flex-shrink-0 bg-neutral-100 dark:bg-slate-800 shadow-xl relative">
                                     <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
@@ -223,7 +225,7 @@ const DashboardOverview: React.FC = () => {
                 {/* Economic Matrix (Budget) */}
                 <div className="space-y-6">
                     <h2 className="text-2xl font-black text-neutral-900 dark:text-white italic tracking-tight">Capital Matrix</h2>
-                    <div className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
+                    <div className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
                         <div className="h-56 w-full relative z-10">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -241,9 +243,9 @@ const DashboardOverview: React.FC = () => {
                             </div>
                         </div>
                         <div className="text-center mt-6 space-y-1 z-10">
-                            <p className="text-[10px] font-black text-neutral-400 dark:text-slate-500 uppercase tracking-widest">Capital Reserved</p>
+                            <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-widest">Capital Reserved</p>
                             <h3 className="text-3xl font-black text-neutral-900 dark:text-white italic">₹{(500000 - stats.budgetSpent).toLocaleString()}</h3>
-                            <p className="text-xs text-neutral-400 font-bold">of ₹5,00,000 threshold</p>
+                            <p className="text-xs text-neutral-500 font-bold uppercase tracking-tighter">of ₹5,00,000 threshold</p>
                         </div>
                         <Link to="/dashboard/budget" className="w-full text-center text-xs font-black text-red-500 hover:tracking-[0.2em] transition-all mt-8 pt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 uppercase z-10">
                             Fiscal Analytics <ArrowRight size={16} />
@@ -263,10 +265,10 @@ const DashboardOverview: React.FC = () => {
                 </div>
                 <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-6 -mx-2 px-2">
                     {trendingVendors.map((vendor: any) => (
-                        <motion.div 
-                            key={vendor.id} 
+                        <motion.div
+                            key={vendor.id}
                             whileHover={{ y: -10 }}
-                            className="flex-shrink-0 w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-neutral-200/60 dark:border-slate-800 shadow-xl group cursor-pointer"
+                            className="flex-shrink-0 w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-neutral-200 dark:border-slate-800 shadow-xl group cursor-pointer"
                         >
                             <div className="relative h-48 overflow-hidden">
                                 <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 blur-[0.5px] group-hover:blur-0" />
@@ -296,7 +298,7 @@ const DashboardOverview: React.FC = () => {
                                 </div>
                                 <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800">
                                     <div className="space-y-0.5">
-                                        <span className="block text-[9px] font-black text-neutral-400 uppercase tracking-widest">Base Rate</span>
+                                        <span className="block text-[9px] font-black text-neutral-600 uppercase tracking-widest">Base Rate</span>
                                         <span className="text-xl font-black text-neutral-900 dark:text-white italic">{vendor.price}</span>
                                     </div>
                                     <Link to={`/event/${vendor.id}`} className="bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-red-500 hover:text-white text-[10px] font-black px-6 py-3 rounded-xl transition-all shadow-xl uppercase tracking-widest">
@@ -310,7 +312,7 @@ const DashboardOverview: React.FC = () => {
             </section>
 
             {/* 💳 Capital Elasticity (EMI) */}
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-neutral-900 text-white rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.3)]"

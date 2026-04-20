@@ -138,8 +138,9 @@ const VendorDiscovery: React.FC = () => {
                 {/* Header */}
                 <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200/60 dark:border-slate-800 pb-6">
                     <div>
-                        <h1 className="text-2xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-wide leading-tight">
-                            Plan Your Event{" "}
+                        <h1 className="text-2xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight italic">
+                            MARKETPLACE{" "}
+                            <span className="text-blue-600 not-italic ml-2">MATRIX</span>
                         </h1>
                         <p className="text-neutral-500 dark:text-slate-400 font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
                             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>

@@ -116,7 +116,7 @@ const BudgetPlanner: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl p-6">
+                <div className="lg:col-span-2 bg-white/90 dark:bg-slate-800/40 backdrop-blur-2xl border border-neutral-200 dark:border-white/10 rounded-2xl p-6 shadow-lg">
                     <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4">Allocated vs Spent</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
@@ -133,7 +133,7 @@ const BudgetPlanner: React.FC = () => {
             </div>
 
             {/* Category Items List */}
-            <div className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl overflow-hidden">
+            <div className="bg-white/90 dark:bg-slate-800/40 backdrop-blur-2xl border border-neutral-200 dark:border-white/10 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden group">
                 <div className="p-6 border-b border-neutral-100 dark:border-slate-800">
                     <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Expense Tracker</h3>
                 </div>

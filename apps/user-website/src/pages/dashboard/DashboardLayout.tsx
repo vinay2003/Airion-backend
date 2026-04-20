@@ -30,8 +30,8 @@ const ShootingStars = () => {
                 <motion.div
                     key={i}
                     initial={{ x: "-100%", y: "-100%", opacity: 0 }}
-                    animate={{ 
-                        x: "200%", 
+                    animate={{
+                        x: "200%",
                         y: "200%",
                         opacity: [0, 1, 0.5, 0]
                     }}
@@ -60,11 +60,11 @@ const Snowfall = () => {
                 <motion.div
                     key={i}
                     initial={{ y: -20, opacity: 0 }}
-                    animate={{ 
+                    animate={{
                         y: "110vh",
                         x: [
-                            `${Math.random() * 100}%`, 
-                            `${Math.random() * 100 + (Math.random() * 4 - 2)}%`, 
+                            `${Math.random() * 100}%`,
+                            `${Math.random() * 100 + (Math.random() * 4 - 2)}%`,
                             `${Math.random() * 100}%`
                         ],
                         opacity: [0, 0.4, 0.4, 0]
@@ -92,11 +92,11 @@ const FlowerPetals = () => {
                 <motion.div
                     key={i}
                     initial={{ y: -20, opacity: 0, rotate: 0 }}
-                    animate={{ 
+                    animate={{
                         y: "110vh",
                         x: [
-                            `${Math.random() * 100}%`, 
-                            `${Math.random() * 100 + (Math.random() * 20 - 10)}%`, 
+                            `${Math.random() * 100}%`,
+                            `${Math.random() * 100 + (Math.random() * 20 - 10)}%`,
                             `${Math.random() * 100}%`
                         ],
                         rotate: [0, 180, 360, 540],
@@ -322,14 +322,14 @@ const DashboardLayout: React.FC = () => {
                 <main className="flex-1 overflow-y-auto p-6 md:p-8 relative">
                     {/* 🌈 Dynamic RGB Spectrum Background */}
                     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-                        <motion.div 
-                            animate={{ 
+                        <motion.div
+                            animate={{
                                 filter: ['hue-rotate(0deg)', 'hue-rotate(360deg)']
                             }}
-                            transition={{ 
-                                duration: 20, 
-                                repeat: Infinity, 
-                                ease: "linear" 
+                            transition={{
+                                duration: 20,
+                                repeat: Infinity,
+                                ease: "linear"
                             }}
                             className="absolute inset-0"
                         >

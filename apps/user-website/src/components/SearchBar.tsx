@@ -160,7 +160,7 @@ const SearchBar = () => {
                 </Popover>
             </div>
 
-            <div className="hidden md:block w-px bg-gray-200 dark:bg-slate-700 my-2"></div>
+            <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Date Range Picker */}
             <div className="flex-1 relative group/input w-full">
@@ -209,7 +209,7 @@ const SearchBar = () => {
                 </Popover>
             </div>
 
-            <div className="hidden md:block w-px bg-gray-200 dark:bg-slate-700 my-2"></div>
+            <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Guest Counter */}
             <div className="flex-1 relative group/input w-full">

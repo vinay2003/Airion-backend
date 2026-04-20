@@ -53,11 +53,11 @@ async function seedAll() {
 
         // 3. Setup Vendors with unique Users
         console.log("Seeding Vendors...");
-        
+
         async function createVendorUser(name, email, businessName) {
             const uId = crypto.randomUUID();
             const vId = crypto.randomUUID();
-            
+
             const check = await client.query('SELECT id FROM users WHERE email = $1', [email]);
             let finalUserId = check.rows.length ? check.rows[0].id : null;
 
@@ -108,16 +108,17 @@ async function seedAll() {
                 slug: 'cinematic-pre-wedding-shoot',
                 description: 'Cinematic captures using high-res arrays framed by expert editors.',
                 basePrice: 35000,
-                images: ['https://images.unsplash.com/photo-1520390138845-ff2d1c34a31a?q=80'],
+                images: ['https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop'],
                 features: [{ name: 'HD Video', included: true }, { name: 'Drone Shots', included: true }]
             }
         ];
 
         for (const svc of services) {
-            await client.query(`
+            const res = await client.query(`
                 INSERT INTO services (id, vendor_id, category_id, subcategory_id, title, slug, description, base_price, currency, images, features)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-                ON CONFLICT (slug) DO NOTHING
+                ON CONFLICT (slug) DO UPDATE SET images = EXCLUDED.images
+                RETURNING id
             `, [
                 svc.id,
                 svc.vendorId,
@@ -132,13 +133,15 @@ async function seedAll() {
                 JSON.stringify(svc.features)
             ]);
 
+            const dbServiceId = res.rows[0].id;
+
             await client.query(`
                 INSERT INTO service_packages (id, service_id, name, description, price, features)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 ON CONFLICT DO NOTHING
             `, [
                 crypto.randomUUID(),
-                svc.id,
+                dbServiceId,
                 'Premium Package',
                 'Covers everything described with fully customizable frames.',
                 svc.basePrice + 10000,

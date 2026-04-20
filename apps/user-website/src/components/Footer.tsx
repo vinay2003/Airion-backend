@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="space-y-6">
-                        <Link to="/" className="text-3xl font-black text-red-500 hover:scale-105 transition-transform inline-block">Ease2event</Link>
+                        <Link to="/" className="text-3xl font-black text-red-500 tracking-tighter hover:scale-105 transition-transform inline-block" style={{ fontFamily: '"Kaushan Script", cursive' }}>Ease2event</Link>
                         <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>
@@ -20,10 +20,10 @@ const Footer: React.FC = () => {
                                 </a>
                             ))}
                         </div>
-                    </div>
+                    </div >
 
-                    {/* Quick Links */}
-                    <div>
+    {/* Quick Links */ }
+    < div >
                         <h4 className="font-bold text-gray-900 dark:text-white mb-4">Quick Links</h4>
                         <ul className="space-y-2 text-sm">
                             <li><Link to="/about" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">About Us</Link></li>
@@ -31,10 +31,10 @@ const Footer: React.FC = () => {
                             <li><Link to="/category/parties" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Parties</Link></li>
                             <li><Link to="/inspiration" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Inspiration</Link></li>
                         </ul>
-                    </div>
+                    </div >
 
-                    {/* For Vendors */}
-                    <div>
+    {/* For Vendors */ }
+    < div >
                         <h4 className="font-bold text-gray-900 dark:text-white mb-4">For Vendors</h4>
                         <ul className="space-y-2 text-sm">
                             <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">List Your Business</Link></li>
@@ -42,10 +42,10 @@ const Footer: React.FC = () => {
                             <li><Link to="/inspiration" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Resources</Link></li>
                             <li><Link to="/contact" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Support</Link></li>
                         </ul>
-                    </div>
+                    </div >
 
-                    {/* Contact */}
-                    <div className="space-y-6">
+    {/* Contact */ }
+    < div className = "space-y-6" >
                         <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">Contact</h4>
                         <ul className="space-y-4 text-sm font-bold text-gray-500 dark:text-slate-400">
                             <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
@@ -61,14 +61,14 @@ const Footer: React.FC = () => {
                                 <span>Patna, Bihar 800001</span>
                             </li>
                         </ul>
-                    </div>
-                </div>
+                    </div >
+                </div >
 
-                <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-slate-400">
-                    <p>&copy; 2024 Ease2event. All rights reserved.</p>
-                </div>
-            </div>
-        </footer>
+    <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-slate-400">
+        <p>&copy; 2024 Ease2event. All rights reserved.</p>
+    </div>
+            </div >
+        </footer >
     );
 };
 

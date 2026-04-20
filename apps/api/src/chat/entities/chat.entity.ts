@@ -39,6 +39,12 @@ export class Message {
     @Column('text')
     body: string;
 
+    @Column({ name: 'is_read', type: 'boolean', default: false })
+    isRead: boolean;
+
+    @Column({ name: 'read_at', type: 'timestamp', nullable: true })
+    readAt: Date;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 

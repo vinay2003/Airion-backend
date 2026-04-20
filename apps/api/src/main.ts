@@ -73,6 +73,9 @@ async function bootstrap() {
     // Global validation pipe
     app.useGlobalPipes(new ZodValidationPipe());
 
+    // --- PRODUCTION STABILITY: GRACEFUL SHUTDOWN ---
+    app.enableShutdownHooks();
+
     // Global prefix for all routes
     app.setGlobalPrefix('api');
 

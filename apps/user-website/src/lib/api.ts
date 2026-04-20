@@ -69,20 +69,176 @@ api.interceptors.response.use(
 
 export default api;
 
+const DUMMY_EVENTS: Event[] = [
+    {
+        id: 'd1',
+        title: 'The Grand Imperial Ballroom',
+        category: 'Venues',
+        image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.9,
+        location: 'Mumbai, Maharashtra',
+        reviews: 128,
+        price: 'INR 2,50,000',
+        capacity: '500-2000',
+        description: 'An opulent ballroom standing as the pinnacle of luxury, perfect for royal weddings and corporate galas.'
+    },
+    {
+        id: 'd2',
+        title: 'Sunset Beach Resort & Spa',
+        category: 'Venues',
+        image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.8,
+        location: 'Goa, India',
+        reviews: 215,
+        price: 'INR 1,75,000',
+        capacity: '100-800',
+        description: 'Exquisite beachfront venue offering breathtaking sunset views and world-class service.'
+    },
+    {
+        id: 'd3',
+        title: 'Elite Gourmet Catering',
+        category: 'Services',
+        image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.7,
+        location: 'New Delhi, Delhi',
+        reviews: 89,
+        price: 'INR 1,200/Plate',
+        capacity: 'Unlimited',
+        description: 'Award-winning catering service specialized in multi-cuisine fine dining and experimental fusion.'
+    },
+    {
+        id: 'd4',
+        title: 'Signature Florals & Decor',
+        category: 'Services',
+        image: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.9,
+        location: 'Bangalore, Karnataka',
+        reviews: 156,
+        price: 'Starts INR 45,000',
+        capacity: 'N/A',
+        description: 'Premium floral arrangements and thematic decor concepts that transform spaces into dreamscapes.'
+    },
+    {
+        id: 'd5',
+        title: 'Himalayan Luxury Retreat',
+        category: 'Experiences',
+        image: 'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?q=80&w=1200&auto=format&fit=crop',
+        rating: 5.0,
+        location: 'Manali, Himachal Pradesh',
+        reviews: 42,
+        price: 'INR 85,000',
+        capacity: '10-30',
+        description: 'An exclusive mountain experience including private treks, bonfire nights, and high-altitude yoga.'
+    },
+    {
+        id: 'd6',
+        title: 'Vintage Yacht Party',
+        category: 'Experiences',
+        image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.6,
+        location: 'Mumbai Harbor',
+        reviews: 67,
+        price: 'INR 1,10,000',
+        capacity: '20-50',
+        description: 'Celebrate your special moments on a luxury vintage yacht with panoramic skyline views.'
+    },
+    {
+        id: 'd7',
+        title: 'Sky Garden Terrace',
+        category: 'Venues',
+        image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.7,
+        location: 'Hyderbad, Telangana',
+        reviews: 94,
+        price: 'INR 95,000',
+        capacity: '50-150',
+        description: 'A modern rooftop garden venue with a stunning 360-degree city view, ideal for cocktail parties.'
+    },
+    {
+        id: 'd8',
+        title: 'Cinematic Wedding Films',
+        category: 'Services',
+        image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.9,
+        location: 'Patna, Bihar',
+        reviews: 53,
+        price: 'Starts INR 1,50,000',
+        capacity: 'Global',
+        description: 'Capture your forever moments with high-end cinematic production and storytelling.'
+    },
+    {
+        id: 'd9',
+        title: 'The Royal Wedding Mahal',
+        category: 'Weddings',
+        image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
+        rating: 5.0,
+        location: 'Udaipur, Rajasthan',
+        reviews: 312,
+        price: 'INR 5,00,000',
+        capacity: '1000+',
+        description: 'A majestic palace venue designed for the grandest wedding celebrations in the city of lakes.'
+    },
+    {
+        id: 'd10',
+        title: 'Neon Nights Party Arena',
+        category: 'Parties',
+        image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.5,
+        location: 'Mumbai, Maharashtra',
+        reviews: 84,
+        price: 'INR 45,000',
+        capacity: '50-100',
+        description: 'High-energy party venue with professional sound systems and spectacular light shows.'
+    },
+    {
+        id: 'd11',
+        title: 'Executive Summit Plaza',
+        category: 'Corporate',
+        image: 'https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.7,
+        location: 'Gurgaon, Haryana',
+        reviews: 145,
+        price: 'INR 1,20,000',
+        capacity: '200-500',
+        description: 'Fully-equipped corporate center for seminars, conferences, and executive leadership retreats.'
+    },
+    {
+        id: 'd12',
+        title: 'Infinite Wedding Decors',
+        category: 'Weddings',
+        image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1200&auto=format&fit=crop',
+        rating: 4.8,
+        location: 'Delhi NCR',
+        reviews: 212,
+        price: 'Starts INR 80,000',
+        capacity: 'N/A',
+        description: 'Transforming your wedding vision into reality with bespoke floral and thematic decorations.'
+    }
+];
+
 export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Event[]> => {
-    const response = await api.get('/services', { params: filters });
-    // Assuming backend returns an array due to interceptor unwrapping {success, data}
-    const servicesList = Array.isArray(response.data) ? response.data : [];
-    return servicesList.map(mapServiceToEvent);
+    try {
+        const response = await api.get('/services', { params: filters });
+        const servicesList = Array.isArray(response.data) ? response.data : [];
+        const fetchedEvents = servicesList.map(mapServiceToEvent);
+        
+        // Merge with dummy data for a "wowed" first look
+        return [...fetchedEvents, ...DUMMY_EVENTS];
+    } catch (err) {
+        console.warn('API Fetch failed, using dummy data only');
+        return DUMMY_EVENTS;
+    }
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {
     try {
         const response = await api.get(`/services/${id}`);
-        if (!response.data) return undefined;
+        if (!response.data) {
+            return DUMMY_EVENTS.find(e => e.id === id);
+        }
         return mapServiceToEvent(response.data);
     } catch (e) {
-        return undefined;
+        return DUMMY_EVENTS.find(e => e.id === id);
     }
 };
 

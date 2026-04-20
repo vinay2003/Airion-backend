@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategorySlider from '../components/CategorySlider';
@@ -18,9 +18,10 @@ import type { Event } from '../types';
 const Home: React.FC = () => {
     const { showToast } = useToast();
     const { user, isAuthenticated } = useAuth();
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
+    const [searchParams] = useSearchParams();
     const activeCategory = searchParams.get('category') || 'all';
+    const categoryFilter = searchParams.get('category');
+    const tabFilter = searchParams.get('tab');
 
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -28,17 +29,39 @@ const Home: React.FC = () => {
     const [marketplaceTab, setMarketplaceTab] = useState('All');
 
     useEffect(() => {
-        fetchEvents()
-            .then(data => {
-                setEvents(data);
-            })
-            .catch(err => {
-                console.error('Failed to load events', err);
-            })
-            .finally(() => {
+        const load = async () => {
+            setLoading(true);
+            try {
+                const allEvents = await fetchEvents();
+                setEvents(allEvents);
+
+                // Apply filters
+                let filtered = allEvents;
+                if (categoryFilter) {
+                    filtered = filtered.filter(e => e.category.toLowerCase() === categoryFilter.toLowerCase());
+                }
+
+                if (tabFilter && tabFilter !== 'All') {
+                    // Logic to map tabs to categories or search in title/category
+                    const normalizedTab = tabFilter.toLowerCase();
+                    filtered = filtered.filter(e => {
+                        const content = (e.category + ' ' + e.title + ' ' + e.description).toLowerCase();
+                        if (normalizedTab === 'venues') return content.includes('venue') || content.includes('hall') || content.includes('room');
+                        if (normalizedTab === 'services') return content.includes('service') || content.includes('catering') || content.includes('decor');
+                        if (normalizedTab === 'experiences') return content.includes('experience') || content.includes('tour') || content.includes('workshop');
+                        return true;
+                    });
+                }
+
+                setFilteredMarketplace(filtered);
+            } catch (err) {
+                console.error(err);
+            } finally {
                 setLoading(false);
-            });
-    }, []);
+            }
+        };
+        load();
+    }, [categoryFilter, tabFilter, marketplaceTab]);
 
     const filteredEvents = activeCategory === 'all'
         ? events
@@ -176,7 +199,7 @@ const Home: React.FC = () => {
                                 <p className="text-s text-gray-400 font-black uppercase tracking-widest italic opacity-60">Handpicked premium experiences</p>
                             </div>
                             <Link to="/marketplace" className="text-red-500 hover:text-red-600 font-black flex items-center gap-2 group text-s uppercase tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
-                                View Marketplace <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                See More <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -208,22 +231,37 @@ const Home: React.FC = () => {
                                     </p>
                                 </div>
 
-                                {/* 🔹 Tabs (FIXED) */}
-                                <div className="flex items-center gap-2 p-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-full w-full md:w-auto shadow-inner border border-gray-100 dark:border-slate-700">
-
+                                {/* 🔹 Tabs (Refined Underline Style) */}
+                                <div className="flex items-center gap-8 border-b border-gray-100 dark:border-slate-800 w-full md:w-auto overflow-x-auto pb-px">
                                     {['All', 'Available', 'Filling', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`flex-1 px-2 py-2 rounded-full text-xs md:text-sm font-semibold uppercase tracking-wide text-center transition-all ${marketplaceTab === tab
-                                                ? 'bg-red-500 text-white shadow-md'
-                                                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                                }`}
+                                            className="relative py-4 group"
                                         >
-                                            {tab}
+                                            <span className={`text-xs md:text-sm font-black uppercase tracking-[0.2em] transition-colors ${
+                                                marketplaceTab === tab
+                                                ? 'text-red-600 dark:text-red-500'
+                                                : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                            }`}>
+                                                {tab}
+                                            </span>
+                                            
+                                            {/* Active Underline */}
+                                            {marketplaceTab === tab && (
+                                                <motion.div
+                                                    layoutId="activeTab"
+                                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600 dark:bg-red-500 shadow-[0_0_10px_rgba(220,38,38,0.5)]"
+                                                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                                />
+                                            )}
+                                            
+                                            {/* Hover Underline (Hidden if active) */}
+                                            {marketplaceTab !== tab && (
+                                                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-200 dark:bg-slate-700 group-hover:w-full transition-all duration-300" />
+                                            )}
                                         </button>
                                     ))}
-
                                 </div>
                             </div>
 

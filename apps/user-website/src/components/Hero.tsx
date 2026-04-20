@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
 
@@ -18,10 +17,11 @@ const SEARCH_TABS = ["All", "Venues", "Services", "Experiences"];
 
 const Hero: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { user, isAuthenticated } = useAuth(); // ✅ added
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [activeTab, setActiveTab] = useState("All");
+    const activeTab = searchParams.get('tab') || 'All';
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     useEffect(() => {
@@ -158,11 +158,11 @@ const Hero: React.FC = () => {
                             <button
                                 key={tab}
                                 onClick={() => {
-                                    setActiveTab(tab);
                                     if (tab === 'All') {
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        searchParams.delete('tab');
+                                        setSearchParams(searchParams);
                                     } else {
-                                        navigate(`/category/${tab.toLowerCase()}`);
+                                        setSearchParams({ tab: tab });
                                     }
                                 }}
                                 className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold transition-all ${activeTab === tab

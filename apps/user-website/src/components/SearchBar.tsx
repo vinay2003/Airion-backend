@@ -113,17 +113,28 @@ const SearchBar = () => {
                     <PopoverContent side="bottom" sideOffset={10} className="p-0 w-64 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden z-[100] absolute mt-2 mb-4" align="start">
                         <Command className="bg-transparent text-inherit border-none">
                             <div className="border-b border-gray-200 dark:border-slate-800">
-                                <CommandInput placeholder="Search location..." className="border-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 placeholder:font-normal bg-transparent" />
+                                <CommandInput 
+                                    placeholder="Search location..." 
+                                    className="border-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 placeholder:font-normal bg-transparent"
+                                    value={location}
+                                    onValueChange={setLocation}
+                                    onFocus={(e) => e.target.select()}
+                                />
                             </div>
                             <CommandList className="max-h-48">
-                                <CommandEmpty className="text-gray-500 py-4 text-center">No location found.</CommandEmpty>
+                                <CommandEmpty 
+                                    className="text-gray-500 py-4 text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                                    onClick={() => setOpenLocation(false)}
+                                >
+                                    No location found. Use "{location}"?
+                                </CommandEmpty>
                                 <CommandGroup heading="Suggestions" className="text-gray-500 [&_[cmdk-group-heading]]:text-gray-400 [&_[cmdk-group-heading]]:font-semibold">
                                     {POPULAR_LOCATIONS.map((loc) => (
                                         <CommandItem
                                             key={loc.value}
                                             value={loc.label} // Search by label
                                             onSelect={() => {
-                                                setLocation(loc.value === location ? "" : loc.value);
+                                                setLocation(loc.label);
                                                 setOpenLocation(false);
                                             }}
                                             className="cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 aria-selected:bg-gray-100 dark:aria-selected:bg-slate-800 aria-selected:text-slate-900 dark:aria-selected:text-white data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-slate-800 data-[highlighted]:text-slate-900 dark:data-[highlighted]:text-white transition-colors"
@@ -131,7 +142,7 @@ const SearchBar = () => {
                                             <Check
                                                 className={cn(
                                                     "mr-2 h-4 w-4",
-                                                    location === loc.value ? "opacity-100" : "opacity-0"
+                                                    location === loc.label ? "opacity-100" : "opacity-0"
                                                 )}
                                             />
                                             {loc.label}
@@ -207,40 +218,92 @@ const SearchBar = () => {
                     </PopoverTrigger>
                     <PopoverContent
                         side="bottom"
-                        sideOffset={10}
-                        className="w-56 p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl z-[100] absolute mt-2 mb-4"
+                        sideOffset={15}
+                        className="w-80 p-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-100 dark:border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2rem] z-[100] absolute mt-2"
                         align="start"
-                        onKeyDown={(e) => {
-                            if (e.key === 'ArrowLeft') setGuests((g) => Math.max(1, g - 1));
-                            if (e.key === 'ArrowRight') setGuests((g) => Math.min(500, g + 1));
-                        }}
                     >
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">Guests</span>
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.max(1, guests - 1))}
-                                    disabled={guests <= 1}
-                                >
-                                    <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="w-4 text-center text-sm font-bold">{guests}</span>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.min(500, guests + 1))}
-                                >
-                                    <Plus className="h-4 w-4" />
-                                </Button>
+                        <div className="flex flex-col gap-6">
+                            <div className="text-center">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500">Configure Capacity</span>
+                                <h3 className="text-lg font-black text-gray-900 dark:text-white mt-1 uppercase italic tracking-tighter">Total Guests</h3>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-4 py-2">
+                                <div className="flex items-center justify-center gap-2 w-full">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-10 px-3 rounded-xl font-black text-xs border-gray-100 dark:border-slate-800 hover:bg-red-50 hover:text-red-600 transition-all"
+                                        onClick={() => setGuests((g) => Math.max(1, g - 10))}
+                                        disabled={guests <= 1}
+                                    >
+                                        -10
+                                    </Button>
+                                    
+                                    <div className="flex items-center bg-gray-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-inner">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-10 w-10 rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm transition-all"
+                                            onClick={() => setGuests(Math.max(1, guests - 1))}
+                                            disabled={guests <= 1}
+                                        >
+                                            <Minus className="h-4 w-4" />
+                                        </Button>
+                                        
+                                        <input
+                                            type="number"
+                                            value={guests}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value);
+                                                if (!isNaN(val)) setGuests(Math.min(10000, Math.max(1, val)));
+                                            }}
+                                            className="w-16 h-10 text-center text-xl font-black bg-transparent border-none focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-red-600 dark:text-red-500"
+                                        />
+
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-10 w-10 rounded-xl hover:bg-white dark:hover:bg-slate-700 shadow-sm transition-all"
+                                            onClick={() => setGuests(Math.min(10000, guests + 1))}
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-10 px-3 rounded-xl font-black text-xs border-gray-100 dark:border-slate-800 hover:bg-red-50 hover:text-red-600 transition-all"
+                                        onClick={() => setGuests((g) => Math.min(10000, g + 10))}
+                                    >
+                                        +10
+                                    </Button>
+                                </div>
+
+                                <div className="grid grid-cols-4 gap-2 w-full pt-2">
+                                    {[10, 50, 100, 500].map((quickVal) => (
+                                        <button
+                                            key={quickVal}
+                                            onClick={() => setGuests(quickVal)}
+                                            className={`py-2 text-[10px] font-black uppercase tracking-widest border rounded-xl transition-all ${
+                                                guests === quickVal 
+                                                ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-500/20' 
+                                                : 'border-gray-100 dark:border-slate-800 hover:border-red-500/30 hover:bg-red-50/50'
+                                            }`}
+                                        >
+                                            {quickVal}+
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="pt-2 border-t border-gray-50 dark:border-slate-800/50">
+                                <p className="text-[10px] text-gray-400 font-bold text-center italic tracking-tight">
+                                    Support for premium events up to 10,000 guests.
+                                </p>
                             </div>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-3 text-center">
-                            Max capacity varies by venue.
-                        </p>
                     </PopoverContent>
                 </Popover>
             </div>

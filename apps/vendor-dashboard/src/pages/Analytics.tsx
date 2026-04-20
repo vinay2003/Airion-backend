@@ -12,6 +12,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
 import api from '../lib/api'; // Use common api instance
 import { useQuery } from '@tanstack/react-query';
+import { fetchVendorPerformance } from '../lib/api';
 import { Badge, Button, Skeleton } from '@ease2event/ui';
 
 type AnalysisPeriod = '24H_REALTIME' | '30D_CYCLE' | 'ANNUAL_MATRIX';
@@ -50,14 +51,19 @@ const Analytics: React.FC = () => {
     ], [statsData]);
 
     // 🛸 Performance Telemetry Flow
-    const { data: performanceRes } = useQuery({
+    const { data: performanceDataRaw } = useQuery({
         queryKey: ['vendorPerformance', vendorId],
-        queryFn: () => vendorId ? api.get(`/vendors/${vendorId}/performance`) : Promise.resolve(null),
+        queryFn: () => vendorId ? fetchVendorPerformance(vendorId, 7) : Promise.resolve(null),
         enabled: !!vendorId
     });
 
     const performanceData = useMemo(() => {
-        if (Array.isArray(performanceRes)) return performanceRes;
+        if (Array.isArray(performanceDataRaw)) {
+            return performanceDataRaw.map((v: any) => ({
+                ...v,
+                capture: v.views * 100 // Simulated revenue relative to views for chart aesthetics
+            }));
+        }
         return [
             { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
             { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
@@ -67,7 +73,7 @@ const Analytics: React.FC = () => {
             { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
             { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
         ];
-    }, [performanceRes]);
+    }, [performanceDataRaw]);
 
     const topNodes = useMemo(() => [
         { name: 'Grand Ballroom Prime', bookings: 45, revenue: '₹4.2L', occupancy: 92, status: 'Active' },

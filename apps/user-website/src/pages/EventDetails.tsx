@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { fetchEventById } from '../lib/api';
+import { fetchEventById, checkAvailability } from '../lib/api';
 import { useAuth } from '@shared/auth';
 import type { Event } from '../types';
 import {
@@ -30,6 +30,8 @@ const EventDetails: React.FC = () => {
     const [guestMode, setGuestMode] = useState(1);
 
     const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined);
+    const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+    const [checkingAvailability, setCheckingAvailability] = useState(false);
 
     const handleBookingClick = (packageName?: string) => {
         if (!user) {
@@ -52,6 +54,26 @@ const EventDetails: React.FC = () => {
         };
         loadEvent();
     }, [id]);
+
+    useEffect(() => {
+        const verifyAvailability = async () => {
+            if (bookingDate && event?.vendorId) {
+                setCheckingAvailability(true);
+                try {
+                    const res = await checkAvailability(event.vendorId, bookingDate);
+                    setIsAvailable(res.available);
+                } catch (err) {
+                    setIsAvailable(true); // Fallback to available on error
+                    console.error('Availability check failed:', err);
+                } finally {
+                    setCheckingAvailability(false);
+                }
+            } else {
+                setIsAvailable(null);
+            }
+        };
+        verifyAvailability();
+    }, [bookingDate, event?.vendorId]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -434,8 +456,18 @@ const EventDetails: React.FC = () => {
                                                 <input type="date" value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
                                             </div>
                                             <div className="p-3">
-                                                <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Time</label>
-                                                <input type="time" value={bookingTime} onChange={(e) => setBookingTime(e.target.value)} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white" />
+                                                <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Status</label>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    {checkingAvailability ? (
+                                                        <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                                    ) : isAvailable === false ? (
+                                                        <span className="text-[10px] font-black text-red-500 uppercase tracking-tighter">Unavailable</span>
+                                                    ) : isAvailable === true ? (
+                                                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter flex items-center gap-1"><Check size={10} /> Ready</span>
+                                                    ) : (
+                                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Select Date</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="p-3">
@@ -448,13 +480,21 @@ const EventDetails: React.FC = () => {
                                             </select>
                                         </div>
                                     </div>
+
+                                    {isAvailable === false && (
+                                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3">
+                                            <X size={16} className="text-red-500 shrink-0 mt-0.5" />
+                                            <p className="text-[10px] font-bold text-red-600 leading-tight uppercase tracking-tight">This vendor is already booked or unavailable on this date. Please select another slot.</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <button
                                     onClick={() => handleBookingClick()}
-                                    className="w-full bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-red-500/20 italic"
+                                    disabled={isAvailable === false || checkingAvailability}
+                                    className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl italic ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
                                 >
-                                    Initiate Booking Sequence
+                                    {isAvailable === false ? 'Slot Unavailable' : 'Initiate Booking Sequence'}
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500 mt-4">You won't be charged yet</p>

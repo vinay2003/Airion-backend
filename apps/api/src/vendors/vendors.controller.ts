@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Put, NotFoundException, BadRequestException } from '@nestjs/common';
 import { VendorsService } from './vendors.service';
+import { AnalyticsService } from '../analytics/analytics.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -9,7 +10,10 @@ import { ActivityType } from './entities/activity.entity';
 
 @Controller('vendors')
 export class VendorsController {
-    constructor(private readonly vendorsService: VendorsService) { }
+    constructor(
+        private readonly vendorsService: VendorsService,
+        private readonly analyticsService: AnalyticsService,
+    ) { }
 
     @Post()
     @UseGuards(JwtAuthGuard)
@@ -44,10 +48,13 @@ export class VendorsController {
     async findOne(@Param('id') id: string, @Request() req: any) {
         const vendor = await this.vendorsService.findOne(id);
 
-        // Track profile view if user is logged in
-        if (req.user) {
-            await this.vendorsService.trackActivity(req.user.userId, ActivityType.PROFILE_VIEW, id);
-        }
+        // Track profile view for analytics
+        await this.analyticsService.trackEvent(
+            'profile_view',
+            id,
+            req.user?.userId,
+            { ip: req.ip, userAgent: req.headers['user-agent'] }
+        );
 
         return vendor;
     }
@@ -130,6 +137,6 @@ export class VendorsController {
     @Get(':id/performance')
     @UseGuards(JwtAuthGuard)
     async getPerformance(@Param('id') id: string) {
-        return this.vendorsService.getOperationalPerformance(id);
+        return this.analyticsService.getVendorPerformance(id);
     }
 }

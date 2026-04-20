@@ -92,4 +92,15 @@ export class ChatService {
         });
         return this.conversationRepository.save(conversation);
     }
+
+    async markMessagesAsRead(conversationId: string, userId: string): Promise<void> {
+        await this.messageRepository
+            .createQueryBuilder()
+            .update(Message)
+            .set({ isRead: true, readAt: new Date() })
+            .where('conversation_id = :conversationId', { conversationId })
+            .andWhere('sender_id != :userId', { userId })
+            .andWhere('is_read = false')
+            .execute();
+    }
 }

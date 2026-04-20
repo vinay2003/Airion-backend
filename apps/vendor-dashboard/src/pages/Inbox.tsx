@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Send, Paperclip, Phone, Info, ArrowLeft, ShieldCheck, MessageSquare, CheckCheck, MoreVertical, Smile, Video, User } from 'lucide-react';
+import { Search, Send, Paperclip, Phone, Info, ArrowLeft, ShieldCheck, MessageSquare, CheckCheck, MoreVertical, Smile, Video, User, Sparkles, Wand2 } from 'lucide-react';
 import { Button, Badge } from '@ease2event/ui';
 import { leadService } from '@ease2event/shared/lib/services/leadService';
 import { messageService, Message } from '@ease2event/shared/lib/services/messageService';
 import { initiateSocketConnection, getSocket, useAuth } from '@ease2event/shared/auth';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { generateEasyReply } from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Inbox: React.FC = () => {
@@ -83,6 +84,17 @@ const Inbox: React.FC = () => {
         } catch (err) {
             console.error('Failed to start conversation:', err);
         }
+    };
+
+    const aiReplyMutation = useMutation({
+        mutationFn: (inquiry: string) => generateEasyReply(inquiry),
+        onSuccess: (data) => setMessageInput(data.reply)
+    });
+
+    const handleMagicReply = () => {
+        const lastCustomerMsg = [...messages].reverse().find(m => m.senderId !== user?.id);
+        const inquiryText = lastCustomerMsg?.body || activeLead?.notes || "Hello, I am interested in your services.";
+        aiReplyMutation.mutate(inquiryText);
     };
 
     const handleSendMessage = (e?: React.FormEvent) => {
@@ -319,6 +331,15 @@ const Inbox: React.FC = () => {
                                                     onChange={(e) => setMessageInput(e.target.value)}
                                                     className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={handleMagicReply}
+                                                    disabled={aiReplyMutation.isPending}
+                                                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all ${aiReplyMutation.isPending ? 'bg-gray-100 opacity-20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white shadow-lg shadow-amber-500/10'}`}
+                                                    title="AI Magic Reply"
+                                                >
+                                                    {aiReplyMutation.isPending ? <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={18} />}
+                                                </button>
                                                 <button
                                                     type="submit"
                                                     disabled={!messageInput.trim()}

@@ -69,12 +69,11 @@ export class AuthService {
         });
         await this.otpRepository.save(otp);
 
-        // In a real production system, this is where we'd call an SMS/Email provider
-        console.log(`📱 [AUTH_SECURE] OTP for ${identifier}: ${otpCode}`);
-
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
+        
         return {
             message: 'OTP sent successfully',
-            _dev_otp: otpCode, // Always exposed for testing convenience
+            _dev_otp: isProduction ? undefined : otpCode,
         };
     }
 
@@ -192,11 +191,11 @@ export class AuthService {
 
         await this.otpRepository.save(otp);
 
-        console.log(`📱 [AUTH_SECURE] Login OTP for ${identifier}: ${otpCode}`);
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
 
         return {
             message: 'OTP sent successfully',
-            _dev_otp: otpCode, // Always exposed for testing convenience
+            _dev_otp: isProduction ? undefined : otpCode,
         };
     }
 
@@ -237,11 +236,11 @@ export class AuthService {
 
         // Production: Send SMS via provider
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
-        console.log(`🔒 [ADMIN_SECURE] Admin Login OTP for ${identifier}: ${otpCode}`);
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
 
         return {
             message: 'OTP sent to your registered admin number',
-            _dev_otp: otpCode, // Always exposed for testing convenience
+            _dev_otp: isProduction ? undefined : otpCode,
         };
     }
 

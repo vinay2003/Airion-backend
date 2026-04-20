@@ -2,12 +2,15 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Availability } from './entities/availability.entity';
+import { Vendor } from '../vendors/entities/vendor.entity';
 
 @Injectable()
 export class AvailabilityService {
     constructor(
         @InjectRepository(Availability)
         private readonly availabilityRepository: Repository<Availability>,
+        @InjectRepository(Vendor)
+        private readonly vendorRepository: Repository<Vendor>,
     ) {}
 
     async getVendorSchedule(vendorId: string, month: string) {
@@ -63,5 +66,16 @@ export class AvailabilityService {
         });
 
         return !block || block.status === 'available';
+    }
+
+    async getVendorWithUser(vendorId: string) {
+        return this.vendorRepository.findOne({
+            where: { id: vendorId },
+            relations: ['user']
+        });
+    }
+
+    async checkAvailability(vendorId: string, date: string): Promise<boolean> {
+        return this.isAvailable(vendorId, date);
     }
 }

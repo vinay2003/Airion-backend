@@ -99,6 +99,19 @@ export class ReviewsService {
         });
     }
 
+    async approveReview(id: string): Promise<Review> {
+        const review = await this.reviewRepository.findOne({ where: { id } });
+        if (!review) throw new NotFoundException('Review not found');
+
+        review.isApproved = true;
+        const savedReview = await this.reviewRepository.save(review);
+
+        // SYNC VENDOR RATING IMMEDIATELY
+        await this.updateVendorStats(review.vendorId);
+        
+        return savedReview;
+    }
+
     async delete(id: string, userId: string): Promise<boolean> {
         const review = await this.reviewRepository.findOne({ where: { id, userId } });
         if (!review) {

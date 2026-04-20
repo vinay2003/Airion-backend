@@ -78,6 +78,34 @@ export class WalletService {
         return this.transactionRepository.save(transaction);
     }
 
+    /**
+     * Debit (Refund/Penalty) from a vendor's wallet.
+     */
+    async debitEarning(vendorId: string, amount: number, referenceId: string, description: string) {
+        const wallet = await this.getOrCreateWallet(vendorId);
+        
+        wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
+        await this.walletRepository.save(wallet);
+
+        const transaction = this.transactionRepository.create({
+            walletId: wallet.id,
+            type: 'WITHDRAWAL', // Using WITHDRAWAL type for debits too, or add 'PENALTY' type
+            amount,
+            status: 'completed',
+            referenceId,
+            description: `[REFUND] ${description}`,
+        });
+        
+        return this.transactionRepository.save(transaction);
+    }
+
+    async hasAlreadyCredited(referenceId: string): Promise<boolean> {
+        const existing = await this.transactionRepository.findOne({
+            where: { referenceId, type: 'EARNING', status: 'completed' }
+        });
+        return !!existing;
+    }
+
     async requestWithdrawal(vendorId: string, amount: number, bankDetails?: any) {
         const wallet = await this.getOrCreateWallet(vendorId);
         

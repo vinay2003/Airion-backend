@@ -166,9 +166,9 @@ const Hero: React.FC = () => {
                                         navigate(`/category/${tab.toLowerCase()}`);
                                     }
                                 }}
-                                className={`text-xs md:text-sm px-6 py-2 rounded-full font-bold transition-all flex-shrink-0 ${activeTab === tab
-                                    ? "bg-white text-black shadow-lg"
-                                    : "bg-black/20 text-white hover:bg-black/30"
+                                className={`text-xs md:text-sm px-4 py-1.5 rounded-full font-bold transition-all ${activeTab === tab
+                                    ? "bg-white text-black drop-shadow-md"
+                                    : "bg-black/20 text-white hover:bg-black/40"
                                     }`}
                             >
                                 {tab}

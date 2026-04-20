@@ -151,18 +151,17 @@ const Header: React.FC = () => {
     return (
         <header
             className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
-                    ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
-                    : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
+                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
+                : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
         >
             {/* ── Logo ── */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-black text-red-500 z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
-                style={{ fontFamily: '"Kaushan Script", cursive' }}
+                className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
                 <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
-                <span>Ease2event</span>
+                <span className="text-red-600">Ease2event</span>
             </Link>
 
             {/* ── Desktop Nav ── */}
@@ -193,8 +192,8 @@ const Header: React.FC = () => {
                             <Link
                                 to={item.path}
                                 className={`text-sm font-bold transition-all px-4 py-2 rounded-xl flex items-center gap-2 relative ${isActive(item.path)
-                                        ? 'text-red-600'
-                                        : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                                    ? 'text-red-600'
+                                    : 'text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
                                     }`}
                             >
                                 {item.name}

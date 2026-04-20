@@ -182,11 +182,11 @@ const SearchBar = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 border-none shadow-2xl overflow-hidden rounded-[2rem]" align="center" sideOffset={12}>
                         <div className="bg-white dark:bg-slate-900 p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
-                             <span className="text-sm font-black uppercase tracking-widest text-gray-400">Select Dates</span>
-                             <div className="flex gap-2">
+                            <span className="text-sm font-black uppercase tracking-widest text-gray-400">Select Dates</span>
+                            <div className="flex gap-2">
                                 <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
                                 <span className="text-[10px] font-bold text-red-500">LIVE AVAILABILITY</span>
-                             </div>
+                            </div>
                         </div>
                         <Calendar
                             initialFocus
@@ -196,12 +196,6 @@ const SearchBar = () => {
                             onSelect={setDate}
                             numberOfMonths={1}
                             className="bg-white dark:bg-slate-900"
-                            pagedNavigation
-                            onDayKeyDown={(_day, _modifiers, e) => {
-                                if (e.key === 'Enter') {
-                                    setOpenDate(false);
-                                }
-                            }}
                         />
                     </PopoverContent>
                 </Popover>
@@ -234,7 +228,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-700 disabled:opacity-30"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setGuests(Math.max(1, guests - 1));
@@ -247,7 +241,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-700"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setGuests(Math.min(500, guests + 1));
@@ -257,7 +251,7 @@ const SearchBar = () => {
                                     </Button>
                                 </div>
                             </div>
-                            
+
                             <div className="p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">

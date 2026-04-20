@@ -16,9 +16,30 @@ const CategoryPage: React.FC = () => {
             setLoading(true);
             try {
                 const allEvents = await fetchEvents();
-                setCategoryEvents(allEvents.filter(e => e.category.toLowerCase() === category?.toLowerCase()));
+                
+                // 🔹 Robust Category Filtering
+                // Handles singular/plural variations (e.g., 'Party' from API vs 'Parties' from URL)
+                const filtered = allEvents.filter(e => {
+                    if (!category) return true;
+                    
+                    const catLower = category.toLowerCase();
+                    const eventCatLower = e.category.toLowerCase();
+                    
+                    // Direct match
+                    if (eventCatLower === catLower) return true;
+                    
+                    // Singular/Plural matching (e.g., 'parties' vs 'party')
+                    if (catLower === 'parties' && eventCatLower === 'party') return true;
+                    if (catLower === 'party' && eventCatLower === 'parties') return true;
+                    if (catLower === 'birthdays' && eventCatLower === 'birthday') return true;
+                    if (catLower === 'venues' && eventCatLower === 'venue') return true;
+                    
+                    return false;
+                });
+                
+                setCategoryEvents(filtered);
             } catch (err) {
-                console.error(err);
+                console.error('Failed to filter category events:', err);
                 setCategoryEvents([]);
             } finally {
                 setLoading(false);
@@ -28,9 +49,11 @@ const CategoryPage: React.FC = () => {
     }, [category]);
 
     const getCategoryHeroImage = (cat: string | undefined) => {
-        switch (cat?.toLowerCase()) {
+        const c = cat?.toLowerCase();
+        switch (c) {
             case 'weddings': return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop';
             case 'parties': return 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop';
+            case 'corporate': return 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop';
             case 'seminars': return 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop';
             case 'meetups': return 'https://images.unsplash.com/photo-1609103224786-e43d94029557?q=80&w=1000&auto=format&fit=crop';
             default: return 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop';
@@ -52,10 +75,10 @@ const CategoryPage: React.FC = () => {
                     <div className="w-20 h-20 bg-gray-200 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto">
                         <Search size={32} className="text-gray-400" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Category Not Found</h2>
-                    <p className="text-gray-500 dark:text-slate-400">We couldn't find any events in this category.</p>
-                    <Link to="/" className="inline-flex items-center gap-2 text-red-500 hover:text-red-600 font-medium">
-                        <ArrowLeft size={20} />
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Category Currently Empty</h2>
+                    <p className="text-gray-500 dark:text-slate-400">Our vendors are currently populating {category} with premium listings.</p>
+                    <Link to="/" className="inline-flex items-center gap-2 text-red-500 hover:text-red-600 font-bold uppercase tracking-widest text-xs">
+                        <ArrowLeft size={16} />
                         Back to Home
                     </Link>
                 </div>
@@ -76,13 +99,16 @@ const CategoryPage: React.FC = () => {
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
                 </div>
                 <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-center text-white">
-                    <Link to="/" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors w-fit">
-                        <ArrowLeft size={20} />
-                        Back to Home
+                    <Link to="/" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors w-fit font-bold uppercase tracking-widest text-xs">
+                        <ArrowLeft size={16} />
+                        Back to Discovery
                     </Link>
-                    <h1 className="text-4xl md:text-5xl font-bold capitalize mb-2">{category}</h1>
-                    <p className="text-lg text-white/90 max-w-2xl">
-                        Discover the best venues and services for your {category} events. Verified listings, transparent pricing, and seamless booking.
+                    <h1 className="text-4xl md:text-6xl font-black capitalize mb-4 tracking-tighter leading-tight italic">
+                        {category}{" "}
+                        <span className="text-red-500 not-italic ml-2 tracking-widest">NETWORK</span>
+                    </h1>
+                    <p className="text-lg text-white/90 max-w-2xl font-bold italic opacity-80">
+                        Access elite {category} nodes within our optimized event ecosystem. Verified performance metrics and real-time availability active.
                     </p>
                 </div>
             </div>
@@ -98,19 +124,19 @@ const CategoryPage: React.FC = () => {
 
                     {/* Listings */}
                     <div className="flex-1">
-                        <div className="flex items-center justify-between mb-6">
-                            <p className="text-gray-600 dark:text-slate-400">
-                                Showing <span className="font-bold text-gray-900 dark:text-white">{categoryEvents.length}</span> properties
+                        <div className="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-slate-800 pb-6">
+                            <p className="text-gray-400 font-black uppercase text-xs tracking-widest">
+                                Active Nodes: <span className="text-gray-900 dark:text-white ml-2">{categoryEvents.length} Verified</span>
                             </p>
                             <div className="relative">
-                                <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2 hover:border-red-500 dark:hover:border-red-500 transition-colors shadow-sm">
-                                    Sort by: Popularity
-                                    <ChevronDown size={16} />
+                                <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2 hover:border-red-500 dark:hover:border-red-500 transition-all shadow-sm">
+                                    Sort: Performance
+                                    <ChevronDown size={14} />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {categoryEvents.map((event) => (
                                 <ListingCard key={event.id} {...event} />
                             ))}

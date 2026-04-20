@@ -158,7 +158,6 @@ const Hero: React.FC = () => {
                         {SEARCH_TABS.map((tab) => (
                             <button
                                 key={tab}
-<<<<<<< HEAD
                                 onClick={() => {
                                     setActiveTab(tab);
                                     if (tab === 'All') {

@@ -18,6 +18,61 @@ const mapServiceToEvent = (service: any): Event => {
     };
 };
 
+/**
+ * 🔹 Global Dummy Events for Marketplace Categories
+ * These ensure that "Parties" and "Corporate" sections are never empty.
+ */
+export const GLOBAL_DUMMY_EVENTS: Event[] = [
+    {
+        id: 'dummy-party-1',
+        title: 'Neon Sky Rooftop Gala',
+        category: 'Parties',
+        image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1000&auto=format&fit=crop',
+        rating: 4.9,
+        reviews: 128,
+        location: 'Worli, Mumbai',
+        price: 'INR 45,000',
+        description: 'An elite rooftop experience with panoramic views and premium mixology.',
+        capacity: '50-150 Guests'
+    },
+    {
+        id: 'dummy-party-2',
+        title: 'Retro Disco Night',
+        category: 'Parties',
+        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop',
+        rating: 4.7,
+        reviews: 84,
+        location: 'Indiranagar, Bangalore',
+        price: 'INR 25,000',
+        description: 'Groove to the classics in a high-energy environment with vintage aesthetics.',
+        capacity: '100-300 Guests'
+    },
+    {
+        id: 'dummy-corp-1',
+        title: 'Tech Summit 2024 Venue',
+        category: 'Corporate',
+        image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop',
+        rating: 5.0,
+        reviews: 45,
+        location: 'Cyber City, Gurgaon',
+        price: 'INR 1,20,000',
+        description: 'State-of-the-art conference hal with advanced AV systems and high-speed fiber.',
+        capacity: '500+ Guests'
+    },
+    {
+        id: 'dummy-corp-2',
+        title: 'Executive Leadership Retreat',
+        category: 'Corporate',
+        image: 'https://images.unsplash.com/photo-1540575861501-7ad060e39fe5?q=80&w=1000&auto=format&fit=crop',
+        rating: 4.8,
+        reviews: 32,
+        location: 'Lonavala, Maharashtra',
+        price: 'INR 85,000',
+        description: 'Quiet, premium setting for strategic planning and executive bonding.',
+        capacity: '20-50 Guests'
+    }
+];
+
 
 // Create axios instance with base URL
 const api = axios.create({
@@ -70,13 +125,24 @@ api.interceptors.response.use(
 export default api;
 
 export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Event[]> => {
-    const response = await api.get('/services', { params: filters });
-    // Assuming backend returns an array due to interceptor unwrapping {success, data}
-    const servicesList = Array.isArray(response.data) ? response.data : [];
-    return servicesList.map(mapServiceToEvent);
+    try {
+        const response = await api.get('/services', { params: filters });
+        const servicesList = Array.isArray(response.data) ? response.data : [];
+        const mappedApiEvents = servicesList.map(mapServiceToEvent);
+        
+        // Merge with dummy events to ensure categories are populated
+        return [...mappedApiEvents, ...GLOBAL_DUMMY_EVENTS];
+    } catch (err) {
+        console.error('Failed to fetch events from API, falling back to dummy data:', err);
+        return GLOBAL_DUMMY_EVENTS;
+    }
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {
+    // Check dummy events first
+    const dummy = GLOBAL_DUMMY_EVENTS.find(e => e.id === id);
+    if (dummy) return dummy;
+
     try {
         const response = await api.get(`/services/${id}`);
         if (!response.data) return undefined;

@@ -124,11 +124,7 @@ const SearchBar = () => {
                                                 setLocation(loc.value === location ? "" : loc.value);
                                                 setOpenLocation(false);
                                             }}
-<<<<<<< HEAD
-                                            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 aria-selected:bg-gray-100 dark:aria-selected:bg-slate-800 aria-selected:text-slate-900 dark:aria-selected:text-white data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-slate-800 data-[highlighted]:text-slate-900 dark:data-[highlighted]:text-white transition-colors"
-=======
                                             className="cursor-pointer mx-2 rounded-xl my-1 p-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all"
->>>>>>> 88bc6657238694464a8dd194b5070b85884cfbd6
                                         >
                                             <div className="flex items-center gap-4 w-full">
                                                 <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
@@ -199,16 +195,13 @@ const SearchBar = () => {
                             selected={date}
                             onSelect={setDate}
                             numberOfMonths={1}
-<<<<<<< HEAD
+                            className="bg-white dark:bg-slate-900"
                             pagedNavigation
                             onDayKeyDown={(_day, _modifiers, e) => {
                                 if (e.key === 'Enter') {
                                     setOpenDate(false);
                                 }
                             }}
-=======
-                            className="bg-white dark:bg-slate-900"
->>>>>>> 88bc6657238694464a8dd194b5070b85884cfbd6
                         />
                     </PopoverContent>
                 </Popover>

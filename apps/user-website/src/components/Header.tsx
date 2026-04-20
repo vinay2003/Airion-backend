@@ -158,10 +158,11 @@ const Header: React.FC = () => {
             {/* ── Logo ── */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                className="text-2xl md:text-3xl font-black text-red-500 z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                style={{ fontFamily: '"Kaushan Script", cursive' }}
             >
                 <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
-                <span className="text-red-600">Ease2event</span>
+                <span>Ease2event</span>
             </Link>
 
             {/* ── Desktop Nav ── */}

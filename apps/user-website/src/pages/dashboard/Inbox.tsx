@@ -15,6 +15,8 @@ export const Inbox: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [showMobileChat, setShowMobileChat] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [typingUser, setTypingUser] = useState<string | null>(null);
 
     // Fetch Conversations
     const { data: conversations = [], isLoading: loadingConversations } = useQuery({
@@ -48,8 +50,22 @@ export const Inbox: React.FC = () => {
             queryClient.invalidateQueries({ queryKey: ['conversations'] });
         });
 
+        socket.on('userTyping', (data: { userId: string; userName: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(data.userName);
+            }
+        });
+
+        socket.on('userStoppedTyping', (data: { userId: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(null);
+            }
+        });
+
         return () => {
             socket.off('receiveMessage');
+            socket.off('userTyping');
+            socket.off('userStoppedTyping');
         };
     }, [user?.id, selectedThreadId, queryClient]);
 
@@ -69,7 +85,25 @@ export const Inbox: React.FC = () => {
                 senderId: user?.id,
                 body: messageText,
             });
+            socket.emit('stopTyping', { conversationId: selectedThreadId, userId: user?.id });
             setMessageText('');
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setMessageText(value);
+
+        if (selectedThreadId && user?.id) {
+            const socket = getSocket();
+            if (socket) {
+                socket.emit('typing', { conversationId: selectedThreadId, userId: user.id, userName: user.name });
+
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                typingTimeoutRef.current = setTimeout(() => {
+                    socket.emit('stopTyping', { conversationId: selectedThreadId, userId: user.id });
+                }, 3000);
+            }
         }
     };
 
@@ -216,6 +250,18 @@ export const Inbox: React.FC = () => {
                                             </div>
                                         </motion.div>
                                     ))}
+                                    {typingUser && (
+                                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                                            <div className="bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl rounded-bl-none text-[10px] font-black text-red-500 animate-pulse flex items-center gap-2 border border-red-100 dark:border-red-500/10">
+                                                <div className="flex gap-1">
+                                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                                                </div>
+                                                Node: {typingUser} is typing...
+                                            </div>
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             )}
                             <div ref={messagesEndRef} />
@@ -231,7 +277,7 @@ export const Inbox: React.FC = () => {
                                     type="text" 
                                     placeholder="Execute message transmission..." 
                                     value={messageText}
-                                    onChange={(e) => setMessageText(e.target.value)}
+                                    onChange={handleInputChange}
                                     className="flex-1 bg-transparent border-none outline-none py-2 text-sm font-bold text-neutral-800 dark:text-white" 
                                 />
                                 <button type="submit" disabled={!messageText.trim()} className="p-3.5 bg-red-500 text-white rounded-xl hover:scale-105 active:scale-95 shadow-lg shadow-red-500/30 transition-all disabled:opacity-30 disabled:hover:scale-100 shrink-0">

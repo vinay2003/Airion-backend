@@ -18,6 +18,8 @@ const Inbox: React.FC = () => {
     const [viewMode, setViewMode] = useState<'details' | 'chat'>('details');
     const [conversationId, setConversationId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [typingUser, setTypingUser] = useState<string | null>(null);
 
     const { data: leads, isLoading } = useQuery({
         queryKey: ['vendor-leads'],
@@ -52,8 +54,22 @@ const Inbox: React.FC = () => {
             }
         });
 
+        socket.on('userTyping', (data: { userId: string; userName: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(data.userName);
+            }
+        });
+
+        socket.on('userStoppedTyping', (data: { userId: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(null);
+            }
+        });
+
         return () => {
             socket.off('receiveMessage');
+            socket.off('userTyping');
+            socket.off('userStoppedTyping');
         };
     }, [user?.id, conversationId, queryClient]);
 
@@ -107,7 +123,25 @@ const Inbox: React.FC = () => {
                     senderId: user?.id,
                     body: messageInput,
                 });
+                socket.emit('stopTyping', { conversationId, userId: user?.id });
                 setMessageInput('');
+            }
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setMessageInput(value);
+
+        if (conversationId && user?.id) {
+            const socket = getSocket();
+            if (socket) {
+                socket.emit('typing', { conversationId, userId: user.id, userName: user.name });
+
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                typingTimeoutRef.current = setTimeout(() => {
+                    socket.emit('stopTyping', { conversationId, userId: user.id });
+                }, 3000);
             }
         }
     };
@@ -313,6 +347,18 @@ const Inbox: React.FC = () => {
                                                     </div>
                                                 ))
                                             )}
+                                            {typingUser && (
+                                                <div className="flex justify-start">
+                                                    <div className="bg-gray-100 dark:bg-slate-800 px-4 py-2 rounded-2xl rounded-bl-none text-xs font-bold text-blue-500 animate-pulse flex items-center gap-2">
+                                                        <div className="flex gap-1">
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                                        </div>
+                                                        System: {typingUser} is transmitting...
+                                                    </div>
+                                                </div>
+                                            )}
                                             <div ref={messagesEndRef} />
                                         </div>
 
@@ -328,7 +374,7 @@ const Inbox: React.FC = () => {
                                                     type="text"
                                                     placeholder="Enter response transmission..."
                                                     value={messageInput}
-                                                    onChange={(e) => setMessageInput(e.target.value)}
+                                                    onChange={handleInputChange}
                                                     className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
                                                 />
                                                 <button

@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     User as UserIcon, Globe, Moon, Sun,
     Sparkles, ChevronDown, LayoutDashboard, LogOut,
-    Settings, ArrowRight, X, Menu
+    Settings, ArrowRight, X, Menu, Bell
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared/auth';
+import { getSocket } from '@shared/auth/socket';
 
 // ─────────────────────────────────────────────
 // UserProfileMenu — unchanged from original
@@ -99,6 +100,7 @@ const Header: React.FC = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -147,6 +149,22 @@ const Header: React.FC = () => {
         setIsUserMenuOpen(false);
         setIsMenuOpen(false);
     }, [location]);
+
+    // Live Notification Listener
+    useEffect(() => {
+        if (!user?.id) return;
+        const socket = getSocket();
+        
+        if (socket) {
+            socket.on('notification_received', () => {
+                setHasNewNotifications(true);
+            });
+        }
+
+        return () => {
+            if (socket) socket.off('notification_received');
+        };
+    }, [user?.id]);
 
 
     const isActive = (path: string) => location.pathname === path;
@@ -228,6 +246,22 @@ const Header: React.FC = () => {
                         className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
                     >
                         <UserIcon size={24} />
+                    </Link>
+                )}
+                {isAuthenticated && (
+                    <Link
+                        to="/dashboard"
+                        onClick={() => setHasNewNotifications(false)}
+                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
+                    >
+                        <Bell size={20} />
+                        {hasNewNotifications && (
+                            <motion.span 
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
+                            />
+                        )}
                     </Link>
                 )}
                 <button

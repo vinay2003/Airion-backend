@@ -70,6 +70,26 @@ export class BookingsService {
             }
         }
         
+        // 5. Notify Vendor & User
+        try {
+            await Promise.all([
+                this.notificationsService.create({
+                    userId: booking.userId,
+                    type: 'booking_confirmed',
+                    title: 'Booking Confirmed! 🎉',
+                    message: `Your booking for ${booking.listingName} is confirmed for ${new Date(booking.eventDate).toLocaleDateString()}.`,
+                }),
+                this.notificationsService.create({
+                    userId: vendorId, // Assumes vendor relationship exists or extracted
+                    type: 'new_booking',
+                    title: 'New Booking Received! 💰',
+                    message: `You have a new booking for ${booking.listingName} on ${new Date(booking.eventDate).toLocaleDateString()}.`,
+                })
+            ]);
+        } catch (e) {
+            console.error('Notification failed for booking', e);
+        }
+
         return booking;
     }
 

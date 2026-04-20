@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet, WalletTransaction } from './entities/wallet.entity';
 import { PayoutRequest } from './entities/payout-request.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class WalletService {
@@ -13,6 +15,9 @@ export class WalletService {
         private readonly transactionRepository: Repository<WalletTransaction>,
         @InjectRepository(PayoutRequest)
         private readonly payoutRepository: Repository<PayoutRequest>,
+        private readonly notificationsService: NotificationsService,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
     async getOrCreateWallet(vendorId: string): Promise<Wallet> {
@@ -103,6 +108,21 @@ export class WalletService {
         wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
         wallet.pendingBalance = Number(wallet.pendingBalance) + Number(amount);
         await this.walletRepository.save(wallet);
+
+        // Notify Admin & Vendor
+        try {
+            const user = await this.userRepository.findOne({ where: { vendor: { id: vendorId } } });
+            if (user) {
+                await this.notificationsService.create({
+                    userId: user.id,
+                    type: 'payout_initiated',
+                    title: 'Payout Initiated 💸',
+                    message: `Your request for ₹${amount.toLocaleString()} is currently under review.`,
+                });
+            }
+        } catch (e) {
+            console.error('Wallet notification failed', e);
+        }
 
         return { success: true, payoutId: savedPayout.id, transactionId: savedTx.id };
     }

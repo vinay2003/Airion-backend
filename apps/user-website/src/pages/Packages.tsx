@@ -19,7 +19,7 @@ interface Package {
 const Packages: React.FC = () => {
     const packages: Package[] = [
         {
-            id: '1',
+            id: 'w-1',
             title: 'Royal Wedding Gold Package',
             price: '₹5,00,000',
             description: 'A complete wedding solution including premium venue, catering for 500 guests, and gold-class decor.',
@@ -35,7 +35,7 @@ const Packages: React.FC = () => {
             vendor: 'Grand Hotel & Events'
         },
         {
-            id: '2',
+            id: 'p-1',
             title: 'Intimate Birthday Bash',
             price: '₹50,000',
             description: 'Perfect for small gatherings and birthday celebrations with close friends and family.',
@@ -51,7 +51,7 @@ const Packages: React.FC = () => {
             vendor: 'Sunset Cafe'
         },
         {
-            id: '3',
+            id: 'c-1',
             title: 'Corporate Seminar Basic',
             price: '₹1,00,000',
             description: 'Standard package for corporate meetings and seminars.',

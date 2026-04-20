@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Map, Search, Calendar, Users, MapPin } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
 export interface FilterValues {
     locationInput: string;
@@ -15,6 +16,7 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
+    const { showToast } = useToast();
     const [priceRange, setPriceRange] = useState(50000);
     const [locationInput, setLocationInput] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -50,6 +52,21 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
             setSuggestions([]);
             setShowSuggestions(false);
         }
+    };
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (!value) return setSelectedDate('');
+
+        const selectedDateObj = new Date(value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDateObj < today) {
+            showToast('Please select a current or future date.', 'error');
+            return;
+        }
+        setSelectedDate(value);
     };
 
     const handleEventTypeChange = (type: string) => {
@@ -182,7 +199,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
                     <input
                         type="date"
                         value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
+                        onChange={handleDateChange}
                         className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
                     />
                 </div>

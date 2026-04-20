@@ -4,14 +4,16 @@ import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 import { WalletService } from '../wallet/wallet.service';
+import { AvailabilityService } from '../availability/availability.service';
 
 @Injectable()
 export class BookingsService {
     constructor(
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
-        private notificationsService: NotificationsService,
-        private walletService: WalletService,
+        private readonly notificationsService: NotificationsService,
+        private readonly walletService: WalletService,
+        private readonly availabilityService: AvailabilityService,
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
@@ -111,6 +113,21 @@ export class BookingsService {
                 );
             } catch (walletErr) {
                 console.error('[Financial Error] Wallet credit failed for booking:', savedBooking.id, walletErr);
+            }
+        }
+
+        // --- NEW: Calendar Synchronization (Step 2 of Production Roadmap) ---
+        if ((nextStatus === 'confirmed' || nextStatus === 'completed') && savedBooking.vendorId && savedBooking.eventDate) {
+            try {
+                const dateString = new Date(savedBooking.eventDate).toISOString().split('T')[0];
+                await this.availabilityService.blockDate(
+                    savedBooking.vendorId, 
+                    dateString, 
+                    `Booking #${savedBooking.bookingCode}`,
+                    'booked'
+                );
+            } catch (calErr) {
+                console.error('[Calendar Error] Failed to block date:', calErr);
             }
         }
 

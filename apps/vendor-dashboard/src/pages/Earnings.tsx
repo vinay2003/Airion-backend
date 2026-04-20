@@ -27,6 +27,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useAuth } from '@ease2event/shared';
 import { bookingService } from '@ease2event/shared/lib/services/bookingService';
 import { useQuery } from '@tanstack/react-query';
+import { fetchWalletOverview, requestWithdrawal } from '../lib/api';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 type Period = 'Daily' | 'Weekly' | 'Monthly';
@@ -42,9 +43,9 @@ const Earnings: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // 🛰️ Real-time Data Fetching
-  const { data: earningsData, isLoading } = useQuery({
-    queryKey: ['earnings', activePeriod],
-    queryFn: () => bookingService.getEarnings().catch(() => null),
+  const { data: walletData, isLoading } = useQuery({
+    queryKey: ['wallet-overview'],
+    queryFn: fetchWalletOverview,
   });
 
   // 📊 Dynamic Chart Aggregation (Fallback to Matrix Mock)
@@ -89,27 +90,35 @@ const Earnings: React.FC = () => {
     };
 
     const currentStats = statsBase[activePeriod];
-    const rawTransactions = earningsData?.transactions || [
+    
+    // Map backend transactions to frontend table format
+    const rawTransactions = walletData?.transactions?.map((t: any) => ({
+        id: t.id,
+        service: t.description || 'Service Payment',
+        client: t.referenceId ? `Ref: ${t.referenceId.slice(0, 8)}` : 'Platform',
+        date: new Date(t.createdAt).toLocaleDateString(),
+        amount: `₹${Number(t.amount).toLocaleString()}`,
+        status: t.status.charAt(0).toUpperCase() + t.status.slice(1),
+        method: t.type
+    })) || [
       { id: '#TRX-9821', service: 'Wedding Photography', client: 'Rohit Sharma', date: 'Oct 12, 2023', amount: '₹12,500', status: 'Completed', method: 'UPI' },
       { id: '#TRX-9822', service: 'Event Catering', client: 'Anjali Gupta', date: 'Oct 10, 2023', amount: '₹45,000', status: 'Pending', method: 'Transfer' },
-      { id: '#TRX-9823', service: 'Floral Decoration', client: 'Vikram Singh', date: 'Oct 08, 2023', amount: '₹8,400', status: 'Completed', method: 'Card' },
-      { id: '#TRX-9824', service: 'Music System Rental', client: 'Sneha Rao', date: 'Oct 05, 2023', amount: '₹3,200', status: 'Failed', method: 'Card' },
-      { id: '#TRX-9825', service: 'Wedding Photography', client: 'Priya Mehra', date: 'Oct 02, 2023', amount: '₹15,000', status: 'Completed', method: 'UPI' },
     ];
 
     return {
-      totalBalance: earningsData?.balance || 124500,
-      periodRevenue: earningsData?.periodRevenue || currentStats.revenue,
-      growth: earningsData?.growth || currentStats.growth,
-      payoutDate: earningsData?.nextPayout || currentStats.date,
-      payoutProgress: earningsData?.payoutProgress || currentStats.progress,
-      payoutTarget: earningsData?.payoutTarget || currentStats.target,
+      totalBalance: walletData?.balance || 0,
+      pendingBalance: walletData?.pending || 0,
+      periodRevenue: currentStats.revenue, // We'll keep mock revenue trends for chart aesthetics
+      growth: currentStats.growth,
+      payoutDate: currentStats.date,
+      payoutProgress: currentStats.progress,
+      payoutTarget: currentStats.target,
       transactions: rawTransactions.filter((t: any) =>
         t.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
         t.service.toLowerCase().includes(searchTerm.toLowerCase())
       )
     };
-  }, [activePeriod, earningsData, searchTerm]);
+  }, [activePeriod, walletData, searchTerm]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },

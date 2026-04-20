@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight, Filter, Calendar as CalendarIcon, Clock, Map
 import { Button, Badge, Skeleton } from '@ease2event/ui';
 import { useAuth } from '@ease2event/shared';
 import { bookingService } from '@ease2event/shared/lib/services/bookingService';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchVendorSchedule, blockDate, unblockDate } from '../lib/api';
 
 /**
  * 🗓 Operational Matrix (Calendar)
@@ -16,10 +17,25 @@ const CalendarPage: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<number | null>(new Date().getDate());
     const [activeView, setActiveView] = useState('portal');
 
-    const { data: bookings, isLoading } = useQuery({
+    const queryClient = useQueryClient();
+
+    const { data: bookings, isLoading: bookingsLoading } = useQuery({
         queryKey: ['vendor-bookings-calendar', vendorId],
         queryFn: () => vendorId ? bookingService.getVendorBookings(vendorId).catch(() => null) : Promise.resolve(null),
         enabled: !!vendorId
+    });
+
+    const { data: availabilityBlocks, isLoading: availabilityLoading } = useQuery({
+        queryKey: ['vendor-availability', vendorId],
+        queryFn: () => vendorId ? fetchVendorSchedule(vendorId) : Promise.resolve(null),
+        enabled: !!vendorId
+    });
+
+    const isLoading = bookingsLoading || availabilityLoading;
+
+    const blockMutation = useMutation({
+        mutationFn: (d: string) => blockDate(d, 'Personal Block'),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['vendor-availability'] })
     });
 
     const daysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
@@ -29,24 +45,50 @@ const CalendarPage: React.FC = () => {
 
     const bookingsOnDays = useMemo(() => {
         const map: { [key: number]: any[] } = {};
-        if (!bookings) return map;
+        
+        // 1. Map real Bookings
+        if (bookings) {
+            bookings.forEach(b => {
+                const date = new Date(b.eventDate);
+                if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
+                    const day = date.getDate();
+                    if (!map[day]) map[day] = [];
+                    map[day].push({
+                        id: b.id,
+                        title: b.listingName || 'Service Booking',
+                        time: new Date(b.eventDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                        client: b.userName || 'Customer',
+                        status: b.status.charAt(0).toUpperCase() + b.status.slice(1),
+                        type: 'booking'
+                    });
+                }
+            });
+        }
 
-        bookings.forEach(b => {
-            const date = new Date(b.eventDate);
-            if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
-                const day = date.getDate();
-                if (!map[day]) map[day] = [];
-                map[day].push({
-                    id: b.id,
-                    title: b.listingName || 'Service Booking',
-                    time: new Date(b.eventDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-                    client: b.userName || 'Customer',
-                    status: b.status.charAt(0).toUpperCase() + b.status.slice(1)
-                });
-            }
-        });
+        // 2. Map Manual Availability Blocks
+        if (availabilityBlocks) {
+            availabilityBlocks.forEach((ab: any) => {
+                const date = new Date(ab.date);
+                if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
+                    const day = date.getDate() + 1; // Correction for Date object behavior if needed
+                    if (!map[day]) map[day] = [];
+                    
+                    // Only add if not already marked as booked
+                    if (ab.status === 'blocked') {
+                        map[day].push({
+                            id: ab.id,
+                            title: ab.reason || 'Personal Block',
+                            time: 'Full Day',
+                            status: 'Blocked',
+                            type: 'block'
+                        });
+                    }
+                }
+            });
+        }
+
         return map;
-    }, [bookings, currentDate]);
+    }, [bookings, availabilityBlocks, currentDate]);
 
     const renderCalendar = () => {
         const month = currentDate.getMonth();

@@ -8,7 +8,12 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { WalletModule } from '../wallet/wallet.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking]), NotificationsModule, WalletModule],
+  imports: [
+    TypeOrmModule.forFeature([Booking]), 
+    NotificationsModule, 
+    WalletModule, 
+    AvailabilityModule
+  ],
   controllers: [BookingsController],
   providers: [BookingsService],
   exports: [BookingsService],

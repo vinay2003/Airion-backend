@@ -24,6 +24,9 @@ import { GuestsModule } from './guests/guests.module';
 import { ChatModule } from './chat/chat.module';
 import { WalletModule } from './wallet/wallet.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AIModule } from './ai/ai.module';
+import { AdminModule } from './admin/admin.module';
+import { AvailabilityModule } from './availability/availability.module';
 
 @Module({
     imports: [
@@ -84,6 +87,9 @@ import { AnalyticsModule } from './analytics/analytics.module';
         ChatModule,
         WalletModule,
         AnalyticsModule,
+        AIModule,
+        AdminModule,
+        AvailabilityModule,
     ],
     controllers: [AppController],
 })

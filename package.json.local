@@ -1,0 +1,11 @@
+{
+    "name": "airion-frontend-root",
+    "version": "1.0.0",
+    "scripts": {
+        "postinstall": "sh setup.sh",
+        "build": "node build-all.js"
+    },
+    "dependencies": {
+        "fs-extra": "^11.3.3"
+    }
+}

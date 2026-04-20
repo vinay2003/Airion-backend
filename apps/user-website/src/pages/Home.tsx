@@ -307,8 +307,8 @@ const Home: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                                 {[
-                                    { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.', path: '/search' },
-                                    { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date, fill in your details, and checkout securely.', path: '/search' },
+                                    { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.', path: '/marketplace' },
+                                    { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date and explore our curated event packages.', path: '/packages' },
                                     { icon: Star, title: 'Enjoy Your Event', desc: 'Relax and celebrate. Your chosen vendor will take care of absolutely everything else.', path: '/inspiration' },
                                 ].map((step, idx) => (
                                     <motion.div

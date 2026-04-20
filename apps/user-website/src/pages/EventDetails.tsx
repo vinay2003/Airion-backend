@@ -8,6 +8,7 @@ import {
     Wifi, Car, Music, Utensils, Camera, Phone, Mail, Instagram,
     Facebook, Twitter, MessageCircle, ChevronRight, ChevronLeft, Calendar, X
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import BookingModal from '../components/BookingModal';
 
 const EventDetails: React.FC = () => {
@@ -60,6 +61,18 @@ const EventDetails: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        if (searchParams.get('booking') === 'true' && event) {
+            // Automatically trigger booking flow
+            if (!user) {
+                navigate('/login', { state: { redirect: `${location.pathname}?booking=true` } });
+            } else {
+                setIsBookingOpen(true);
+            }
+        }
+    }, [location.search, event, user, navigate]);
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -97,7 +110,12 @@ const EventDetails: React.FC = () => {
     ];
 
     return (
-        <div className="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-300 pb-24 md:pb-0">
+        <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ duration: 0.5 }}
+            className="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-300 pb-24 md:pb-0"
+        >
             {/* Navbar Placeholder (if you have a global navbar, this might be redundant but ensures spacing) */}
             <div className={`fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 transition-transform duration-300 ${isScrolled ? 'translate-y-0' : '-translate-y-full'}`}>
                 <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -155,7 +173,12 @@ const EventDetails: React.FC = () => {
                 </div>
 
                 {/* Masonry Gallery */}
-                <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12">
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12"
+                >
                     <div className="col-span-1 md:col-span-2 row-span-2 relative group cursor-pointer" onClick={() => { setSelectedImage(0); setIsGalleryOpen(true); }}>
                         <img src={portfolioImages[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
@@ -175,7 +198,7 @@ const EventDetails: React.FC = () => {
                             <span className="text-white font-bold text-lg">+ 12 Photos</span>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Lightbox Modal */}
                 {isGalleryOpen && (
@@ -225,7 +248,11 @@ const EventDetails: React.FC = () => {
                     {/* Left Content */}
                     <div className="lg:col-span-2 space-y-10">
                         {/* About Section */}
-                        <section>
+                        <motion.section 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About this venue</h2>
                             <p className="text-gray-600 dark:text-slate-400 leading-relaxed text-lg">
                                 {event.description || `${event.title} is a premier destination for those seeking elegance and style. Nestled in the heart of ${event.location}, this venue offers a perfect blend of modern amenities and classic charm, making it an ideal choice for weddings, corporate gatherings, and social celebrations.`}
@@ -238,12 +265,16 @@ const EventDetails: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
-                        </section>
+                        </motion.section>
 
                         <div className="h-px bg-gray-200 dark:bg-slate-800" />
 
                         {/* Packages Section */}
-                        <section>
+                        <motion.section 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
                             <div className="flex justify-between items-center mb-6">
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Pre-built Packages</h2>
@@ -294,7 +325,7 @@ const EventDetails: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
-                        </section>
+                        </motion.section>
 
                         <div className="h-px bg-gray-200 dark:bg-slate-800" />
 
@@ -478,7 +509,7 @@ const EventDetails: React.FC = () => {
                 vendorId={event.vendorId || event.id}
                 initialPackage={selectedPackage}
             />
-        </div>
+        </motion.div>
     );
 };
 

@@ -192,7 +192,7 @@ const Inbox: React.FC = () => {
                                     </div>
                                     <div className="min-w-0 flex flex-col justify-center">
                                         <div className="flex items-center gap-1 md:gap-2">
-                                            <h3 className="font-bold text-sm md:text-xl text-[var(--ease2event-text-primary)] tracking-tight uppercase truncate">{activeUser?.name}</h3>
+                                            <h3 className="font-bold text-sm md:text-xl text-[var(--ease2event-text-primary)] tracking-tight uppercase truncate">{activeLead?.user?.name || 'Customer'}</h3>
                                             <ShieldCheck size={14} className="text-blue-500 shrink-0" />
                                         </div>
                                         <p className="text-[8px] md:text-[10px] font-black text-[var(--ease2event-text-muted)] flex items-center gap-1.5 md:gap-2 uppercase tracking-widest truncate">

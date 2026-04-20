@@ -27,6 +27,9 @@ const Home: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [marketplaceTab, setMarketplaceTab] = useState('All');
 
+    const [subscribeEmail, setSubscribeEmail] = useState('');
+    const [subscribeError, setSubscribeError] = useState('');
+
     useEffect(() => {
         fetchEvents()
             .then(data => {
@@ -50,6 +53,17 @@ const Home: React.FC = () => {
 
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
+        const email = subscribeEmail.trim();
+        if (!email) {
+            setSubscribeError('Please enter an email address');
+            return;
+        }
+        if (email.length < 6) {
+            setSubscribeError('Please enter at least 6 characters');
+            return;
+        }
+        setSubscribeError('');
+        setSubscribeEmail('');
         showToast('Successfully subscribed to newsletter!', 'success');
     };
 
@@ -393,12 +407,27 @@ const Home: React.FC = () => {
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Stay Updated</h2>
                     <p className="text-gray-600 dark:text-slate-400 mb-8">Subscribe to our newsletter for the latest venue additions, exclusive offers, and event planning tips.</p>
-                    <form className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto" onSubmit={handleSubscribe}>
-                        <input
-                            type="email"
-                            placeholder="Enter your email address"
-                            className="flex-1 px-6 py-4 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 transition-all"
-                        />
+                    <form className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto relative" onSubmit={handleSubscribe} noValidate>
+                        <div className="flex-1 relative">
+                            <input
+                                type="email"
+                                value={subscribeEmail}
+                                onChange={(e) => {
+                                    setSubscribeEmail(e.target.value);
+                                    if (e.target.value) setSubscribeError('');
+                                }}
+                                required
+                                placeholder="Enter your email address"
+                                className={`w-full px-6 py-4 rounded-full border bg-white dark:bg-slate-800 text-gray-900 dark:text-white outline-none focus:ring-2 transition-all ${
+                                    subscribeError 
+                                        ? 'border-red-500 focus:ring-red-500 dark:focus:ring-red-500' 
+                                        : 'border-gray-200 dark:border-slate-700 focus:ring-red-500 dark:focus:ring-red-400'
+                                }`}
+                            />
+                            {subscribeError && (
+                                <p className="absolute -bottom-6 left-6 text-sm text-red-500 font-bold">{subscribeError}</p>
+                            )}
+                        </div>
                         <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-red-500/20 hover:scale-105">
                             Subscribe
                         </button>

@@ -77,6 +77,55 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {
+    // Intercept mock package IDs to ensure packages flow correctly without DB data
+    if (['1', '2', '3'].includes(id)) {
+        const mockPackages = [
+            {
+                id: '1',
+                vendorId: 'mock-vendor-1',
+                title: 'Royal Wedding Gold Package',
+                category: 'Wedding',
+                image: 'https://images.unsplash.com/photo-1756190564669-215843660e93?w=600&auto=format&fit=crop&q=60',
+                images: [],
+                rating: 5.0,
+                location: 'Grand Hotel Ballroom, Premium Venue',
+                reviews: 120,
+                price: '₹5,00,000',
+                capacity: '500 Guests',
+                description: 'A complete wedding solution including premium venue, catering for 500 guests, and gold-class decor. Highlights: Luxury Venue, Premium Catering, 4K Cinematography, and Floral Decor.'
+            },
+            {
+                id: '2',
+                vendorId: 'mock-vendor-2',
+                title: 'Intimate Birthday Bash',
+                category: 'Birthday',
+                image: 'https://images.unsplash.com/photo-1744216615372-bbc32acf92c5?w=600&auto=format&fit=crop&q=60',
+                images: [],
+                rating: 4.8,
+                location: 'Sunset Cafe Rooftop, Goa',
+                reviews: 85,
+                price: '₹50,000',
+                capacity: '50 Guests',
+                description: 'Perfect for small gatherings and birthday celebrations with close friends and family. Features balloon decorations, custom cake, and sunset views.'
+            },
+            {
+                id: '3',
+                vendorId: 'mock-vendor-3',
+                title: 'Corporate Seminar Basic',
+                category: 'Corporate',
+                image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop',
+                images: [],
+                rating: 4.6,
+                location: 'City Conference Hall, Tech Hub',
+                reviews: 200,
+                price: '₹1,00,000',
+                capacity: '100 Guests',
+                description: 'Standard package for corporate meetings and seminars. Includes projector, premium sound system, dedicated event coordinator and fast Wi-Fi.'
+            }
+        ];
+        return mockPackages.find(p => p.id === id) as Event;
+    }
+
     try {
         const response = await api.get(`/services/${id}`);
         if (!response.data) return undefined;

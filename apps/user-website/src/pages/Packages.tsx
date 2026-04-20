@@ -124,7 +124,7 @@ const Packages: React.FC = () => {
                                                 <Link to={`/event/${pkg.id}`} className="flex-1 border-2 border-red-500 text-red-500 py-4 rounded-xl font-bold text-lg text-center hover:bg-red-50 dark:hover:bg-red-900/10 transition-all">
                                                     Details
                                                 </Link>
-                                                <Link to={`/event/${pkg.id}`} className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg text-center shadow-lg shadow-red-500/20 transition-all">
+                                                <Link to={`/event/${pkg.id}?booking=true`} className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg text-center shadow-lg shadow-red-500/20 transition-all">
                                                     Booking
                                                 </Link>
                                             </div>
@@ -173,7 +173,7 @@ const Packages: React.FC = () => {
                                             <Link to={`/event/${pkg.id}`} className="flex-1 border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 py-2.5 rounded-xl font-bold text-center text-sm transition-all">
                                                 Details
                                             </Link>
-                                            <Link to={`/event/${pkg.id}`} className="flex-1 bg-red-500 text-white hover:bg-red-600 py-2.5 rounded-xl font-bold text-center text-sm transition-all shadow-md">
+                                            <Link to={`/event/${pkg.id}?booking=true`} className="flex-1 bg-red-500 text-white hover:bg-red-600 py-2.5 rounded-xl font-bold text-center text-sm transition-all shadow-md">
                                                 Booking
                                             </Link>
                                         </div>

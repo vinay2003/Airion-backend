@@ -279,7 +279,7 @@ const UnifiedAuth: React.FC = () => {
                     className="absolute top-6 left-6 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1.5 transition-transform" />
-                    Back to Marketplace
+                    Back
                 </Link>
 
                 <div className="w-full max-w-lg relative z-10 flex flex-col">
@@ -309,8 +309,8 @@ const UnifiedAuth: React.FC = () => {
 
                     {/* 🖋️ Header Section */}
                     <div className="space-y-4 mb-10 text-center sm:text-left">
-                        <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
-                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Welcome back to Ease2event' : 'Create your secure account')}
+                        <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight text-center">
+                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Login to continue' : 'Create Your Account')}
                         </h2>
                         <p className="text-base md:text-xl text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
                             {step === 'phone'

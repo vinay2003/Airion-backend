@@ -49,15 +49,25 @@ const Analytics: React.FC = () => {
         { label: 'Gross Capture', value: `₹${statsData?.totalEarnings || '0'}`, change: '+18.5%', trend: 'up', icon: DollarSign, color: 'text-emerald-500', shadow: 'shadow-emerald-500/10' },
     ], [statsData]);
 
-    const performanceData = useMemo(() => [
-        { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
-        { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
-        { name: 'Wed', views: 2000, inquiries: 98, capture: 45000 },
-        { name: 'Thu', views: 2780, inquiries: 39, capture: 15000 },
-        { name: 'Fri', views: 1890, inquiries: 48, capture: 22000 },
-        { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
-        { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
-    ], []);
+    // 🛸 Performance Telemetry Flow
+    const { data: performanceRes } = useQuery({
+        queryKey: ['vendorPerformance', vendorId],
+        queryFn: () => vendorId ? api.get(`/vendors/${vendorId}/performance`) : Promise.resolve(null),
+        enabled: !!vendorId
+    });
+
+    const performanceData = useMemo(() => {
+        if (Array.isArray(performanceRes)) return performanceRes;
+        return [
+            { name: 'Mon', views: 4000, inquiries: 24, capture: 12000 },
+            { name: 'Tue', views: 3000, inquiries: 13, capture: 8000 },
+            { name: 'Wed', views: 2000, inquiries: 98, capture: 45000 },
+            { name: 'Thu', views: 2780, inquiries: 39, capture: 15000 },
+            { name: 'Fri', views: 1890, inquiries: 48, capture: 22000 },
+            { name: 'Sat', views: 2390, inquiries: 38, capture: 31000 },
+            { name: 'Sun', views: 3490, inquiries: 43, capture: 28000 },
+        ];
+    }, [performanceRes]);
 
     const topNodes = useMemo(() => [
         { name: 'Grand Ballroom Prime', bookings: 45, revenue: '₹4.2L', occupancy: 92, status: 'Active' },

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle } from 'lucide-react';
+import { User as UserIcon, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@shared/auth/AuthContext';
+import { updateProfile, uploadImage } from '../../lib/api';
+import { toast } from 'react-hot-toast';
 
 const LANGUAGES = [
     { code: 'en', name: 'English (US)' },
@@ -15,28 +18,58 @@ const LANGUAGES = [
 const CURRENCIES = ['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'];
 
 const ProfileSettings: React.FC = () => {
+    const { user, refreshUser } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Form State
-    const [name, setName] = useState('Vinay Sharma');
-    const [email, setEmail] = useState('vinay@example.com');
-    const [phone, setPhone] = useState('+91 9876543210');
-    const [location, setLocation] = useState('Mumbai, IN');
-    const [language, setLanguage] = useState('en');
+    const [name, setName] = useState(user?.name || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [phone] = useState(user?.phoneNumber || '');
+    const [location, setLocation] = useState(user?.location || 'Mumbai, IN');
+    const [language, setLanguage] = useState(user?.language || 'en');
     const [currency, setCurrency] = useState('INR (₹)');
 
-    const handleSave = (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
+        try {
+            await updateProfile({
+                name,
+                email,
+                location,
+                language,
+            });
+            await refreshUser();
+            toast.success('Profile updated successfully');
+        } catch (error) {
+            toast.error('Failed to update profile');
+        } finally {
             setLoading(false);
-            alert('Settings saved successfully!');
-        }, 1000);
+        }
+    };
+
+    const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const { url } = await uploadImage(file);
+            await updateProfile({ avatar: url });
+            await refreshUser();
+            toast.success('Photo uploaded successfully');
+        } catch (error) {
+            toast.error('Upload failed');
+        } finally {
+            setUploading(false);
+        }
     };
 
     const tabs = [
-        { id: 'profile', label: 'Personal Info', icon: <User size={18} /> },
+        { id: 'profile', label: 'Personal Info', icon: <UserIcon size={18} /> },
         { id: 'preferences', label: 'Preferences', icon: <Globe size={18} /> },
         { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
         { id: 'security', label: 'Security', icon: <Shield size={18} /> },
@@ -57,8 +90,8 @@ const ProfileSettings: React.FC = () => {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${activeTab === tab.id
-                                    ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                                    : 'text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800'
+                                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                : 'text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800'
                                 }`}
                         >
                             {tab.icon}
@@ -67,7 +100,13 @@ const ProfileSettings: React.FC = () => {
                     ))}
 
                     <div className="mt-8 pt-6 border-t border-neutral-200 dark:border-slate-800">
-                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800">
+                        <button
+                            onClick={() => setActiveTab('help')}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${activeTab === 'help'
+                                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                : 'text-neutral-600 hover:bg-neutral-100 dark:text-slate-400 dark:hover:bg-slate-800'
+                                }`}
+                        >
                             <HelpCircle size={18} />
                             Help Center
                         </button>
@@ -75,7 +114,7 @@ const ProfileSettings: React.FC = () => {
                 </div>
 
                 {/* Content Area */}
-                <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-neutral-200 dark:border-slate-800 shadow-sm">
+                <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-neutral-200 dark:border-slate-800 shadow-sm min-h-[500px]">
                     {activeTab === 'profile' && (
                         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Personal Information</h2>
@@ -83,11 +122,25 @@ const ProfileSettings: React.FC = () => {
                             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-neutral-200 dark:border-slate-800">
                                 <div className="relative">
                                     <div className="w-24 h-24 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center overflow-hidden">
-                                        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
+                                        {uploading ? (
+                                            <Loader className="animate-spin text-red-500" size={32} />
+                                        ) : (
+                                            <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`} alt="Profile" className="w-full h-full object-cover" />
+                                        )}
                                     </div>
-                                    <button className="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-colors">
+                                    <button 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-colors"
+                                    >
                                         <Camera size={14} />
                                     </button>
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        className="hidden" 
+                                        accept="image/*" 
+                                        onChange={handlePhotoUpload} 
+                                    />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg text-neutral-900 dark:text-white">Profile Photo</h3>
@@ -107,7 +160,7 @@ const ProfileSettings: React.FC = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Phone Number</label>
-                                        <Input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-500" disabled />
+                                        <Input type="tel" value={phone} className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-500" disabled />
                                         <p className="text-xs text-neutral-400 mt-1">Phone number is used for OTP logins.</p>
                                     </div>
                                     <div className="space-y-2">
@@ -149,8 +202,8 @@ const ProfileSettings: React.FC = () => {
                                                             type="button"
                                                             onClick={() => setLanguage(lang.code)}
                                                             className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${language === lang.code
-                                                                    ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
-                                                                    : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
+                                                                ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
+                                                                : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
                                                                 }`}
                                                         >
                                                             {lang.name}
@@ -188,14 +241,78 @@ const ProfileSettings: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {(activeTab === 'notifications' || activeTab === 'security') && (
+                    {activeTab === 'security' && (
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                            <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Security & Password</h2>
+
+                            <div className="space-y-6">
+                                <div className="p-6 border border-neutral-200 dark:border-slate-800 rounded-2xl bg-neutral-50 dark:bg-slate-800/30">
+                                    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-4">Change Password</h3>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">Current Password</label>
+                                            <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">New Password</label>
+                                                <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">Confirm New Password</label>
+                                                <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                            </div>
+                                        </div>
+                                        <Button className="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-2 rounded-xl">
+                                            Update Password
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="p-6 border border-neutral-200 dark:border-slate-800 rounded-2xl bg-neutral-50 dark:bg-slate-800/30">
+                                    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Two-Factor Authentication</h3>
+                                    <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Add an extra layer of security to your account.</p>
+                                    <Button variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 font-bold px-6 py-2 rounded-xl">
+                                        Enable 2FA
+                                    </Button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'notifications' && (
                         <div className="flex flex-col items-center justify-center py-20 text-center">
                             <div className="w-16 h-16 bg-neutral-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-4 text-neutral-400">
-                                {activeTab === 'notifications' ? <Bell size={32} /> : <Shield size={32} />}
+                                <Bell size={32} />
                             </div>
-                            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">Comming Soon</h3>
+                            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">Coming Soon</h3>
                             <p className="text-neutral-500 dark:text-slate-400 max-w-sm">This section is currently under development. Check back later for updates!</p>
                         </div>
+                    )}
+
+                    {activeTab === 'help' && (
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                            <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Help Center</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {[
+                                    { q: 'How do I book a venue?', a: 'Browse vendors, check availability, and click "Book Now" to start.' },
+                                    { q: 'Can I cancel a booking?', a: 'Yes, cancellations are managed through your "My Bookings" page.' },
+                                    { q: 'How do I contact a vendor?', a: 'Once booked, you can message vendors directly from the dashboard.' },
+                                    { q: 'What payment methods are accepted?', a: 'We accept all major cards, UPI, and bank transfers via Razorpay.' }
+                                ].map((item, i) => (
+                                    <div key={i} className="p-4 border border-neutral-200 dark:border-slate-800 rounded-2xl hover:border-red-200 transition-colors">
+                                        <h4 className="font-bold text-neutral-900 dark:text-white mb-2">{item.q}</h4>
+                                        <p className="text-sm text-neutral-500 dark:text-slate-400">{item.a}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-8 p-6 bg-red-50 dark:bg-red-900/10 rounded-2xl text-center">
+                                <p className="font-bold text-red-600 dark:text-red-400 mb-4">Still need help?</p>
+                                <Button className="bg-red-600 text-white font-bold px-8 py-3 rounded-xl">
+                                    Contact Support
+                                </Button>
+                            </div>
+                        </motion.div>
                     )}
                 </div>
             </div>

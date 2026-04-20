@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Review } from './entities/review.entity';
 import { Booking } from '../bookings/entities/booking.entity';
 import { Vendor } from '../vendors/entities/vendor.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ReviewsService {
@@ -14,6 +15,7 @@ export class ReviewsService {
         private readonly bookingRepository: Repository<Booking>,
         @InjectRepository(Vendor)
         private readonly vendorRepository: Repository<Vendor>,
+        private readonly notificationsService: NotificationsService,
     ) { }
 
     async create(userId: string, createDto: { bookingId: string; rating: number; reviewText?: string; images?: string[] }): Promise<Review> {
@@ -47,6 +49,22 @@ export class ReviewsService {
 
         // 4. Update Vendor aggregations (Rating and reviewer totals)
         await this.updateVendorStats(booking.vendorId);
+
+        // 5. Notify Vendor
+        try {
+            const vendor = await this.vendorRepository.findOne({ where: { id: booking.vendorId } });
+            if (vendor?.userId) {
+                await this.notificationsService.create({
+                    userId: vendor.userId,
+                    type: 'review_new',
+                    title: 'New Review Received',
+                    message: `You have received a new ${createDto.rating}-star review for ${booking.service?.title || 'your service'}.`,
+                    data: { reviewId: savedReview.id }
+                });
+            }
+        } catch (err) {
+            console.error('Failed to send review notification:', err);
+        }
 
         return savedReview;
     }

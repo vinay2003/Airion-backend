@@ -20,3 +20,6 @@ export * from './api';
 // Context & Hooks
 export { AuthProvider, useAuth } from './AuthContext';
 export { useRole } from './hooks/useRole';
+
+// Real-time
+export * from './socket';

@@ -21,7 +21,7 @@ const mapServiceToEvent = (service: any): Event => {
 
 // Create axios instance with base URL
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:3000/api' : 'https://ease2event-backend.onrender.com/api'),
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -111,4 +111,88 @@ export const verifyPayment = async (verificationResponse: { razorpay_order_id: s
     const response = await api.post('/payments/verify', { ...verificationResponse, bookingId });
     return response.data; // { success }
 };
+/**
+ * Wishlist API Helpers
+ */
+export const toggleWishlist = async (vendorId: string) => {
+    const response = await api.post(`/wishlists/toggle/${vendorId}`);
+    return response.data;
+};
 
+export const fetchMyWishlist = async () => {
+    const response = await api.get('/wishlists/mine');
+    return response.data;
+};
+
+/**
+ * Budget API Helpers
+ */
+export const fetchBudget = async () => {
+    const response = await api.get('/budget');
+    return response.data;
+};
+
+export const updateBudget = async (budgetData: any) => {
+    const response = await api.patch('/budget/update', budgetData);
+    return response.data;
+};
+
+/**
+ * Guests API Helpers
+ */
+export const fetchGuests = async () => {
+    const response = await api.get('/guests');
+    return response.data;
+};
+
+export const createGuest = async (guestData: any) => {
+    const response = await api.post('/guests', guestData);
+    return response.data;
+};
+
+export const updateGuest = async (id: string, guestData: any) => {
+    const response = await api.patch(`/guests/${id}`, guestData);
+    return response.data;
+};
+
+export const deleteGuest = async (id: string) => {
+    const response = await api.delete(`/guests/${id}`);
+    return response.data;
+};
+
+/**
+ * Chat API Helpers
+ */
+export const fetchConversations = async () => {
+    const response = await api.get('/chat/conversations');
+    return response.data;
+};
+
+export const fetchMessages = async (conversationId: string) => {
+    const response = await api.get(`/chat/messages/${conversationId}`);
+    return response.data;
+};
+
+export const startConversation = async (vendorId: string) => {
+    const response = await api.post('/chat/start', { vendorId });
+    return response.data;
+};
+
+/**
+ * User Profile & Uploads
+ */
+export const updateProfile = async (profileData: any) => {
+    const response = await api.patch('/auth/profile', profileData);
+    return response.data;
+};
+
+export const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/uploads/image', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+};

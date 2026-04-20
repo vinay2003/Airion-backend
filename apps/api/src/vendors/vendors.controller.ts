@@ -126,4 +126,10 @@ export class VendorsController {
     async removeFromGallery(@Request() req: any, @Param('itemId') itemId: string) {
         return this.vendorsService.removeFromGallery(req.user.userId, itemId);
     }
+
+    @Get(':id/performance')
+    @UseGuards(JwtAuthGuard)
+    async getPerformance(@Param('id') id: string) {
+        return this.vendorsService.getOperationalPerformance(id);
+    }
 }

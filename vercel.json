@@ -2,51 +2,18 @@
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "installCommand": "npm install",
-    "framework": null,
-    "functions": {
-        "api/index.ts": {
-            "maxDuration": 30
-        }
-    },
+    "cleanUrls": true,
+    "trailingSlash": true,
     "rewrites": [
-        {
-            "source": "/api/:path*",
-            "destination": "/api/index.ts"
+        { 
+            "source": "/api/:path*", 
+            "destination": "https://airion-backend.onrender.com/api/:path*" 
         },
-        {
-            "source": "/vendor/:path*",
-            "destination": "/vendor/index.html"
-        },
-        {
-            "source": "/admin/:path*",
-            "destination": "/admin/index.html"
-        },
-        {
-            "source": "/:path*",
-            "destination": "/index.html"
-        }
-    ],
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "X-Content-Type-Options",
-                    "value": "nosniff"
-                },
-                {
-                    "key": "X-Frame-Options",
-                    "value": "DENY"
-                },
-                {
-                    "key": "X-XSS-Protection",
-                    "value": "1; mode=block"
-                },
-                {
-                    "key": "Referrer-Policy",
-                    "value": "strict-origin-when-cross-origin"
-                }
-            ]
-        }
+        { "source": "/vendor/assets/:path*", "destination": "/vendor/assets/:path*" },
+        { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
+        { "source": "/admin/assets/:path*", "destination": "/admin/assets/:path*" },
+        { "source": "/admin/:path*", "destination": "/admin/index.html" },
+        { "source": "/assets/:path*", "destination": "/assets/:path*" },
+        { "source": "/:path*", "destination": "/index.html" }
     ]
 }

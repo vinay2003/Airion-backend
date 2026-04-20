@@ -10,7 +10,13 @@
         "VITE_ADMIN_URL", 
         "NODE_ENV",
         "DATABASE_URL",
-        "JWT_SECRET"
+        "JWT_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "RAZORPAY_KEY_ID",
+        "RAZORPAY_KEY_SECRET",
+        "ADMIN_PHONE_NUMBER"
       ]
     },
     "lint": {

@@ -51,6 +51,14 @@ export class BookingsController {
         return this.bookingsService.findAllByVendorUserId(req.user.userId);
     }
 
+    @Get('vendor/earnings')
+    async getVendorEarnings(@Req() req: any) {
+        if (req.user.role !== 'vendor') {
+            throw new BadRequestException('Access denied: Only vendors can see earnings');
+        }
+        return this.bookingsService.getEarningsStats(req.user.userId);
+    }
+
     /**
      * Get single booking details
      */
@@ -69,5 +77,18 @@ export class BookingsController {
         }
         const updated = await this.bookingsService.transitionState(id, body.status, req.user, body.paymentId, body.paymentStatus);
         return { success: true, booking: updated };
+    }
+
+    @Get(':id/invoice')
+    async getInvoice(@Param('id') id: string, @Req() req: any) {
+        const booking = await this.bookingsService.findOne(id, req.user);
+        return {
+            invoiceId: `INV-${booking.id.substring(0, 8)}`,
+            date: new Date().toISOString(),
+            amount: booking.totalAmount,
+            vendor: booking.vendor?.businessName,
+            status: booking.status,
+            customer: req.user.name,
+        };
     }
 }

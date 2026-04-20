@@ -75,10 +75,9 @@ const Packages: React.FC = () => {
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Curated Event Packages</h1>
+                    <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Choose Your Event Package</h1>
                     <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-                        Simplify your planning with our all-inclusive packages designed to give you the best experience at the best price.
-                    </p>
+                        Plan your event easily with our affordable packages, We make planning simple and budget-friendly                    </p>
                 </div>
 
                 <div className="space-y-12">
@@ -121,9 +120,14 @@ const Packages: React.FC = () => {
                                                 ))}
                                             </ul>
 
-                                            <Link to={`/event/${pkg.id}`} className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02] flex items-center justify-center">
-                                                Details & Booking
-                                            </Link>
+                                            <div className="flex items-center gap-4 mt-auto">
+                                                <Link to={`/event/${pkg.id}`} className="flex-1 border-2 border-red-500 text-red-500 py-4 rounded-xl font-bold text-lg text-center hover:bg-red-50 dark:hover:bg-red-900/10 transition-all">
+                                                    Details
+                                                </Link>
+                                                <Link to={`/event/${pkg.id}`} className="flex-1 bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg text-center shadow-lg shadow-red-500/20 transition-all">
+                                                    Booking
+                                                </Link>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -165,9 +169,14 @@ const Packages: React.FC = () => {
                                             )}
                                         </ul>
 
-                                        <Link to={`/event/${pkg.id}`} className="mt-auto block text-center border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-2 rounded-xl font-bold transition-all">
-                                            View Details
-                                        </Link>
+                                        <div className="flex items-center gap-3 mt-auto">
+                                            <Link to={`/event/${pkg.id}`} className="flex-1 border-2 border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 py-2.5 rounded-xl font-bold text-center text-sm transition-all">
+                                                Details
+                                            </Link>
+                                            <Link to={`/event/${pkg.id}`} className="flex-1 bg-red-500 text-white hover:bg-red-600 py-2.5 rounded-xl font-bold text-center text-sm transition-all shadow-md">
+                                                Booking
+                                            </Link>
+                                        </div>
                                     </div>
                                 </motion.div>
                             ))}

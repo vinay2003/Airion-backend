@@ -3,11 +3,11 @@ services:
   - type: web
     name: ease2event-backend
     env: node
-    region: oregon  # Choose: oregon, frankfurt, singapore, ohio
+    region: oregon
     plan: free
-    rootDirectory: backend
-    buildCommand: cd .. && npm install && npm run backend:build
-    startCommand: cd .. && npm run start
+    rootDirectory: .
+    buildCommand: npm install --include=dev && npm run build:api
+    startCommand: cd apps/api && node dist/main.js
     healthCheckPath: /api/health
     
     # Environment Variables (Add your actual values in Render Dashboard)

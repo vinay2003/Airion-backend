@@ -46,19 +46,19 @@ const Footer: React.FC = () => {
 
                     {/* Contact */}
                     <div className="space-y-6">
-                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">Contact Node</h4>
+                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">Contact</h4>
                         <ul className="space-y-4 text-sm font-bold text-gray-500 dark:text-slate-400">
                             <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
                                 <Mail size={18} className="text-red-500" />
-                                <span>concierge@ease2event.app</span>
+                                <span>contact@ease2event.com</span>
                             </li>
                             <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
                                 <Phone size={18} className="text-red-500" />
-                                <span>+91 99999 00000</span>
+                                <span>+91 81306 07796</span>
                             </li>
                             <li className="flex items-start gap-3">
                                 <MapPin size={18} className="text-red-500 mt-1 flex-shrink-0" />
-                                <span>Enterprise Square, Digital Park,<br />Patna, Bihar 800001</span>
+                                <span>Patna, Bihar 800001</span>
                             </li>
                         </ul>
                     </div>

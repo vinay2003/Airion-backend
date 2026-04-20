@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "dev": "ts-node-dev --project tsconfig.json -r tsconfig-paths/register --respawn --transpile-only src/main.ts",
     "build": "tsc -p tsconfig.build.json",
+    "build:api": "npm run build",
     "start": "node dist/main.js"
   },
   "dependencies": {
@@ -44,9 +45,7 @@
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.3",
     "typeorm": "^0.3.28",
-    "winston": "^3.19.0"
-  },
-  "devDependencies": {
+    "winston": "^3.19.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.8.1",
@@ -55,9 +54,12 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^20.0.0",
     "@types/passport-jwt": "^3.0.13",
-    "@types/passport-local": "^1.0.35",
+    "@types/passport-local": "^1.0.35"
+  },
+  "devDependencies": {
     "ts-node": "^10.9.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "tsconfig-paths": "^4.2.0"
   }
 }

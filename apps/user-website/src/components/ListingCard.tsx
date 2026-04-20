@@ -75,6 +75,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
             case 'SOLD_OUT': return { label: 'Sold Out', color: 'bg-red-500 text-white shadow-red-500/20' };
             case 'FILLING_FAST': return { label: 'Filling Fast', color: 'bg-amber-500 text-white shadow-amber-500/20' };
             case 'COMING_SOON': return { label: 'Coming Soon', color: 'bg-indigo-500 text-white shadow-indigo-500/20' };
+            case 'TOP_RATED': return { label: 'Top Rated', color: 'bg-cyan-500 text-white shadow-cyan-500/20' };
+            case 'NEW': return { label: 'New', color: 'bg-blue-500 text-white shadow-blue-500/20' };
             case 'AVAILABLE': default: return { label: 'Available', color: 'bg-emerald-500 text-white shadow-emerald-500/20' };
         }
     };
@@ -95,6 +97,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                         src={imageList[currentImageIndex]}
                         alt={title}
                         loading="lazy"
+                        decoding="async"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -107,10 +110,10 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
                 {/* Verified / Trading Badges */}
-                <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
+                <div className="absolute top-3 left-3 right-12 z-10 flex flex-wrap gap-1.5 items-start">
                     {tags.map((tag) => (
-                        <span key={tag} className="bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-sm">
-                            {tag === 'Verified' && <ShieldCheck size={11} className="text-green-500" />}
+                        <span key={tag} className={`${tag === 'Verified' ? 'bg-emerald-500/90 shadow-emerald-500/20' : 'bg-black/60 shadow-black/20'} backdrop-blur-md text-white text-[9px] md:text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1 shadow-lg border border-white/10 transition-transform hover:scale-105 pointer-events-auto`}>
+                            {tag === 'Verified' && <ShieldCheck size={11} className="text-white" />}
                             {tag}
                         </span>
                     ))}

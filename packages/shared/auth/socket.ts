@@ -10,7 +10,7 @@ let socket: Socket | null = null;
 export const initiateSocketConnection = (userId: string): Socket => {
     if (socket) return socket;
 
-    socket = io(getBaseUrl(), {
+    socket = io(`${getBaseUrl()}/chat`, {
         query: { userId },
         transports: ['websocket'],
     });

@@ -43,19 +43,27 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
-                'https://ease2event.vercel.app',
-                'https://vendor.ease2event.vercel.app',
-                'https://admin.ease2event.vercel.app'
-            ];
+                'https://airion-backend-admin-panel-1e98o3h6f-vinay2003s-projects.vercel.app',
+                'https://airion-backend-vendor-dashboard.vercel.app',
+                'https://airion-backend-admin-panel-eg56.vercel.app',
+                process.env.FRONTEND_URL,
+                process.env.VENDOR_URL,
+                process.env.ADMIN_URL,
+            ].filter(Boolean) as string[];
+
             const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
-            if (isLocal || process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
+            const isVercel = origin && origin.endsWith('.vercel.app');
+
+            if (isLocal || isVercel || allowedOrigins.includes(origin as string)) {
                 callback(null, true);
             } else {
+                console.warn(`🔒 CORS Blocked for origin: ${origin}`);
                 callback(new Error('Not allowed by CORS'));
             }
         },
         credentials: true,
-        maxAge: 86400, // 24 hours preflight cache
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type, Accept, Authorization',
     });
 
     // Global Filters & Interceptors

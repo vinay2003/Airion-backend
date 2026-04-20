@@ -224,9 +224,9 @@ const UnifiedAuth: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 flex font-sans overflow-hidden">
+        <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col lg:flex-row items-start font-sans relative">
             {/* 🎨 Visual Narrative Engine */}
-            <div className="hidden lg:flex w-1/2 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
+            <div className="hidden lg:flex w-1/2 h-screen sticky top-0 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
                 <div className="absolute inset-0">
                     <img
                         src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80"
@@ -236,33 +236,34 @@ const UnifiedAuth: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                 </div>
 
-                <div className="relative z-10 max-w-xl space-y-10">
+                <div className="relative z-10 max-w-xl space-y-6">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-red-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
-                            <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={32} />
+                        <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
+                            <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={24} />
                         </div>
                         <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
                             Ease2event
-                        </span>                    </motion.div>
+                        </span>
+                    </motion.div>
 
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="text-6xl font-black text-white leading-tight tracking-tighter uppercase italic"
+                        className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest uppercase"
                     >
-                        {mode === 'login' ? 'Neural Sync Protocol.' : 'Nexus Genesis Protocol.'}
+                        {mode === 'login' ? 'Smart Login System' : 'Nexus Genesis Protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-xl text-neutral-400 font-bold uppercase tracking-widest italic leading-relaxed opacity-60"
+                        className="text-sm text-neutral-400 font-bold uppercase tracking-[0.2em] leading-relaxed opacity-60"
                     >
-                        {mode === 'login' ? 'Synchronize your identity across the decentralized matrix nodes.' : 'Deploy your talent to the next-generation elite registry.'}
+                        {mode === 'login' ? 'Use your account from anywhere easily' : 'Deploy your talent to the next-generation elite registry.'}
                     </motion.p>
-                    <div className="flex items-center gap-8 pt-10 border-t border-white/5">
+                    <div className="flex items-center gap-6 pt-6 border-t border-white/5">
                         <div className="flex -space-x-4">
                             {[1, 2, 3, 4].map(i => (
-                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-14 h-14 rounded-2xl border-2 border-black shadow-xl" />
+                                <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-12 h-12 rounded-xl border-2 border-black shadow-xl" />
                             ))}
                         </div>
-                        <div className="text-xs font-black text-white uppercase tracking-[0.3em] italic">
+                        <div className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
                             <p className="text-red-500">540,128 NODES ACTIVE</p>
                             <p className="opacity-40 mt-1">Global Marketplace Telemetry</p>
                         </div>
@@ -507,7 +508,7 @@ const UnifiedAuth: React.FC = () => {
                     <div className="mt-14 pt-10 border-t-2 border-neutral-100 dark:border-slate-800/80">
                         <p className="text-base md:text-lg text-center text-neutral-500 dark:text-neutral-400 font-bold leading-relaxed max-w-2xl mx-auto">
                             By proceeding, you verify you are of legal age and agree to our <br className="hidden sm:block" />
-                            <span className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Terms of Service</span> and <span className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Privacy Policy</span>.
+                            <Link to="/terms" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Terms of Service</Link> and <Link to="/privacy" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Privacy Policy</Link>.
                         </p>
                     </div>
                 </div>

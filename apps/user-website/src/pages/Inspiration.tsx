@@ -3,24 +3,49 @@ import { Search, Filter, Heart, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 import FallingPetals from '../components/FallingPetals';
+import toast from 'react-hot-toast';
 
 const Inspiration: React.FC = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+
+    const handleShare = async (item: any) => {
+        const shareData = {
+            title: item.title,
+            text: `Check out this ${item.category} inspiration: ${item.title}`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+                toast.success('Shared successfully!');
+            } catch (err) {
+                // Ignore AbortError (user cancelled)
+                if ((err as Error).name !== 'AbortError') {
+                    toast.error('Could not share. URL copied to clipboard instead.');
+                    navigator.clipboard.writeText(window.location.href);
+                }
+            }
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            toast.success('Link copied to clipboard!');
+        }
+    };
 
     const filters = ['All', 'Decor', 'Outfits', 'Venues', 'Food', 'Photography', 'Mehndi'];
 
     const images = [
         { id: 1, category: 'Decor', image: 'https://images.unsplash.com/photo-1587271636175-90d58cdad458?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuZGFwfGVufDB8fDB8fHww', title: 'Floral Mandap Setup' },
         { id: 2, category: 'Outfits', image: 'https://images.unsplash.com/photo-1724856604403-60304b28906c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxlaGVuZ2F8ZW58MHx8MHx8fDA%3D', title: 'Bridal Lehenga' },
-        { id: 3, category: 'Venues', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=100&w=2400&auto=format&fit=crop', title: 'Royal Palace Wedding' },
-        { id: 4, category: 'Food', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=100&w=2400&auto=format&fit=crop', title: 'Gourmet Catering' },
+        { id: 3, category: 'Venues', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200&auto=format&fit=crop', title: 'Royal Palace Wedding' },
+        { id: 4, category: 'Food', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200&auto=format&fit=crop', title: 'Gourmet Catering' },
         { id: 5, category: 'Photography', image: 'https://images.unsplash.com/photo-1668028772352-bdd4951048cf?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fENvdXBsZSUyMFBvcnRyYWl0fGVufDB8fDB8fHww', title: 'Couple Portrait' },
         { id: 6, category: 'Mehndi', image: 'https://plus.unsplash.com/premium_photo-1661862397518-8e50332b6e97?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmRpJTIwZGVzaWdufGVufDB8fDB8fHww', title: 'Intricate Mehndi Design' },
-        { id: 7, category: 'Decor', image: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?q=100&w=2400&auto=format&fit=crop', title: 'Table Setting' },
+        { id: 7, category: 'Decor', image: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?q=80&w=1200&auto=format&fit=crop', title: 'Table Setting' },
         { id: 8, category: 'Outfits', image: 'https://images.unsplash.com/photo-1724856604249-ca73680262e8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3Jvb20lMjBkcmVzc3xlbnwwfHwwfHx8MA%3D%3D', title: 'Groom Sherwani' },
         { id: 9, category: 'Venues', image: 'https://images.unsplash.com/photo-1515232389446-a17ce9ca7434?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJlYWNoJTIwd2VkZGluZ3xlbnwwfHwwfHx8MA%3D%3D', title: 'Beach Wedding Setup' },
-        { id: 10, category: 'Food', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=100&w=2400&auto=format&fit=crop', title: 'Dessert Table' },
+        { id: 10, category: 'Food', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop', title: 'Dessert Table' },
         { id: 11, category: 'Photography', image: 'https://images.unsplash.com/photo-1614566957872-9548817a3298?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDh8fGNhbmRpZHxlbnwwfHwwfHx8MA%3D%3D', title: 'Candid Moments' },
         { id: 12, category: 'Mehndi', image: 'https://images.unsplash.com/photo-1722872112546-936593441be8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnJpZGFsJTIwaGFuZHxlbnwwfHwwfHx8MA%3D%3D', title: 'Bridal Hands' },
     ];
@@ -37,7 +62,7 @@ const Inspiration: React.FC = () => {
 
             {/* Header Section */}
             <div className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm border-b border-neutral-200/50 dark:border-slate-800/80 sticky top-[72px] z-30 transition-colors">
-                <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-8 pb-4">
+                <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-8 pb-10">
                     <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-6">
                         <div>
                             <h1 className="text-3xl md:text-5xl font-black text-neutral-900 dark:text-white mb-2 tracking-tight">Event Inspiration</h1>
@@ -77,7 +102,7 @@ const Inspiration: React.FC = () => {
             </div>
 
             {/* Masonry Grid */}
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-16 pb-12">
                 <motion.div layout className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 md:gap-6 space-y-4 md:space-y-6 block">
                     <AnimatePresence>
                         {filteredImages.map((item, idx) => (
@@ -100,7 +125,10 @@ const Inspiration: React.FC = () => {
                                             <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-red-500 hover:border-transparent border border-white/30 transition-all cursor-pointer">
                                                 <Heart size={16} className="fill-current bg-transparent" />
                                             </button>
-                                            <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-neutral-900 border border-white/30 transition-all cursor-pointer">
+                                            <button 
+                                                onClick={() => handleShare(item)}
+                                                className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-neutral-900 border border-white/30 transition-all cursor-pointer"
+                                            >
                                                 <Share2 size={16} />
                                             </button>
                                         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus, Sparkles } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
 import { cn } from '../lib/utils';
@@ -77,7 +77,7 @@ const SearchBar = () => {
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     const [openDate, setOpenDate] = useState(false);
 
-    const [guests, setGuests] = useState(1);
+    const [guests, setGuests] = useState(0);
     const [openGuests, setOpenGuests] = useState(false);
 
     const handleSearch = () => {
@@ -91,16 +91,16 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-2 max-w-4xl mx-auto transition-shadow duration-500">
+        <div className="relative z-[100] bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500">
             {/* Location Selector */}
-            <div className="flex-1 relative group/input overflow-visible h-auto">
+            <div className="flex-1 relative group/input w-full border-b md:border-b-0 border-gray-100 dark:border-slate-800">
                 <Popover open={openLocation} onOpenChange={setOpenLocation}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                        <div className="h-full px-4 md:px-6 py-4 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
-                                <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Location</label>
-                                <div className={`text-sm truncate ${location ? "text-gray-900 dark:text-white font-medium" : "text-gray-400"}`}>
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Location</label>
+                                <div className={`text-base truncate ${location ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
                                     {location ? (
                                         POPULAR_LOCATIONS.find((loc) => loc.value === location)?.label || location
                                     ) : (
@@ -110,31 +110,45 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent side="bottom" sideOffset={10} className="p-0 w-64 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden z-[100] absolute mt-2 mb-4" align="start">
-                        <Command className="bg-transparent text-inherit border-none">
-                            <div className="border-b border-gray-200 dark:border-slate-800">
-                                <CommandInput placeholder="Search location..." className="border-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-gray-400 placeholder:font-normal bg-transparent" />
-                            </div>
-                            <CommandList className="max-h-48">
-                                <CommandEmpty className="text-gray-500 py-4 text-center">No location found.</CommandEmpty>
-                                <CommandGroup heading="Suggestions" className="text-gray-500 [&_[cmdk-group-heading]]:text-gray-400 [&_[cmdk-group-heading]]:font-semibold">
+                    <PopoverContent className="p-0 w-[400px] overflow-hidden" align="start" sideOffset={12}>
+                        <Command className="border-none bg-white dark:bg-slate-900">
+                            <CommandInput placeholder="Where are you heading?" className="h-14 font-medium" />
+                            <CommandList className="max-h-[300px] py-2">
+                                <CommandEmpty className="py-6 text-sm text-gray-400">No matching destinations found.</CommandEmpty>
+                                <CommandGroup heading={<span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Popular Destinations</span>}>
                                     {POPULAR_LOCATIONS.map((loc) => (
                                         <CommandItem
                                             key={loc.value}
-                                            value={loc.label} // Search by label
+                                            value={loc.label}
                                             onSelect={() => {
                                                 setLocation(loc.value === location ? "" : loc.value);
                                                 setOpenLocation(false);
                                             }}
+<<<<<<< HEAD
                                             className="cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 aria-selected:bg-gray-100 dark:aria-selected:bg-slate-800 aria-selected:text-slate-900 dark:aria-selected:text-white data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-slate-800 data-[highlighted]:text-slate-900 dark:data-[highlighted]:text-white transition-colors"
+=======
+                                            className="cursor-pointer mx-2 rounded-xl my-1 p-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all"
+>>>>>>> 88bc6657238694464a8dd194b5070b85884cfbd6
                                         >
-                                            <Check
-                                                className={cn(
-                                                    "mr-2 h-4 w-4",
-                                                    location === loc.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                            {loc.label}
+                                            <div className="flex items-center gap-4 w-full">
+                                                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
+                                                    <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+                                                </div>
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate">
+                                                        {loc.label.split(',')[0]}
+                                                    </span>
+                                                    <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                                                        {loc.label.split(',')[1]?.trim() || "Local Destination"}
+                                                    </span>
+                                                </div>
+                                                <Check
+                                                    className={cn(
+                                                        "ml-auto h-5 w-5 text-red-500",
+                                                        location === loc.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                            </div>
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
@@ -147,14 +161,14 @@ const SearchBar = () => {
             <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Date Range Picker */}
-            <div className="flex-1 relative group/input overflow-visible h-auto">
+            <div className="flex-1 relative group/input w-full">
                 <Popover open={openDate} onOpenChange={setOpenDate}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <CalendarIcon className={`w-5 h-5 shrink-0 ${date?.from ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
-                                <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Date</label>
-                                <p className={`text-sm truncate ${date?.from ? "text-gray-900 dark:text-white font-medium" : "text-gray-400"}`}>
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Date</label>
+                                <p className={`text-base truncate ${date?.from ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
                                     {date?.from ? (
                                         date.to ? (
                                             <>
@@ -170,7 +184,14 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent side="bottom" sideOffset={10} className="w-auto p-0 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl overflow-hidden z-[100] absolute mt-2 mb-4" align="start">
+                    <PopoverContent className="w-auto p-0 border-none shadow-2xl overflow-hidden rounded-[2rem]" align="center" sideOffset={12}>
+                        <div className="bg-white dark:bg-slate-900 p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
+                             <span className="text-sm font-black uppercase tracking-widest text-gray-400">Select Dates</span>
+                             <div className="flex gap-2">
+                                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                                <span className="text-[10px] font-bold text-red-500">LIVE AVAILABILITY</span>
+                             </div>
+                        </div>
                         <Calendar
                             initialFocus
                             mode="range"
@@ -178,12 +199,16 @@ const SearchBar = () => {
                             selected={date}
                             onSelect={setDate}
                             numberOfMonths={1}
+<<<<<<< HEAD
                             pagedNavigation
                             onDayKeyDown={(_day, _modifiers, e) => {
                                 if (e.key === 'Enter') {
                                     setOpenDate(false);
                                 }
                             }}
+=======
+                            className="bg-white dark:bg-slate-900"
+>>>>>>> 88bc6657238694464a8dd194b5070b85884cfbd6
                         />
                     </PopoverContent>
                 </Popover>
@@ -192,55 +217,65 @@ const SearchBar = () => {
             <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Guest Counter */}
-            <div className="flex-1 relative group/input overflow-visible h-auto">
+            <div className="flex-1 relative group/input w-full">
                 <Popover open={openGuests} onOpenChange={setOpenGuests}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-6 py-3 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3">
+                        <div className="h-full px-4 md:px-6 py-4 md:py-4 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <Users className={`w-5 h-5 shrink-0 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
                             <div className="text-left">
-                                <label className="block text-xs font-bold text-gray-800 dark:text-white cursor-pointer">Guests</label>
-                                <p className="text-sm text-gray-900 dark:text-white font-medium truncate">
-                                    {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Guests</label>
+                                <p className={`text-base truncate ont-bold ${guests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
+                                    {guests === 0 ? 'Add Guests' : `${guests} ${guests === 1 ? 'Guest' : 'Guests'}`}
                                 </p>
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent
-                        side="bottom"
-                        sideOffset={10}
-                        className="w-56 p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-gray-200 dark:border-slate-800 shadow-xl rounded-2xl z-[100] absolute mt-2 mb-4"
-                        align="start"
-                        onKeyDown={(e) => {
-                            if (e.key === 'ArrowLeft') setGuests((g) => Math.max(1, g - 1));
-                            if (e.key === 'ArrowRight') setGuests((g) => Math.min(500, g + 1));
-                        }}
-                    >
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">Guests</span>
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.max(1, guests - 1))}
-                                    disabled={guests <= 1}
-                                >
-                                    <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="w-4 text-center text-sm font-bold">{guests}</span>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-full"
-                                    onClick={() => setGuests(Math.min(500, guests + 1))}
-                                >
-                                    <Plus className="h-4 w-4" />
-                                </Button>
+                    <PopoverContent className="w-[320px] p-0 overflow-hidden" align="end" sideOffset={12}>
+                        <div className="p-6 space-y-6 bg-white dark:bg-slate-900">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="font-black text-gray-900 dark:text-white">Total Guests</span>
+                                    <span className="text-xs text-gray-400 font-medium leading-relaxed">Include all adults and children</span>
+                                </div>
+                                <div className="flex items-center gap-4 bg-gray-50 dark:bg-slate-800 p-1.5 rounded-full border border-gray-100 dark:border-slate-700">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-700 disabled:opacity-30"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setGuests(Math.max(1, guests - 1));
+                                        }}
+                                        disabled={guests <= 1}
+                                    >
+                                        <Minus className="h-4 w-4 text-gray-900 dark:text-white" />
+                                    </Button>
+                                    <span className="w-6 text-center text-lg font-black text-gray-900 dark:text-white">{guests}</span>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setGuests(Math.min(500, guests + 1));
+                                        }}
+                                    >
+                                        <Plus className="h-4 w-4 text-gray-900 dark:text-white" />
+                                    </Button>
+                                </div>
+                            </div>
+                            
+                            <div className="p-4 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/30">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
+                                        <Sparkles className="w-4 h-4 text-red-600" />
+                                    </div>
+                                    <p className="text-xs text-red-900 dark:text-red-300 font-bold leading-tight">
+                                        Capacity validation active for selected venues.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-3 text-center">
-                            Max capacity varies by venue.
-                        </p>
                     </PopoverContent>
                 </Popover>
             </div>

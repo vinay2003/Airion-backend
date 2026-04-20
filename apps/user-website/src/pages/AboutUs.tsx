@@ -9,7 +9,7 @@ const AboutUs: React.FC = () => {
             <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter">
                         We<span className="ml-1"></span> Create <span className="ml-1">Memories</span>
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold text-xs tracking-widest">

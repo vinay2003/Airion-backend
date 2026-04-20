@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import { Map, Search, Calendar, Users, MapPin } from 'lucide-react';
 
-const FilterSidebar: React.FC = () => {
+export interface FilterValues {
+    locationInput: string;
+    priceRange: number;
+    selectedDate: string;
+    selectedEventTypes: string[];
+    selectedCapacity: string;
+    selectedAmenities: string[];
+}
+
+interface FilterSidebarProps {
+    onApply?: (filters: FilterValues) => void;
+}
+
+const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
     const [priceRange, setPriceRange] = useState(50000);
     const [locationInput, setLocationInput] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -60,6 +73,25 @@ const FilterSidebar: React.FC = () => {
         setSelectedEventTypes([]);
         setSelectedCapacity('');
         setSelectedAmenities([]);
+        onApply?.({
+            locationInput: '',
+            priceRange: 50000,
+            selectedDate: '',
+            selectedEventTypes: [],
+            selectedCapacity: '',
+            selectedAmenities: [],
+        });
+    };
+
+    const handleApply = () => {
+        onApply?.({
+            locationInput,
+            priceRange,
+            selectedDate,
+            selectedEventTypes,
+            selectedCapacity,
+            selectedAmenities,
+        });
     };
 
     const selectLocation = (city: string) => {
@@ -180,7 +212,7 @@ const FilterSidebar: React.FC = () => {
                     <input
                         type="range"
                         min="5000"
-                        max="500000"
+                        max="1000000"
                         step="5000"
                         value={priceRange}
                         onChange={(e) => setPriceRange(Number(e.target.value))}
@@ -188,7 +220,7 @@ const FilterSidebar: React.FC = () => {
                     />
                     <div className="flex justify-between text-xs font-medium text-neutral-400 mt-2">
                         <span>₹5K</span>
-                        <span>₹500K+</span>
+                        <span>₹1M+</span>
                     </div>
                 </div>
             </div>
@@ -242,7 +274,8 @@ const FilterSidebar: React.FC = () => {
             {/* Action Buttons */}
             <div className="pt-4 space-y-3">
                 <button
-                    onClick={() => console.log('Filters Applied', { locationInput, priceRange, selectedDate, selectedEventTypes, selectedCapacity, selectedAmenities })}
+                    type="button"
+                    onClick={handleApply}
                     className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <Search size={18} />

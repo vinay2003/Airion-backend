@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet } from 'lucide-react';
@@ -43,9 +43,23 @@ const Home: React.FC = () => {
             });
     }, []);
 
-    const filteredEvents = activeCategory === 'all'
-        ? events
-        : events.filter(e => e.category.toLowerCase() === activeCategory.toLowerCase());
+    const filteredEvents = useMemo(() => {
+        if (activeCategory === 'all') return events;
+
+        const cat = activeCategory.toLowerCase();
+
+        if (cat === 'services') {
+            const serviceTypes = ['photography', 'catering', 'decor', 'makeup', 'planning', 'music'];
+            return events.filter(e => serviceTypes.includes(e.category.toLowerCase()));
+        }
+
+        if (cat === 'experiences') {
+            const experienceTypes = ['weddings', 'birthdays', 'parties', 'corporate'];
+            return events.filter(e => experienceTypes.includes(e.category.toLowerCase()));
+        }
+
+        return events.filter(e => e.category.toLowerCase() === cat);
+    }, [events, activeCategory]);
 
     const weddingVenues = events.filter(e => e.category === 'Weddings');
     const birthdayVenues = events.filter(e => e.category === 'Birthdays' || e.category === 'Parties');
@@ -324,9 +338,9 @@ const Home: React.FC = () => {
                     </motion.section>
                 </>
             ) : (
-                <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
+                <section id="marketplace-results" className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
                     <div className="mb-8">
-                        <h2 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} Marketplace</h2>
+                        <h2 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} </h2>
                         <p className="text-gray-500 text-sm mt-1">Discover premium listings specifically tailored for your choice.</p>
                     </div>
                     {filteredEvents.length > 0 ? (
@@ -418,11 +432,10 @@ const Home: React.FC = () => {
                                 }}
                                 required
                                 placeholder="Enter your email address"
-                                className={`w-full px-6 py-4 rounded-full border bg-white dark:bg-slate-800 text-gray-900 dark:text-white outline-none focus:ring-2 transition-all ${
-                                    subscribeError 
-                                        ? 'border-red-500 focus:ring-red-500 dark:focus:ring-red-500' 
-                                        : 'border-gray-200 dark:border-slate-700 focus:ring-red-500 dark:focus:ring-red-400'
-                                }`}
+                                className={`w-full px-6 py-4 rounded-full border bg-white dark:bg-slate-800 text-gray-900 dark:text-white outline-none focus:ring-2 transition-all ${subscribeError
+                                    ? 'border-red-500 focus:ring-red-500 dark:focus:ring-red-500'
+                                    : 'border-gray-200 dark:border-slate-700 focus:ring-red-500 dark:focus:ring-red-400'
+                                    }`}
                             />
                             {subscribeError && (
                                 <p className="absolute -bottom-6 left-6 text-sm text-red-500 font-bold">{subscribeError}</p>

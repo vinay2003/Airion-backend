@@ -236,6 +236,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        type="button"
                                         className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30 text-xs font-bold text-gray-900 dark:text-white"
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -248,6 +249,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        type="button"
                                         className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30"
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -261,6 +263,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        type="button"
                                         className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30"
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -273,6 +276,7 @@ const SearchBar = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        type="button"
                                         className="h-9 w-9 rounded-full bg-white dark:bg-slate-700 shadow-sm hover:scale-110 active:scale-90 transition-all border border-gray-100 dark:border-slate-600 disabled:opacity-30 text-xs font-bold text-gray-900 dark:text-white"
                                         onClick={(e) => {
                                             e.stopPropagation();

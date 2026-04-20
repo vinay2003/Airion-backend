@@ -216,28 +216,28 @@ const Settings: React.FC = () => {
             className="space-y-10 max-w-7xl mx-auto pb-32 px-4 sm:px-6"
         >
             {/* Header: Matrix Genesis */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <div className="relative z-10 space-y-3">
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Registry Overhaul</h1>
+                    <h1 className="text-3xl font-normal tracking-normal leading-normal">Registry Overhaul</h1>
                     <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-black uppercase rounded-full border border-[var(--ease2event-brand-primary)]/20">
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-semibold rounded-full border border-[var(--ease2event-brand-primary)]/20">
                             <Database size={12} />
                             Core Config v4.2
                         </span>
-                        <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">Autonomous Configuration Hub</p>
+                        <p className="text-base font-normal tracking-normal flex items-center gap-2">Autonomous Configuration Hub</p>
                     </div>
                 </div>
 
                 <div className="relative z-10 flex items-center gap-4 bg-[var(--ease2event-bg-elevated)] p-2 rounded-2xl border border-[var(--ease2event-border-base)] shadow-lg">
                     <div className="flex -space-x-3 px-2">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="w-8 h-8 rounded-full border-2 border-[var(--ease2event-bg-base)] bg-[var(--ease2event-brand-primary)] flex items-center justify-center text-[8px] font-black text-white shadow-md">
+                            <div key={i} className="w-8 h-8 rounded-full border-2 border-[var(--ease2event-bg-base)] bg-[var(--ease2event-brand-primary)] flex items-center justify-center text-[8px] font-semibold text-white shadow-md">
                                 {i}
                             </div>
                         ))}
                     </div>
                     <div className="h-8 w-[1px] bg-[var(--ease2event-border-subtle)] mx-2" />
-                    <span className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic pr-4">Active Registry Node</span>
+                    <span className="text-sm font-semibold text-[var(--ease2event-brand-primary)] tracking-normal pr-4">Active Registry Node</span>
                 </div>
             </div>
 
@@ -259,8 +259,8 @@ const Settings: React.FC = () => {
                                 <tab.icon size={20} />
                             </div>
                             <div className="text-left">
-                                <p className="font-black text-[11px] uppercase tracking-widest italic leading-none">{tab.label}</p>
-                                <p className={`text-[8px] font-bold uppercase mt-1.5 opacity-60 ${activeTab === tab.id ? 'text-white' : 'text-[var(--ease2event-text-muted)]'}`}>{tab.desc}</p>
+                                <p className="font-semibold text-sm leading-none">{tab.label}</p>
+                                <p className={`text-[9px] font-normal mt-1.5 ${activeTab === tab.id ? 'text-white' : 'text-[var(--ease2event-text-muted)]'}`}>{tab.desc}</p>
                             </div>
                             {activeTab === tab.id && (
                                 <motion.div layoutId="tab-indicator" className="absolute right-5 w-2 h-2 rounded-full bg-white shadow-[0_0_15px_white]" />
@@ -274,15 +274,15 @@ const Settings: React.FC = () => {
                         </div>
                         <div className="flex justify-between items-end relative z-10">
                             <div>
-                                <p className="text-[9px] font-black uppercase text-[var(--ease2event-text-muted)] italic tracking-[0.2em] mb-1">Registry Integrity</p>
-                                <p className="text-2xl sm:text-3xl font-black text-[var(--ease2event-brand-primary)] italic font-display">{calculateStrength()}%</p>
+                                <p className="text-[9px] font-black uppercase text-[var(--ease2event-text-muted)]  tracking-[0.2em] mb-1">Registry Integrity</p>
+                                <p className="text-2xl sm:text-3xl font-black text-[var(--ease2event-brand-primary)]  font-display">{calculateStrength()}%</p>
                             </div>
                             <div className="p-2 sm:p-3 border border-[var(--ease2event-brand-primary)]/20 rounded-xl bg-[var(--ease2event-bg-surface)] shadow-sm">
                                 <ShieldCheck className="size-5 sm:size-6 text-[var(--ease2event-brand-primary)]" />
                             </div>
                         </div>
                         <div className="h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden border border-[var(--ease2event-border-subtle)] relative z-10 shadow-inner">
-                            <motion.div 
+                            <motion.div
 
                                 initial={{ width: 0 }}
                                 animate={{ width: `${calculateStrength()}%` }}
@@ -290,7 +290,7 @@ const Settings: React.FC = () => {
                                 className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_20px_var(--ease2event-brand-primary)]"
                             />
                         </div>
-                        <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black italic uppercase tracking-tighter relative z-10 leading-relaxed font-display opacity-70">
+                        <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black tracking-tighter relative z-10 leading-relaxed font-display opacity-70">
                             System analysis indicates optimal identity synchronization. Proceed with node updates.
                         </p>
                     </div>
@@ -310,13 +310,13 @@ const Settings: React.FC = () => {
                             {/* 👤 Identity Interface */}
                             {activeTab === 'personal' && (
                                 <div className="space-y-12">
-                                    <div className="flex items-center gap-4 sm:gap-6 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-10">
+                                    <div className="flex items-center gap-4 sm:gap-6 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-8">
                                         <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-brand-primary)] shadow-sm shrink-0">
                                             <User className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Identity Core</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em] italic opacity-60">Authentication & Identification Nexus</p>
+                                            <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Identity Core</h2>
+                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">Authentication & Identification Nexus</p>
                                         </div>
                                     </div>
 
@@ -328,35 +328,35 @@ const Settings: React.FC = () => {
                                             </button>
                                         </div>
                                         <div className="space-y-4 sm:space-y-5 text-center md:text-left flex-1">
-                                            <h3 className="font-black text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-[0.2em] italic">Visual Identity Node</h3>
-                                            <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-black italic uppercase leading-relaxed max-w-sm opacity-60">Provide a high-resolution visual registry for optimized vendor visibility across the network.</p>
-                                            <Button className="h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm font-black tracking-[0.1em] sm:tracking-[0.2em] italic rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto">DEPLOY_VISUAL_ASSET</Button>
+                                            <h3 className="font-semibold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal ">Visual Identity Node</h3>
+                                            <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-normal leading-relaxed max-w-sm opacity-60">Provide a high-resolution visual registry for optimized vendor visibility across the network.</p>
+                                            <Button className="h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm font-semibold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto">Deploy Visual Asset</Button>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                         <div className="space-y-4">
-                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Identity Tag (Full Name)</label></div>
+                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em]  ml-1">Identity Tag (Full Name)</label></div>
                                             <input
                                                 value={personalData.name}
                                                 onChange={(e: any) => setPersonalData({ ...personalData, name: e.target.value })}
-                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black italic tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
+                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black  tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
                                                 placeholder="Neural ID Name"
                                             />
                                         </div>
                                         <div className="space-y-4">
-                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] italic ml-1">Registry Contact (Neural Link)</label></div>
+                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em]  ml-1">Registry Contact (Neural Link)</label></div>
                                             <input
                                                 value={personalData.phone}
                                                 onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
-                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black italic tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
+                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black  tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
                                                 placeholder="+91 Matrix Connection"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
-                                        <Button onClick={handleSavePersonal} disabled={submitting} className="h-16 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-black tracking-[0.4em] italic rounded-2xl shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
+                                        <Button onClick={handleSavePersonal} disabled={submitting} className="h-16 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-black tracking-[0.4em]  rounded-2xl shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
                                             {submitting ? <Loader2 className="animate-spin" /> : <><Save size={20} className="mr-4" /> COMMIT IDENTIFICATION</>}
                                         </Button>
                                     </div>
@@ -372,11 +372,11 @@ const Settings: React.FC = () => {
                                                 <Cpu className="size-6 sm:size-8" />
                                             </div>
                                             <div>
-                                                <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Operational Logic</h2>
-                                                <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em] italic opacity-60">System Registry & Behavioral Parameters</p>
+                                                <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Operational Logic</h2>
+                                                <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">System Registry & Behavioral Parameters</p>
                                             </div>
                                         </div>
-                                        <Badge className="bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-brand-primary)]/20 italic font-black text-[9px] sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest shadow-sm">
+                                        <Badge className="bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-brand-primary)]/20  font-black text-[9px] sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest shadow-sm">
                                             NODE_ID: {user?.id?.slice(0, 12)}
                                         </Badge>
                                     </div>
@@ -384,21 +384,21 @@ const Settings: React.FC = () => {
                                     <div className="space-y-24">
                                         {/* Section: Indexing */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
+                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
                                                 <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
                                                 SYNC_INDEX_PARAMETERS
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Marketplace Domain</label>
-                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Marketplace Domain</label>
+                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Core Domain...</option>
                                                         {categories.map((c: any) => <option key={c._id || c.id} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Specialized Logic Node</label>
-                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Specialized Logic Node</label>
+                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
                                                         {subcategories.map((s: any) => <option key={s._id || s.id} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
                                                     </select>
@@ -408,17 +408,17 @@ const Settings: React.FC = () => {
 
                                         {/* Section: Branding */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
+                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
                                                 <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
                                                 INSTITUTIONAL_DYNAMICS
                                             </h3>
                                             <div className="space-y-6 sm:space-y-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Public Entity Designation</label>
-                                                    <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-16 bg-[var(--ease2event-bg-elevated)] px-8 rounded-3xl border border-[var(--ease2event-border-subtle)] italic font-black text-xl outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="Entity Designation" />
+                                                    <label className="text-sm font-semibold text-[var(--ease2event-text-muted)] tracking-normal ml-1">Public Entity Designation</label>
+                                                    <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-semibold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Entity Designation" />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-6">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic ml-1">Registry Visual Clusters (Portfolio)</label>
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em]  ml-1">Registry Visual Clusters (Portfolio)</label>
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 sm:gap-6 bg-[var(--ease2event-bg-elevated)]/20 p-4 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                                         {businessData.portfolioImages.map((img, i) => (
                                                             <motion.div
@@ -437,33 +437,33 @@ const Settings: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
-                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[160px] sm:min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-6 sm:px-8 py-6 sm:py-8 rounded-2xl sm:rounded-[32px] border border-[var(--ease2event-border-subtle)] italic font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
+                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[160px] sm:min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-6 sm:px-8 py-6 sm:py-8 rounded-2xl sm:rounded-[32px] border border-[var(--ease2event-border-subtle)]  font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Section: Telemetry */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.5em] flex items-center gap-6 italic">
+                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
                                                 <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
                                                 OPERATIONAL_TELEMETRY
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
-                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
+                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
-                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
+                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
-                                        <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-black tracking-[0.5em] italic rounded-[24px] shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
+                                        <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-black tracking-[0.5em]  rounded-[24px] shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
                                             {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={24} className="mr-4" /> DEPLOY REGISTRY MATRIX</>}
                                         </Button>
                                     </div>
@@ -478,18 +478,18 @@ const Settings: React.FC = () => {
                                             <Lock className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Vault Access</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em] italic opacity-60">Security Protocols & Encryption Keys</p>
+                                            <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Vault Access</h2>
+                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">Security Protocols & Encryption Keys</p>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-[0.3em] ml-1">New Protocol Cipher (Password)</label>
-                                                <input type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] italic font-black tracking-[1em] text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                                                <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.3em] ml-1">New Protocol Cipher (Password)</label>
+                                                <input type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black tracking-[1em] text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
-                                            <Button className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] italic hover:scale-105 transition-all">ROTATE ACCESS CIPHER</Button>
+                                            <Button className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em]  hover:scale-105 transition-all">ROTATE ACCESS CIPHER</Button>
                                         </div>
 
                                         <div className="card-minimal !p-10 bg-gradient-to-br from-amber-500/[0.04] to-transparent border-amber-500/20 flex flex-col justify-between shadow-xl rounded-[2.5rem]">
@@ -498,15 +498,15 @@ const Settings: React.FC = () => {
                                                     <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/10">
                                                         <ShieldCheck size={24} />
                                                     </div>
-                                                    <h3 className="text-base font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-[0.2em]">Protocol Guard</h3>
+                                                    <h3 className="text-base font-black text-[var(--ease2event-text-primary)] uppercase  tracking-[0.2em]">Protocol Guard</h3>
                                                 </div>
-                                                <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black italic uppercase leading-relaxed opacity-60">
+                                                <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black  uppercase leading-relaxed opacity-60">
                                                     Operational vault is currently encrypted with 256-bit AES registry protocols. All access attempts are monitored live.
                                                 </p>
                                             </div>
                                             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 italic font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">NODE_SECURED</Badge>
-                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 italic font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">ENCRYPTED</Badge>
+                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20  font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">NODE_SECURED</Badge>
+                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20  font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">ENCRYPTED</Badge>
                                             </div>
                                         </div>
                                     </div>
@@ -515,10 +515,10 @@ const Settings: React.FC = () => {
                                     <div className="space-y-10">
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between px-2 gap-4 sm:gap-0">
                                             <div>
-                                                <h3 className="text-lg sm:text-xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Access Registry Logs</h3>
-                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-[0.2em] sm:tracking-[0.3em] italic opacity-60">Node Synchronization History</p>
+                                                <h3 className="text-lg sm:text-xl font-black text-[var(--ease2event-text-primary)]  uppercase font-display tracking-tight">Access Registry Logs</h3>
+                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-[0.2em] sm:tracking-[0.3em]  opacity-60">Node Synchronization History</p>
                                             </div>
-                                            <button className="text-[11px] sm:text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest italic hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
+                                            <button className="text-[11px] sm:text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest  hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
                                                 <Eye size={12} className="sm:size-[14px] group-hover:scale-125 transition-transform" />
                                                 ACCESS_FULL_REGISTRY
                                             </button>
@@ -528,10 +528,10 @@ const Settings: React.FC = () => {
                                             <table className="w-full text-left min-w-[600px] sm:min-w-0">
                                                 <thead>
                                                     <tr className="bg-[var(--ease2event-bg-elevated)]/40 border-b border-[var(--ease2event-border-subtle)]">
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] italic">Terminal Node</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] italic">Access Protocol</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] italic">Timestamp</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] italic text-center">Status</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Terminal Node</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Access Protocol</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Timestamp</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em]  text-center">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--ease2event-border-subtle)]">
@@ -541,12 +541,12 @@ const Settings: React.FC = () => {
                                                         { node: 'UNKNOWN_TERMINAL', type: 'FAILED_SYNC', time: 'OCT 10, 23:58', status: 'REJECTED' },
                                                     ].map((log, i) => (
                                                         <tr key={i} className="hover:bg-[var(--ease2event-brand-primary)]/[0.03] transition-all duration-500 cursor-pointer group">
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-black text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight italic uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.type}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase italic tracking-widest opacity-80">{log.time}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-black text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight  uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-widest opacity-80">{log.type}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-widest opacity-80">{log.time}</td>
                                                             <td className="px-6 sm:px-10 py-5 sm:py-7">
                                                                 <div className="flex justify-center">
-                                                                    <Badge className={`italic font-black text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/10'
+                                                                    <Badge className={` font-black text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/10'
                                                                         }`}>
                                                                         {log.status}
                                                                     </Badge>
@@ -569,8 +569,8 @@ const Settings: React.FC = () => {
                                             <Activity className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display leading-none">Interface Matrix</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em] italic opacity-60">Visual Spectrum & Rendering Config</p>
+                                            <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter  font-display leading-none">Interface Matrix</h2>
+                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em]  opacity-60">Visual Spectrum & Rendering Config</p>
                                         </div>
                                     </div>
 
@@ -580,7 +580,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div className="relative z-10 space-y-8 sm:space-y-10">
                                             <div className="space-y-3">
-                                                <p className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em] italic mb-6 sm:mb-8">Spectrum Protocol Configuration</p>
+                                                <p className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em]  mb-6 sm:mb-8">Spectrum Protocol Configuration</p>
                                                 <button
                                                     onClick={toggleTheme}
                                                     className="w-full flex items-center justify-between p-4 sm:p-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[20px] sm:rounded-[28px] hover:border-[var(--ease2event-brand-primary)]/50 transition-all duration-700 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] group/btn"
@@ -590,8 +590,8 @@ const Settings: React.FC = () => {
                                                             {theme === 'light' ? <Moon className="size-6 sm:size-7" /> : <Sun className="size-6 sm:size-7" />}
                                                         </div>
                                                         <div className="text-left">
-                                                            <p className="font-black text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest italic">{theme === 'light' ? 'DARK_PRIME_CORE' : 'LIGHT_NEURAL_FIELD'}</p>
-                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-tighter opacity-70 italic leading-tight">Synchronize visual spectrum deployment</p>
+                                                            <p className="font-black text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest ">{theme === 'light' ? 'DARK_PRIME_CORE' : 'LIGHT_NEURAL_FIELD'}</p>
+                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-tighter opacity-70  leading-tight">Synchronize visual spectrum deployment</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight className="size-5 sm:size-6 text-[var(--ease2event-text-muted)] group-hover/btn:translate-x-2 transition-transform duration-500" />
@@ -599,7 +599,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 bg-[var(--ease2event-bg-elevated)]/50 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]">
                                                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-muted)] font-black italic uppercase tracking-widest opacity-60">
+                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-muted)] font-black  uppercase tracking-widest opacity-60">
                                                     System calibrated for high-fidelity interactive rendering protocols.
                                                 </p>
                                             </div>

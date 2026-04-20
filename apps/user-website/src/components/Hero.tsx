@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
@@ -20,8 +20,11 @@ const Hero: React.FC = () => {
     const navigate = useNavigate();
     const { user, isAuthenticated } = useAuth(); // ✅ added
 
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const activeCategory = searchParams.get('category') || 'all';
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [activeTab, setActiveTab] = useState("All");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     useEffect(() => {
@@ -133,6 +136,7 @@ const Hero: React.FC = () => {
                     {HERO_IMAGES.map((_, idx) => (
                         <button
                             key={idx}
+                            type="button"
                             onClick={() => setCurrentImageIndex(idx)}
                             className={`h-1.5 rounded-full ${idx === currentImageIndex
                                 ? "w-8 bg-white"
@@ -155,18 +159,35 @@ const Hero: React.FC = () => {
 
                     {/* Tabs - MOBILE FIX: Horizontal Scroll */}
                     <div className="filter-tabs flex flex-nowrap md:flex-wrap gap-2 mb-6 justify-start md:justify-center overflow-x-auto md:overflow-hidden whitespace-nowrap hide-scrollbar px-4 md:px-0">
-                        {SEARCH_TABS.map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`text-xs md:text-sm px-6 py-2 rounded-full font-bold transition-all flex-shrink-0 ${activeTab === tab
-                                    ? "bg-white text-black shadow-lg"
-                                    : "bg-black/20 text-white hover:bg-black/30"
-                                    }`}
-                            >
-                                {tab}
-                            </button>
-                        ))}
+                        {SEARCH_TABS.map((tab) => {
+                            const tabId = tab === 'All' ? 'all' : tab.toLowerCase();
+                            const isActive = activeCategory === tabId;
+                            
+                            return (
+                                <button
+                                    key={tab}
+                                    type="button"
+                                    onClick={() => {
+                                        let finalId = tabId;
+                                        // Simple navigation back to home with category
+                                        const target = tabId === 'all' ? '/' : `/?category=${tabId}`;
+                                        navigate(target);
+                                        
+                                        // Smooth scroll to results after a short delay to allow re-render
+                                        setTimeout(() => {
+                                            const el = document.getElementById('marketplace-results');
+                                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                        }, 100);
+                                    }}
+                                    className={`text-xs md:text-sm px-6 py-2 rounded-full font-bold transition-all flex-shrink-0 ${isActive
+                                        ? "bg-white text-black shadow-lg"
+                                        : "bg-black/20 text-white hover:bg-black/30"
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            );
+                        })}
                     </div>
 
                     <SearchBar />

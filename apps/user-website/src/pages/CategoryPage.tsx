@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ListingCard from '../components/ListingCard';
-import FilterSidebar from '../components/FilterSidebar';
+import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import { ArrowLeft, ChevronDown, Search } from 'lucide-react';
 import { fetchEvents } from '../lib/api';
 import type { Event as EventType } from '../types';
@@ -10,6 +10,8 @@ const CategoryPage: React.FC = () => {
     const { category } = useParams<{ category: string }>();
     const [categoryEvents, setCategoryEvents] = useState<EventType[]>([]);
     const [loading, setLoading] = useState(true);
+    const [appliedFilters, setAppliedFilters] = useState<FilterValues | null>(null);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     useEffect(() => {
         const load = async () => {
@@ -26,6 +28,39 @@ const CategoryPage: React.FC = () => {
         };
         load();
     }, [category]);
+
+    const handleApplyFilters = (filters: FilterValues) => {
+        setAppliedFilters(filters);
+        setShowMobileFilters(false);
+    };
+
+    const filteredEvents = useMemo(() => {
+        if (!appliedFilters) return categoryEvents;
+        return categoryEvents.filter(v => {
+            if (appliedFilters.locationInput) {
+                if (!v.location?.toLowerCase().includes(appliedFilters.locationInput.toLowerCase())) return false;
+            }
+            if (appliedFilters.priceRange) {
+                const priceValue = typeof v.price === 'string'
+                    ? parseInt(v.price.replace(/\D/g, '') || '0')
+                    : v.price || 0;
+                if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
+            }
+            if (appliedFilters.selectedEventTypes.length > 0) {
+                if (!appliedFilters.selectedEventTypes.some(t =>
+                    v.category?.toLowerCase().includes(t.toLowerCase())
+                )) return false;
+            }
+            if (appliedFilters.selectedCapacity) {
+                const capacityValue = parseInt(v.capacity?.replace(/\D/g, '') || '0');
+                if (v.capacity?.toLowerCase() === 'contact vendor') return true;
+                if (appliedFilters.selectedCapacity === 'Small Intimate' && (capacityValue < 10 || capacityValue > 50)) return false;
+                if (appliedFilters.selectedCapacity === 'Medium Gathering' && (capacityValue < 50 || capacityValue > 200)) return false;
+                if (appliedFilters.selectedCapacity === 'Large Celebration' && capacityValue < 200) return false;
+            }
+            return true;
+        });
+    }, [categoryEvents, appliedFilters]);
 
     const getCategoryHeroImage = (cat: string | undefined) => {
         switch (cat?.toLowerCase()) {
@@ -84,15 +119,21 @@ const CategoryPage: React.FC = () => {
                     <p className="text-lg text-white/90 max-w-2xl">
                         Discover the best venues and services for your {category} events. Verified listings, transparent pricing, and seamless booking.
                     </p>
+                    <button
+                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className="lg:hidden mt-6 flex items-center gap-2 px-6 py-3 bg-white text-gray-900 rounded-full font-bold text-sm shadow-xl w-fit active:scale-95 transition-all"
+                    >
+                        <Search size={16} /> Filters
+                    </button>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar */}
-                    <aside className="w-full lg:w-1/4">
+                    <aside className={`w-full lg:w-1/4 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-24">
-                            <FilterSidebar />
+                            <FilterSidebar onApply={handleApplyFilters} />
                         </div>
                     </aside>
 
@@ -100,7 +141,7 @@ const CategoryPage: React.FC = () => {
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
                             <p className="text-gray-600 dark:text-slate-400">
-                                Showing <span className="font-bold text-gray-900 dark:text-white">{categoryEvents.length}</span> properties
+                                Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEvents.length}</span> properties
                             </p>
                             <div className="relative">
                                 <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2 hover:border-red-500 dark:hover:border-red-500 transition-colors shadow-sm">
@@ -111,7 +152,7 @@ const CategoryPage: React.FC = () => {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {categoryEvents.map((event) => (
+                            {filteredEvents.map((event) => (
                                 <ListingCard key={event.id} {...event} />
                             ))}
                         </div>

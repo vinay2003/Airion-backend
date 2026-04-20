@@ -41,10 +41,10 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 className="font-bold text-gray-900 dark:text-white mb-4">For Vendors</h4>
                         <ul className="space-y-2 text-sm">
-                            <li><Link to="/contact" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">List Your Business</Link></li>
-                            <li><a href="#" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Pricing</a></li>
-                            <li><a href="#" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Resources</a></li>
-                            <li><a href="#" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Support</a></li>
+                            <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">List Your Business</Link></li>
+                            <li><Link to="/packages" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Pricing</Link></li>
+                            <li><Link to="/inspiration" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Resources</Link></li>
+                            <li><Link to="/contact" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Support</Link></li>
                         </ul>
                     </div>
 

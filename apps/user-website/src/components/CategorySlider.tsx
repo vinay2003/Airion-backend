@@ -102,8 +102,9 @@ const CategorySlider: React.FC = () => {
             {/* Left fade/arrow */}
             {showLeftArrow && (
                 <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-slate-950 to-transparent flex items-center pl-4 z-10">
-                    <button
+                        <button
                         onClick={() => slide('left')}
+                        type="button"
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
                         aria-label="Scroll left"
                     >
@@ -127,6 +128,7 @@ const CategorySlider: React.FC = () => {
                     return (
                         <button
                             key={category.id}
+                            type="button"
                             onClick={() => !isDragging && handleCategoryClick(category.id)}
                             className={`flex flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 group transition-all duration-300 rounded-full border shadow-sm hover:shadow-md whitespace-nowrap gap-2.5 pointer-events-auto ${isActive
                                 ? 'bg-gradient-to-r from-red-600 to-red-500 border-red-500 text-white scale-105 shadow-red-500/20'
@@ -146,8 +148,9 @@ const CategorySlider: React.FC = () => {
             {/* Right fade/arrow */}
             {showRightArrow && (
                 <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-slate-950 to-transparent flex items-center justify-end pr-4 z-10">
-                    <button
+                        <button
                         onClick={() => slide('right')}
+                        type="button"
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
                         aria-label="Scroll right"
                     >

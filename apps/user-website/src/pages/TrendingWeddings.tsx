@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import ListingCard from '../components/ListingCard';
-import FilterSidebar from '../components/FilterSidebar';
+import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import SEO from '../components/SEO';
 import { fetchEvents } from '../lib/api';
 import type { Event } from '../types';
@@ -10,6 +10,8 @@ import type { Event } from '../types';
 const TrendingWeddings: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
+    const [appliedFilters, setAppliedFilters] = useState<FilterValues | null>(null);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     useEffect(() => {
         const loadEvents = async () => {
@@ -23,6 +25,39 @@ const TrendingWeddings: React.FC = () => {
         };
         loadEvents();
     }, []);
+
+    const handleApplyFilters = (filters: FilterValues) => {
+        setAppliedFilters(filters);
+        setShowMobileFilters(false);
+    };
+
+    const filteredEvents = useMemo(() => {
+        if (!appliedFilters) return events;
+        return events.filter(v => {
+            if (appliedFilters.locationInput) {
+                if (!v.location?.toLowerCase().includes(appliedFilters.locationInput.toLowerCase())) return false;
+            }
+            if (appliedFilters.priceRange) {
+                const priceValue = typeof v.price === 'string' 
+                    ? parseInt(v.price.replace(/\D/g, '') || '0') 
+                    : v.price || 0;
+                if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
+            }
+            if (appliedFilters.selectedEventTypes.length > 0) {
+                if (!appliedFilters.selectedEventTypes.some(t =>
+                    v.category?.toLowerCase().includes(t.toLowerCase())
+                )) return false;
+            }
+            if (appliedFilters.selectedCapacity) {
+                const capacityValue = parseInt(v.capacity?.replace(/\D/g, '') || '0');
+                if (v.capacity?.toLowerCase() === 'contact vendor') return true;
+                if (appliedFilters.selectedCapacity === 'Small Intimate' && (capacityValue < 10 || capacityValue > 50)) return false;
+                if (appliedFilters.selectedCapacity === 'Medium Gathering' && (capacityValue < 50 || capacityValue > 200)) return false;
+                if (appliedFilters.selectedCapacity === 'Large Celebration' && capacityValue < 200) return false;
+            }
+            return true;
+        });
+    }, [events, appliedFilters]);
 
     if (loading) {
         return (
@@ -61,19 +96,20 @@ const TrendingWeddings: React.FC = () => {
                     <p className="text-xl text-white/90 max-w-2xl font-light">
                         The most sought-after venues of the season. Handpicked for their exceptional beauty, service, and grandeur.
                     </p>
+                    <button
+                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className="lg:hidden mt-8 flex items-center gap-2 px-8 py-3.5 bg-red-500 text-white rounded-full font-bold text-sm shadow-[0_10px_40px_rgba(239,68,68,0.3)] w-fit active:scale-95 transition-all"
+                    >
+                        <Search size={16} /> Filters
+                    </button>
                 </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
                 <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Listings - Full Width for this special page or with sidebar? 
-                        Let's keep it clean since it's a curated list, but Sidebar helps if they want to filter within trending.
-                        For a curated "Top 4" page, maybe just a grid is better. 
-                        But reusing standard layout is good. Let's include sidebar for consistent UX.
-                    */}
-                    <aside className="w-full lg:w-1/4">
+                    <aside className={`w-full lg:w-1/4 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-24">
-                            <FilterSidebar />
+                            <FilterSidebar onApply={handleApplyFilters} />
                         </div>
                     </aside>
 
@@ -84,12 +120,12 @@ const TrendingWeddings: React.FC = () => {
                                 Top Picks
                             </h2>
                             <span className="text-gray-500 dark:text-slate-400 text-sm">
-                                {events.length} Venues Found
+                                {filteredEvents.length} Venues Found
                             </span>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
-                            {events.map((event) => (
+                            {filteredEvents.map((event) => (
                                 <ListingCard key={event.id} {...event} />
                             ))}
                         </div>

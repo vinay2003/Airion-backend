@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FilterSidebar from '../components/FilterSidebar';
+import { useSearchParams } from 'react-router-dom';
+import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import ListingCard from '../components/ListingCard';
 import SEO from '../components/SEO';
 import { fetchEvents } from '../lib/api';
@@ -25,6 +26,9 @@ const VendorDiscovery: React.FC = () => {
     const [sortBy, setSortBy] = useState('recommended');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [activeFilters, setActiveFilters] = useState<string[]>([]);
+    const [appliedFilters, setAppliedFilters] = useState<FilterValues | null>(null);
+    const [searchParams] = useSearchParams();
+    const categoryQuery = searchParams.get('category');
 
     useEffect(() => {
         const loadVendors = async () => {
@@ -35,30 +39,95 @@ const VendorDiscovery: React.FC = () => {
                 console.error('Failed to fetch vendors:', err);
             } finally {
                 setLoading(false);
-                // Simulate some active filter chips for demo
-                setActiveFilters(['Patna', 'Wedding']);
             }
         };
         loadVendors();
     }, []);
 
+    // ✅ Sync search params with filters
+    useEffect(() => {
+        if (categoryQuery && vendors.length > 0) {
+            const initialCategory = categoryQuery.charAt(0) + categoryQuery.slice(1).toLowerCase(); // Normalize
+            const newFilters: FilterValues = {
+                locationInput: '',
+                priceRange: 1000000,
+                selectedEventTypes: [initialCategory],
+                selectedCapacity: '',
+                selectedDate: null
+            };
+            setAppliedFilters(newFilters);
+            setActiveFilters([initialCategory]);
+        }
+    }, [categoryQuery, vendors]);
+
+    const handleApplyFilters = (filters: FilterValues) => {
+        setAppliedFilters(filters);
+        const chips: string[] = [];
+        if (filters.locationInput) chips.push(filters.locationInput);
+        filters.selectedEventTypes.forEach(t => chips.push(t));
+        if (filters.selectedCapacity) chips.push(filters.selectedCapacity);
+        if (filters.selectedDate) chips.push(filters.selectedDate);
+        setActiveFilters(chips);
+        setShowMobileFilters(false);
+    };
+
+    const filteredVendors = useMemo(() => {
+        if (!appliedFilters) return vendors;
+        return vendors.filter(v => {
+            if (appliedFilters.locationInput) {
+                if (!v.location?.toLowerCase().includes(appliedFilters.locationInput.toLowerCase())) return false;
+            }
+            if (appliedFilters.priceRange) {
+                const priceValue = typeof v.price === 'string'
+                    ? parseInt(v.price.replace(/\D/g, '') || '0')
+                    : v.price || 0;
+                if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
+            }
+            if (appliedFilters.selectedEventTypes.length > 0) {
+                if (!appliedFilters.selectedEventTypes.some(t =>
+                    v.category?.toLowerCase().includes(t.toLowerCase())
+                )) return false;
+            }
+            if (appliedFilters.selectedCapacity) {
+                const capacityValue = parseInt(v.capacity?.replace(/\D/g, '') || '0');
+                if (v.capacity?.toLowerCase() === 'contact vendor') return true;
+                if (appliedFilters.selectedCapacity === 'Small Intimate' && (capacityValue < 10 || capacityValue > 50)) return false;
+                if (appliedFilters.selectedCapacity === 'Medium Gathering' && (capacityValue < 50 || capacityValue > 200)) return false;
+                if (appliedFilters.selectedCapacity === 'Large Celebration' && capacityValue < 200) return false;
+            }
+            return true;
+        });
+    }, [vendors, appliedFilters]);
+
     const sortedVendors = useMemo(() => {
-        const copy = [...vendors];
+        const copy = [...filteredVendors];
         switch (sortBy) {
             case 'price_asc':
-                return copy.sort((a, b) => parseInt(a.price?.replace(/\D/g, '') || '0') - parseInt(b.price?.replace(/\D/g, '') || '0'));
+                return copy.sort((a, b) => {
+                    const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+                    const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+                    return priceA - priceB;
+                });
             case 'price_desc':
-                return copy.sort((a, b) => parseInt(b.price?.replace(/\D/g, '') || '0') - parseInt(a.price?.replace(/\D/g, '') || '0'));
+                return copy.sort((a, b) => {
+                    const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+                    const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+                    return priceB - priceA;
+                });
             case 'rating':
                 return copy.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             default:
                 return copy;
         }
-    }, [vendors, sortBy]);
+    }, [filteredVendors, sortBy]);
 
     const currentSortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Recommended';
 
-    const removeFilter = (filter: string) => setActiveFilters(prev => prev.filter(f => f !== filter));
+    const removeFilter = (filter: string) => {
+        const updated = activeFilters.filter(f => f !== filter);
+        setActiveFilters(updated);
+        if (updated.length === 0) setAppliedFilters(null);
+    };
 
     return (
         <main className="min-h-screen bg-white dark:bg-transparent aurora-bg relative transition-colors duration-300 pt-24 pb-12 overflow-x-hidden">
@@ -179,7 +248,7 @@ const VendorDiscovery: React.FC = () => {
                             </span>
                         ))}
                         <button
-                            onClick={() => setActiveFilters([])}
+                            onClick={() => { setActiveFilters([]); setAppliedFilters(null); }}
                             className="text-xs font-semibold text-neutral-400 hover:text-red-500 underline underline-offset-2 transition-colors"
                         >
                             Clear all
@@ -191,7 +260,7 @@ const VendorDiscovery: React.FC = () => {
                     {/* Sidebar */}
                     <aside className={`w-full lg:w-[280px] xl:w-[320px] flex-shrink-0 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-28">
-                            <FilterSidebar />
+                            <FilterSidebar onApply={handleApplyFilters} />
                         </div>
                     </aside>
 
@@ -248,7 +317,7 @@ const VendorDiscovery: React.FC = () => {
 
                         {!loading && sortedVendors.length > 0 && (
                             <div className="mt-20 flex justify-center">
-                                <button className="px-12 py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
+                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
                                     Expand Network Results
                                 </button>
                             </div>

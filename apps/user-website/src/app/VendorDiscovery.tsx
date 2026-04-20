@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FilterSidebar from '../components/FilterSidebar';
+import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import ListingCard from '../components/ListingCard';
 import SEO from '../components/SEO';
 import { fetchEvents } from '../lib/api';
@@ -29,6 +29,7 @@ const VendorDiscovery: React.FC = () => {
     const [sortBy, setSortBy] = useState('recommended');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const [activeFilters, setActiveFilters] = useState<string[]>([]);
+    const [appliedFilters, setAppliedFilters] = useState<FilterValues | null>(null);
 
     useEffect(() => {
         const loadVendors = async () => {
@@ -46,13 +47,59 @@ const VendorDiscovery: React.FC = () => {
         loadVendors();
     }, []);
 
+    const handleApplyFilters = (filters: FilterValues) => {
+        setAppliedFilters(filters);
+        const chips: string[] = [];
+        if (filters.locationInput) chips.push(filters.locationInput);
+        filters.selectedEventTypes.forEach(t => chips.push(t));
+        if (filters.selectedCapacity) chips.push(filters.selectedCapacity);
+        if (filters.selectedDate) chips.push(filters.selectedDate);
+        setActiveFilters(chips);
+    };
+
+    const filteredVendors = useMemo(() => {
+        if (!appliedFilters) return vendors;
+        return vendors.filter(v => {
+            if (appliedFilters.locationInput) {
+                if (!v.location?.toLowerCase().includes(appliedFilters.locationInput.toLowerCase())) return false;
+            }
+            if (appliedFilters.priceRange) {
+                const priceValue = typeof v.price === 'string' 
+                    ? parseInt(v.price.replace(/\D/g, '') || '0') 
+                    : v.price || 0;
+                if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
+            }
+            if (appliedFilters.selectedEventTypes.length > 0) {
+                if (!appliedFilters.selectedEventTypes.some(t =>
+                    v.category?.toLowerCase().includes(t.toLowerCase())
+                )) return false;
+            }
+            if (appliedFilters.selectedCapacity) {
+                const capacityValue = parseInt(v.capacity?.replace(/\D/g, '') || '0');
+                if (v.capacity?.toLowerCase() === 'contact vendor') return true;
+                if (appliedFilters.selectedCapacity === 'Small Intimate' && (capacityValue < 10 || capacityValue > 50)) return false;
+                if (appliedFilters.selectedCapacity === 'Medium Gathering' && (capacityValue < 50 || capacityValue > 200)) return false;
+                if (appliedFilters.selectedCapacity === 'Large Celebration' && capacityValue < 200) return false;
+            }
+            return true;
+        });
+    }, [vendors, appliedFilters]);
+
     const sortedVendors = useMemo(() => {
-        const copy = [...vendors];
-        if (sortBy === 'price_asc') return copy.sort((a, b) => parseInt(a.price?.replace(/\D/g, '') || '0') - parseInt(b.price?.replace(/\D/g, '') || '0'));
-        if (sortBy === 'price_desc') return copy.sort((a, b) => parseInt(b.price?.replace(/\D/g, '') || '0') - parseInt(a.price?.replace(/\D/g, '') || '0'));
+        const copy = [...filteredVendors];
+        if (sortBy === 'price_asc') return copy.sort((a, b) => {
+            const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+            const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+            return priceA - priceB;
+        });
+        if (sortBy === 'price_desc') return copy.sort((a, b) => {
+            const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+            const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+            return priceB - priceA;
+        });
         if (sortBy === 'rating') return copy.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         return copy;
-    }, [vendors, sortBy]);
+    }, [filteredVendors, sortBy]);
 
     const currentSortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Recommended';
 
@@ -139,7 +186,7 @@ const VendorDiscovery: React.FC = () => {
                                 <h3 className="text-base font-black text-slate-900 uppercase tracking-widest">Filter Strategy</h3>
                                 <SlidersHorizontal size={18} className="text-slate-300" />
                             </div>
-                            <FilterSidebar />
+                            <FilterSidebar onApply={handleApplyFilters} />
                         </div>
                     </aside>
 

@@ -168,8 +168,8 @@ const Products: React.FC = () => {
                             <div className="space-y-8">
                                 <div className="space-y-3">
                                     <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Operational Protocol ID</label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
 
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -179,7 +179,7 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className="space-y-3">
                                     <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Capability Matrix Description</label>
-                                    <textarea 
+                                    <textarea
 
                                         rows={6}
                                         value={formData.description}
@@ -216,8 +216,8 @@ const Products: React.FC = () => {
                                 </div>
                                 <div className="space-y-3">
                                     <label className="text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic">Max Node Throughput</label>
-                                    <input 
-                                        type="number" 
+                                    <input
+                                        type="number"
 
                                         placeholder="UNIT_CAP"
                                         value={formData.guestCapacity}
@@ -326,7 +326,7 @@ const Products: React.FC = () => {
             className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
         >
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
                     <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Inventory Registry</h1>
                     <div className="flex items-center gap-3 mt-4">
@@ -383,68 +383,68 @@ const Products: React.FC = () => {
                     <>
                         <AnimatePresence mode="popLayout">
                             {filteredProducts.map((prod: any, idx: number) => (
-                            <motion.div 
-                                key={prod.id} 
-                                layout
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ delay: idx * 0.05 }}
-                                className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] shadow-2xl bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer rounded-[3rem]"
-                            >
-                                <div className="h-56 bg-slate-900 relative overflow-hidden">
-                                    <img 
-                                        src={prod.images?.[0] || 'https://images.unsplash.com/photo-1549439602-43ebca2327af?auto=format&fit=crop&q=80&w=1000'} 
-                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
-                                        alt={prod.title}
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                                    <div className="absolute top-6 left-6">
-                                        <Badge className="bg-[var(--ease2event-brand-primary)]/20 backdrop-blur-xl border border-[var(--ease2event-brand-primary)]/30 text-white font-black italic uppercase text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
-                                            {prod.guestCapacity ? 'Operational Venue' : 'Service Unit'}
-                                        </Badge>
-                                    </div>
-                                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-                                        <button className="p-3 bg-white/10 backdrop-blur-xl text-white rounded-2xl border border-white/20 hover:bg-white/20 transition-all shadow-2xl"><Edit3 size={16} /></button>
-                                    </div>
-                                </div>
-                                <div className="p-8 flex-1 flex flex-col space-y-6">
-                                    <div className="space-y-2">
-                                        <p className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
-                                        <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
-                                    </div>
-                                    <p className="text-xs text-[var(--ease2event-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
-                                    
-                                    <div className="mt-auto pt-8 flex items-center justify-between border-t border-[var(--ease2event-border-subtle)]">
-                                        <div className="flex flex-col">
-                                            <span className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.3em] italic opacity-50">Base Capture</span>
-                                            <span className="text-2xl font-black text-[var(--ease2event-text-primary)] mt-1 italic font-display tracking-tighter group-hover:scale-105 transition-transform origin-left">₹{Number(prod.basePrice).toLocaleString()}</span>
+                                <motion.div
+                                    key={prod.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] shadow-2xl bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-700 flex flex-col h-full cursor-pointer rounded-[3rem]"
+                                >
+                                    <div className="h-56 bg-slate-900 relative overflow-hidden">
+                                        <img
+                                            src={prod.images?.[0] || 'https://images.unsplash.com/photo-1549439602-43ebca2327af?auto=format&fit=crop&q=80&w=1000'}
+                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                                            alt={prod.title}
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                        <div className="absolute top-6 left-6">
+                                            <Badge className="bg-[var(--ease2event-brand-primary)]/20 backdrop-blur-xl border border-[var(--ease2event-brand-primary)]/30 text-white font-black italic uppercase text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
+                                                {prod.guestCapacity ? 'Operational Venue' : 'Service Unit'}
+                                            </Badge>
                                         </div>
-                                        <div className="flex -space-x-3 group-hover:space-x-1 transition-all">
-                                            {[1,2,3].map(i => (
-                                                <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] text-sm font-black text-[var(--ease2event-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--ease2event-brand-primary)]/10 transition-all italic">v{i}</div>
-                                            ))}
+                                        <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
+                                            <button className="p-3 bg-white/10 backdrop-blur-xl text-white rounded-2xl border border-white/20 hover:bg-white/20 transition-all shadow-2xl"><Edit3 size={16} /></button>
                                         </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                    
-                    <motion.div 
-                        whileHover={{ y: -5, scale: 1.02 }}
-                        onClick={() => setIsAdding(true)}
-                        className="card-minimal border-4 border-dashed border-[var(--ease2event-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--ease2event-brand-primary)]/40 hover:bg-[var(--ease2event-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl rounded-[3rem]"
-                    >
-                        <div className="w-16 h-16 rounded-3xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] flex items-center justify-center text-[var(--ease2event-text-muted)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-700 shadow-2xl">
-                            <Plus size={32} />
-                        </div>
-                        <div className="text-center space-y-3">
-                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-widest font-display">Sync New Node</h3>
-                            <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
-                        </div>
-                    </motion.div>
-                   </>
+                                    <div className="p-8 flex-1 flex flex-col space-y-6">
+                                        <div className="space-y-2">
+                                            <p className="text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em] italic opacity-80">{prod.category?.name || 'GENERIC_PROTOCOL'}</p>
+                                            <h3 className="text-xl font-black text-[var(--ease2event-text-primary)] truncate italic font-display uppercase tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
+                                        </div>
+                                        <p className="text-xs text-[var(--ease2event-text-muted)] font-medium line-clamp-3 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">{prod.description}</p>
+
+                                        <div className="mt-auto pt-8 flex items-center justify-between border-t border-[var(--ease2event-border-subtle)]">
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.3em] italic opacity-50">Base Capture</span>
+                                                <span className="text-2xl font-black text-[var(--ease2event-text-primary)] mt-1 italic font-display tracking-tighter group-hover:scale-105 transition-transform origin-left">₹{Number(prod.basePrice).toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex -space-x-3 group-hover:space-x-1 transition-all">
+                                                {[1, 2, 3].map(i => (
+                                                    <div key={i} className="w-10 h-10 rounded-2xl bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] text-sm font-black text-[var(--ease2event-text-muted)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--ease2event-brand-primary)]/10 transition-all italic">v{i}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+
+                        <motion.div
+                            whileHover={{ y: -5, scale: 1.02 }}
+                            onClick={() => setIsAdding(true)}
+                            className="card-minimal border-4 border-dashed border-[var(--ease2event-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--ease2event-brand-primary)]/40 hover:bg-[var(--ease2event-brand-primary)]/[0.03] cursor-pointer group transition-all duration-700 shadow-xl rounded-[3rem]"
+                        >
+                            <div className="w-16 h-16 rounded-3xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] flex items-center justify-center text-[var(--ease2event-text-muted)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-700 shadow-2xl">
+                                <Plus size={32} />
+                            </div>
+                            <div className="text-center space-y-3">
+                                <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase tracking-widest font-display">Sync New Node</h3>
+                                <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-[0.4em] italic opacity-60">Expand Operational Reach</p>
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </div>
         </motion.div>

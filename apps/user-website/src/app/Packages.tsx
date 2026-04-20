@@ -46,7 +46,7 @@ const Packages: React.FC = () => {
                 'Music: Bluetooth Speaker System'
             ],
             isSponsored: false,
-            image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop',
+            image: 'https://images.unsplash.com/photo-1559060680-36abfac01944?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGFydGllc3xlbnwwfHwwfHx8MA%3D%3D',
             vendor: 'Sunset Cafe'
         },
         {

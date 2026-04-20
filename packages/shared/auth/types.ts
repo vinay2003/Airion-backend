@@ -14,6 +14,9 @@ export interface User {
     email: string;
     name?: string;
     role: UserRole;
+    avatar?: string;
+    location?: string;
+    language?: string;
     phoneNumber?: string;
     vendor?: { id: string; [key: string]: any };
     createdAt?: Date;

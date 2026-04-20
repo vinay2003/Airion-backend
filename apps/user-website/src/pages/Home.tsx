@@ -61,9 +61,9 @@ const Home: React.FC = () => {
         return events.filter(e => e.category.toLowerCase() === cat);
     }, [events, activeCategory]);
 
-    const weddingVenues = events.filter(e => e.category === 'Weddings');
-    const birthdayVenues = events.filter(e => e.category === 'Birthdays' || e.category === 'Parties');
-    const corporateVenues = events.filter(e => e.category === 'Corporate');
+    const weddingVenues = useMemo(() => events.filter(e => e.category?.toLowerCase().includes('wedding')), [events]);
+    const birthdayVenues = useMemo(() => events.filter(e => e.category?.toLowerCase().includes('birthday') || e.category?.toLowerCase().includes('party')), [events]);
+    const corporateVenues = useMemo(() => events.filter(e => e.category?.toLowerCase().includes('corporate')), [events]);
 
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
@@ -403,7 +403,7 @@ const Home: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+                        <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-slate-800">
                             <img
                                 src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
                                 alt="Event Planning"

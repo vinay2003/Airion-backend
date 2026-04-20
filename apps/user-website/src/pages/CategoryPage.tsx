@@ -18,7 +18,11 @@ const CategoryPage: React.FC = () => {
             setLoading(true);
             try {
                 const allEvents = await fetchEvents();
-                setCategoryEvents(allEvents.filter(e => e.category.toLowerCase() === category?.toLowerCase()));
+                const catParam = category?.toLowerCase() || '';
+                setCategoryEvents(allEvents.filter(e => {
+                    const eCat = e.category.toLowerCase();
+                    return eCat.includes(catParam) || catParam.includes(eCat);
+                }));
             } catch (err) {
                 console.error(err);
                 setCategoryEvents([]);
@@ -64,11 +68,11 @@ const CategoryPage: React.FC = () => {
 
     const getCategoryHeroImage = (cat: string | undefined) => {
         switch (cat?.toLowerCase()) {
-            case 'weddings': return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop';
-            case 'parties': return 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop';
-            case 'seminars': return 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop';
-            case 'meetups': return 'https://images.unsplash.com/photo-1609103224786-e43d94029557?q=80&w=1000&auto=format&fit=crop';
-            default: return 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop';
+            case 'weddings': return 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&auto=format&fit=crop&q=85';
+            case 'parties': return 'https://images.unsplash.com/photo-1559060680-36abfac01944?w=1920&auto=format&fit=crop&q=85';
+            case 'seminars': return 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1920&auto=format&fit=crop&q=85';
+            case 'meetups': return 'https://images.unsplash.com/photo-1609103224786-e43d94029557?w=1920&auto=format&fit=crop&q=85';
+            default: return 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1920&auto=format&fit=crop&q=85';
         }
     };
 

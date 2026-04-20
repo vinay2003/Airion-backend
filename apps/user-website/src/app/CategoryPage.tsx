@@ -36,7 +36,7 @@ const CategoryPage: React.FC = () => {
     const getCategoryHeroImage = (cat: string | undefined) => {
         switch (cat?.toLowerCase()) {
             case 'weddings': return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop';
-            case 'parties': return 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?q=80&w=1000&auto=format&fit=crop';
+            case 'parties': return 'https://images.unsplash.com/photo-1559060680-36abfac01944?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGFydGllc3xlbnwwfHwwfHx8MA%3D%3D';
             case 'seminars': return 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop';
             case 'meetups': return 'https://images.unsplash.com/photo-1609103224786-e43d94029557?q=80&w=1000&auto=format&fit=crop';
             default: return 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1000&auto=format&fit=crop';

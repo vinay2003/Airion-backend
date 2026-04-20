@@ -15,6 +15,8 @@ export const UserSchema = z.object({
   isEmailVerified: z.boolean().default(false),
   isActive: z.boolean().default(true),
   avatar: z.string().optional().nullable(),
+  location: z.string().optional().nullable(),
+  language: z.string().optional().nullable(),
   provider: z.string().optional().nullable(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
@@ -29,4 +31,6 @@ export type BaseUser = {
   phoneNumber?: string | null;
   role: UserRole;
   avatar?: string | null;
+  location?: string | null;
+  language?: string | null;
 };

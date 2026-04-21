@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Send, Paperclip, Phone, Info, ArrowLeft, ShieldCheck, MessageSquare, CheckCheck, MoreVertical, Smile, Video, User, Sparkles, Wand2 } from 'lucide-react';
+import { Search, Send, Paperclip, Info, ArrowLeft, ShieldCheck, MessageSquare, CheckCheck, Sparkles } from 'lucide-react';
 import { Button, Badge } from '@ease2event/ui';
 import { leadService } from '@ease2event/shared/lib/services/leadService';
 import { messageService, Message } from '@ease2event/shared/lib/services/messageService';
@@ -32,14 +32,12 @@ const Inbox: React.FC = () => {
         lead.notes?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Fetch Messages when conversation is active
     const { data: messages = [], isLoading: loadingMessages } = useQuery({
         queryKey: ['messages', conversationId],
         queryFn: () => conversationId ? messageService.getMessages(conversationId) : Promise.resolve([]),
         enabled: !!conversationId && viewMode === 'chat'
     });
 
-    // Socket Setup
     useEffect(() => {
         if (!user?.id) return;
         const socket = initiateSocketConnection(user.id);
@@ -55,15 +53,11 @@ const Inbox: React.FC = () => {
         });
 
         socket.on('userTyping', (data: { userId: string; userName: string }) => {
-            if (data.userId !== user?.id) {
-                setTypingUser(data.userName);
-            }
+            if (data.userId !== user?.id) setTypingUser(data.userName);
         });
 
         socket.on('userStoppedTyping', (data: { userId: string }) => {
-            if (data.userId !== user?.id) {
-                setTypingUser(null);
-            }
+            if (data.userId !== user?.id) setTypingUser(null);
         });
 
         return () => {
@@ -73,7 +67,6 @@ const Inbox: React.FC = () => {
         };
     }, [user?.id, conversationId, queryClient]);
 
-    // Scroll to bottom
     useEffect(() => {
         if (viewMode === 'chat') {
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,9 +80,7 @@ const Inbox: React.FC = () => {
         setConversationId(null);
     };
 
-    const handleBackToList = () => {
-        setShowMobileChat(false);
-    };
+    const handleBackToList = () => setShowMobileChat(false);
 
     const initializeChat = async () => {
         if (!activeLead?.userId) return;
@@ -109,7 +100,7 @@ const Inbox: React.FC = () => {
 
     const handleMagicReply = () => {
         const lastCustomerMsg = [...messages].reverse().find(m => m.senderId !== user?.id);
-        const inquiryText = lastCustomerMsg?.body || activeLead?.notes || "Hello, I am interested in your services.";
+        const inquiryText = lastCustomerMsg?.body || activeLead?.notes || 'Hello, I am interested in your services.';
         aiReplyMutation.mutate(inquiryText);
     };
 
@@ -118,11 +109,7 @@ const Inbox: React.FC = () => {
         if (messageInput.trim() && conversationId) {
             const socket = getSocket();
             if (socket) {
-                socket.emit('sendMessage', {
-                    conversationId,
-                    senderId: user?.id,
-                    body: messageInput,
-                });
+                socket.emit('sendMessage', { conversationId, senderId: user?.id, body: messageInput });
                 socket.emit('stopTyping', { conversationId, userId: user?.id });
                 setMessageInput('');
             }
@@ -132,12 +119,10 @@ const Inbox: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setMessageInput(value);
-
         if (conversationId && user?.id) {
             const socket = getSocket();
             if (socket) {
                 socket.emit('typing', { conversationId, userId: user.id, userName: user.name });
-
                 if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
                 typingTimeoutRef.current = setTimeout(() => {
                     socket.emit('stopTyping', { conversationId, userId: user.id });
@@ -149,15 +134,11 @@ const Inbox: React.FC = () => {
     return (
         <div className="h-[calc(100vh-12rem)] bg-[var(--ease2event-bg-surface)] rounded-[2.5rem] shadow-2xl border border-[var(--ease2event-border-subtle)] overflow-hidden flex transition-all duration-500 relative">
             {/* Chat List */}
-            <div className={`
-                w-full md:w-96 border-r border-[var(--ease2event-border-subtle)] flex flex-col absolute md:relative inset-0 z-10 bg-[var(--ease2event-bg-surface)] transition-transform duration-500
-                ${showMobileChat ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}
-            `}>
-                {/* Search Header */}
+            <div className={`w-full md:w-96 border-r border-[var(--ease2event-border-subtle)] flex flex-col absolute md:relative inset-0 z-10 bg-[var(--ease2event-bg-surface)] transition-transform duration-500 ${showMobileChat ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}`}>
                 <div className="p-4 md:p-6 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
                     <div className="flex items-center gap-3 bg-[var(--ease2event-bg-surface)] p-1 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all shadow-inner">
                         <div className="pl-3 py-2">
-                            <Search className="text-[var(--ease2event-text-muted)] group-focus-within:text-blue-500 transition-colors" size={16} />
+                            <Search className="text-[var(--ease2event-text-muted)]" size={16} />
                         </div>
                         <input
                             type="text"
@@ -169,7 +150,6 @@ const Inbox: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Chat List Items */}
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
                     {isLoading ? (
                         <div className="p-8 text-center text-sm font-bold uppercase tracking-widest opacity-40">Searching for enquiries...</div>
@@ -178,13 +158,10 @@ const Inbox: React.FC = () => {
                             <div
                                 key={lead.id || index}
                                 onClick={() => handleChatSelect(lead.id)}
-                                className={`p-6 flex gap-5 cursor-pointer transition-all duration-300 relative border-b border-[var(--ease2event-border-subtle)]/30 ${activeChat === lead.id
-                                    ? 'bg-[var(--ease2event-bg-elevated)]'
-                                    : 'hover:bg-[var(--ease2event-bg-elevated)]/50'
-                                    }`}
+                                className={`p-6 flex gap-5 cursor-pointer transition-all duration-300 relative border-b border-[var(--ease2event-border-subtle)]/30 ${activeChat === lead.id ? 'bg-[var(--ease2event-bg-elevated)]' : 'hover:bg-[var(--ease2event-bg-elevated)]/50'}`}
                             >
                                 {activeChat === lead.id && (
-                                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--ease2event-brand-primary)] shadow-[var(--ease2event-shadow-md)]"></div>
+                                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--ease2event-brand-primary)]"></div>
                                 )}
                                 <div className="relative flex-shrink-0">
                                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center font-bold text-xl text-white shadow-xl shadow-blue-500/20 uppercase">
@@ -210,15 +187,13 @@ const Inbox: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        )))}
+                        ))
+                    )}
                 </div>
             </div>
 
             {/* Chat Area */}
-            <div className={`
-                flex-1 flex flex-col absolute md:relative inset-0 z-20 bg-[var(--ease2event-bg-surface)] transition-transform duration-500
-                ${showMobileChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
-            `}>
+            <div className={`flex-1 flex flex-col absolute md:relative inset-0 z-20 bg-[var(--ease2event-bg-surface)] transition-transform duration-500 ${showMobileChat ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
                 {activeChat ? (
                     <>
                         {/* Chat Header */}
@@ -241,7 +216,7 @@ const Inbox: React.FC = () => {
                                             <h3 className="font-bold text-sm md:text-xl text-[var(--ease2event-text-primary)] tracking-tight uppercase truncate">{activeLead?.user?.name || 'Customer'}</h3>
                                             <ShieldCheck size={14} className="text-blue-500 shrink-0" />
                                         </div>
-                                        <p className="text-[8px] md:text-[10px] font-bold text-[var(--ease2event-text-secondary)] flex items-center gap-1.5 md:gap-2 uppercase tracking-widest truncate">
+                                        <p className="text-[8px] md:text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest truncate">
                                             Lead Score: {activeLead?.aiScore}% • {activeLead?.status}
                                         </p>
                                     </div>
@@ -284,10 +259,10 @@ const Inbox: React.FC = () => {
                                         className="flex-1 p-8 overflow-y-auto"
                                     >
                                         <div className="flex justify-center">
-                                            <div className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] p-8 rounded-[2rem] max-w-xl w-full shadow-2xl relative overflow-hidden">
+                                            <div className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] p-8 rounded-[2rem] max-w-xl w-full shadow-2xl relative overflow-hidden space-y-8">
                                                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl rounded-full" />
-                                                <h4 className="text-xs font-bold uppercase tracking-widest text-blue-500 mb-6">Booking Details</h4>
-                                                <div className="grid grid-cols-2 gap-8 mb-8">
+                                                <h4 className="text-xs font-bold uppercase tracking-widest text-blue-500">Booking Details</h4>
+                                                <div className="grid grid-cols-2 gap-8">
                                                     <div>
                                                         <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest mb-1">Target Date</p>
                                                         <p className="text-lg font-bold text-[var(--ease2event-text-primary)]">{activeLead ? new Date(activeLead.eventDate).toLocaleDateString() : 'TBD'}</p>
@@ -296,24 +271,24 @@ const Inbox: React.FC = () => {
                                                         <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest mb-1">Guests</p>
                                                         <p className="text-lg font-bold text-[var(--ease2event-text-primary)]">{activeLead?.guestsCount || 'Not specified'}</p>
                                                     </div>
-                                                </div> </div>
-                                            <div className="space-y-4">
-                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Notes</p>
-                                                <p className="text-md text-[var(--ease2event-text-secondary)] font-medium leading-relaxed italic border-l-4 border-blue-500 pl-6 py-2 bg-blue-500/5 rounded-r-2xl">
-                                                    "{activeLead?.notes || 'No specific technical notes provided.'}"
-                                                </p>
-                                            </div>
-                                            <div className="mt-8 pt-8 border-t border-[var(--ease2event-border-subtle)]/50">
-                                                <div className="flex items-start gap-4 text-emerald-500 bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/20">
-                                                    <ShieldCheck size={20} className="shrink-0 mt-1" />
-                                                    <div>
-                                                        <p className="text-[10px] font-bold uppercase tracking-widest mb-1">AI Recommendation</p>
-                                                        <p className="text-xs font-medium leading-relaxed text-emerald-700/80">{activeLead?.aiReasoning}</p>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Notes</p>
+                                                    <p className="text-sm text-[var(--ease2event-text-secondary)] font-medium leading-relaxed italic border-l-4 border-blue-500 pl-6 py-2 bg-blue-500/5 rounded-r-2xl">
+                                                        "{activeLead?.notes || 'No specific notes provided.'}"
+                                                    </p>
+                                                </div>
+                                                <div className="pt-6 border-t border-[var(--ease2event-border-subtle)]/50">
+                                                    <div className="flex items-start gap-4 text-emerald-500 bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/20">
+                                                        <ShieldCheck size={20} className="shrink-0 mt-1" />
+                                                        <div>
+                                                            <p className="text-[10px] font-bold uppercase tracking-widest mb-1">AI Recommendation</p>
+                                                            <p className="text-xs font-medium leading-relaxed text-emerald-700/80">{activeLead?.aiReasoning}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     </motion.div>
                                 ) : (
                                     <motion.div
@@ -332,85 +307,81 @@ const Inbox: React.FC = () => {
                                             ) : (
                                                 messages.map((m: Message, i: number) => (
                                                     <div key={m.id || i} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
-                                                        <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm md:text-md shadow-sm relative
-                                                            ${m.senderId === user?.id
-                                                        ? 'bg-blue-600 text-white rounded-br-none'
-                                                        : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-primary)] border border-[var(--ease2event-border-subtle)] rounded-bl-none'
-                                                    }
-                                                        `}>
-                                                    <p className="font-semibold leading-relaxed">{m.body}</p>
-                                                    <div className={`flex items-center gap-1.5 text-[9px] mt-2 font-bold uppercase tracking-widest ${m.senderId === user?.id ? 'text-blue-100 justify-end' : 'text-[var(--ease2event-text-secondary)]'}`}>
-                                                        {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        {m.senderId === user?.id && <CheckCheck size={12} className="text-blue-100" />}
+                                                        <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm shadow-sm ${m.senderId === user?.id ? 'bg-blue-600 text-white rounded-br-none' : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-primary)] border border-[var(--ease2event-border-subtle)] rounded-bl-none'}`}>
+                                                            <p className="font-semibold leading-relaxed">{m.body}</p>
+                                                            <div className={`flex items-center gap-1.5 text-[9px] mt-2 font-bold uppercase tracking-widest ${m.senderId === user?.id ? 'text-blue-100 justify-end' : 'text-[var(--ease2event-text-secondary)]'}`}>
+                                                                {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                {m.senderId === user?.id && <CheckCheck size={12} className="text-blue-100" />}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div> </div>
-                                ))
+                                                ))
                                             )}
-                                        <div ref={messagesEndRef} />
-                                        {typingUser && (
-                                            <div className="flex justify-start">
-                                                <div className="bg-gray-100 dark:bg-slate-800 px-4 py-2 rounded-2xl rounded-bl-none text-xs font-bold text-blue-500 animate-pulse flex items-center gap-2">
-                                                    <div className="flex gap-1">
-                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
-                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                            <div ref={messagesEndRef} />
+                                            {typingUser && (
+                                                <div className="flex justify-start">
+                                                    <div className="bg-gray-100 dark:bg-slate-800 px-4 py-2 rounded-2xl rounded-bl-none text-xs font-bold text-blue-500 animate-pulse flex items-center gap-2">
+                                                        <div className="flex gap-1">
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                                            <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                                        </div>
+                                                        {typingUser} is typing...
                                                     </div>
-                                                    System: {typingUser} is transmitting...
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>
 
-                                    {/* Message Input (Internal to Chat View) */}
-                                    <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-t border-[var(--ease2event-border-subtle)]">
-                                        <form onSubmit={handleSendMessage} className="flex items-center gap-3 md:gap-4 bg-[var(--ease2event-bg-elevated)]/50 p-1 md:p-3 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all shadow-inner">
-                                            <div className="flex items-center gap-0.5 md:gap-0 pl-2 md:pl-0">
-                                                <button type="button" className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center text-[var(--ease2event-text-muted)] hover:text-blue-500 transition-colors">
-                                                    <Paperclip size={18} />
+                                        {/* Message Input */}
+                                        <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-t border-[var(--ease2event-border-subtle)]">
+                                            <form onSubmit={handleSendMessage} className="flex items-center gap-3 md:gap-4 bg-[var(--ease2event-bg-elevated)]/50 p-1 md:p-3 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all shadow-inner">
+                                                <div className="flex items-center gap-0.5 md:gap-0 pl-2 md:pl-0">
+                                                    <button type="button" className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center text-[var(--ease2event-text-muted)] hover:text-blue-500 transition-colors">
+                                                        <Paperclip size={18} />
+                                                    </button>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter response transmission..."
+                                                    value={messageInput}
+                                                    onChange={handleInputChange}
+                                                    className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={handleMagicReply}
+                                                    disabled={aiReplyMutation.isPending}
+                                                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all ${aiReplyMutation.isPending ? 'bg-gray-100 opacity-20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white shadow-lg shadow-amber-500/10'}`}
+                                                    title="AI Magic Reply"
+                                                >
+                                                    {aiReplyMutation.isPending ? <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={18} />}
                                                 </button>
-                                            </div>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter response transmission..."
-                                                value={messageInput}
-                                                onChange={handleInputChange}
-                                                className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={handleMagicReply}
-                                                disabled={aiReplyMutation.isPending}
-                                                className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all ${aiReplyMutation.isPending ? 'bg-gray-100 opacity-20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white shadow-lg shadow-amber-500/10'}`}
-                                                title="AI Magic Reply"
-                                            >
-                                                {aiReplyMutation.isPending ? <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={18} />}
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={!messageInput.trim()}
-                                                className="p-2 text-blue-600 md:text-white md:bg-blue-600 md:w-14 md:h-14 md:rounded-2xl transition-all md:shadow-xl md:shadow-blue-500/20 hover:scale-110 active:scale-90 flex items-center justify-center shrink-0 mr-2 md:mr-1 disabled:opacity-20"
-                                            >
-                                                <Send size={18} />
-                                            </button>
-                                        </form>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                                <button
+                                                    type="submit"
+                                                    disabled={!messageInput.trim()}
+                                                    className="p-2 text-blue-600 md:text-white md:bg-blue-600 md:w-14 md:h-14 md:rounded-2xl transition-all md:shadow-xl md:shadow-blue-500/20 hover:scale-110 active:scale-90 flex items-center justify-center shrink-0 mr-2 md:mr-1 disabled:opacity-20"
+                                                >
+                                                    <Send size={18} />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/5 p-10">
+                        <div className="w-24 h-24 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-[2.5rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-1000" />
+                            <Send size={40} className="text-blue-500" />
+                        </div>
+                        <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
+                        <p className="text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
                     </div>
-                </>
-            ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/5 p-10">
-                    <div className="w-24 h-24 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-[2.5rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-1000" />
-                        <Send size={40} className="text-blue-500" />
-                    </div>
-                    <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
-                    <p className="text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
-                </div>
-            )}
-            </div >
-        </div >
+                )}
+            </div>
+        </div>
     );
 };
 

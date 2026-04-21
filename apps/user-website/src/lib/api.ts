@@ -36,9 +36,15 @@ api.interceptors.request.use((config) => {
     return config;
 }, (error) => Promise.reject(error));
 
-// Response Interceptor: Handle 401 Unauthorized
+// Response Interceptor: Handle 401 Unauthorized & Unwrap Success Wraps
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // If the backend wrapped the result in { success: true, data: ... }, unwrap it for the callers
+        if (response.data && response.data.success === true && response.data.data !== undefined) {
+            return response.data.data;
+        }
+        return response;
+    },
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('ease2event_token');

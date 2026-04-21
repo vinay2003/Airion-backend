@@ -15,10 +15,15 @@ export class UploadsController {
             throw new BadRequestException('File is missing');
         }
         
-        // Allowed formats
-        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        // Allowed formats (Image + Video support)
+        const allowedMimeTypes = [
+            'image/jpeg', 'image/png', 'image/webp', 'image/gif', 
+            'image/heic', 'image/heif', 'image/bmp',
+            'video/mp4', 'video/quicktime'
+        ];
+        
         if (!allowedMimeTypes.includes(file.mimetype)) {
-            throw new BadRequestException('Invalid file format. Only JPEG, PNG, and WebP are allowed.');
+            throw new BadRequestException('Invalid file format. Only JPEG, PNG, WebP, GIF, HEIC and MP4/MOV are allowed.');
         }
 
         const result = await this.uploadsService.uploadFile(file);

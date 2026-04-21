@@ -33,10 +33,10 @@ import { AvailabilityModule } from './availability/availability.module';
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: [
-                join(__dirname, '..', '..', '.env'),      // apps/api/.env (if running from api root)
-                join(__dirname, '..', '..', '..', '.env'), // apps/.env (if running from apps root)
-                join(__dirname, '..', '..', '..', '..', '.env'), // (ROOT)/.env (if running from root)
-                '.env'                                    // Local .env
+                join(__dirname, '..', '..', '..', `.env.${process.env.NODE_ENV || 'development'}.local`),
+                join(__dirname, '..', '..', '..', `.env.${process.env.NODE_ENV || 'development'}`),
+                join(__dirname, '..', '..', '..', '.env'),
+                '.env'
             ],
         }),
         ThrottlerModule.forRoot([{

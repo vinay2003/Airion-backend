@@ -174,9 +174,9 @@ const Inbox: React.FC = () => {
                     {isLoading ? (
                         <div className="p-8 text-center text-sm font-bold uppercase tracking-widest opacity-40">Searching for enquiries...</div>
                     ) : (
-                        filteredChats.map((lead) => (
+                        filteredChats.map((lead, index) => (
                             <div
-                                key={lead.id}
+                                key={lead.id || index}
                                 onClick={() => handleChatSelect(lead.id)}
                                 className={`p-6 flex gap-5 cursor-pointer transition-all duration-300 relative border-b border-[var(--ease2event-border-subtle)]/30 ${activeChat === lead.id
                                     ? 'bg-[var(--ease2event-bg-elevated)]'
@@ -315,24 +315,24 @@ const Inbox: React.FC = () => {
                                         </div>
                                     </div>
                                     </motion.div>
-                            ) : (
-                            <motion.div
-                                key="chat"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="flex-1 flex flex-col h-full"
-                            >
-                                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
-                                    {loadingMessages ? (
-                                        <div className="flex flex-col gap-4">
-                                            <div className="w-1/2 h-12 bg-gray-200 animate-pulse rounded-2xl" />
-                                            <div className="w-1/3 h-12 bg-gray-200 animate-pulse rounded-2xl self-end" />
-                                        </div>
-                                    ) : (
-                                        messages.map((m: Message) => (
-                                            <div key={m.id} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
-                                                <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm md:text-md shadow-sm relative
+                                ) : (
+                                    <motion.div
+                                        key="chat"
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        className="flex-1 flex flex-col h-full"
+                                    >
+                                        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+                                            {loadingMessages ? (
+                                                <div className="flex flex-col gap-4">
+                                                    <div className="w-1/2 h-12 bg-gray-200 animate-pulse rounded-2xl" />
+                                                    <div className="w-1/3 h-12 bg-gray-200 animate-pulse rounded-2xl self-end" />
+                                                </div>
+                                            ) : (
+                                                messages.map((m: Message, i: number) => (
+                                                    <div key={m.id || i} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
+                                                        <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm md:text-md shadow-sm relative
                                                             ${m.senderId === user?.id
                                                         ? 'bg-blue-600 text-white rounded-br-none'
                                                         : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-primary)] border border-[var(--ease2event-border-subtle)] rounded-bl-none'

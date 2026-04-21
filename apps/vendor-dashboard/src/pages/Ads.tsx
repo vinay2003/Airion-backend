@@ -167,7 +167,7 @@ const Ads: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
                         {ads.map((ad, i) => (
                             <motion.div
-                                key={ad.id}
+                                key={ad.id || i}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1, duration: 0.8 }}

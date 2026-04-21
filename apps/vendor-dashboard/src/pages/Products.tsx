@@ -413,7 +413,7 @@ const Products: React.FC = () => {
                         <AnimatePresence mode="popLayout">
                             {filteredProducts.map((prod: any, idx: number) => (
                                 <motion.div
-                                    key={prod.id}
+                                    key={prod.id || idx}
                                     layout
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}

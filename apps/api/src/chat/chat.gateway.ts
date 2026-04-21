@@ -53,4 +53,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.server.to(data.conversationId).emit('receiveMessage', message);
         return message;
     }
+
+    @SubscribeMessage('typing')
+    handleTyping(
+        @MessageBody() data: { conversationId: string; userId: string; userName: string },
+        @ConnectedSocket() client: Socket,
+    ) {
+        client.to(data.conversationId).emit('userTyping', { userId: data.userId, userName: data.userName });
+    }
+
+    @SubscribeMessage('stopTyping')
+    handleStopTyping(
+        @MessageBody() data: { conversationId: string; userId: string },
+        @ConnectedSocket() client: Socket,
+    ) {
+        client.to(data.conversationId).emit('userStoppedTyping', { userId: data.userId });
+    }
 }

@@ -18,6 +18,8 @@ const Inbox: React.FC = () => {
     const [viewMode, setViewMode] = useState<'details' | 'chat'>('details');
     const [conversationId, setConversationId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [typingUser, setTypingUser] = useState<string | null>(null);
 
     const { data: leads, isLoading } = useQuery({
         queryKey: ['vendor-leads'],
@@ -52,8 +54,22 @@ const Inbox: React.FC = () => {
             }
         });
 
+        socket.on('userTyping', (data: { userId: string; userName: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(data.userName);
+            }
+        });
+
+        socket.on('userStoppedTyping', (data: { userId: string }) => {
+            if (data.userId !== user?.id) {
+                setTypingUser(null);
+            }
+        });
+
         return () => {
             socket.off('receiveMessage');
+            socket.off('userTyping');
+            socket.off('userStoppedTyping');
         };
     }, [user?.id, conversationId, queryClient]);
 
@@ -107,7 +123,25 @@ const Inbox: React.FC = () => {
                     senderId: user?.id,
                     body: messageInput,
                 });
+                socket.emit('stopTyping', { conversationId, userId: user?.id });
                 setMessageInput('');
+            }
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setMessageInput(value);
+
+        if (conversationId && user?.id) {
+            const socket = getSocket();
+            if (socket) {
+                socket.emit('typing', { conversationId, userId: user.id, userName: user.name });
+
+                if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                typingTimeoutRef.current = setTimeout(() => {
+                    socket.emit('stopTyping', { conversationId, userId: user.id });
+                }, 3000);
             }
         }
     };
@@ -313,57 +347,69 @@ const Inbox: React.FC = () => {
                                                     </div>
                                 ))
                                             )}
-                                <div ref={messagesEndRef} />
-                        </div>
+                                        <div ref={messagesEndRef} />
+                                        {typingUser && (
+                                            <div className="flex justify-start">
+                                                <div className="bg-gray-100 dark:bg-slate-800 px-4 py-2 rounded-2xl rounded-bl-none text-xs font-bold text-blue-500 animate-pulse flex items-center gap-2">
+                                                    <div className="flex gap-1">
+                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                                        <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                                    </div>
+                                                    System: {typingUser} is transmitting...
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
 
-                        {/* Message Input (Internal to Chat View) */}
-                        <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-t border-[var(--ease2event-border-subtle)]">
-                            <form onSubmit={handleSendMessage} className="flex items-center gap-3 md:gap-4 bg-[var(--ease2event-bg-elevated)]/50 p-1 md:p-3 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all shadow-inner">
-                                <div className="flex items-center gap-0.5 md:gap-0 pl-2 md:pl-0">
-                                    <button type="button" className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center text-[var(--ease2event-text-muted)] hover:text-blue-500 transition-colors">
-                                        <Paperclip size={18} />
-                                    </button>
-                                </div>
-                                <input
-                                    type="text"
-                                    placeholder="Type a message..."
-                                    value={messageInput}
-                                    onChange={(e) => setMessageInput(e.target.value)}
-                                    className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleMagicReply}
-                                    disabled={aiReplyMutation.isPending}
-                                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all ${aiReplyMutation.isPending ? 'bg-gray-100 opacity-20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white shadow-lg shadow-amber-500/10'}`}
-                                    title="AI Magic Reply"
-                                >
-                                    {aiReplyMutation.isPending ? <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={18} />}
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={!messageInput.trim()}
-                                    className="p-2 text-blue-600 md:text-white md:bg-blue-600 md:w-14 md:h-14 md:rounded-2xl transition-all md:shadow-xl md:shadow-blue-500/20 hover:scale-110 active:scale-90 flex items-center justify-center shrink-0 mr-2 md:mr-1 disabled:opacity-20"
-                                >
-                                    <Send size={18} />
-                                </button>
-                            </form>
-                        </div>
-                    </motion.div>
-                                )}
-            </AnimatePresence>
-        </div>
-                    </>
-                ) : (
-    <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/5 p-10">
-        <div className="w-24 h-24 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-[2.5rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-1000" />
-            <Send size={40} className="text-blue-500" />
-        </div>
-        <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
-        <p className="text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
-    </div>
-)}
+                                    {/* Message Input (Internal to Chat View) */}
+                                    <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-t border-[var(--ease2event-border-subtle)]">
+                                        <form onSubmit={handleSendMessage} className="flex items-center gap-3 md:gap-4 bg-[var(--ease2event-bg-elevated)]/50 p-1 md:p-3 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all shadow-inner">
+                                            <div className="flex items-center gap-0.5 md:gap-0 pl-2 md:pl-0">
+                                                <button type="button" className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center text-[var(--ease2event-text-muted)] hover:text-blue-500 transition-colors">
+                                                    <Paperclip size={18} />
+                                                </button>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter response transmission..."
+                                                value={messageInput}
+                                                onChange={handleInputChange}
+                                                className="flex-1 bg-transparent border-none outline-none text-[12px] md:text-base font-bold text-[var(--ease2event-text-primary)] px-1"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleMagicReply}
+                                                disabled={aiReplyMutation.isPending}
+                                                className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl border transition-all ${aiReplyMutation.isPending ? 'bg-gray-100 opacity-20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white shadow-lg shadow-amber-500/10'}`}
+                                                title="AI Magic Reply"
+                                            >
+                                                {aiReplyMutation.isPending ? <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" /> : <Sparkles size={18} />}
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={!messageInput.trim()}
+                                                className="p-2 text-blue-600 md:text-white md:bg-blue-600 md:w-14 md:h-14 md:rounded-2xl transition-all md:shadow-xl md:shadow-blue-500/20 hover:scale-110 active:scale-90 flex items-center justify-center shrink-0 mr-2 md:mr-1 disabled:opacity-20"
+                                            >
+                                                <Send size={18} />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </>
+            ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/5 p-10">
+                    <div className="w-24 h-24 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-[2.5rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-1000" />
+                        <Send size={40} className="text-blue-500" />
+                    </div>
+                    <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
+                    <p className="text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
+                </div>
+            )}
             </div >
         </div >
     );

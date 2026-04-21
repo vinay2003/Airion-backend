@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet, WalletTransaction } from './entities/wallet.entity';
 import { PayoutRequest } from './entities/payout-request.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class WalletService {
@@ -13,6 +15,9 @@ export class WalletService {
         private readonly transactionRepository: Repository<WalletTransaction>,
         @InjectRepository(PayoutRequest)
         private readonly payoutRepository: Repository<PayoutRequest>,
+        private readonly notificationsService: NotificationsService,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
     async getOrCreateWallet(vendorId: string): Promise<Wallet> {
@@ -73,6 +78,34 @@ export class WalletService {
         return this.transactionRepository.save(transaction);
     }
 
+    /**
+     * Debit (Refund/Penalty) from a vendor's wallet.
+     */
+    async debitEarning(vendorId: string, amount: number, referenceId: string, description: string) {
+        const wallet = await this.getOrCreateWallet(vendorId);
+        
+        wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
+        await this.walletRepository.save(wallet);
+
+        const transaction = this.transactionRepository.create({
+            walletId: wallet.id,
+            type: 'WITHDRAWAL', // Using WITHDRAWAL type for debits too, or add 'PENALTY' type
+            amount,
+            status: 'completed',
+            referenceId,
+            description: `[REFUND] ${description}`,
+        });
+        
+        return this.transactionRepository.save(transaction);
+    }
+
+    async hasAlreadyCredited(referenceId: string): Promise<boolean> {
+        const existing = await this.transactionRepository.findOne({
+            where: { referenceId, type: 'EARNING', status: 'completed' }
+        });
+        return !!existing;
+    }
+
     async requestWithdrawal(vendorId: string, amount: number, bankDetails?: any) {
         const wallet = await this.getOrCreateWallet(vendorId);
         
@@ -103,6 +136,21 @@ export class WalletService {
         wallet.currentBalance = Number(wallet.currentBalance) - Number(amount);
         wallet.pendingBalance = Number(wallet.pendingBalance) + Number(amount);
         await this.walletRepository.save(wallet);
+
+        // Notify Admin & Vendor
+        try {
+            const user = await this.userRepository.findOne({ where: { vendor: { id: vendorId } } });
+            if (user) {
+                await this.notificationsService.create({
+                    userId: user.id,
+                    type: 'payout_initiated',
+                    title: 'Payout Initiated 💸',
+                    message: `Your request for ₹${amount.toLocaleString()} is currently under review.`,
+                });
+            }
+        } catch (e) {
+            console.error('Wallet notification failed', e);
+        }
 
         return { success: true, payoutId: savedPayout.id, transactionId: savedTx.id };
     }

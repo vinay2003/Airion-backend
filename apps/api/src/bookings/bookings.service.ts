@@ -17,6 +17,29 @@ export class BookingsService {
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
+        // --- PRODUCTION AUDIT FIX: Atomic Double-Booking Protection ---
+        if (bookingData.vendorId && bookingData.eventDate) {
+            const vendor = await this.availabilityService.getVendorWithUser(bookingData.vendorId);
+            
+            // PREVENT SELF-BOOKING
+            if (vendor && vendor.userId === bookingData.userId) {
+                throw new Error('Security Violation: You cannot book your own vendor profile.');
+            }
+
+            const existing = await this.bookingsRepository.findOne({
+                where: {
+                    vendorId: bookingData.vendorId,
+                    eventDate: bookingData.eventDate,
+                    status: 'confirmed', // Or other active statuses
+                }
+            });
+
+            if (existing) {
+                const dateStr = new Date(bookingData.eventDate).toLocaleDateString();
+                throw new Error(`Vendor already has a confirmed booking on ${dateStr}. Please select another date.`);
+            }
+        }
+
         // Generate a simple booking code: B-timestamp
         const bookingCode = `B-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const booking = this.bookingsRepository.create({
@@ -60,7 +83,6 @@ export class BookingsService {
             throw new NotFoundException(`Booking with ID ${id} not found`);
         }
         
-        // Data Isolation Validation
         if (user && user.role !== 'admin') {
             if (user.role === 'user' && booking.userId !== user.userId) {
                 throw new ForbiddenException('You do not have permission to view this booking');
@@ -69,14 +91,13 @@ export class BookingsService {
                 throw new ForbiddenException('You do not have permission to view this booking');
             }
         }
-        
+
         return booking;
     }
 
     async transitionState(id: string, nextStatus: 'pending' | 'confirmed' | 'completed' | 'canceled', user?: { userId: string, role: string }, paymentId?: string, paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'): Promise<Booking> {
         const booking = await this.findOne(id, user);
         
-        // State Machine validation rules
         if (booking.status === 'canceled') {
             throw new Error('Cannot transition state of a canceled booking.');
         }
@@ -102,21 +123,49 @@ export class BookingsService {
         
         const savedBooking = await this.bookingsRepository.save(booking);
 
-        // --- NEW: Financial Reconciliation (Step 1 of Production Roadmap) ---
+        // --- PRODUCTION AUDIT FIX 1: Financial Idempotency (No Double Credits) ---
         if (savedBooking.paymentStatus === 'paid' && savedBooking.vendorId) {
-            try {
-                await this.walletService.creditEarning(
-                    savedBooking.vendorId,
-                    savedBooking.totalAmount,
-                    savedBooking.id,
-                    `Payment for booking ${savedBooking.bookingCode}`
-                );
-            } catch (walletErr) {
-                console.error('[Financial Error] Wallet credit failed for booking:', savedBooking.id, walletErr);
+            const alreadyPaid = await this.walletService.hasAlreadyCredited(savedBooking.id);
+            if (!alreadyPaid) {
+                try {
+                    await this.walletService.creditEarning(
+                        savedBooking.vendorId,
+                        savedBooking.totalAmount,
+                        savedBooking.id,
+                        `Payment for booking ${savedBooking.bookingCode}`
+                    );
+                } catch (walletErr) {
+                    console.error('[Financial Error] Wallet credit failed for booking:', savedBooking.id, walletErr);
+                }
             }
         }
 
-        // --- NEW: Calendar Synchronization (Step 2 of Production Roadmap) ---
+        // --- PRODUCTION AUDIT FIX 2: Refund Logic on Cancellation ---
+        if (nextStatus === 'canceled' && savedBooking.vendorId) {
+            const alreadyPaid = await this.walletService.hasAlreadyCredited(savedBooking.id);
+            if (alreadyPaid) {
+                try {
+                    await this.walletService.debitEarning(
+                        savedBooking.vendorId,
+                        savedBooking.totalAmount,
+                        savedBooking.id,
+                        `Cancellation refund for booking ${savedBooking.bookingCode}`
+                    );
+                } catch (refundErr) {
+                    console.error('[Financial Error] Failed to clawback funds on cancellation:', refundErr);
+                }
+            }
+
+            // Unblock Calendar
+            try {
+                const dateString = new Date(savedBooking.eventDate).toISOString().split('T')[0];
+                await this.availabilityService.unblockDate(savedBooking.vendorId, dateString);
+            } catch (availErr) {
+                console.error('[Availability Error] Failed to unblock date:', availErr);
+            }
+        }
+
+        // --- PRODUCTION AUDIT FIX 3: Calendar Synchronization ---
         if ((nextStatus === 'confirmed' || nextStatus === 'completed') && savedBooking.vendorId && savedBooking.eventDate) {
             try {
                 const dateString = new Date(savedBooking.eventDate).toISOString().split('T')[0];

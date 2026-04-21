@@ -33,4 +33,16 @@ export class AdminController {
             reason: body.reason
         });
     }
+
+    @Post('vendors/:id/verify')
+    @Roles(UserRole.ADMIN)
+    async verifyVendor(@Param('id') id: string, @Body() body: { status: 'approved' | 'rejected' }) {
+        return this.adminService.updateVendorStatus(id, body.status);
+    }
+
+    @Post('vendors/:id/suspend')
+    @Roles(UserRole.ADMIN)
+    async suspendVendor(@Param('id') id: string) {
+        return this.adminService.suspendVendor(id);
+    }
 }

@@ -126,8 +126,8 @@ const CalendarPage: React.FC = () => {
                     </div>
 
                     <div className="mt-4 space-y-2">
-                        {hasBooking?.slice(0, 2).map((b) => (
-                            <div key={b.id} className={`px-4 py-1 rounded-lg text-sm font-black truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
+                        {hasBooking?.slice(0, 2).map((b, bIdx) => (
+                            <div key={b.id || bIdx} className={`px-4 py-1 rounded-lg text-sm font-black truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
                                 'bg-amber-500/5 text-amber-500 border-amber-500/20'
                                 }`}>
                                 {b.time} - {b.title}
@@ -225,8 +225,8 @@ const CalendarPage: React.FC = () => {
 
                 {selectedEvents.length > 0 ? (
                     <div className="space-y-6">
-                        {selectedEvents.map((ev) => (
-                            <div key={ev.id} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
+                        {selectedEvents.map((ev, i) => (
+                            <div key={ev.id || i} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
                                 <div className="flex justify-between items-start mb-3">
                                     <h4 className="font-black text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors uppercase italic leading-tight">{ev.title}</h4>
                                     <button className="text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>

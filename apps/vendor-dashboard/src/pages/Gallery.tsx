@@ -126,7 +126,7 @@ const Gallery: React.FC = () => {
                 <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-10 space-y-10">
                     {gallery.map((item, index) => (
                         <motion.div
-                            key={item.id}
+                            key={item.id || index}
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05, duration: 0.8 }}

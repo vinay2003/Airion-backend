@@ -174,9 +174,9 @@ const Inbox: React.FC = () => {
                     {isLoading ? (
                         <div className="p-8 text-center text-sm font-bold uppercase tracking-widest opacity-40">Scanning for nodes...</div>
                     ) : (
-                        filteredChats.map((lead) => (
+                        filteredChats.map((lead, index) => (
                             <div
-                                key={lead.id}
+                                key={lead.id || index}
                                 onClick={() => handleChatSelect(lead.id)}
                                 className={`p-6 flex gap-5 cursor-pointer transition-all duration-300 relative border-b border-[var(--ease2event-border-subtle)]/30 ${activeChat === lead.id
                                     ? 'bg-[var(--ease2event-bg-elevated)]'
@@ -330,8 +330,8 @@ const Inbox: React.FC = () => {
                                                     <div className="w-1/3 h-12 bg-gray-200 animate-pulse rounded-2xl self-end" />
                                                 </div>
                                             ) : (
-                                                messages.map((m: Message) => (
-                                                    <div key={m.id} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
+                                                messages.map((m: Message, i: number) => (
+                                                    <div key={m.id || i} className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}>
                                                         <div className={`max-w-[85%] md:max-w-md px-5 py-3 rounded-[1.8rem] text-sm md:text-md shadow-sm relative
                                                             ${m.senderId === user?.id
                                                                 ? 'bg-blue-600 text-white rounded-br-none'

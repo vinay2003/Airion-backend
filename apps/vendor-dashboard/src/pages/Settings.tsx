@@ -393,14 +393,14 @@ const Settings: React.FC = () => {
                                                     <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Marketplace Domain</label>
                                                     <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Core Domain...</option>
-                                                        {categories.map((c: any) => <option key={c._id || c.id} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
+                                                        {categories.map((c: any, i: number) => <option key={c._id || c.id || i} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
                                                     <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Specialized Logic Node</label>
                                                     <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
-                                                        {subcategories.map((s: any) => <option key={s._id || s.id} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
+                                                        {subcategories.map((s: any, i: number) => <option key={s._id || s.id || i} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
                                                     </select>
                                                 </div>
                                             </div>

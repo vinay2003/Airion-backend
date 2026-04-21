@@ -127,8 +127,8 @@ const Listings: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    filteredListings.map((listing) => (
-                        <div key={listing.id} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--ease2event-shadow-xl)] border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
+                    filteredListings.map((listing, i) => (
+                        <div key={listing.id || i} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--ease2event-shadow-xl)] border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
                             <div className="relative h-56 md:h-72 shrink-0 overflow-hidden">
                                 <img
                                     src={listing.image}

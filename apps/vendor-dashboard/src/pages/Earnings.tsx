@@ -449,7 +449,7 @@ const Earnings: React.FC = () => {
               <AnimatePresence mode="popLayout">
                 {displayData.transactions.map((trx: any, tIdx: number) => (
                   <motion.tr
-                    key={trx.id}
+                    key={trx.id || tIdx}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 10 }}

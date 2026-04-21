@@ -40,11 +40,11 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: Number(process.env.VITE_USER_PORT) || 5173,
     strictPort: true,
     host: true,
     hmr: {
-      port: 5173,
+      port: Number(process.env.VITE_USER_PORT) || 5173,
     },
     fs: {
       allow: ['..'],

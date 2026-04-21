@@ -18,7 +18,7 @@ const Inbox: React.FC = () => {
     const [viewMode, setViewMode] = useState<'details' | 'chat'>('details');
     const [conversationId, setConversationId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [typingUser, setTypingUser] = useState<string | null>(null);
 
     const { data: leads, isLoading } = useQuery({

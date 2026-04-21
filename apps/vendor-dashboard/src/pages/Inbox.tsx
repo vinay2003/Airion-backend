@@ -344,7 +344,6 @@ const Inbox: React.FC = () => {
                                                         {m.senderId === user?.id && <CheckCheck size={12} className="text-blue-100" />}
                                                     </div>
                                                 </div> </div>
-                                                    </div>
                                 ))
                                             )}
                                         <div ref={messagesEndRef} />

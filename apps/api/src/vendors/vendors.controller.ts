@@ -139,4 +139,17 @@ export class VendorsController {
     async getPerformance(@Param('id') id: string) {
         return this.analyticsService.getVendorPerformance(id);
     }
+
+    @Get(':id/bookings')
+    @UseGuards(JwtAuthGuard)
+    async getBookings(@Param('id') id: string) {
+        // This is a direct lookup for a specific vendor's bookings
+        return this.vendorsService.findBookings(id);
+    }
+
+    @Get(':id/availability')
+    @UseGuards(JwtAuthGuard)
+    async getAvailability(@Param('id') id: string) {
+        return this.vendorsService.getAvailability(id);
+    }
 }

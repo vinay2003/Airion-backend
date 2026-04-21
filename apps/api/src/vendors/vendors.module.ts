@@ -9,10 +9,11 @@ import { Subcategory } from '../categories/entities/subcategory.entity';
 import { Booking } from '../bookings/entities/booking.entity';
 import { VendorAd } from './entities/vendor-ad.entity';
 import { VendorGallery } from './entities/vendor-gallery.entity';
+import { Availability } from '../availability/entities/availability.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vendor, Activity, Category, Subcategory, Booking, VendorAd, VendorGallery]),
+    TypeOrmModule.forFeature([Vendor, Activity, Category, Subcategory, Booking, VendorAd, VendorGallery, Availability]),
   ],
   controllers: [VendorsController],
   providers: [VendorsService],

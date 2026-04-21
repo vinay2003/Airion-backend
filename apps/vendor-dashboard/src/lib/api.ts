@@ -19,7 +19,7 @@ export const requestWithdrawal = async (amount: number, bankDetails?: any) =>
 
 // Availability & Calendar
 export const fetchVendorSchedule = async (vendorId: string) =>
-    (await api.get(`/availability/vendor/${vendorId}`)).data;
+    (await api.get(`/vendors/${vendorId}/availability`)).data;
 
 export const blockDate = async (date: string, reason?: string) =>
     (await api.post('/availability/block', { date, reason })).data;

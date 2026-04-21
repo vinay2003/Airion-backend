@@ -9,6 +9,7 @@ import { Category } from '../categories/entities/category.entity';
 import { Booking } from '../bookings/entities/booking.entity';
 import { VendorAd } from './entities/vendor-ad.entity';
 import { VendorGallery } from './entities/vendor-gallery.entity';
+import { Availability } from '../availability/entities/availability.entity';
 
 @Injectable()
 export class VendorsService {
@@ -25,6 +26,8 @@ export class VendorsService {
         private adRepository: Repository<VendorAd>,
         @InjectRepository(VendorGallery)
         private galleryRepository: Repository<VendorGallery>,
+        @InjectRepository(Availability)
+        private availabilityRepository: Repository<Availability>,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
@@ -297,5 +300,20 @@ export class VendorsService {
         // In production, you would group by day of week
         
         return performance;
+    }
+
+    async findBookings(vendorId: string): Promise<Booking[]> {
+        return this.bookingRepository.find({
+            where: { vendorId },
+            order: { eventDate: 'DESC' },
+            relations: ['user', 'listing']
+        });
+    }
+
+    async getAvailability(vendorId: string): Promise<Availability[]> {
+        return this.availabilityRepository.find({
+            where: { vendorId },
+            order: { date: 'ASC' }
+        });
     }
 }

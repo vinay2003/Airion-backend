@@ -15,12 +15,12 @@ export interface Booking {
 }
 
 export const bookingService = {
-  getUserBookings: async (userId: string) => {
-    return api.get<Booking[]>(`/users/${userId}/bookings`);
+  getUserBookings: async () => {
+    return api.get<Booking[]>('/bookings/mine');
   },
   
-  getVendorBookings: async (vendorId: string) => {
-    return api.get<Booking[]>(`/vendors/${vendorId}/bookings`);
+  getVendorBookings: async () => {
+    return api.get<Booking[]>('/bookings/vendor');
   },
   
   create: async (data: Partial<Booking>) => {
@@ -31,8 +31,8 @@ export const bookingService = {
     return api.patch<Booking>(`/bookings/${id}/status`, { status });
   },
   
-  getStats: async (vendorId: string) => {
-    return api.get<any>(`/vendors/${vendorId}/stats/bookings`);
+  getStats: async () => {
+    return api.get<any>('/bookings/vendor/earnings');
   },
   
   getEarnings: async () => {

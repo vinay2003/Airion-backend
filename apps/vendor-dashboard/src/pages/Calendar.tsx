@@ -21,7 +21,7 @@ const CalendarPage: React.FC = () => {
 
     const { data: bookings, isLoading: bookingsLoading } = useQuery({
         queryKey: ['vendor-bookings-calendar', vendorId],
-        queryFn: () => vendorId ? bookingService.getVendorBookings(vendorId).catch(() => null) : Promise.resolve(null),
+        queryFn: () => vendorId ? bookingService.getVendorBookings().catch(() => null) : Promise.resolve(null),
         enabled: !!vendorId
     });
 

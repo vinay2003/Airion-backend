@@ -23,6 +23,36 @@ const api = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
+// Auth Interceptor: Inject token from localStorage
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('ease2event_token');
+    if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Debug logging for easier troubleshooting
+    if (import.meta.env.DEV) {
+        console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
+    }
+    return config;
+}, (error) => Promise.reject(error));
+
+// Response Interceptor: Handle 401 Unauthorized & Unwrap Success Wraps
+api.interceptors.response.use(
+    (response) => {
+        // If the backend wrapped the result in { success: true, data: ... }, unwrap it for the callers
+        if (response.data && response.data.success === true && response.data.data !== undefined) {
+            return response.data.data;
+        }
+        return response;
+    },
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('ease2event_token');
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default api;
 
 export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Event[]> => {

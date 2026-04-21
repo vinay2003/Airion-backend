@@ -46,7 +46,6 @@ const CalendarPage: React.FC = () => {
     const bookingsOnDays = useMemo(() => {
         const map: { [key: number]: any[] } = {};
 
-        // 1. Map real Bookings
         if (bookings) {
             bookings.forEach(b => {
                 const date = new Date(b.eventDate);
@@ -65,15 +64,12 @@ const CalendarPage: React.FC = () => {
             });
         }
 
-        // 2. Map Manual Availability Blocks
         if (availabilityBlocks) {
             availabilityBlocks.forEach((ab: any) => {
                 const date = new Date(ab.date);
                 if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
-                    const day = date.getDate() + 1; // Correction for Date object behavior if needed
+                    const day = date.getDate() + 1;
                     if (!map[day]) map[day] = [];
-
-                    // Only add if not already marked as booked
                     if (ab.status === 'blocked') {
                         map[day].push({
                             id: ab.id,
@@ -97,12 +93,10 @@ const CalendarPage: React.FC = () => {
         const startOffset = firstDayOfMonth(month, year);
         const days = [];
 
-        // Previous month filler
         for (let i = 0; i < startOffset; i++) {
             days.push(<div key={`prev-${i}`} className="h-28 border-b border-r border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30"></div>);
         }
 
-        // Current month
         for (let d = 1; d <= totalDays; d++) {
             const hasBooking = bookingsOnDays[d];
             const isSelected = selectedDate === d;
@@ -126,13 +120,8 @@ const CalendarPage: React.FC = () => {
                     </div>
 
                     <div className="mt-4 space-y-2">
-<<<<<<< HEAD
-                        {hasBooking?.slice(0, 2).map((b: any) => (
-                            <div key={b.id} className={`px-4 py-1 rounded-lg text-sm font-bold truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
-=======
-                        {hasBooking?.slice(0, 2).map((b, bIdx) => (
-                            <div key={b.id || bIdx} className={`px-4 py-1 rounded-lg text-sm font-black truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
->>>>>>> 82555b1fe5e23add49389357020b304e7f63fef5
+                        {hasBooking?.slice(0, 2).map((b: any, bIdx: number) => (
+                            <div key={b.id || bIdx} className={`px-4 py-1 rounded-lg text-sm font-bold truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
                                 'bg-amber-500/5 text-amber-500 border-amber-500/20'
                                 }`}>
                                 {b.time} - {b.title}
@@ -159,7 +148,7 @@ const CalendarPage: React.FC = () => {
                     <p className="text-base font-semibold text-[var(--ease2event-text-secondary)] normal-case tracking-normal">
                         Monitor your bookings, availability, and upcoming events.
                     </p>
-                </div >
+                </div>
                 <div className="flex items-center gap-5">
                     <Button variant="secondary" className="h-14 px-8 rounded-2xl font-bold text-xs uppercase tracking-widest" leftIcon={<Filter size={20} />}>
                         Filter Events
@@ -168,13 +157,12 @@ const CalendarPage: React.FC = () => {
                         Add Event
                     </Button>
                 </div>
-            </div >
+            </div>
 
-<<<<<<< HEAD
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-12">
                 {/* Main Calendar Card */}
                 <div className="xl:col-span-3 card-minimal !p-0 overflow-hidden flex flex-col rounded-[3rem] border-[var(--ease2event-border-base)] shadow-2xl bg-[var(--ease2event-bg-surface)]">
-                    {/* Calendar Selection Matrix */}
+                    {/* Calendar Header */}
                     <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-b border-[var(--ease2event-border-subtle)]">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 bg-[var(--ease2event-bg-elevated)]/50 p-2 md:p-4 rounded-[2rem] border-2 border-[var(--ease2event-border-subtle)] transition-all shadow-sm">
                             <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto">
@@ -185,80 +173,14 @@ const CalendarPage: React.FC = () => {
                                     <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-[var(--ease2event-bg-surface)] rounded-full text-[var(--ease2event-text-primary)] hover:text-[var(--ease2event-brand-primary)] transition-all border border-[var(--ease2event-border-subtle)] ml-1 shadow-sm">
                                         <ChevronRight size={18} />
                                     </button>
-=======
-    <div className="grid grid-cols-1 xl:grid-cols-4 gap-12">
-        {/* Main Calendar Card */}
-        <div className="xl:col-span-3 card-minimal !p-0 overflow-hidden flex flex-col rounded-[3rem] border-[var(--ease2event-border-base)] shadow-2xl bg-[var(--ease2event-bg-surface)]">
-            {/* Calendar Selection Matrix */}
-            <div className="p-4 md:p-8 bg-[var(--ease2event-bg-surface)] border-b border-[var(--ease2event-border-subtle)]">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 bg-[var(--ease2event-bg-elevated)]/50 p-2 md:p-4 rounded-[2rem] border-2 border-[var(--ease2event-border-subtle)] transition-all shadow-sm">
-                    <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto">
-                        <div className="flex bg-[var(--ease2event-bg-elevated)]/40 rounded-full p-1.5 border border-[var(--ease2event-border-subtle)] shadow-inner shrink-0">
-                            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-[var(--ease2event-bg-surface)] rounded-full text-[var(--ease2event-text-primary)] hover:text-[var(--ease2event-brand-primary)] transition-all border border-[var(--ease2event-border-subtle)] shadow-sm">
-                                <ChevronLeft size={18} />
-                            </button>
-                            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-[var(--ease2event-bg-surface)] rounded-full text-[var(--ease2event-text-primary)] hover:text-[var(--ease2event-brand-primary)] transition-all border border-[var(--ease2event-border-subtle)] ml-1 shadow-sm">
-                                <ChevronRight size={18} />
-                            </button>
-                        </div>
-                        <h2 className="text-xl md:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter uppercase italic truncate min-w-0 font-display">
-                            {monthNames[currentDate.getMonth()]}
-                            <span className="text-[var(--ease2event-brand-primary)] font-black ml-2 md:ml-4 tracking-wide text-lg md:text-2xl">
-                                {currentDate.getFullYear()}
-                            </span>                                </h2>
-                    </div>
-
-                </div>
-            </div>
-
-            <div className="overflow-x-auto scrollbar-hide">
-                <div className="min-w-[800px] flex flex-col">
-                    <div className="grid grid-cols-7 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                            <div key={day} className="py-4 text-center text-sm font-black uppercase tracking-[0.2em] text-[var(--ease2event-text-muted)]">{day}</div>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-7 flex-1">
-                        {isLoading ? (
-                            <div className="col-span-7 h-[600px] p-10 space-y-4">
-                                <Skeleton className="w-full h-full rounded-2xl" />
-                            </div>
-                        ) : renderCalendar()}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {/* Selected Date Details Sidebar */}
-        <div className="xl:col-span-1 space-y-8">
-            <div className="card-minimal !p-8 rounded-[2.5rem] border-[var(--ease2event-border-base)] shadow-2xl space-y-8 h-fit bg-[var(--ease2event-bg-surface)]">
-                <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-5 rounded-[2rem] border border-[var(--ease2event-border-subtle)] shadow-inner">
-                    <div className="space-y-1">
-                        <h3 className="font-black text-xl text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic font-display">Schedule</h3>
-                        <p className="text-[15px] text-[var(--ease2event-brand-primary)] font-black uppercase tracking-[0.2em] italic">{selectedDate} {monthNames[currentDate.getMonth()]}</p>
-                    </div>
-                    <div className="w-12 h-12 bg-[var(--ease2event-brand-primary)]/10 rounded-[1.25rem] flex items-center justify-center border border-[var(--ease2event-brand-primary)]/20 shadow-lg text-[var(--ease2event-brand-primary)]">
-                        <CalendarIcon size={24} />
-                    </div>
-                </div>
-
-                {selectedEvents.length > 0 ? (
-                    <div className="space-y-6">
-                        {selectedEvents.map((ev, i) => (
-                            <div key={ev.id || i} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
-                                <div className="flex justify-between items-start mb-3">
-                                    <h4 className="font-black text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors uppercase italic leading-tight">{ev.title}</h4>
-                                    <button className="text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>
->>>>>>> 82555b1fe5e23add49389357020b304e7f63fef5
                                 </div>
                                 <h2 className="text-xl md:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter uppercase truncate min-w-0">
                                     {monthNames[currentDate.getMonth()]}
                                     <span className="text-[var(--ease2event-brand-primary)] font-bold ml-2 md:ml-4 tracking-wide text-lg md:text-2xl">
                                         {currentDate.getFullYear()}
-                                    </span>                                </h2>
+                                    </span>
+                                </h2>
                             </div>
-
                         </div>
                     </div>
 
@@ -269,7 +191,6 @@ const CalendarPage: React.FC = () => {
                                     <div key={day} className="py-4 text-center text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)]">{day}</div>
                                 ))}
                             </div>
-
                             <div className="grid grid-cols-7 flex-1">
                                 {isLoading ? (
                                     <div className="col-span-7 h-[600px] p-10 space-y-4">
@@ -296,8 +217,8 @@ const CalendarPage: React.FC = () => {
 
                         {selectedEvents.length > 0 ? (
                             <div className="space-y-6">
-                                {selectedEvents.map((ev: any) => (
-                                    <div key={ev.id} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
+                                {selectedEvents.map((ev: any, i: number) => (
+                                    <div key={ev.id || i} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
                                         <div className="flex justify-between items-start mb-3">
                                             <h4 className="font-bold text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors uppercase leading-tight">{ev.title}</h4>
                                             <button className="text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>
@@ -325,19 +246,29 @@ const CalendarPage: React.FC = () => {
                                     <Target size={32} className="text-[var(--ease2event-text-muted)] relative z-10 opacity-40" />
                                 </div>
                                 <div className="px-6 space-y-2">
-                                    <p className="text-sm font-normal text-[var(--ease2event-text-secondary)] uppercase tracking-widest">No Events Found</p>
-                                    <button className="text-sm font-normal text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-widest transition-all underline decoration-2 underline-offset-8">BLOCK DATE</button>
+                                    <p className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">No Events Found</p>
+                                    <button
+                                        onClick={() => {
+                                            if (selectedDate) {
+                                                const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+                                                blockMutation.mutate(dateStr);
+                                            }
+                                        }}
+                                        className="text-sm font-bold text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-widest transition-all underline decoration-2 underline-offset-8"
+                                    >
+                                        BLOCK DATE
+                                    </button>
                                 </div>
                             </div>
                         )}
 
-                        <Button className="w-full !h-16 text-xs font-normal uppercase tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20">
+                        <Button className="w-full !h-16 text-xs font-bold uppercase tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20">
                             Add New Entry
                         </Button>
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

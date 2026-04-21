@@ -27,16 +27,16 @@ const BecomeVendor: React.FC = () => {
                         transition={{ duration: 0.8 }}
                         className="max-w-3xl"
                     >
-                        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                             Grow Your Business with Ease2event
                         </h1>
-                        <p className="text-xl md:text-2xl text-gray-300 mb-10 leading-relaxed">
+                        <p className="text-xl md:text-xl text-gray-300 mb-10 leading-relaxed">
                             Join Bihar's fastest-growing event marketplace. Connect with verified leads and manage bookings effortlessly.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <a href="/vendor/signup" className="bg-red-500 hover:bg-red-600 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2">
+                            <Link to="/signup?portal=vendor" className="bg-red-500 hover:bg-red-600 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2">
                                 Register Your Business <ArrowRight size={20} />
-                            </a>
+                            </Link>
                             <Link to="/contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-10 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center">
                                 Contact Sales
                             </Link>
@@ -114,9 +114,9 @@ const BecomeVendor: React.FC = () => {
                 <div className="max-w-5xl mx-auto bg-red-600 rounded-3xl p-12 md:p-20 text-center text-white shadow-2xl shadow-red-600/30">
                     <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Scale Your Business?</h2>
                     <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Ease2event today. It takes less than 5 minutes to get started.</p>
-                    <a href="/vendor/signup" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105">
+                    <Link to="/signup?portal=vendor" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105">
                         Join as a Vendor
-                    </a>
+                    </Link>
                     <p className="mt-6 text-sm text-white/70">No credit card required for basic listing</p>
                 </div>
             </section>

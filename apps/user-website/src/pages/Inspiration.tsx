@@ -8,28 +8,39 @@ import toast from 'react-hot-toast';
 const Inspiration: React.FC = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [likedIds, setLikedIds] = useState<number[]>([]);
 
     const handleShare = async (item: any) => {
         const shareData = {
             title: item.title,
-            text: `Check out this ${item.category} inspiration: ${item.title}`,
+            text: `Check out this ${item.category} inspiration on Ease2event: ${item.title}`,
             url: window.location.href,
         };
 
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
-                toast.success('Shared successfully!');
             } catch (err) {
-                // Ignore AbortError (user cancelled)
                 if ((err as Error).name !== 'AbortError') {
-                    toast.error('Could not share. URL copied to clipboard instead.');
                     navigator.clipboard.writeText(window.location.href);
+                    toast.success('Link copied to clipboard!');
                 }
             }
         } else {
             navigator.clipboard.writeText(window.location.href);
             toast.success('Link copied to clipboard!');
+        }
+    };
+
+    const handleLike = (id: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        const isLiked = likedIds.includes(id);
+        if (isLiked) {
+            setLikedIds(prev => prev.filter(item => item !== id));
+            toast('Removed from wishlist', { icon: '🤍' });
+        } else {
+            setLikedIds(prev => [...prev, id]);
+            toast.success('Added to wishlist!', { icon: '❤️' });
         }
     };
 
@@ -122,8 +133,11 @@ const Inspiration: React.FC = () => {
                                     <p className="text-white font-bold text-lg mb-3 tracking-wide">{item.title}</p>
                                     <div className="flex justify-between items-center">
                                         <div className="flex gap-2">
-                                            <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-red-500 hover:border-transparent border border-white/30 transition-all cursor-pointer">
-                                                <Heart size={16} className="fill-current bg-transparent" />
+                                            <button 
+                                                onClick={(e) => handleLike(item.id, e)}
+                                                className={`p-2.5 backdrop-blur-md rounded-full transition-all cursor-pointer border ${likedIds.includes(item.id) ? 'bg-red-500 border-transparent text-white' : 'bg-white/20 text-white hover:bg-red-500 hover:border-transparent border-white/30'}`}
+                                            >
+                                                <Heart size={16} className={likedIds.includes(item.id) ? 'fill-current' : ''} />
                                             </button>
                                             <button 
                                                 onClick={() => handleShare(item)}

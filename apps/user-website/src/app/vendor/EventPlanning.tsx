@@ -133,20 +133,20 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     key={type.id}
                                     onClick={() => handleEventTypeSelect(type.id)}
                                     className={`p-6 rounded-2xl border-2 transition-all hover:scale-105 ${formData.eventType === type.id
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
                                         }`}
                                 >
                                     <type.icon
                                         size={40}
                                         className={`mx-auto mb-3 ${formData.eventType === type.id
-                                                ? 'text-red-500'
-                                                : 'text-gray-700 dark:text-slate-300'
+                                            ? 'text-red-500'
+                                            : 'text-gray-700 dark:text-slate-300'
                                             }`}
                                     />
                                     <p className={`font-medium text-sm ${formData.eventType === type.id
-                                            ? 'text-red-500'
-                                            : 'text-gray-900 dark:text-white'
+                                        ? 'text-red-500'
+                                        : 'text-gray-900 dark:text-white'
                                         }`}>
                                         {type.label}
                                     </p>
@@ -173,14 +173,14 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     key={option}
                                     onClick={() => handleCateringToggle(option)}
                                     className={`p-6 rounded-xl border-2 transition-all text-left ${formData.catering.includes(option)
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <span className={`font-medium ${formData.catering.includes(option)
-                                                ? 'text-red-500'
-                                                : 'text-gray-900 dark:text-white'
+                                            ? 'text-red-500'
+                                            : 'text-gray-900 dark:text-white'
                                             }`}>
                                             {option}
                                         </span>
@@ -211,14 +211,14 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     key={service}
                                     onClick={() => handleServiceToggle(service)}
                                     className={`p-6 rounded-xl border-2 transition-all ${formData.additionalServices.includes(service)
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <span className={`font-medium ${formData.additionalServices.includes(service)
-                                                ? 'text-red-500'
-                                                : 'text-gray-900 dark:text-white'
+                                            ? 'text-red-500'
+                                            : 'text-gray-900 dark:text-white'
                                             }`}>
                                             {service}
                                         </span>
@@ -305,13 +305,13 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     key={range}
                                     onClick={() => setFormData({ ...formData, budget: range })}
                                     className={`p-6 rounded-xl border-2 transition-all ${formData.budget === range
-                                            ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                            : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
                                         }`}
                                 >
                                     <span className={`font-medium text-lg ${formData.budget === range
-                                            ? 'text-red-500'
-                                            : 'text-gray-900 dark:text-white'
+                                        ? 'text-red-500'
+                                        : 'text-gray-900 dark:text-white'
                                         }`}>
                                         {range}
                                     </span>
@@ -366,8 +366,8 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                         key={step}
                                         onClick={() => setCurrentStep(index)}
                                         className={`w-full text-left px-4 py-3 rounded-lg transition-all ${currentStep === index
-                                                ? 'bg-red-500 text-white font-medium'
-                                                : 'text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                            ? 'bg-red-500 text-white font-medium'
+                                            : 'text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
                                             }`}
                                     >
                                         {step}
@@ -379,7 +379,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
 
                     {/* Main Content */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-8 min-h-[600px]">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-8 min-h-[600px]">
                             {renderStepContent()}
 
                             {/* Navigation Buttons */}

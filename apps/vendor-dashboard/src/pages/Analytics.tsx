@@ -15,21 +15,20 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchVendorPerformance } from '../lib/api';
 import { Badge, Button, Skeleton } from '@ease2event/ui';
 
-type AnalysisPeriod = '24H_REALTIME' | '30D_CYCLE' | 'ANNUAL_MATRIX';
+type AnalysisPeriod = '7D' | '30D' | '90D' | 'YTD';
 
 /**
- * 🍱 Intelligence Matrix: Autonomous Business Engine
- * Modernized for high-fidelity responsiveness and dynamic node orchestration.
- * Features 'Neural Core' telemetry and global marketplace visibility indexing.
+ * 🍱 Analytics Dashboard: Business Performance
+ * Provides localized insights and real-time performance tracking.
  */
 const Analytics: React.FC = () => {
     const { user } = useAuth();
     const vendorId = user?.vendor?.id || user?.id || '';
-    const [selectedPeriod, setSelectedPeriod] = useState<AnalysisPeriod>('30D_CYCLE');
+    const [period, setPeriod] = useState<AnalysisPeriod>('30D');
 
     // 🛰️ Real-time Operational Insights Fetching
     const { data: statsData, isLoading } = useQuery({
-        queryKey: ['vendorStats', vendorId, selectedPeriod],
+        queryKey: ['vendorStats', vendorId, period],
         queryFn: async () => {
             if (!vendorId) return null;
             try {
@@ -115,25 +114,21 @@ const Analytics: React.FC = () => {
         >
             {/* 🛸 Intelligence Matrix Header */}
             <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 sm:gap-10 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
-                <motion.div variants={itemVariants} className="relative z-10 space-y-3 sm:space-y-4">
-                    <h1 className="text-3xl font-normal text-[var(--ease2event-text-primary)] leading-normal">Intelligence Matrix</h1>
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                        <span className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] sm:text-sm font-semibold rounded-full border border-emerald-500/20">
-                            <Activity size={12} className="animate-pulse" />
-                            Core Telemetry Live
-                        </span>
-                        <p className="text-[9px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal opacity-60">Genesis Hub v4.8 • Regional Monitoring ACTIVE</p>
-                    </div>
+                <motion.div variants={itemVariants} className="relative z-10 space-y-6">
+                    <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+                    <p className="text-base font-semibold text-[var(--ease2event-text-secondary)] flex items-center gap-3">
+                        Monitor your business performance and growth metrics.
+                    </p>
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
-                    {(['24H_REALTIME', '30D_CYCLE', 'ANNUAL_MATRIX'] as AnalysisPeriod[]).map((tab) => (
+                    {(['7D', '30D', '90D', 'YTD'] as const).map(p => (
                         <button
-                            key={tab}
-                            onClick={() => setSelectedPeriod(tab)}
-                            className={`px-8 py-3 text-[10px] sm:text-[11px] font-semibold rounded-xl transition-all duration-500 relative ${selectedPeriod === tab ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-xl border border-[var(--ease2event-border-base)] scale-105 z-10' : 'text-[var(--ease2event-text-muted)]'}`}
+                            key={p}
+                            onClick={() => setPeriod(p)}
+                            className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-[1.2rem] transition-all ${period === p ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-secondary)] hover:text-indigo-500'}`}
                         >
-                            {tab.split('_')[0]} Cycle
+                            {p}
                         </button>
                     ))}
                 </motion.div>
@@ -152,13 +147,14 @@ const Analytics: React.FC = () => {
                             <div className={`p-3 sm:p-4 rounded-xl bg-[var(--ease2event-bg-elevated)] ${stat.color} group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white transition-all duration-500 border border-[var(--ease2event-border-subtle)]`}>
                                 <stat.icon size={20} className="sm:w-[24px] sm:h-[24px]" />
                             </div>
-                            <Badge className={`font-semibold text-[8px] sm:text-[9px] px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border ${stat.trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
-                                {stat.change} {stat.trend === 'up' ? '↑' : '↓'}
-                            </Badge>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[10px] sm:text-sm font-normal text-[var(--ease2event-text-muted)] mb-2 sm:mb-3 opacity-60">{stat.label}</p>
-                            <h3 className="text-3xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight leading-none group-hover:scale-105 transition-transform">{stat.value}</h3>
+                            <h3 className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest pl-1">{stat.label}</h3>
+                            <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] mt-3 leading-none">{stat.value}</p>
+                            <div className="flex items-center gap-3 mt-4">
+                                <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">{stat.change}</span>
+                                <span className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Growth</span>
+                            </div>
                         </div>
                         <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
                     </motion.div>
@@ -170,10 +166,11 @@ const Analytics: React.FC = () => {
                 <motion.div variants={itemVariants} className="card-premium p-6 sm:!p-10 relative overflow-hidden group">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-12 relative z-10 gap-6 sm:gap-0">
                         <div className="flex items-center gap-4 sm:gap-6">
-                            <div className="w-1.5 h-10 bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_15px_var(--ease2event-brand-primary)]"></div>
-                            <div>
-                                <h3 className="text-xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight">Visibility Spectrum</h3>
-                                <p className="text-[10px] sm:text-xs font-normal text-[var(--ease2event-text-muted)] mt-1 sm:mt-2 opacity-60">Marketplace Interaction Delta</p>
+                            <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-6 rounded-[2.5rem] border-2 border-[var(--ease2event-border-subtle)] shadow-inner">
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">Growth Trend</h3>
+                                    <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Platform reach and engagement tracking</p>
+                                </div>
                             </div>
                         </div>
                         <div className="p-3 sm:p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)] w-fit">
@@ -208,8 +205,8 @@ const Analytics: React.FC = () => {
                         <div className="flex items-center gap-6">
                             <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                             <div>
-                                <h3 className="text-xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight">Revenue Velocity</h3>
-                                <p className="text-sm font-normal text-[var(--ease2event-text-muted)] mt-2 opacity-60">Financial Throughput Matrix</p>
+                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Revenue Trend</h3>
+                                <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)] mt-2">Revenue performance over time</p>
                             </div>
                         </div>
                         <div className="p-4 bg-[var(--ease2event-bg-elevated)] rounded-2xl border border-[var(--ease2event-border-subtle)]">
@@ -241,26 +238,26 @@ const Analytics: React.FC = () => {
                             <Zap className="text-[var(--ease2event-brand-primary)] size-6 sm:size-8" />
                         </div>
                         <div>
-                            <h2 className="text-xl sm:text-3xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Performance Sovereignty</h2>
-                            <p className="text-[9px] sm:text-[11px] font-normal text-[var(--ease2event-text-muted)] mt-3 sm:mt-4 opacity-60">Top Performing Localized Marketplace Nodes</p>
+                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Listing Performance</h2>
+                            <p className="text-[9px] sm:text-[11px] font-semibold text-[var(--ease2event-text-secondary)] mt-3 sm:mt-4">Highest performing services and listings</p>
                         </div>
                     </div>
-                    <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-semibold tracking-normal w-full xl:w-auto">Sync Global Registry</Button>
+                    <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-semibold tracking-normal w-full xl:w-auto">Update Reports</Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
                     {topNodes.map((node, i) => (
                         <div key={i} className="space-y-6 sm:space-y-8 p-6 sm:p-10 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[32px] sm:rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all duration-700 hover:shadow-2xl hover:scale-105 group/node">
                             <div className="flex justify-between items-start">
-                                <span className="text-3xl sm:text-4xl font-semibold text-[var(--ease2event-brand-primary)]/20 group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i+1}</span>
+                                <span className="text-3xl sm:text-4xl font-semibold text-[var(--ease2event-brand-primary)]/20 group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i + 1}</span>
                                 <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold text-[8px] px-2 py-0.5`}>{node.status}</Badge>
                             </div>
                             <div>
                                 <h3 className="text-lg sm:text-xl font-semibold text-[var(--ease2event-text-primary)] leading-tight">{node.name}</h3>
                                 <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
                                     <div className="flex justify-between items-end">
-                                        <p className="text-[8px] sm:text-[9px] font-normal text-[var(--ease2event-text-muted)] leading-none">Sync Intensity</p>
-                                        <p className="text-base sm:text-lg font-semibold text-[var(--ease2event-text-primary)] leading-none">{node.occupancy}%</p>
+                                        <p className="text-[8px] sm:text-[9px] font-semibold text-[var(--ease2event-text-secondary)] leading-none">Usage Intensity</p>
+                                        <p className="text-base sm:text-lg font-bold text-[var(--ease2event-text-primary)] leading-none">{node.occupancy}%</p>
                                     </div>
                                     <div className="h-1.5 sm:h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-0.5">
                                         <motion.div initial={{ width: 0 }} animate={{ width: `${node.occupancy}%` }} transition={{ duration: 1.5, delay: 1 }} className="h-full bg-[var(--ease2event-brand-primary)] rounded-full shadow-[0_0_10px_var(--ease2event-brand-primary)]" />
@@ -268,8 +265,8 @@ const Analytics: React.FC = () => {
                                 </div>
                             </div>
                             <div className="pt-6 sm:pt-8 border-t border-[var(--ease2event-border-subtle)] flex justify-between items-center">
-                                <p className="text-[10px] sm:text-sm font-normal text-[var(--ease2event-text-muted)]">{node.bookings} Bookings</p>
-                                <p className="text-lg sm:text-xl font-semibold text-[var(--ease2event-text-primary)]">{node.revenue}</p>
+                                <p className="text-[10px] sm:text-sm font-semibold text-[var(--ease2event-text-secondary)]">{node.bookings} Bookings</p>
+                                <p className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)]">{node.revenue}</p>
                             </div>
                         </div>
                     ))}

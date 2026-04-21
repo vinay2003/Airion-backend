@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BookingModal from '../components/BookingModal';
+import toast from 'react-hot-toast';
 
 const EventDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -32,6 +33,40 @@ const EventDetails: React.FC = () => {
     const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined);
     const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
     const [checkingAvailability, setCheckingAvailability] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+
+    const handleShare = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const shareData = {
+            title: event?.title,
+            text: `Check out this stunning venue on Ease2event: ${event?.title}`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                if ((err as Error).name !== 'AbortError') {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success('Link copied to clipboard!');
+                }
+            }
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            toast.success('Link copied to clipboard!');
+        }
+    };
+
+    const handleLike = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsLiked(!isLiked);
+        if (!isLiked) {
+            toast.success('Added to your wishlist!');
+        } else {
+            toast('Removed from wishlist');
+        }
+    };
 
     const handleBookingClick = (packageName?: string) => {
         if (!user) {
@@ -132,9 +167,9 @@ const EventDetails: React.FC = () => {
     ];
 
     return (
-        <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
             className="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-300 pb-24 md:pb-0"
         >
@@ -162,12 +197,18 @@ const EventDetails: React.FC = () => {
                         <ArrowLeft size={20} />
                         <span>Back</span>
                     </Link>
-                    <div className="flex gap-3">
-                        <button className="p-2.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-700 dark:text-slate-300">
+                     <div className="flex gap-3">
+                        <button 
+                            onClick={(e) => handleShare(e)}
+                            className="p-2.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-700 dark:text-slate-300"
+                        >
                             <Share2 size={18} />
                         </button>
-                        <button className="p-2.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-700 dark:text-slate-300">
-                            <Heart size={18} />
+                        <button 
+                            onClick={(e) => handleLike(e)}
+                            className={`p-2.5 rounded-full transition-all duration-300 ${isLiked ? 'bg-red-50 text-red-500 border border-red-100 shadow-lg shadow-red-500/10' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-110'}`}
+                        >
+                            <Heart size={18} className={isLiked ? 'fill-current' : ''} />
                         </button>
                     </div>
                 </div>
@@ -195,7 +236,7 @@ const EventDetails: React.FC = () => {
                 </div>
 
                 {/* Masonry Gallery */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
@@ -270,7 +311,7 @@ const EventDetails: React.FC = () => {
                     {/* Left Content */}
                     <div className="lg:col-span-2 space-y-10">
                         {/* About Section */}
-                        <motion.section 
+                        <motion.section
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -292,7 +333,7 @@ const EventDetails: React.FC = () => {
                         <div className="h-px bg-gray-200 dark:bg-slate-800" />
 
                         {/* Packages Section */}
-                        <motion.section 
+                        <motion.section
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -322,7 +363,7 @@ const EventDetails: React.FC = () => {
                                                 <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
                                             </div>
                                         </div>
-                                        
+
                                         <p className="text-xs text-gray-500 dark:text-slate-400 mb-6 min-h-[32px] leading-relaxed">
                                             {pkg.desc}
                                         </p>
@@ -340,7 +381,7 @@ const EventDetails: React.FC = () => {
 
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all italic"
+                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all"
                                         >
                                             Initialize {pkg.title} Protocol
                                         </button>
@@ -492,7 +533,7 @@ const EventDetails: React.FC = () => {
                                 <button
                                     onClick={() => handleBookingClick()}
                                     disabled={isAvailable === false || checkingAvailability}
-                                    className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl italic ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
+                                    className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
                                 >
                                     {isAvailable === false ? 'Slot Unavailable' : 'Initiate Booking Sequence'}
                                 </button>

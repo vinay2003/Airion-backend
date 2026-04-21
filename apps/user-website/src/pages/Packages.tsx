@@ -31,7 +31,7 @@ const Packages: React.FC = () => {
                 'Entertainment: Live Band + DJ'
             ],
             isSponsored: true,
-            image: 'https://images.unsplash.com/photo-1756190564669-215843660e93?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHJveWFsJTIwd2VkZGluZ3xlbnwwfHwwfHx8MA%3D%3D',
+            image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop',
             vendor: 'Grand Hotel & Events'
         },
         {
@@ -47,7 +47,7 @@ const Packages: React.FC = () => {
                 'Music: Bluetooth Speaker System'
             ],
             isSponsored: false,
-            image: 'https://images.unsplash.com/photo-1744216615372-bbc32acf92c5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHN1bnNldCUyMGNhZmV8ZW58MHx8MHx8fDA%3D',
+            image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop',
             vendor: 'Sunset Cafe'
         },
         {
@@ -63,7 +63,7 @@ const Packages: React.FC = () => {
                 'Support: Event Coordinator'
             ],
             isSponsored: false,
-            image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1000&auto=format&fit=crop',
+            image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop',
             vendor: 'City Business Center'
         }
     ];

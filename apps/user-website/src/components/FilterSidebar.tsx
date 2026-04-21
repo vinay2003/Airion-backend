@@ -13,18 +13,19 @@ export interface FilterValues {
 
 interface FilterSidebarProps {
     onApply?: (filters: FilterValues) => void;
+    initialFilters?: FilterValues | null;
 }
 
-const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
+const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }) => {
     const { showToast } = useToast();
-    const [priceRange, setPriceRange] = useState(50000);
-    const [locationInput, setLocationInput] = useState('');
+    const [priceRange, setPriceRange] = useState(initialFilters?.priceRange || 1000000);
+    const [locationInput, setLocationInput] = useState(initialFilters?.locationInput || '');
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [selectedDate, setSelectedDate] = useState('');
-    const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>([]);
-    const [selectedCapacity, setSelectedCapacity] = useState('');
-    const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+    const [selectedDate, setSelectedDate] = useState(initialFilters?.selectedDate || '');
+    const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>(initialFilters?.selectedEventTypes || []);
+    const [selectedCapacity, setSelectedCapacity] = useState(initialFilters?.selectedCapacity || '');
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>(initialFilters?.selectedAmenities || []);
 
     // Mock data for city suggestions
     const cities = [
@@ -213,6 +214,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply }) => {
                         <label key={idx} className="flex items-center gap-3 cursor-pointer group">
                             <input
                                 type="checkbox"
+                                value={type}
                                 checked={selectedEventTypes.includes(type)}
                                 onChange={() => handleEventTypeChange(type)}
                                 className="h-5 w-5 rounded border-neutral-300 dark:border-slate-600 text-red-500 focus:ring-red-500 transition-all dark:bg-slate-800"

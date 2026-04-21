@@ -47,18 +47,25 @@ const VendorDiscovery: React.FC = () => {
     // ✅ Sync search params with filters
     useEffect(() => {
         if (categoryQuery && vendors.length > 0) {
-            const initialCategory = categoryQuery.charAt(0) + categoryQuery.slice(1).toLowerCase(); // Normalize
+            // Map plural URL params to singular sidebar labels
+            let normalized = categoryQuery.charAt(0).toUpperCase() + categoryQuery.slice(1).toLowerCase();
+            if (normalized === 'Weddings') normalized = 'Wedding';
+            if (normalized === 'Parties') normalized = 'Party';
+            if (normalized === 'Birthdays') normalized = 'Birthday';
+            
             const newFilters: FilterValues = {
                 locationInput: '',
                 priceRange: 1000000,
-                selectedEventTypes: [initialCategory],
+                selectedEventTypes: [normalized],
                 selectedCapacity: '',
-                selectedDate: null
+                selectedDate: '',
+                selectedAmenities: [],
             };
+
             setAppliedFilters(newFilters);
-            setActiveFilters([initialCategory]);
+            setActiveFilters([normalized]);
         }
-    }, [categoryQuery, vendors]);
+    }, [categoryQuery, vendors.length > 0]);
 
     const handleApplyFilters = (filters: FilterValues) => {
         setAppliedFilters(filters);
@@ -73,28 +80,65 @@ const VendorDiscovery: React.FC = () => {
 
     const filteredVendors = useMemo(() => {
         if (!appliedFilters) return vendors;
+
         return vendors.filter(v => {
-            if (appliedFilters.locationInput) {
-                if (!v.location?.toLowerCase().includes(appliedFilters.locationInput.toLowerCase())) return false;
+            // 1. Location (Case-insensitive partial match)
+            if (appliedFilters.locationInput && appliedFilters.locationInput.trim() !== '') {
+                const city = appliedFilters.locationInput.toLowerCase().trim();
+                const vLoc = (v.location || '').toLowerCase();
+                if (!vLoc.includes(city)) return false;
             }
-            if (appliedFilters.priceRange) {
-                const priceValue = typeof v.price === 'string'
-                    ? parseInt(v.price.replace(/\D/g, '') || '0')
-                    : v.price || 0;
+
+            // 2. Price (Default 1,000,000 means no limit)
+            if (appliedFilters.priceRange && appliedFilters.priceRange < 1000000) {
+                const raw = typeof v.price === 'string'
+                    ? v.price.replace(/[^\d]/g, '')
+                    : String(v.price || '');
+                const priceValue = raw ? parseInt(raw, 10) : 0;
                 if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
             }
-            if (appliedFilters.selectedEventTypes.length > 0) {
-                if (!appliedFilters.selectedEventTypes.some(t =>
-                    v.category?.toLowerCase().includes(t.toLowerCase())
-                )) return false;
+
+            // 3. Event Type (Multi-select OR logic + Singular/Plural Normalization)
+            if (appliedFilters.selectedEventTypes && appliedFilters.selectedEventTypes.length > 0) {
+                const vCat = (v.category || '').toLowerCase();
+                const matchesAnyType = appliedFilters.selectedEventTypes.some(t => {
+                    const filter = t.toLowerCase();
+                    // Flexible matching: "wedding" matches "weddings", "party" matches "parties"
+                    return vCat.includes(filter) || 
+                           filter.includes(vCat) || 
+                           (vCat === 'weddings' && filter === 'wedding') ||
+                           (vCat === 'parties' && filter === 'party') ||
+                           (vCat === 'birthdays' && filter === 'birthday');
+                });
+                if (!matchesAnyType) return false;
             }
-            if (appliedFilters.selectedCapacity) {
-                const capacityValue = parseInt(v.capacity?.replace(/\D/g, '') || '0');
-                if (v.capacity?.toLowerCase() === 'contact vendor') return true;
-                if (appliedFilters.selectedCapacity === 'Small Intimate' && (capacityValue < 10 || capacityValue > 50)) return false;
-                if (appliedFilters.selectedCapacity === 'Medium Gathering' && (capacityValue < 50 || capacityValue > 200)) return false;
-                if (appliedFilters.selectedCapacity === 'Large Celebration' && capacityValue < 200) return false;
+
+            // 4. Capacity
+            if (appliedFilters.selectedCapacity && appliedFilters.selectedCapacity.trim() !== '') {
+                const vCapRaw = (v.capacity || '').toLowerCase();
+                if (vCapRaw !== 'contact vendor') {
+                    // Extract first number found (e.g. "200 guests" -> 200, "100-200" -> 100)
+                    const capacityValue = parseInt(v.capacity?.match(/\d+/)?.[0] || '0', 10);
+                    
+                    if (appliedFilters.selectedCapacity === 'Small Intimate') {
+                        if (capacityValue > 50) return false;
+                    } else if (appliedFilters.selectedCapacity === 'Medium Gathering') {
+                        if (capacityValue < 50 || capacityValue > 200) return false;
+                    } else if (appliedFilters.selectedCapacity === 'Large Celebration') {
+                        if (capacityValue < 200) return false;
+                    }
+                }
             }
+
+            // 5. Amenities (All selected must be present)
+            if (appliedFilters.selectedAmenities && appliedFilters.selectedAmenities.length > 0) {
+                const vAmenities = v.amenities || [];
+                const hasAllAmenities = appliedFilters.selectedAmenities.every(a => 
+                    vAmenities.some((va: string) => va.toLowerCase() === a.toLowerCase())
+                );
+                if (!hasAllAmenities) return false;
+            }
+
             return true;
         });
     }, [vendors, appliedFilters]);
@@ -138,9 +182,8 @@ const VendorDiscovery: React.FC = () => {
                 {/* Header */}
                 <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200/60 dark:border-slate-800 pb-6">
                     <div>
-                        <h1 className="text-2xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight italic">
-                            MARKETPLACE{" "}
-                            <span className="text-blue-600 not-italic ml-2">MATRIX</span>
+                        <h1 className="text-xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight">
+                            Everything for Your Event
                         </h1>
                         <p className="text-neutral-500 dark:text-slate-400 font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
                             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
@@ -261,7 +304,10 @@ const VendorDiscovery: React.FC = () => {
                     {/* Sidebar */}
                     <aside className={`w-full lg:w-[280px] xl:w-[320px] flex-shrink-0 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-28">
-                            <FilterSidebar onApply={handleApplyFilters} />
+                            <FilterSidebar 
+                                onApply={handleApplyFilters} 
+                                initialFilters={appliedFilters}
+                            />
                         </div>
                     </aside>
 

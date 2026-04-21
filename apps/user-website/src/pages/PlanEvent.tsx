@@ -5,6 +5,7 @@ import {
     Palette, TrendingUp, Handshake, Sparkles, Trophy,
     ChevronRight, ChevronLeft, Check
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface EventPlanningData {
     eventType: string;
@@ -99,11 +100,36 @@ const PlanEvent: React.FC = () => {
     };
 
     const handleNext = () => {
+        // Date Validation: Prevent past dates
+        if (currentStep === 4 && formData.eventDate) {
+            const selectedDate = new Date(formData.eventDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                toast.error('Identity Conflict: Events cannot be scheduled in the past. Please select a future date.', {
+                    icon: '🚫',
+                });
+                return;
+            }
+        }
+
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
-            // Submit and redirect to booking confirmation
-            navigate('/booking-confirmation');
+            // Submit and redirect to booking confirmation with state
+            navigate('/booking-confirmation', {
+                state: {
+                    eventName: 'Custom Requested Package',
+                    date: formData.eventDate || 'TBD',
+                    time: '10:00 AM', // Default
+                    guests: formData.guestCount.toString(),
+                    package: 'Custom',
+                    occasion: formData.eventType,
+                    addons: formData.additionalServices,
+                    total: parseInt(formData.budget.replace(/\D/g, '')) || 0,
+                }
+            });
         }
     };
 
@@ -280,6 +306,7 @@ const PlanEvent: React.FC = () => {
                             <input
                                 type="date"
                                 value={formData.eventDate}
+                                min={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
                                 className="w-full p-4 text-center text-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-white transition-all"
                             />

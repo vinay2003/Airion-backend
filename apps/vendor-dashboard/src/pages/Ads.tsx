@@ -53,12 +53,12 @@ const Ads: React.FC = () => {
                 budget: parseFloat(adData.budget)
             });
 
-            toast.success('Campaign initialized - Pending Nexus Review');
+            toast.success('Campaign created - Pending Review');
             setShowCreateModal(false);
             setAdData({ title: '', image: '', budget: '' });
             refreshUser();
         } catch (err) {
-            toast.error('Node initialization failure');
+            toast.error('Failed to create campaign');
         } finally {
             setSubmitting(false);
         }
@@ -86,10 +86,9 @@ const Ads: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 sm:gap-10 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-10">
                 <div className="space-y-6">
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Campaign Matrix</h1>
-                    <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">
-                        <Zap size={20} className="text-blue-500 animate-pulse" />
-                        Marketing Intelligence Node Deployment
+                    <h1 className="text-3xl font-bold tracking-tight">Advertising Campaigns</h1>
+                    <p className="text-base font-semibold text-[var(--ease2event-text-secondary)] flex items-center gap-2">
+                        Manage your promotions and reach more customers.
                     </p>
                 </div>
 
@@ -98,16 +97,16 @@ const Ads: React.FC = () => {
                     className="btn-primary flex items-center justify-center h-12 md:h-14 px-6 md:px-10 rounded-2xl text-[10px] md:text-[11px] font-semibold tracking-normal shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all w-full md:w-auto"
                 >
                     <Plus size={18} className="mr-2 md:mr-3" />
-                    <span>Initialize New Campaign Node</span>
+                    <span>Create New Campaign</span>
                 </Button>
             </div>
 
             {/* Matrix Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
                 {[
-                    { label: 'Network Reach', value: '14,240', sub: 'THROUGHPUT: HIGH', icon: TrendingUp, color: 'text-blue-500', trend: '+12%' },
-                    { label: 'Avg. CTR Pulse', value: '3.82%', sub: 'NODAL EFFICIENCY: OPTIMAL', icon: Sparkles, color: 'text-emerald-500', trend: '+5%' },
-                    { label: 'Active Budget', value: '₹4,500', sub: 'VALUATION: STABLE', icon: CreditCard, color: 'text-amber-500', trend: 'NORMAL' },
+                    { label: 'Total Reach', value: '14,240', sub: 'High Engagement', icon: TrendingUp, color: 'text-blue-500', trend: '+12%' },
+                    { label: 'Average CTR', value: '3.82%', sub: 'Healthy Performance', icon: Sparkles, color: 'text-emerald-500', trend: '+5%' },
+                    { label: 'Active Budget', value: '₹4,500', sub: 'Monthly Allotment', icon: CreditCard, color: 'text-amber-500', trend: 'STABLE' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -117,15 +116,15 @@ const Ads: React.FC = () => {
                         className="card-minimal p-6 sm:!p-8 flex flex-col justify-between group h-48 relative overflow-hidden hover:scale-[1.03] transition-all duration-500 border-[var(--ease2event-border-base)] shadow-2xl"
                     >
                         <div className="flex justify-between items-start z-10">
-                            <h3 className="text-[11px] font-semibold text-[var(--ease2event-text-muted)] tracking-normal">{stat.label}</h3>
+                            <h3 className="text-[11px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal">{stat.label}</h3>
                             <div className={`p-4 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-2xl ${stat.color} shadow-xl transition-all group-hover:border-blue-500/30 group-hover:scale-110`}>
                                 <stat.icon size={24} />
                             </div>
                         </div>
                         <div className="z-10 flex items-end justify-between">
                             <div className="space-y-3">
-                                <p className="text-3xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight leading-none">{stat.value}</p>
-                                <p className="text-[11px] font-normal text-[var(--ease2event-text-muted)] tracking-normal opacity-60">{stat.sub}</p>
+                                <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none">{stat.value}</p>
+                                <p className="text-[11px] font-semibold text-[var(--ease2event-text-secondary)] tracking-normal opacity-100">{stat.sub}</p>
                             </div>
                             <div className="text-sm font-semibold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
                                 {stat.trend}
@@ -143,8 +142,8 @@ const Ads: React.FC = () => {
                         <Activity size={28} />
                     </div>
                     <div className="space-y-1">
-                        <h2 className="text-xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight">Live Registry</h2>
-                        <p className="text-[11px] font-normal text-[var(--ease2event-text-muted)] tracking-normal">Operational Marketing Sub-Nodes</p>
+                        <h2 className="text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Active Ads</h2>
+                        <p className="text-[11px] font-semibold text-[var(--ease2event-text-secondary)] tracking-normal">Tracking your current marketing campaigns</p>
                     </div>
                 </div>
 
@@ -154,14 +153,14 @@ const Ads: React.FC = () => {
                             <Megaphone size={40} className="md:w-14 md:h-14" />
                         </div>
                         <div className="max-w-xl space-y-4">
-                            <h3 className="text-2xl md:text-4xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic">Registry Data Missing</h3>
-                            <p className="text-base md:text-base text-[var(--ease2event-text-muted)] font-bold uppercase tracking-tight leading-relaxed opacity-70">Initialize your first campaign node to enhance network presence and scale operational throughput across the marketplace.</p>
+                            <h3 className="text-2xl md:text-4xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">No Ads Found</h3>
+                            <p className="text-base md:text-base text-[var(--ease2event-text-secondary)] font-semibold tracking-tight leading-relaxed opacity-100">Create your first advertising campaign to reach more customers and grow your business.</p>
                         </div>
                         <Button
                             onClick={() => setShowCreateModal(true)}
                             className="btn-secondary !h-12 md:!h-14 px-8 md:px-14 text-[10px] md:text-xs font-semibold tracking-normal border-2 border-[var(--ease2event-border-base)] rounded-2xl md:rounded-3xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-xl"
                         >
-                            Execute Force Launch
+                            Launch Campaign
                         </Button>
                     </div>
                 ) : (
@@ -191,21 +190,21 @@ const Ads: React.FC = () => {
                                 <div className="p-6 sm:p-10 flex-1 flex flex-col space-y-6 sm:space-y-10">
                                     <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)]/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)]">
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-normal tracking-normal opacity-80">Cycle Budget</span>
-                                            <span className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight leading-none mt-2 sm:mt-3">₹{ad.budget.toLocaleString()}</span>
+                                            <span className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold tracking-normal opacity-100">Cycle Budget</span>
+                                            <span className="text-xl sm:text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none mt-2 sm:mt-3">₹{ad.budget.toLocaleString()}</span>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-normal tracking-normal opacity-80">Timestamp</span>
-                                            <span className="text-[10px] sm:text-xs font-semibold text-[var(--ease2event-text-secondary)] mt-2 sm:mt-3 tracking-normal">{new Date(ad.createdAt).toLocaleDateString()}</span>
+                                            <span className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold tracking-normal opacity-100">Timestamp</span>
+                                            <span className="text-[10px] sm:text-xs font-bold text-[var(--ease2event-text-secondary)] mt-2 sm:mt-3 tracking-normal">{new Date(ad.createdAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-2">
                                         <Button className="btn-secondary !h-12 sm:!h-14 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:scale-105 transition-all">
-                                            <BarChart2 size={18} className="mr-2" /> Log View
+                                            <BarChart2 size={18} className="mr-2" /> View Stats
                                         </Button>
                                         <Button className="btn-secondary !h-12 sm:!h-14 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl !bg-rose-500/5 !text-rose-500 !border-rose-500/20 hover:!bg-rose-500 hover:!text-white transition-all hover:scale-105">
-                                            <Trash2 size={18} className="mr-2" /> Deletion
+                                            <Trash2 size={18} className="mr-2" /> Delete ad
                                         </Button>
                                     </div>
                                 </div>
@@ -234,84 +233,84 @@ const Ads: React.FC = () => {
                                 className="card-minimal !p-6 sm:!p-8 md:!p-12 max-w-3xl w-full border-2 border-[var(--ease2event-border-base)] relative shadow-[0_50px_100px_rgba(0,0,0,0.5)] rounded-[2rem] sm:rounded-[3rem] bg-[var(--ease2event-bg-surface)] my-auto"
                                 onClick={e => e.stopPropagation()}
                             >
-                            <button
-                                onClick={() => setShowCreateModal(false)}
-                                className="absolute top-6 right-6 sm:top-12 sm:right-12 text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all"
-                            >
-                                <X className="size-6 sm:size-10 p-1.5 sm:p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40" />
-                            </button>
+                                <button
+                                    onClick={() => setShowCreateModal(false)}
+                                    className="absolute top-6 right-6 sm:top-12 sm:right-12 text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all"
+                                >
+                                    <X className="size-6 sm:size-10 p-1.5 sm:p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40" />
+                                </button>
 
-                            <div className="space-y-6 sm:space-y-10 mt-8 sm:mt-0">
-                                <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
-                                    <div className="inline-flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500/10 text-blue-500 rounded-xl sm:rounded-2xl border-2 border-blue-500/20 text-[9px] sm:text-[10px] font-semibold tracking-normal animate-pulse">
-                                        <Rocket className="size-4" /> Matrix Protocol Alpha Initialization
+                                <div className="space-y-6 sm:space-y-10 mt-8 sm:mt-0">
+                                    <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
+                                        <div className="inline-flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500/10 text-blue-500 rounded-xl sm:rounded-2xl border-2 border-blue-500/20 text-[9px] sm:text-[10px] font-bold tracking-normal">
+                                            <Rocket className="size-4" /> Professional Campaign Setup
+                                        </div>
+                                        <h2 className="text-2xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none">New Campaign</h2>
+                                        <p className="text-[10px] sm:text-xs text-[var(--ease2event-text-secondary)] font-semibold tracking-normal opacity-100">Reach more users across the platform</p>
                                     </div>
-                                    <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--ease2event-text-primary)] tracking-tight leading-none">New Campaign Node</h2>
-                                    <p className="text-[10px] sm:text-xs text-[var(--ease2event-text-muted)] font-normal tracking-normal opacity-60">Global Reach Index Expansion v7.0</p>
+
+                                    <form onSubmit={handleCreateAd} className="space-y-10 sm:space-y-14">
+                                        <div className="flex flex-col gap-3">
+                                            <label className="text-[9px] sm:text-[10px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal pl-4">Campaign Title</label>
+                                            <input
+                                                required
+                                                placeholder="Enter campaign title..."
+                                                value={adData.title}
+                                                onChange={e => setAdData({ ...adData, title: e.target.value })}
+                                                className="w-full input-dark-glass font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all text-[var(--ease2event-text-primary)] placeholder-slate-500 px-6"
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-16">
+                                            <div className="flex flex-col gap-3">
+                                                <label className="text-[9px] sm:text-[10px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal pl-4">Daily Budget (₹)</label>
+                                                <div className="relative group">
+                                                    <DollarSign className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
+                                                    <input
+                                                        required
+                                                        type="number"
+                                                        placeholder="500"
+                                                        value={adData.budget}
+                                                        onChange={e => setAdData({ ...adData, budget: e.target.value })}
+                                                        className="w-full input-dark-glass !pl-14 sm:!pl-20 font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col gap-3">
+                                                <label className="text-[9px] sm:text-[10px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal pl-4">Banner Image URL</label>
+                                                <div className="relative group">
+                                                    <ExternalLink className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
+                                                    <input
+                                                        placeholder="https://repository.asset..."
+                                                        value={adData.image}
+                                                        onChange={e => setAdData({ ...adData, image: e.target.value })}
+                                                        className="w-full input-dark-glass !pl-14 sm:!pl-20 font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="card-minimal !bg-blue-600/5 !border-blue-500/20 p-6 sm:!p-10 flex flex-col sm:flex-row items-start gap-5 sm:gap-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-inner">
+                                            <div className="p-4 sm:p-5 bg-blue-600 text-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-500/30 shrink-0">
+                                                <Target className="size-6 sm:size-8" />
+                                            </div>
+                                            <div className="flex flex-col gap-3">
+                                                <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-normal leading-none">Deployment Intelligence Protocol</p>
+                                                <p className="text-xs text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed sm:leading-loose opacity-100">
+                                                    Nodes are verified for marketplace compliance by the Nexus Central Hive. Standard validation cycle: <strong className="text-[var(--ease2event-text-primary)]">2-6 cycles</strong>. Operation initializes immediately post-validation.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            type="submit"
+                                            disabled={submitting}
+                                            className="btn-primary w-full h-16 sm:!h-18 text-[11px] sm:text-sm font-semibold tracking-normal shadow-[0_20px_50px_rgba(37,99,235,0.4)] rounded-2xl sm:rounded-3xl active:scale-95 hover:scale-[1.02] transition-all"
+                                        >
+                                            {submitting ? <Loader2 className="animate-spin" size={24} /> : "Create Advertising Campaign"}
+                                        </Button>
+                                    </form>
                                 </div>
-
-                                <form onSubmit={handleCreateAd} className="space-y-10 sm:space-y-14">
-                                    <div className="flex flex-col gap-3">
-                                        <label className="text-[9px] sm:text-[10px] font-semibold text-[var(--ease2event-text-muted)] tracking-normal pl-4">Campaign Descriptor Registry</label>
-                                        <input
-                                            required
-                                            placeholder="Enter campaign title..."
-                                            value={adData.title}
-                                            onChange={e => setAdData({ ...adData, title: e.target.value })}
-                                            className="w-full input-dark-glass font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all text-[var(--ease2event-text-primary)] placeholder-slate-500 px-6"
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-16">
-                                        <div className="flex flex-col gap-3">
-                                            <label className="text-[9px] sm:text-[10px] font-semibold text-[var(--ease2event-text-muted)] tracking-normal pl-4">Daily Credits (₹)</label>
-                                            <div className="relative group">
-                                                <DollarSign className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
-                                                <input
-                                                    required
-                                                    type="number"
-                                                    placeholder="500"
-                                                    value={adData.budget}
-                                                    onChange={e => setAdData({ ...adData, budget: e.target.value })}
-                                                    className="w-full input-dark-glass !pl-14 sm:!pl-20 font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col gap-3">
-                                            <label className="text-[9px] sm:text-[10px] font-semibold text-[var(--ease2event-text-muted)] tracking-normal pl-4">Asset URL Link</label>
-                                            <div className="relative group">
-                                                <ExternalLink className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
-                                                <input
-                                                    placeholder="https://repository.asset..."
-                                                    value={adData.image}
-                                                    onChange={e => setAdData({ ...adData, image: e.target.value })}
-                                                    className="w-full input-dark-glass !pl-14 sm:!pl-20 font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="card-minimal !bg-blue-600/5 !border-blue-500/20 p-6 sm:!p-10 flex flex-col sm:flex-row items-start gap-5 sm:gap-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-inner">
-                                        <div className="p-4 sm:p-5 bg-blue-600 text-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-blue-500/30 shrink-0">
-                                            <Target className="size-6 sm:size-8" />
-                                        </div>
-                                        <div className="flex flex-col gap-3">
-                                            <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] tracking-normal leading-none">Deployment Intelligence Protocol</p>
-                                            <p className="text-xs text-[var(--ease2event-text-muted)] font-medium leading-relaxed sm:leading-loose opacity-80">
-                                                Nodes are verified for marketplace compliance by the Nexus Central Hive. Standard validation cycle: <strong className="text-[var(--ease2event-text-primary)]">2-6 cycles</strong>. Operation initializes immediately post-validation.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        type="submit"
-                                        disabled={submitting}
-                                        className="btn-primary w-full h-16 sm:!h-18 text-[11px] sm:text-sm font-semibold tracking-normal shadow-[0_20px_50px_rgba(37,99,235,0.4)] rounded-2xl sm:rounded-3xl active:scale-95 hover:scale-[1.02] transition-all"
-                                    >
-                                        {submitting ? <Loader2 className="animate-spin" size={24} /> : "Initialize Campaign Node Deployment"}
-                                    </Button>
-                                </form>
-                            </div>
                             </motion.div>
                         </div>
                     </motion.div>

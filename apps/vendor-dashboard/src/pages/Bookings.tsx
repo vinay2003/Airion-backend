@@ -127,19 +127,19 @@ const Bookings: React.FC = () => {
             {/* Header: Operational Matrix */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Operational Matrix</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-[var(--ease2event-text-primary)]">Bookings Manager</h1>
                     <div className="flex items-center gap-3 mt-4">
-                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-sm font-black uppercase rounded-full border border-blue-500/20">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase rounded-full border border-blue-500/30">
                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
-                            Registry Synchronization
+                            Connected
                         </span>
-                        <p className="text-[var(--ease2event-text-muted)] font-black text-[14px] uppercase tracking-[0.3em] leading-none opacity-60">Venue Throughput • Client Coordination</p>
+                        <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] uppercase tracking-widest leading-none">Manage your upcoming events and client coordination</p>
                     </div>
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner">
-                    <button className="px-6 py-2.5 text-sm font-black uppercase tracking-widest bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] rounded-xl shadow-md border border-[var(--ease2event-border-base)] transition-all">Daily</button>
-                    <button className="px-6 py-2.5 text-sm font-black uppercase tracking-widest text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all">Weekly</button>
+                    <button className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] rounded-xl shadow-md border border-[var(--ease2event-border-base)] transition-all">Daily</button>
+                    <button className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">Weekly</button>
                 </motion.div>
             </div>
 
@@ -159,8 +159,8 @@ const Bookings: React.FC = () => {
                             <span className="text-sm font-black px-2 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg">{stat.trend}</span>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-[var(--ease2event-text-muted)] font-black text-sm uppercase tracking-[0.3em] mb-2 opacity-70 group-hover:opacity-100 transition-all italic">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic leading-none font-display">{stat.value}</h3>
+                            <p className="text-[var(--ease2event-text-secondary)] font-bold text-xs uppercase tracking-widest mb-2 group-hover:text-[var(--ease2event-brand-primary)] transition-all">{stat.label}</p>
+                            <h3 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">{stat.value}</h3>
                         </div>
                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                             <stat.icon size={110} />
@@ -176,7 +176,7 @@ const Bookings: React.FC = () => {
                         <button
                             key={tab.id}
                             onClick={() => setFilter(tab.id as any)}
-                            className={`flex-1 sm:flex-none px-8 py-3 text-sm font-black uppercase tracking-widest rounded-xl transition-all duration-500 italic whitespace-nowrap ${filter === tab.id ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20' : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
+                            className={`flex-1 sm:flex-none px-8 py-3 text-sm font-bold uppercase tracking-widest rounded-xl transition-all duration-500 whitespace-nowrap ${filter === tab.id ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
                         >
                             {tab.label}
                         </button>
@@ -212,57 +212,55 @@ const Bookings: React.FC = () => {
                                     <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10">
                                         <div className="space-y-2 flex-1 min-w-0">
                                             <div className="flex items-center gap-3">
-                                                <h3 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] tracking-tighter italic font-display uppercase leading-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors truncate">{booking.venueName}</h3>
+                                                <h3 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter uppercase leading-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors truncate">{booking.venueName}</h3>
                                                 <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
                                             </div>
-                                            <p className="text-xs sm:text-base font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] italic opacity-60 truncate">PROTOCOL: {booking.eventType}</p>
+                                            <p className="text-xs sm:text-base font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest truncate">{booking.eventType}</p>
                                         </div>
-                                        <Badge className={`italic font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-widest border shadow-sm shrink-0 ${booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
+                                        <Badge className={`font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-widest border shadow-sm shrink-0 ${booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30' :
 
-                                            booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
+                                            booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' : 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
                                             }`}>
                                             {booking.status}
                                         </Badge>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                                        <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Operational Hub</p>
-                                            <div className="flex items-center gap-2 text-sm font-black text-[var(--ease2event-text-secondary)] italic">
-                                                <MapPin size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                Main Level Hub
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                            <div className="space-y-1.5">
+                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Venue</p>
+                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                    <MapPin size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                    Main Level Hub
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Node Sync Date</p>
-                                            <div className="flex items-center gap-2 text-sm font-black text-[var(--ease2event-text-secondary)] italic">
-                                                <CalendarIcon size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                {booking.date}
+                                            <div className="space-y-1.5">
+                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Date</p>
+                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                    <CalendarIcon size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                    {booking.date}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Unit Capacity</p>
-                                            <div className="flex items-center gap-2 text-sm font-black text-[var(--ease2event-text-secondary)] italic">
-                                                <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                {booking.guests} Nodes
+                                            <div className="space-y-1.5">
+                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Guests</p>
+                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                    <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                    {booking.guests} People
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50">Capture Value</p>
-                                            <div className="flex items-center gap-2 text-sm font-black text-[var(--ease2event-text-primary)] italic">
-                                                <DollarSign size={14} className="text-emerald-500" />
-                                                {booking.amount}
+                                            <div className="space-y-1.5">
+                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Amount</p>
+                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                    <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400" />
+                                                    {booking.amount}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </div>         </div>
                                 </div>
 
                                 {/* Right Side: Actions & Client */}
                                 <div className="xl:w-1/3 bg-[var(--ease2event-bg-elevated)]/30 p-8 flex flex-col justify-between">
                                     <div className="flex justify-between items-start mb-6">
                                         <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest opacity-50 italic">Registry Authority</p>
-                                            <h4 className="font-black text-base text-[var(--ease2event-text-primary)] italic uppercase tracking-tight">{booking.clientName}</h4>
+                                            <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest opacity-70">Registry Authority</p>
+                                            <h4 className="font-black text-lg text-[var(--ease2event-text-primary)] uppercase tracking-tight">{booking.clientName}</h4>
                                         </div>
                                         <button className="p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
                                             <MoreVertical size={16} />
@@ -270,12 +268,12 @@ const Bookings: React.FC = () => {
                                     </div>
 
                                     <div className="flex gap-4">
-                                        <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-black uppercase tracking-widest italic hover:bg-[var(--ease2event-bg-elevated)]">
-                                            View Logs
+                                        <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-[var(--ease2event-bg-elevated)]">
+                                            View Details
                                         </Button>
                                         {booking.status === 'Pending' && (
-                                            <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-black uppercase tracking-widest italic hover:scale-105 transition-all">
-                                                Confirm Sync
+                                            <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                                                Approve
                                             </Button>
                                         )}
                                     </div>
@@ -291,9 +289,9 @@ const Bookings: React.FC = () => {
                         animate={{ opacity: 1 }}
                         className="text-center py-24 bg-[var(--ease2event-bg-elevated)]/30 rounded-3xl border border-[var(--ease2event-border-subtle)] border-dashed"
                     >
-                        <AlertCircle size={48} className="mx-auto text-[var(--ease2event-text-muted)] mb-6 opacity-40 animate-pulse" />
-                        <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Registry Node Empty</h3>
-                        <p className="text-sm text-[var(--ease2event-text-muted)] font-black uppercase tracking-widest mt-3 opacity-60">Modify filters for new unit synchronization</p>
+                        <AlertCircle size={48} className="mx-auto text-[var(--ease2event-text-secondary)] mb-6 opacity-40 animate-pulse" />
+                        <h3 className="text-2xl font-black text-[var(--ease2event-text-primary)] uppercase font-display tracking-tight">Registry Node Empty</h3>
+                        <p className="text-sm text-[var(--ease2event-text-secondary)] font-black uppercase tracking-widest mt-3 opacity-100">Modify filters for new unit synchronization</p>
                     </motion.div>
                 )}
             </div>

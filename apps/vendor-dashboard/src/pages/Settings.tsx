@@ -8,36 +8,16 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar, Badge, Button } from '@ease2event/ui';
-import api from '../lib/api';
+import { useTheme } from '../context/ThemeContext';
+import api, { uploadImage } from '../lib/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
-const useTheme = () => {
-    const [theme, setTheme] = React.useState(() => {
-        const saved = localStorage.getItem('ease2event-theme');
-        if (saved) return saved;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    });
 
-    React.useEffect(() => {
-        const root = document.documentElement;
-        if (theme === 'dark') {
-            root.classList.add('dark');
-            root.setAttribute('data-theme', 'dark');
-        } else {
-            root.classList.remove('dark');
-            root.setAttribute('data-theme', 'light');
-        }
-        localStorage.setItem('ease2event-theme', theme);
-    }, [theme]);
-
-    return { theme, toggleTheme: () => setTheme(prev => prev === 'light' ? 'dark' : 'light') };
-};
 
 /**
- * 🍱 Configuration Genesis: Account & Business Registry
- * Modernized with 'Premium SaaS' design tokens and Framer Motion.
- * Features specialized Access Registry Logs and Operational Telemetry.
+ * 🍱 Account & Business Settings
+ * Manage personal profile, business details, security, and preferences.
  */
 const Settings: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
@@ -143,10 +123,10 @@ const Settings: React.FC = () => {
         setSubmitting(true);
         try {
             await api.patch('/auth/profile', personalData);
-            toast.success('Identity sync complete!');
+            toast.success('Profile updated successfully!');
             refreshUser();
         } catch (err) {
-            toast.error('Identity collision detected. Sync failed.');
+            toast.error('Failed to update profile.');
         } finally {
             setSubmitting(false);
         }
@@ -154,7 +134,7 @@ const Settings: React.FC = () => {
 
     const handleSaveBusiness = async () => {
         if (!businessData.businessName || !businessData.businessPhone || !businessData.description) {
-            toast.error('Critical registry parameters missing.');
+            toast.error('Please fill in all required fields.');
             return;
         }
 
@@ -176,10 +156,10 @@ const Settings: React.FC = () => {
                 }
             };
             await api.put('/vendors/me', submissionData);
-            toast.success('Business logic deployment successful!');
+            toast.success('Business profile updated!');
             refreshUser();
         } catch (err) {
-            toast.error('Registry write operation failed.');
+            toast.error('Failed to update business profile.');
         } finally {
             setSubmitting(false);
         }
@@ -197,10 +177,10 @@ const Settings: React.FC = () => {
     };
 
     const tabs = [
-        { id: 'personal', label: 'Identity', icon: User, desc: 'Neural Core Identification' },
-        { id: 'business', label: 'Business Nodes', icon: Cpu, desc: 'Operational Logic Config' },
-        { id: 'security', label: 'Vault Access', icon: Lock, desc: 'Protocol Encryption' },
-        { id: 'preferences', label: 'Interface', icon: Activity, desc: 'Visual Spectrum Settings' },
+        { id: 'personal', label: 'Personal Information', icon: User, desc: 'Your personal profile details' },
+        { id: 'business', label: 'Business Details', icon: Briefcase, desc: 'Company and service info' },
+        { id: 'security', label: 'Security', icon: Lock, desc: 'Passwords and access logs' },
+        { id: 'preferences', label: 'Preferences', icon: Activity, desc: 'Display and notifications' },
     ];
 
     const containerVariants: Variants = {
@@ -218,26 +198,17 @@ const Settings: React.FC = () => {
             {/* Header: Matrix Genesis */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <div className="relative z-10 space-y-3">
-                    <h1 className="text-3xl font-normal tracking-normal leading-normal">Registry Overhaul</h1>
+                    <h1 className="text-3xl font-bold tracking-tight leading-normal">Settings</h1>
                     <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-semibold rounded-full border border-[var(--ease2event-brand-primary)]/20">
-                            <Database size={12} />
-                            Core Config v4.2
+                            Dashboard Settings
                         </span>
-                        <p className="text-base font-normal tracking-normal flex items-center gap-2">Autonomous Configuration Hub</p>
+                        <p className="text-base font-semibold tracking-normal flex items-center gap-2">Manage your account and storefront</p>
                     </div>
                 </div>
 
                 <div className="relative z-10 flex items-center gap-4 bg-[var(--ease2event-bg-elevated)] p-2 rounded-2xl border border-[var(--ease2event-border-base)] shadow-lg">
-                    <div className="flex -space-x-3 px-2">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="w-8 h-8 rounded-full border-2 border-[var(--ease2event-bg-base)] bg-[var(--ease2event-brand-primary)] flex items-center justify-center text-[8px] font-semibold text-white shadow-md">
-                                {i}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="h-8 w-[1px] bg-[var(--ease2event-border-subtle)] mx-2" />
-                    <span className="text-sm font-semibold text-[var(--ease2event-brand-primary)] tracking-normal pr-4">Active Registry Node</span>
+                    <span className="text-sm font-semibold text-[var(--ease2event-brand-primary)] tracking-normal px-4">Profile Completion</span>
                 </div>
             </div>
 
@@ -245,11 +216,9 @@ const Settings: React.FC = () => {
                 {/* 🧭 Navigation Matrix */}
                 <div className="lg:col-span-1 space-y-3">
                     {tabs.map((tab) => (
-                        <motion.button
+                        <button
                             key={tab.id}
-                            whileHover={{ scale: 1.02, x: 5 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => setActiveTab(tab.id as any)}
                             className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all duration-500 group relative overflow-hidden ${activeTab === tab.id
                                 ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 scale-105 z-10'
                                 : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-muted)] border border-[var(--ease2event-border-base)] hover:border-[var(--ease2event-brand-primary)]/50 hover:text-[var(--ease2event-text-primary)]'
@@ -265,7 +234,7 @@ const Settings: React.FC = () => {
                             {activeTab === tab.id && (
                                 <motion.div layoutId="tab-indicator" className="absolute right-5 w-2 h-2 rounded-full bg-white shadow-[0_0_15px_white]" />
                             )}
-                        </motion.button>
+                        </button>
                     ))}
 
                     <div className="mt-8 sm:mt-12 p-6 sm:p-8 card-minimal !bg-[var(--ease2event-brand-primary)]/5 border-y sm:border border-x-0 sm:border-x !border-[var(--ease2event-brand-primary)]/20 space-y-5 sm:space-y-6 relative group overflow-hidden shadow-xl rounded-none sm:rounded-[2.5rem] -mx-4 sm:mx-0">
@@ -274,8 +243,8 @@ const Settings: React.FC = () => {
                         </div>
                         <div className="flex justify-between items-end relative z-10">
                             <div>
-                                <p className="text-[9px] font-black uppercase text-[var(--ease2event-text-muted)]  tracking-[0.2em] mb-1">Registry Integrity</p>
-                                <p className="text-2xl sm:text-3xl font-black text-[var(--ease2event-brand-primary)]  font-display">{calculateStrength()}%</p>
+                                <p className="text-[9px] font-bold uppercase text-[var(--ease2event-text-muted)] tracking-widest mb-1">Profile Strength</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-[var(--ease2event-brand-primary)]">{calculateStrength()}%</p>
                             </div>
                             <div className="p-2 sm:p-3 border border-[var(--ease2event-brand-primary)]/20 rounded-xl bg-[var(--ease2event-bg-surface)] shadow-sm">
                                 <ShieldCheck className="size-5 sm:size-6 text-[var(--ease2event-brand-primary)]" />
@@ -290,8 +259,8 @@ const Settings: React.FC = () => {
                                 className="h-full bg-[var(--ease2event-brand-primary)] shadow-[0_0_20px_var(--ease2event-brand-primary)]"
                             />
                         </div>
-                        <p className="text-[9px] text-[var(--ease2event-text-muted)] font-black tracking-tighter relative z-10 leading-relaxed font-display opacity-70">
-                            System analysis indicates optimal identity synchronization. Proceed with node updates.
+                        <p className="text-[9px] text-[var(--ease2event-text-muted)] font-bold tracking-tight relative z-10 leading-relaxed opacity-70">
+                            Complete your profile to increase your visibility and trust score on the platform.
                         </p>
                     </div>
                 </div>
@@ -310,14 +279,11 @@ const Settings: React.FC = () => {
                             {/* 👤 Identity Interface */}
                             {activeTab === 'personal' && (
                                 <div className="space-y-12">
-                                    <div className="flex items-center gap-4 sm:gap-6 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-8">
-                                        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-brand-primary)] shadow-sm shrink-0">
-                                            <User className="size-6 sm:size-8" />
+                                    <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-8">
+                                        <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
+                                            <User size={24} />
                                         </div>
-                                        <div>
-                                            <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Identity Core</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">Authentication & Identification Nexus</p>
-                                        </div>
+                                        <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">Personal Information</h3>
                                     </div>
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner">
@@ -328,36 +294,39 @@ const Settings: React.FC = () => {
                                             </button>
                                         </div>
                                         <div className="space-y-4 sm:space-y-5 text-center md:text-left flex-1">
-                                            <h3 className="font-semibold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal ">Visual Identity Node</h3>
-                                            <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-muted)] font-normal leading-relaxed max-w-sm opacity-60">Provide a high-resolution visual registry for optimized vendor visibility across the network.</p>
-                                            <Button className="h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm font-semibold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto">Deploy Visual Asset</Button>
+                                            <h3 className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal ">Profile Picture</h3>
+                                            <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed max-w-sm">Upload a professional photo to improve your credibility and brand visibility.</p>
+                                            <Button className="h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm font-bold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto">Update Photo</Button>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                        <div className="space-y-4">
-                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em]  ml-1">Identity Tag (Full Name)</label></div>
-                                            <input
-                                                value={personalData.name}
-                                                onChange={(e: any) => setPersonalData({ ...personalData, name: e.target.value })}
-                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black  tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
-                                                placeholder="Neural ID Name"
-                                            />
+                                        <div className="space-y-3">
+                                            <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Participant Name</label>
+                                            <div className="relative group">
+                                                <User className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" size={20} />
+                                                <input
+                                                    type="text"
+                                                    value={personalData.name}
+                                                    onChange={(e) => setPersonalData({ ...personalData, name: e.target.value })}
+                                                    className="w-full h-14 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl pl-16 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--ease2event-text-primary)]"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="space-y-4">
-                                            <div><label className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em]  ml-1">Registry Contact (Neural Link)</label></div>
+                                            <div><label className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Phone Number</label></div>
                                             <input
                                                 value={personalData.phone}
                                                 onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
-                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-black  tracking-wide text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase"
-                                                placeholder="+91 Matrix Connection"
+                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all"
+                                                placeholder="+91"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
-                                        <Button onClick={handleSavePersonal} disabled={submitting} className="h-16 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-black tracking-[0.4em]  rounded-2xl shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
-                                            {submitting ? <Loader2 className="animate-spin" /> : <><Save size={20} className="mr-4" /> COMMIT IDENTIFICATION</>}
+                                        <Button onClick={handleSavePersonal} disabled={submitting} className="h-16 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-bold tracking-widest rounded-2xl shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
+                                            {submitting ? <Loader2 className="animate-spin" /> : <><Save size={20} className="mr-4" /> SAVE CHANGES</>}
                                         </Button>
                                     </div>
                                 </div>
@@ -369,37 +338,30 @@ const Settings: React.FC = () => {
                                     <div className="flex flex-col xl:flex-row justify-between items-start border-b border-[var(--ease2event-border-subtle)] pb-8 sm:pb-10 gap-6 sm:gap-4 xl:gap-0">
                                         <div className="flex items-center gap-4 sm:gap-6">
                                             <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-brand-primary)] shadow-sm shrink-0">
-                                                <Cpu className="size-6 sm:size-8" />
+                                                <Briefcase className="size-6 sm:size-8" />
                                             </div>
                                             <div>
-                                                <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Operational Logic</h2>
-                                                <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">System Registry & Behavioral Parameters</p>
+                                                <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Business Profile</h2>
+                                                <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Manage your business details and marketplace listing</p>
                                             </div>
                                         </div>
-                                        <Badge className="bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-brand-primary)]/20  font-black text-[9px] sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest shadow-sm">
-                                            NODE_ID: {user?.id?.slice(0, 12)}
-                                        </Badge>
                                     </div>
 
                                     <div className="space-y-24">
                                         {/* Section: Indexing */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
-                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                                SYNC_INDEX_PARAMETERS
-                                            </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Marketplace Domain</label>
-                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
-                                                        <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Core Domain...</option>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Business Category</label>
+                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all appearance-none cursor-pointer">
+                                                        <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Category...</option>
                                                         {categories.map((c: any) => <option key={c._id || c.id} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Specialized Logic Node</label>
-                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
-                                                        <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Specialty</label>
+                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all appearance-none cursor-pointer disabled:opacity-30">
+                                                        <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Subcategory...</option>
                                                         {subcategories.map((s: any) => <option key={s._id || s.id} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
                                                     </select>
                                                 </div>
@@ -408,17 +370,13 @@ const Settings: React.FC = () => {
 
                                         {/* Section: Branding */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
-                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                                INSTITUTIONAL_DYNAMICS
-                                            </h3>
                                             <div className="space-y-6 sm:space-y-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-sm font-semibold text-[var(--ease2event-text-muted)] tracking-normal ml-1">Public Entity Designation</label>
-                                                    <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-semibold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Entity Designation" />
+                                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Business Name</label>
+                                                    <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Business Name" />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-6">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em]  ml-1">Registry Visual Clusters (Portfolio)</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Portfolio Highlights</label>
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 sm:gap-6 bg-[var(--ease2event-bg-elevated)]/20 p-4 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                                         {businessData.portfolioImages.map((img, i) => (
                                                             <motion.div
@@ -430,41 +388,58 @@ const Settings: React.FC = () => {
                                                                 <button onClick={() => setBusinessData(p => ({ ...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i) }))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={24} /></button>
                                                             </motion.div>
                                                         ))}
-                                                        <button className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-2 sm:gap-3 group">
+                                                        <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-2 sm:gap-3 group cursor-pointer">
+                                                            <input 
+                                                                type="file" 
+                                                                className="hidden" 
+                                                                accept="image/*" 
+                                                                onChange={async (e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (!file) return;
+                                                                    
+                                                                    const loaderId = toast.loading('Synchronizing asset...');
+                                                                    try {
+                                                                        const data = await uploadImage(file);
+                                                                        const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
+                                                                        if (imageUrl) {
+                                                                            setBusinessData(prev => ({ ...prev, portfolioImages: [...prev.portfolioImages, imageUrl] }));
+                                                                            toast.success('Asset synchronized', { id: loaderId });
+                                                                        }
+                                                                    } catch (err) {
+                                                                        toast.error('Sync failure', { id: loaderId });
+                                                                    }
+                                                                }}
+                                                            />
                                                             <Plus className="size-6 sm:size-8 group-hover:rotate-90 transition-transform duration-500" />
-                                                            <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.1em] sm:tracking-[0.2em]">ADD_NODE</span>
-                                                        </button>
+                                                            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">ADD IMAGE</span>
+                                                        </label>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Operational Narrative (System Description)</label>
-                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[160px] sm:min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-6 sm:px-8 py-6 sm:py-8 rounded-2xl sm:rounded-[32px] border border-[var(--ease2event-border-subtle)]  font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Define your system philosophy and service level protocols..." />
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Business Description</label>
+                                                    <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[160px] sm:min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-6 sm:px-8 py-6 sm:py-8 rounded-2xl sm:rounded-[32px] border border-[var(--ease2event-border-subtle)] font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Describe your services and business philosophy..." />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Section: Telemetry */}
                                         <div className="space-y-12">
-                                            <h3 className="text-[12px] font-semibold text-[var(--ease2event-brand-primary)] tracking-normal flex items-center gap-6 ">
-                                                <span className="w-16 h-[1.5px] bg-[var(--ease2event-brand-primary)] opacity-40"></span>
-                                                OPERATIONAL_TELEMETRY
-                                            </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Regional Deployment Node (City)</label>
-                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase" placeholder="Deployment Hub City" />
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">City</label>
+                                                    <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="City" />
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.2em] ml-1">Avg. Node Terminal Value (₹)</label>
-                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase tracking-tighter" placeholder="75,000" />
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Average Booking Price (₹)</label>
+                                                    <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="75,000" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
-                                        <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-black tracking-[0.5em]  rounded-[24px] shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
-                                            {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={24} className="mr-4" /> DEPLOY REGISTRY MATRIX</>}
+                                        <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-bold tracking-widest rounded-[24px] shadow-2xl hover:shadow-[var(--ease2event-brand-primary)]/40 hover:scale-105 transition-all active:scale-[0.98]">
+                                            {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={24} className="mr-4" /> UPDATE PROFILE</>}
                                         </Button>
                                     </div>
                                 </div>
@@ -478,18 +453,18 @@ const Settings: React.FC = () => {
                                             <Lock className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Vault Access</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-normal mt-1.5 sm:mt-3 tracking-normal opacity-60">Security Protocols & Encryption Keys</p>
+                                            <h2 className="text-xl sm:text-2xl font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Security Settings</h2>
+                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Manage your password and security logs</p>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-[0.3em] ml-1">New Protocol Cipher (Password)</label>
-                                                <input type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]  font-black tracking-[1em] text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Change Password</label>
+                                                <input type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
-                                            <Button className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em]  hover:scale-105 transition-all">ROTATE ACCESS CIPHER</Button>
+                                            <Button className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">UPDATE PASSWORD</Button>
                                         </div>
 
                                         <div className="card-minimal !p-10 bg-gradient-to-br from-amber-500/[0.04] to-transparent border-amber-500/20 flex flex-col justify-between shadow-xl rounded-[2.5rem]">
@@ -498,15 +473,15 @@ const Settings: React.FC = () => {
                                                     <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/10">
                                                         <ShieldCheck size={24} />
                                                     </div>
-                                                    <h3 className="text-base font-black text-[var(--ease2event-text-primary)] uppercase  tracking-[0.2em]">Protocol Guard</h3>
+                                                    <h3 className="text-base font-bold text-[var(--ease2event-text-primary)] uppercase tracking-widest">Security Status</h3>
                                                 </div>
-                                                <p className="text-[11px] text-[var(--ease2event-text-muted)] font-black  uppercase leading-relaxed opacity-60">
-                                                    Operational vault is currently encrypted with 256-bit AES registry protocols. All access attempts are monitored live.
+                                                <p className="text-[11px] text-[var(--ease2event-text-secondary)] font-bold uppercase leading-relaxed">
+                                                    Your account is secured with industry-standard encryption. We monitor active sessions for suspicious activity.
                                                 </p>
                                             </div>
                                             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20  font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">NODE_SECURED</Badge>
-                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20  font-black text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm w-full sm:w-auto text-center">ENCRYPTED</Badge>
+                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest w-full sm:w-auto text-center">SECURED</Badge>
+                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest w-full sm:w-auto text-center">ENCRYPTED</Badge>
                                             </div>
                                         </div>
                                     </div>
@@ -515,12 +490,12 @@ const Settings: React.FC = () => {
                                     <div className="space-y-10">
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between px-2 gap-4 sm:gap-0">
                                             <div>
-                                                <h3 className="text-lg sm:text-xl font-black text-[var(--ease2event-text-primary)]  uppercase font-display tracking-tight">Access Registry Logs</h3>
-                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-[0.2em] sm:tracking-[0.3em]  opacity-60">Node Synchronization History</p>
+                                                <h3 className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">Recent Login Activity</h3>
+                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-secondary)] font-bold uppercase mt-1 sm:mt-2 tracking-widest">History of account access</p>
                                             </div>
-                                            <button className="text-[11px] sm:text-sm font-black text-[var(--ease2event-brand-primary)] uppercase tracking-widest  hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
+                                            <button className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-brand-primary)] uppercase tracking-widest hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
                                                 <Eye size={12} className="sm:size-[14px] group-hover:scale-125 transition-transform" />
-                                                ACCESS_FULL_REGISTRY
+                                                VIEW ALL ACTIVITY
                                             </button>
                                         </div>
 
@@ -528,10 +503,10 @@ const Settings: React.FC = () => {
                                             <table className="w-full text-left min-w-[600px] sm:min-w-0">
                                                 <thead>
                                                     <tr className="bg-[var(--ease2event-bg-elevated)]/40 border-b border-[var(--ease2event-border-subtle)]">
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Terminal Node</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Access Protocol</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em] ">Timestamp</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] sm:tracking-[0.3em]  text-center">Status</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Device / Terminal</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Auth Method</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Timestamp</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest text-center">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--ease2event-border-subtle)]">
@@ -541,12 +516,12 @@ const Settings: React.FC = () => {
                                                         { node: 'UNKNOWN_TERMINAL', type: 'FAILED_SYNC', time: 'OCT 10, 23:58', status: 'REJECTED' },
                                                     ].map((log, i) => (
                                                         <tr key={i} className="hover:bg-[var(--ease2event-brand-primary)]/[0.03] transition-all duration-500 cursor-pointer group">
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-black text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight  uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-widest opacity-80">{log.type}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase  tracking-widest opacity-80">{log.time}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-bold text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{log.type}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{log.time}</td>
                                                             <td className="px-6 sm:px-10 py-5 sm:py-7">
                                                                 <div className="flex justify-center">
-                                                                    <Badge className={` font-black text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest border shadow-sm transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-rose-500/10'
+                                                                    <Badge className={` font-bold text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest border transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
                                                                         }`}>
                                                                         {log.status}
                                                                     </Badge>
@@ -569,8 +544,8 @@ const Settings: React.FC = () => {
                                             <Activity className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-3xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter  font-display leading-none">Interface Matrix</h2>
-                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1.5 sm:mt-3 tracking-[0.2em] sm:tracking-[0.3em]  opacity-60">Visual Spectrum & Rendering Config</p>
+                                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight leading-none">Appearance Settings</h2>
+                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Customize your dashboard look and feel</p>
                                         </div>
                                     </div>
 
@@ -580,7 +555,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div className="relative z-10 space-y-8 sm:space-y-10">
                                             <div className="space-y-3">
-                                                <p className="text-[10px] sm:text-[11px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em] sm:tracking-[0.4em]  mb-6 sm:mb-8">Spectrum Protocol Configuration</p>
+                                                <p className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest mb-6 sm:mb-8">Theme Preferences</p>
                                                 <button
                                                     onClick={toggleTheme}
                                                     className="w-full flex items-center justify-between p-4 sm:p-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[20px] sm:rounded-[28px] hover:border-[var(--ease2event-brand-primary)]/50 transition-all duration-700 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] group/btn"
@@ -590,8 +565,8 @@ const Settings: React.FC = () => {
                                                             {theme === 'light' ? <Moon className="size-6 sm:size-7" /> : <Sun className="size-6 sm:size-7" />}
                                                         </div>
                                                         <div className="text-left">
-                                                            <p className="font-black text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest ">{theme === 'light' ? 'DARK_PRIME_CORE' : 'LIGHT_NEURAL_FIELD'}</p>
-                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-muted)] font-black uppercase mt-1 sm:mt-2 tracking-tighter opacity-70  leading-tight">Synchronize visual spectrum deployment</p>
+                                                            <p className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest ">{theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}</p>
+                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase mt-1 sm:mt-2 tracking-tighter opacity-70 leading-tight">Adjust the interface for your environment</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight className="size-5 sm:size-6 text-[var(--ease2event-text-muted)] group-hover/btn:translate-x-2 transition-transform duration-500" />
@@ -599,8 +574,8 @@ const Settings: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 bg-[var(--ease2event-bg-elevated)]/50 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]">
                                                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-muted)] font-black  uppercase tracking-widest opacity-60">
-                                                    System calibrated for high-fidelity interactive rendering protocols.
+                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-widest opacity-60">
+                                                    Environment calibrated for optimal display performance.
                                                 </p>
                                             </div>
                                         </div>

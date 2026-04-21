@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, MapPin, IndianRupee, Users, Image as ImageIcon, Save, CheckCircle } from 'lucide-react';
-import api from '../lib/api';
+import api, { uploadImage } from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ListingEditorModalProps {
@@ -85,7 +85,7 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
                     {/* Scrollable Form */}
                     <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                         <form id="listing-form" onSubmit={handleSubmit} className="space-y-8">
-                            
+
                             {/* Image Uploader */}
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Cover Image</label>
@@ -108,26 +108,29 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
                                         </div>
                                     )}
                                     {/* Mock file input trigger */}
-                                    <input 
-                                        type="file" 
-                                        accept="image/*" 
+                                    <input
+                                        type="file"
+                                        accept="image/*"
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         onChange={async (e) => {
                                             const file = e.target.files?.[0];
                                             if (!file) return;
-                                            
+
                                             setLoading(true);
                                             try {
-                                                const uploadData = new FormData();
-                                                uploadData.append('file', file);
-                                                
-                                                const res: any = await api.post('/uploads/image', uploadData, {
-                                                    headers: { 'Content-Type': 'multipart/form-data' }
-                                                });
-                                                setFormData(prev => ({ ...prev, image: res.url || res.data?.url }));
+                                                const data = await uploadImage(file);
+                                                // Handle structure variations: { url: '...' } or { data: { url: '...' } }
+                                                const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
+
+                                                if (imageUrl) {
+                                                    setFormData(prev => ({ ...prev, image: imageUrl }));
+                                                } else {
+                                                    throw new Error('Image URL not found in response');
+                                                }
                                             } catch (err: any) {
-                                                console.error('Upload failed', err);
-                                                alert('Failed to upload image: ' + (err.message || 'Unknown error'));
+                                                console.error('[Upload Debug] Full Error Object:', err);
+                                                const errorMessage = err.response?.data?.message || err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
+                                                alert('Sync Failure: ' + errorMessage);
                                             } finally {
                                                 setLoading(false);
                                             }
@@ -227,29 +230,28 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
 
                     {/* Footer Actions */}
                     <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 flex justify-end gap-3 shrink-0">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={onClose}
                             className="px-6 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
                         >
                             Cancel
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             form="listing-form"
                             disabled={loading || success}
-                            className={`px-8 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center min-w-[140px] shadow-lg ${
-                                success 
-                                    ? 'bg-emerald-500 shadow-emerald-500/30' 
-                                    : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 hover:-translate-y-0.5'
-                            } disabled:opacity-70 disabled:hover:translate-y-0`}
+                            className={`px-8 py-3 rounded-xl font-bold text-white transition-all flex items-center justify-center min-w-[140px] shadow-lg ${success
+                                ? 'bg-emerald-500 shadow-emerald-500/30'
+                                : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 hover:-translate-y-0.5'
+                                } disabled:opacity-70 disabled:hover:translate-y-0`}
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : success ? (
-                                <><CheckCircle size={20} className="mr-2"/> Saved!</>
+                                <><CheckCircle size={20} className="mr-2" /> Saved!</>
                             ) : (
-                                <><Save size={20} className="mr-2"/> Save Listing</>
+                                <><Save size={20} className="mr-2" /> Save Listing</>
                             )}
                         </button>
                     </div>

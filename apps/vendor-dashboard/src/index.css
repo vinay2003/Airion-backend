@@ -38,6 +38,31 @@
   --ease2event-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
+/* ✅ Explicit LIGHT mode — ensures correct colors regardless of token cascade order */
+.light, [data-theme='light'] {
+  color-scheme: light;
+
+  --ease2event-bg-base:        #f8fafc;
+  --ease2event-bg-surface:     #ffffff;
+  --ease2event-bg-elevated:    #f1f5f9;
+  --ease2event-bg-sidebar:     #ffffff;
+
+  --ease2event-text-primary:   #0f172a !important; /* Force dark text on light bg */
+  --ease2event-text-secondary: #475569 !important;
+  --ease2event-text-muted:     #94a3b8 !important;
+  --ease2event-text-inverted:  #ffffff;
+
+  --ease2event-border-subtle:  rgba(0, 0, 0, 0.06);
+  --ease2event-border-base:    rgba(0, 0, 0, 0.12);
+
+  --ease2event-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.04);
+  --ease2event-shadow-md:  0 4px 12px rgba(0, 0, 0, 0.08);
+  --ease2event-shadow-lg:  0 10px 24px rgba(0, 0, 0, 0.12);
+
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
 .dark, [data-theme='dark'] {
   color-scheme: dark !important;
   

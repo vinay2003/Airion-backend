@@ -28,7 +28,7 @@ export const POPULAR_LOCATIONS = [
     { value: "goa", label: "Goa, India" },
     { value: "bangalore", label: "Bangalore, Karnataka" },
     { value: "jaipur", label: "Jaipur, Rajasthan" },
-    { value: "udaipur", label: "Udaipur, Rajasthan" },
+    { value: "udaipur", label: "Rajasthan" },
     { value: "chennai", label: "Chennai, Tamil Nadu" },
     { value: "hyderabad", label: "Hyderabad, Telangana" },
     { value: "kolkata", label: "Kolkata, West Bengal" },

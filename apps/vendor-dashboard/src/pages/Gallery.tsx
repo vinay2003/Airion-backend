@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload, X, Camera, Plus, Trash2, Eye, Sparkles, Loader2, Image as ImageIcon, Zap, Target, Activity, ShieldCheck, Maximize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
-import api from '../lib/api';
+import api, { uploadImage } from '../lib/api';
 import toast from 'react-hot-toast';
 import { Button } from '@ease2event/ui';
 
@@ -14,8 +14,8 @@ interface GalleryItem {
 }
 
 /**
- * 🎨 Visual Asset Management: Portfolio Node
- * Modernized with theme-aware styling, ultra-bold typography, and premium gallery interface.
+ * 🎨 Professional Image Management: Portfolio
+ * Modernized with theme-aware styling, clean typography, and professional gallery interface.
  */
 const Gallery: React.FC = () => {
     const { user, refreshUser } = useAuth();
@@ -33,26 +33,25 @@ const Gallery: React.FC = () => {
 
         try {
             for (const file of files) {
-                const uploadData = new FormData();
-                uploadData.append('file', file);
+                // Use centralized upload protocol
+                const data = await uploadImage(file);
+                const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
 
-                // Upload to our Cloudinary-backed endpoint
-                const uploadRes: any = await api.post('/uploads/image', uploadData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
-
-                // Add to gallery with the secure CDN URL
-                await api.post('/vendors/gallery', {
-                    imageUrl: uploadRes.url || uploadRes.data?.url,
-                    title: file.name
-                });
+                if (imageUrl) {
+                    // Register asset with the gallery registry
+                    await api.post('/vendors/gallery', {
+                        imageUrl,
+                        title: file.name
+                    });
+                }
             }
 
-            toast.success(`${files.length} node(s) deployed to registry`);
+            toast.success(`Matrix synchronized: ${files.length} units added`);
             refreshUser();
         } catch (err: any) {
-            toast.error('Deployment failure');
-            console.error(err);
+            console.error('[Gallery Sync failure]:', err);
+            const errorMessage = err.response?.data?.message || err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
+            toast.error('Sync failure: ' + errorMessage);
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -77,10 +76,9 @@ const Gallery: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 border-b border-[var(--ease2event-border-subtle)] padding-bottom-12">
                 <div className="space-y-6">
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Visual Repository</h1>
-                    <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">
-                        <Zap size={24} className="text-blue-500 animate-pulse" />
-                        Neural Asset Management • Multi-Node Portfolio Sync v3.5
+                    <h1 className="text-3xl font-bold tracking-tight">Gallery</h1>
+                    <p className="text-base font-semibold text-[var(--ease2event-text-secondary)] flex items-center gap-2">
+                        Manage your portfolio images and visual content.
                     </p>
                 </div>
 
@@ -96,10 +94,10 @@ const Gallery: React.FC = () => {
                     <Button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="btn-primary flex-1 xl:flex-initial !h-16 px-14 rounded-3xl text-xs font-black tracking-[0.3em] uppercase shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all italic"
+                        className="btn-primary flex-1 xl:flex-initial !h-16 px-14 rounded-3xl text-sm font-bold tracking-normal shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all"
                     >
                         {uploading ? <Loader2 className="animate-spin mr-3" size={24} /> : <Plus size={24} className="mr-3" />}
-                        <span>{uploading ? 'SYNCING...' : 'INITIALIZE UPLOAD'}</span>
+                        <span>{uploading ? 'UPLOADING...' : 'UPLOAD IMAGES'}</span>
                     </Button>
                 </div>
             </div>
@@ -112,14 +110,14 @@ const Gallery: React.FC = () => {
                         <ImageIcon size={64} className="relative z-10" />
                     </div>
                     <div className="max-w-xl space-y-6">
-                        <h3 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase tracking-tighter italic leading-none">Repository Null</h3>
-                        <p className="text-lg text-[var(--ease2event-text-muted)] font-bold uppercase tracking-tight leading-loose opacity-70">Synchronize visual telemetry to enhance marketplace visibility index and establish regional presence.</p>
+                        <h3 className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none">No Images Uploaded</h3>
+                        <p className="text-lg text-[var(--ease2event-text-secondary)] font-semibold tracking-tight leading-loose opacity-100">Upload your work to showcase your services and attract more clients.</p>
                     </div>
                     <Button
                         onClick={() => fileInputRef.current?.click()}
-                        className="btn-secondary !h-16 px-14 text-xs font-black uppercase tracking-[0.4em] border-2 border-[var(--ease2event-border-base)] rounded-3xl hover:bg-blue-600 hover:text-white transition-all shadow-xl italic"
+                        className="btn-secondary !h-13 px-12 text-sm font-bold tracking-normal border-2 border-[var(--ease2event-border-base)] rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-xl"
                     >
-                        Force Node Sync
+                        Upload Photos
                     </Button>
                 </div>
             ) : (
@@ -143,11 +141,11 @@ const Gallery: React.FC = () => {
                                 <div className="space-y-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-700">
                                     <div className="flex items-center gap-3">
                                         <ShieldCheck size={18} className="text-blue-500" />
-                                        <span className="text-[10px] text-blue-500 font-black uppercase tracking-[0.3em]">SECURE ASSET</span>
+                                        <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">VERIFIED ASSET</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-[var(--ease2event-text-primary)] text-sm font-black uppercase tracking-[0.2em] truncate pr-6 italic">
-                                            {item.title || 'ARCHIVE_NODE'}
+                                        <span className="text-[var(--ease2event-text-primary)] text-sm font-bold uppercase tracking-widest truncate pr-6">
+                                            {item.title || 'GALLERY_ITEM'}
                                         </span>
                                         <div className="flex gap-4">
                                             <button
@@ -188,7 +186,7 @@ const Gallery: React.FC = () => {
                         >
                             <button
                                 onClick={() => setSelectedImage(null)}
-                                className="absolute -top-6 right-0 text-[var(--ease2event-text-muted)] hover:text-white transition-all flex items-center gap-6 font-black text-xs uppercase tracking-[0.4em] p-6 hover:scale-105"
+                                className="absolute -top-6 right-0 text-[var(--ease2event-text-secondary)] hover:text-white transition-all flex items-center gap-6 font-black text-xs uppercase tracking-[0.4em] p-6 hover:scale-105"
                             >
                                 CLOSE NODE SEQUENCE <X size={44} className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-2xl shadow-rose-600/30" />
                             </button>
@@ -206,10 +204,10 @@ const Gallery: React.FC = () => {
                                     animate={{ y: 0, opacity: 1 }}
                                     className="mt-12 flex items-center gap-6 bg-[var(--ease2event-bg-surface)] px-14 py-6 rounded-[2.5rem] border-2 border-[var(--ease2event-border-base)] shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
                                 >
-                                    <div className="w-4 h-4 bg-blue-500 rounded-full animate-ping" />
-                                    <p className="text-[var(--ease2event-text-primary)] font-black text-xl uppercase tracking-[0.2em] italic">{selectedImage.title}</p>
+                                    <div className="w-4 h-4 bg-blue-500 rounded-full" />
+                                    <p className="text-[var(--ease2event-text-primary)] font-bold text-xl tracking-tight">{selectedImage.title}</p>
                                     <div className="h-6 w-0.5 bg-[var(--ease2event-border-subtle)] mx-2" />
-                                    <span className="text-xs font-black text-[var(--ease2event-text-muted)] uppercase tracking-widest">{new Date(selectedImage.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{new Date(selectedImage.createdAt).toLocaleDateString()}</span>
                                 </motion.div>
                             )}
                         </motion.div>

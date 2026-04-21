@@ -2,28 +2,8 @@ import React from 'react';
 import { Bell, Search, ChevronDown, Menu, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
+import { useTheme } from '../context/ThemeContext';
 
-const useTheme = () => {
-    const [theme, setTheme] = React.useState(() => {
-        const saved = localStorage.getItem('ease2event-theme');
-        if (saved) return saved;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    });
-
-    React.useEffect(() => {
-        const root = document.documentElement;
-        if (theme === 'dark') {
-            root.classList.add('dark');
-            root.setAttribute('data-theme', 'dark');
-        } else {
-            root.classList.remove('dark');
-            root.setAttribute('data-theme', 'light');
-        }
-        localStorage.setItem('ease2event-theme', theme);
-    }, [theme]);
-
-    return { theme, toggleTheme: () => setTheme(prev => prev === 'light' ? 'dark' : 'light') };
-};
 
 interface TopbarProps {
     title: string;
@@ -68,7 +48,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
                     <Search className="text-[var(--ease2event-text-muted)]" size={18} />
                     <input
                         type="text"
-                        placeholder="Search Intelligence Matrix..."
+                        placeholder="Search for anything..."
                         className="w-full outline-none bg-transparent text-sm font-bold text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)] tracking-wide"
                     />
                 </div>

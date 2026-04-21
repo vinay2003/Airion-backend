@@ -7,14 +7,7 @@ import type { DateRange } from 'react-day-picker';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from './ui/command';
+
 import {
     Popover,
     PopoverContent,
@@ -72,6 +65,7 @@ const TypewriterEffect = ({ words }: { words: string[] }) => {
 const SearchBar = () => {
     const navigate = useNavigate();
     const [location, setLocation] = useState("");
+    const [locationSearch, setLocationSearch] = useState(""); // ✅ search filter state
     const [openLocation, setOpenLocation] = useState(false);
 
     const [date, setDate] = useState<DateRange | undefined>(undefined);
@@ -94,7 +88,10 @@ const SearchBar = () => {
         <div className="relative z-[100] bg-white dark:bg-slate-900 p-1.5 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500">
             {/* Location Selector */}
             <div className="flex-1 relative group/input w-full border-b md:border-b-0 border-gray-100 dark:border-slate-800">
-                <Popover open={openLocation} onOpenChange={setOpenLocation}>
+                <Popover open={openLocation} onOpenChange={(open) => {
+                    setOpenLocation(open);
+                    if (!open) setLocationSearch(""); // reset search when closed
+                }}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
@@ -110,52 +107,56 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[400px] overflow-hidden" align="start" sideOffset={12}>
-                        <Command className="border-none bg-white dark:bg-slate-900">
-                            <CommandInput placeholder="Where are you heading?" className="h-14 font-medium" />
-                            <CommandList className="max-h-[300px] py-2">
-                                <CommandEmpty className="py-6 text-sm text-gray-400">No matching destinations found.</CommandEmpty>
-                                <CommandGroup heading={<span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Popular Destinations</span>}>
-                                    {POPULAR_LOCATIONS.map((loc) => (
-                                        <CommandItem
-                                            key={loc.value}
-                                            value={loc.label}
-                                            onSelect={() => {
-                                                setLocation(loc.value === location ? "" : loc.value);
-                                                setOpenLocation(false);
-                                            }}
-                                            className="cursor-pointer mx-2 rounded-xl my-1 p-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all"
-                                        >
-                                            <div 
-                                                className="flex items-center gap-4 w-full"
-                                                onClick={() => {
-                                                    setLocation(loc.value === location ? "" : loc.value);
-                                                    setOpenLocation(false);
-                                                }}
-                                            >
-                                                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
-                                                    <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
-                                                </div>
-                                                <div className="flex flex-col overflow-hidden">
-                                                    <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate">
-                                                        {loc.label.split(',')[0]}
-                                                    </span>
-                                                    <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
-                                                        {loc.label.split(',')[1]?.trim() || "Local Destination"}
-                                                    </span>
-                                                </div>
-                                                <Check
-                                                    className={cn(
-                                                        "ml-auto h-5 w-5 text-red-500",
-                                                        location === loc.value ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                            </div>
-                                        </CommandItem>
+                    <PopoverContent className="p-0 w-[380px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
+                        <div className="bg-white dark:bg-slate-900">
+                            {/* Search input */}
+                            <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-slate-800">
+                                <Search className="w-4 h-4 text-gray-400 shrink-0" />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    value={locationSearch}
+                                    placeholder="Where are you heading?"
+                                    className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400"
+                                    onChange={(e) => setLocationSearch(e.target.value)}
+                                />
+                            </div>
+                            {/* Location list */}
+                            <div className="py-2 max-h-[300px] overflow-y-auto">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-4 py-2">
+                                    {locationSearch ? 'Search Results' : 'Popular Destinations'}
+                                </p>
+                                {POPULAR_LOCATIONS
+                                    .filter(loc => loc.label.toLowerCase().includes(locationSearch.toLowerCase()))
+                                    .map((loc) => (
+                                    <button
+                                        key={loc.value}
+                                        type="button"
+                                        onClick={() => {
+                                            setLocation(loc.value === location ? "" : loc.value);
+                                            setOpenLocation(false);
+                                        }}
+                                        className="w-full flex items-center gap-4 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all text-left"
+                                    >
+                                        <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm shrink-0">
+                                            <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+                                        </div>
+                                        <div className="flex flex-col overflow-hidden flex-1">
+                                            <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate text-sm">
+                                                {loc.label.split(',')[0]}
+                                            </span>
+                                            <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                                                {loc.label.split(',')[1]?.trim() || "Local Destination"}
+                                            </span>
+                                        </div>
+                                        <Check className={cn("h-5 w-5 text-red-500 shrink-0", location === loc.value ? "opacity-100" : "opacity-0")} />
+                                    </button>
                                     ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
+                                {POPULAR_LOCATIONS.filter(loc => loc.label.toLowerCase().includes(locationSearch.toLowerCase())).length === 0 && (
+                                    <p className="text-sm text-gray-400 text-center py-6 font-medium">No destinations found</p>
+                                )}
+                            </div>
+                        </div>
                     </PopoverContent>
                 </Popover>
             </div>

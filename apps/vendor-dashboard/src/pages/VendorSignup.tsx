@@ -231,7 +231,7 @@ const VendorSignupWizard: React.FC = () => {
             <div className="min-h-screen bg-[#0F1117] flex items-center justify-center">
                 <div className="text-center space-y-6">
                     <Loader2 className="w-12 h-12 text-red-500 animate-spin mx-auto" />
-                    <p className="text-slate-400 font-medium animate-pulse tracking-wide uppercase text-xs">Verifying Access credentials...</p>
+                    <p className="text-slate-400 font-semibold animate-pulse tracking-wide uppercase text-xs">Checking account profile...</p>
                 </div>
             </div>
         );
@@ -249,12 +249,12 @@ const VendorSignupWizard: React.FC = () => {
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold uppercase tracking-widest mb-4">
                         <Sparkles size={14} /> Vendor Onboarding
                     </motion.div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-                        {currentStep === 1 && "Business Identity"}
-                        {currentStep === 2 && "Growth Intelligence"}
-                        {currentStep === 3 && "Visual Showcase"}
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                        {currentStep === 1 && "Business Details"}
+                        {currentStep === 2 && "Market Insights"}
+                        {currentStep === 3 && "Portfolio Showcase"}
                     </h1>
-                    <p className="text-slate-400 text-lg">Help us build your professional storefront on Ease2event.</p>
+                    <p className="text-slate-400 text-lg font-medium">Complete your profile to start receiving bookings on Ease2event.</p>
                 </div>
 
                 {renderProgress()}
@@ -307,7 +307,7 @@ const VendorSignupWizard: React.FC = () => {
                                         <option value="0-1" className="bg-slate-950">New Business (Less than 1 Year)</option>
                                         <option value="1-3" className="bg-slate-950">1 - 3 Years</option>
                                         <option value="3-5" className="bg-slate-950">3 - 5 Years</option>
-                                        <option value="5+" className="bg-slate-950">5+ Years (Veteran)</option>
+                                        <option value="5+" className="bg-slate-950">5+ Years</option>
                                     </select>
                                 </div>
                                 <div className="space-y-2">
@@ -320,8 +320,8 @@ const VendorSignupWizard: React.FC = () => {
                         {currentStep === 2 && (
                             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
                                 <section className="space-y-4">
-                                    <h3 className="text-xl font-bold flex items-center gap-2"><Globe className="text-blue-400" size={20} /> Channel Presence</h3>
-                                    <p className="text-slate-400 text-sm">Where do you currently find most of your clients?</p>
+                                    <h3 className="text-xl font-bold flex items-center gap-2"><Globe className="text-blue-400" size={20} /> Customer Sources</h3>
+                                    <p className="text-slate-400 text-sm font-medium">Where do you currently get most of your bookings?</p>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                         {["Instagram", "JustDial", "Google Registry", "WhatsApp", "WedMeGood", "WedPlan"].map(item => (
                                             <button 
@@ -333,7 +333,7 @@ const VendorSignupWizard: React.FC = () => {
                                                     : 'border-slate-800 bg-slate-900/40 text-slate-500 hover:border-slate-700'
                                                 }`}
                                             >
-                                                <span className="font-bold">{item}</span>
+                                                <span className="font-bold">{item === 'Google Registry' ? 'Google Search' : item}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -341,7 +341,7 @@ const VendorSignupWizard: React.FC = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><TrendingUp size={16} /> Monthly Project Volume</label>
+                                        <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><TrendingUp size={16} /> Monthly Bookings</label>
                                         <div className="grid grid-cols-2 gap-2">
                                             {["1-2", "3-5", "5-10", "10+"].map(vol => (
                                                 <button key={vol} type="button" onClick={() => setFormData(p => ({...p, monthlyEventVolume: vol}))} className={`py-3 rounded-xl border font-bold transition-all ${formData.monthlyEventVolume === vol ? 'bg-white text-black border-white' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}>
@@ -351,7 +351,7 @@ const VendorSignupWizard: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><Wallet size={16} /> Average Ticket Size (₹)</label>
+                                        <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><Wallet size={16} /> Average Booking Value (₹)</label>
                                         <input type="number" name="averageBookingPrice" value={formData.averageBookingPrice} onChange={handleTextChange} placeholder="e.g. 150000" className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-4 px-4 outline-none focus:border-red-500/50 transition-all font-bold text-2xl text-emerald-500" />
                                     </div>
                                 </div>
@@ -361,15 +361,15 @@ const VendorSignupWizard: React.FC = () => {
                         {currentStep === 3 && (
                             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
                                 <div className="space-y-4">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Business Biography</label>
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">About Your Business</label>
                                     <textarea required name="businessDescription" value={formData.businessDescription} onChange={handleTextChange} rows={5} placeholder="Describe your signature style, specialty items/services, and why clients love working with you..." className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl p-6 outline-none focus:border-red-500/50 transition-all font-medium leading-relaxed" />
                                 </div>
 
                                 <div className="space-y-6">
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <h3 className="text-xl font-bold flex items-center gap-2"><Camera className="text-emerald-400" size={24} /> Work Gallery</h3>
-                                            <p className="text-slate-400 text-sm">Upload up to 8 high-resolution showcase photos.</p>
+                                            <h3 className="text-xl font-bold flex items-center gap-2"><Camera className="text-emerald-400" size={24} /> Portfolio Gallery</h3>
+                                            <p className="text-slate-400 text-sm font-medium">Upload up to 8 high-resolution photos of your best work.</p>
                                         </div>
                                         <button type="button" onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-xl font-bold text-sm hover:bg-emerald-500 hover:text-black transition-all">
                                             Upload Files
@@ -389,7 +389,7 @@ const VendorSignupWizard: React.FC = () => {
                                             {formData.portfolioImages.length < 8 && (
                                                 <button type="button" onClick={() => fileInputRef.current?.click()} className="aspect-square rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center text-slate-600 hover:border-emerald-500/40 hover:text-emerald-400 transition-all bg-slate-900/20 group">
                                                     <Plus size={24} className="group-hover:scale-125 transition-transform" />
-                                                    <span className="text-[10px] font-black uppercase mt-2 tracking-tighter">Add Photo</span>
+                                                    <span className="text-[10px] font-bold uppercase mt-2">Add Photo</span>
                                                 </button>
                                             )}
                                         </AnimatePresence>
@@ -412,11 +412,11 @@ const VendorSignupWizard: React.FC = () => {
 
                     <div className="flex gap-4 pt-8">
                         {currentStep > 1 && (
-                            <button type="button" onClick={prevStep} className="flex-1 py-5 rounded-2xl border border-slate-800 font-black text-slate-400 hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
-                                <ArrowLeft size={20} /> Previous
+                            <button type="button" onClick={prevStep} className="flex-1 py-5 rounded-2xl border border-slate-800 font-bold text-slate-400 hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                                <ArrowLeft size={20} /> Back
                             </button>
                         )}
-                        <button type="submit" disabled={submitting} className={`flex-[2] py-5 rounded-3xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] ${
+                        <button type="submit" disabled={submitting} className={`flex-[2] py-5 rounded-3xl font-bold text-lg transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] ${
                             currentStep === 3 
                             ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/10' 
                             : 'bg-red-600 hover:bg-red-500 text-white shadow-red-500/10'
@@ -425,7 +425,7 @@ const VendorSignupWizard: React.FC = () => {
                                 <Loader2 className="animate-spin" />
                             ) : (
                                 <>
-                                    {currentStep === 3 ? "Complete Profile" : "Continue"}
+                                    {currentStep === 3 ? "Complete Registration" : "Next Step"}
                                     {currentStep < 3 && <ArrowRight size={22} />}
                                     {currentStep === 3 && <ShieldCheck size={22} />}
                                 </>

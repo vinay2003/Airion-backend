@@ -20,8 +20,8 @@ interface EventPlanningData {
 }
 
 /**
- * 📅 Neural Event Architect
- * Modernized with theme-aware tokens, premium typography, and high-contrast Day/Night mode support.
+ * 📅 Event Planner
+ * Professional event configuration wizard with clean SaaS styling.
  */
 const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -36,13 +36,13 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
     });
 
     const steps = [
-        'Venue Selection',
-        'Culinary Logic',
-        'Modular Services',
-        'Guest Protocol',
-        'Temporal Node',
-        'Financial Matrix',
-        'Special Directives',
+        'Event Category',
+        'Catering Details',
+        'Optional Services',
+        'Guest Count',
+        'Event Date',
+        'Budget Setup',
+        'Special Requests',
     ];
 
     const eventTypes = [
@@ -124,11 +124,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-brand-primary)] uppercase italic tracking-tighter">
-                                Select Operational Node
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Select Event Category
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Choose the event type that best matches your strategic requirements
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                Choose the event type that best matches your requirements
                             </p>
                         </div>
                         <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
@@ -149,7 +149,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                             : 'text-[var(--ease2event-text-muted)] group-hover:text-blue-400'
                                             }`}
                                     />
-                                    <p className={`font-black text-xs uppercase tracking-[0.2em] relative z-10 ${formData.eventType === type.id
+                                    <p className={`font-bold text-xs uppercase tracking-widest relative z-10 ${formData.eventType === type.id
                                         ? 'text-blue-500'
                                         : 'text-[var(--ease2event-text-secondary)] group-hover:text-[var(--ease2event-text-primary)]'
                                         }`}>
@@ -165,11 +165,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Culinary Logistics
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Catering Options
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Choose one or more catering protocols for your mission
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                Choose one or more catering styles for your event
                             </p>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -183,7 +183,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                         }`}
                                 >
                                     <div className="flex items-center justify-between relative z-10">
-                                        <span className={`font-black text-lg uppercase tracking-tight ${formData.catering.includes(option)
+                                        <span className={`font-bold text-lg uppercase tracking-tight ${formData.catering.includes(option)
                                             ? 'text-blue-500'
                                             : 'text-[var(--ease2event-text-primary)]'
                                             }`}>
@@ -205,11 +205,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Node Volume Index
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Guest Capacity
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Quantify the expected neural connections for this event
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                How many guests are you expecting for this event?
                             </p>
                         </div>
                         <div className="max-w-2xl mx-auto space-y-12">
@@ -219,8 +219,8 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     type="number"
                                     value={formData.guestCount || ''}
                                     onChange={(e) => setFormData({ ...formData, guestCount: parseInt(e.target.value) || 0 })}
-                                    placeholder="Enter capacity index"
-                                    className="w-full pl-24 pr-10 py-10 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2.5rem] text-center text-4xl font-black italic tracking-tighter outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] transition-all shadow-inner"
+                                    placeholder="Enter number of guests"
+                                    className="w-full pl-24 pr-10 py-10 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2.5rem] text-center text-4xl font-bold tracking-tight outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] transition-all shadow-inner"
                                 />
                             </div>
                             <div className="grid grid-cols-3 gap-6">
@@ -228,7 +228,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     <button
                                         key={count}
                                         onClick={() => setFormData({ ...formData, guestCount: count })}
-                                        className="p-8 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] hover:border-blue-500/30 rounded-[1.5rem] font-black text-xl text-[var(--ease2event-text-primary)] transition-all uppercase italic tracking-tighter shadow-sm"
+                                        className="p-8 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] hover:border-blue-500/30 rounded-[1.5rem] font-bold text-xl text-[var(--ease2event-text-primary)] transition-all tracking-tight shadow-sm"
                                     >
                                         {count}
                                     </button>
@@ -242,11 +242,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Temporal Node Locking
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Pick a Date
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Synchronize the event timestamp with the global registry
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                Select your preferred date for the event
                             </p>
                         </div>
                         <div className="max-w-2xl mx-auto">
@@ -254,7 +254,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                 type="date"
                                 value={formData.eventDate}
                                 onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-                                className="w-full p-10 text-center text-2xl font-black bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] transition-all shadow-xl uppercase italic tracking-widest"
+                                className="w-full p-10 text-center text-2xl font-bold bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] transition-all shadow-xl tracking-widest"
                             />
                         </div>
                     </div>
@@ -264,11 +264,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Financial Matrix Allocation
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Budget Estimation
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Select your estimated capital flux range
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                Select your estimated budget range
                             </p>
                         </div>
                         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -281,7 +281,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                         : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] hover:border-blue-500/30'
                                         }`}
                                 >
-                                    <span className={`font-black text-2xl italic tracking-tighter uppercase ${formData.budget === range
+                                    <span className={`font-bold text-2xl tracking-tight uppercase ${formData.budget === range
                                         ? 'text-blue-500 scale-105 inline-block transition-transform'
                                         : 'text-[var(--ease2event-text-primary)]'
                                         }`}>
@@ -297,20 +297,20 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Critical Directives
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Special Requests
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Any specific parameters or neural requirements for this operation?
+                            <p className="text-lg font-normal text-[var(--ease2event-text-secondary)]">
+                                Any specific instructions or requirements for your event?
                             </p>
                         </div>
                         <div className="max-w-4xl mx-auto">
                             <textarea
                                 value={formData.specialRequests}
                                 onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
-                                placeholder="Input mission-critical details, dietary logic, accessibility protocols, or custom neural pathways..."
+                                placeholder="Add details about themes, dietary needs, accessibility, or other preferences..."
                                 rows={10}
-                                className="w-full p-12 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[3.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)] font-bold text-lg leading-relaxed transition-all resize-none shadow-inner"
+                                className="w-full p-12 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[3.5rem] outline-none focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-secondary)] font-normal text-lg leading-relaxed transition-all resize-none shadow-inner"
                             />
                         </div>
                     </div>
@@ -320,11 +320,11 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                 return (
                     <div className="space-y-10 animate-in fade-in duration-500">
                         <div className="text-center mb-12 space-y-4">
-                            <h2 className="text-4xl font-black text-[var(--ease2event-text-primary)] uppercase italic tracking-tighter">
-                                Modular Augmentations
+                            <h2 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">
+                                Additional Services
                             </h2>
-                            <p className="text-lg font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest">
-                                Enhance your operational mission with professional sub-nodes
+                            <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">
+                                Enhance your event with professional add-on services
                             </p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -338,7 +338,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                         }`}
                                 >
                                     <div className="flex items-center justify-between relative z-10">
-                                        <span className={`font-black text-sm uppercase tracking-widest ${formData.additionalServices.includes(service)
+                                        <span className={`font-bold text-sm uppercase tracking-widest ${formData.additionalServices.includes(service)
                                             ? 'text-blue-500'
                                             : 'text-[var(--ease2event-text-secondary)] group-hover:text-[var(--ease2event-text-primary)]'
                                             }`}>
@@ -366,12 +366,12 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                     <div className="lg:col-span-1">
                         <div className="card-minimal !p-10 rounded-[3rem] shadow-2xl border-[var(--ease2event-border-base)] sticky top-32 space-y-12">
                             <div className="space-y-4">
-                                <h3 className="text-2xl font-black text-blue-500 uppercase italic tracking-tighter flex items-center gap-3">
+                                <h3 className="text-2xl font-bold text-blue-500 tracking-tight flex items-center gap-3">
                                     <Target size={28} />
-                                    Mission Logic
+                                    Planning Summary
                                 </h3>
-                                <p className="text-sm font-bold text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] leading-relaxed">
-                                    Configure the neural nodes for your upcoming operation sequence.
+                                <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)] leading-relaxed">
+                                    Step through the wizard to configure your event details.
                                 </p>
                             </div>
 
@@ -381,7 +381,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                         key={step}
                                         onClick={() => setCurrentStep(index)}
                                         className={`w-full text-left px-8 py-5 rounded-2xl transition-all relative group flex items-center justify-between ${currentStep === index
-                                            ? 'bg-blue-600 text-white font-black shadow-xl shadow-blue-500/20 translate-x-3 scale-105 italic'
+                                            ? 'bg-blue-600 text-white font-bold shadow-xl shadow-blue-500/20 translate-x-3 scale-105'
                                             : 'text-[var(--ease2event-text-secondary)] hover:bg-[var(--ease2event-bg-elevated)] hover:text-[var(--ease2event-text-primary)] font-bold uppercase tracking-widest text-[10px]'
                                             }`}
                                     >
@@ -392,7 +392,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                             </div>
 
                             <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] flex items-center justify-center">
-                                <div className="text-[15px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.3em]">Operational Status: ALPHA</div>
+                                <div className="text-[15px] font-bold text-[var(--ease2event-text-secondary)] tracking-widest">Planning Mode</div>
                             </div>
                         </div>
                     </div>
@@ -419,17 +419,17 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
                                     {currentStep > 0 && (
                                         <button
                                             onClick={handleBack}
-                                            className="px-12 py-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-primary)] rounded-3xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-black/5"
+                                            className="px-12 py-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-primary)] rounded-3xl font-bold uppercase tracking-widest text-xs transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-black/5"
                                         >
                                             <ChevronLeft size={24} />
-                                            Revert Node
+                                            Back
                                         </button>
                                     )}
                                     <button
                                         onClick={handleNext}
-                                        className="px-14 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 shadow-2xl shadow-blue-500/30 active:scale-95 hover:scale-105 italic"
+                                        className="px-14 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-bold uppercase tracking-widest text-xs transition-all flex items-center gap-3 shadow-2xl shadow-blue-500/30 active:scale-95 hover:scale-105"
                                     >
-                                        {currentStep === steps.length - 1 ? 'Commit Sequence' : 'Advance Stream'}
+                                        {currentStep === steps.length - 1 ? 'Complete Sequence' : 'Next Step'}
                                         <ChevronRight size={24} />
                                     </button>
                                 </div>

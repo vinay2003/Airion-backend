@@ -53,7 +53,7 @@ const AboutUs: React.FC = () => {
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed mb-6 font-medium">
                             Founded by a team of passionate event architects, Ease2event was engineered with a mission to make event orchestration a seamless, premium experience. We eliminate the friction of organizing complex celebrations.
                         </p>
-                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed font-medium italic">
+                        <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed font-medium">
                             What started as a disruptive idea has evolved into a global marketplace connecting the world with verified venues and elite vendors.
                         </p>
                     </div>

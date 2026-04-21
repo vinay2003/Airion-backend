@@ -60,8 +60,8 @@ const Listings: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--ease2event-border-subtle)] pb-12">
                 <div className="space-y-4">
-                    <h1 className="text-3xl font-normal normal-case not-italic tracking-normal leading-normal">Event Management</h1>
-                    <p className="text-base font-normal normal-case not-italic tracking-normal flex items-center gap-2">
+                    <h1 className="text-3xl font-bold normal-case tracking-normal leading-normal">Event Management</h1>
+                    <p className="text-base font-semibold normal-case tracking-normal flex items-center gap-2">
                         Configure and monitor your active event listings.
                     </p>
                 </div>
@@ -87,7 +87,7 @@ const Listings: React.FC = () => {
                             <stat.icon size={32} />
                         </div>
                         <div className="space-y-2">
-                            <p className="text-xs font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest leading-none">{stat.label}</p>
+                            <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">{stat.label}</p>
                             <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{stat.value}</p>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ const Listings: React.FC = () => {
                     <input
                         type="text"
                         placeholder="Search listings by title or location..."
-                        className="w-full h-16 pl-16 pr-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-[1.5rem] text-base font-bold outline-none focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 transition-all text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)]"
+                        className="w-full h-16 pl-16 pr-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-[1.5rem] text-base font-bold outline-none focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 transition-all text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-secondary)]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -165,7 +165,7 @@ const Listings: React.FC = () => {
 
                                 <div className="mt-auto pt-10 border-t border-[var(--ease2event-border-subtle)] flex items-center justify-between">
                                     <div className="space-y-2">
-                                        <p className="text-xs font-bold text-[var(--ease2event-text-muted)] uppercase tracking-widest leading-none">Base Price</p>
+                                        <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Base Price</p>
                                         <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{listing.price}</p>
                                     </div>
                                     <Button variant="secondary" size="md" className="px-8 h-14 rounded-2xl font-bold text-xs uppercase bg-[var(--ease2event-bg-elevated)] border-[var(--ease2event-border-subtle)]" rightIcon={<ChevronRight size={20} />}>

@@ -11,6 +11,7 @@ export interface Event {
     price: string;
     capacity: string;
     description: string;
+    amenities?: string[];
 }
 
 export interface Category {

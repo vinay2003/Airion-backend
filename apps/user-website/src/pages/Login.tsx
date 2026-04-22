@@ -45,9 +45,9 @@ const Login: React.FC = () => {
             toast.success('Welcome back!');
             setTimeout(() => {
                 if (role === 'vendor') {
-                    window.location.href = 'http://localhost:5174/vendor';
+                    window.location.href = '/vendor';
                 } else if (role === 'admin') {
-                    window.location.href = 'http://localhost:5175/admin';
+                    window.location.href = '/admin';
                 } else {
                     navigate(from);
                 }
@@ -112,9 +112,9 @@ const Login: React.FC = () => {
 
                 setTimeout(() => {
                     if (role === 'vendor') {
-                        window.location.href = 'http://localhost:5174/vendor';
+                        window.location.href = '/vendor';
                     } else if (role === 'admin') {
-                        window.location.href = 'http://localhost:5175/admin';
+                        window.location.href = '/admin';
                     } else {
                         navigate(from);
                     }

@@ -56,14 +56,17 @@ const UnifiedAuth: React.FC = () => {
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
         if (isAuthenticated && user && !authLoading) {
-            const VENDOR_URL = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
-            const ADMIN_URL = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+            const ADMIN_URL = isLocal ? (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5175') : '';
             const token = tokenService.getAccessToken();
 
             if (user.role === UserRole.VENDOR) {
-                window.location.href = `${VENDOR_URL}/vendor/?token=${token}`;
+                const target = `${VENDOR_URL}/vendor/`.replace('//vendor', '/vendor');
+                window.location.href = `${target}?token=${token}`;
             } else if (user.role === UserRole.ADMIN) {
-                window.location.href = `${ADMIN_URL}/admin/?token=${token}`;
+                const target = `${ADMIN_URL}/admin/`.replace('//admin', '/admin');
+                window.location.href = `${target}?token=${token}`;
             } else {
                 // For 'user' role, if we are already on signup/details step, don't interrupt
                 if (step === 'details') return;
@@ -157,8 +160,10 @@ const UnifiedAuth: React.FC = () => {
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
                         toast.success('Establishing Vendor Node. Redirecting to Registry Form.');
-                        const VENDOR_URL = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
-                        setTimeout(() => window.location.href = `${VENDOR_URL}/vendor/signup-form?token=${response.access_token}`, 800);
+                        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                        const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+                        const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
+                        setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
                         return;
                     }
                 }
@@ -170,13 +175,16 @@ const UnifiedAuth: React.FC = () => {
                 toast.success('Synchronization complete. Welcome back.');
 
                 setTimeout(() => {
-                    const VENDOR_URL = (import.meta.env.VITE_VENDOR_URL as string) || 'http://localhost:5174';
-                    const ADMIN_URL = (import.meta.env.VITE_ADMIN_URL as string) || 'http://localhost:5175';
+                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+                    const ADMIN_URL = isLocal ? (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5175') : '';
 
                     if (role === 'vendor') {
-                        window.location.href = `${VENDOR_URL}/vendor/?token=${response.access_token}`;
+                        const target = `${VENDOR_URL}/vendor/`.replace('//vendor', '/vendor');
+                        window.location.href = `${target}?token=${response.access_token}`;
                     } else if (role === 'admin') {
-                        window.location.href = `${ADMIN_URL}/admin/?token=${response.access_token}`;
+                        const target = `${ADMIN_URL}/admin/`.replace('//admin', '/admin');
+                        window.location.href = `${target}?token=${response.access_token}`;
                     } else {
                         navigate('/dashboard');
                     }

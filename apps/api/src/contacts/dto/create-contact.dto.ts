@@ -21,4 +21,8 @@ export class CreateContactDto {
     @IsString()
     @MinLength(10)
     message: string;
+
+    @IsOptional()
+    @IsString()
+    source?: string;
 }

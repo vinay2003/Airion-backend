@@ -20,6 +20,9 @@ export class Contact {
     @Column('text')
     message: string;
 
+    @Column({ default: 'ease2event' })
+    source: string;
+
     @Column({ default: 'unread' })
     status: 'unread' | 'read' | 'replied';
 

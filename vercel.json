@@ -1,19 +1,9 @@
 {
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist",
-    "installCommand": "npm install",
-    "cleanUrls": true,
-    "trailingSlash": true,
-    "rewrites": [
-        { 
-            "source": "/api/:path*", 
-            "destination": "https://airion-backend.onrender.com/api/:path*" 
-        },
-        { "source": "/vendor/assets/:path*", "destination": "/vendor/assets/:path*" },
-        { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
-        { "source": "/admin/assets/:path*", "destination": "/admin/assets/:path*" },
-        { "source": "/admin/:path*", "destination": "/admin/index.html" },
-        { "source": "/assets/:path*", "destination": "/assets/:path*" },
-        { "source": "/:path*", "destination": "/index.html" }
-    ]
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://airion-backend-1.onrender.com/api/:path*" },
+    { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
+    { "source": "/admin/:path*", "destination": "/admin/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

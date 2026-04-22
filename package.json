@@ -24,17 +24,16 @@
   "dependencies": {
     "turbo": "latest",
     "vite": "^7.2.4",
+    "@vitejs/plugin-react": "^5.1.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
     "typescript": "~5.9.3",
     "concurrently": "^8.2.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
-    "eslint": "^9.39.1",
-    "vite": "^7.2.4",
-    "@vitejs/plugin-react": "^5.1.1",
-    "@tailwindcss/vite": "^4.1.17",
-    "autoprefixer": "^10.4.22",
-    "postcss": "^8.5.6"
+    "eslint": "^9.39.1"
   }
 }

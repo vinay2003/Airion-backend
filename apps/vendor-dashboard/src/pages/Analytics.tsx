@@ -187,14 +187,15 @@ const Analytics: React.FC = () => {
                                         <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--ease2event-border-subtle)" strokeOpacity={0.1} />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 600 }} dy={20} />
+                                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="#cbd5e1" strokeOpacity={0.2} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 10, fontWeight: 600 }} dy={20} />
                                 <YAxis hide />
                                 <Tooltip
-                                    cursor={{ stroke: 'var(--ease2event-brand-primary)', strokeWidth: 2, strokeDasharray: '4 4' }}
-                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
+                                    cursor={{ stroke: '#6C63FF', strokeWidth: 2, strokeDasharray: '4 4' }}
+                                    contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}
+                                    itemStyle={{ color: '#fff' }}
                                 />
-                                <Area type="monotone" dataKey="views" stroke="var(--ease2event-brand-primary)" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
+                                <Area type="monotone" dataKey="views" stroke="#6C63FF" strokeWidth={4} fill="url(#visGradient)" animationDuration={2000} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -217,11 +218,12 @@ const Analytics: React.FC = () => {
                     <div className="h-[380px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={performanceData}>
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-muted)', fontSize: 10, fontWeight: 600 }} dy={20} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 10, fontWeight: 600 }} dy={20} />
                                 <YAxis hide />
                                 <Tooltip
-                                    cursor={{ fill: 'var(--ease2event-bg-elevated)', opacity: 0.3 }}
-                                    contentStyle={{ background: 'var(--ease2event-bg-surface)', border: '1px solid var(--ease2event-border-base)', borderRadius: '24px' }}
+                                    cursor={{ fill: '#334155', opacity: 0.3 }}
+                                    contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
+                                    itemStyle={{ color: '#10b981' }}
                                 />
                                 <Bar dataKey="capture" fill="#10b981" radius={[8, 8, 0, 0]} barSize={24} animationDuration={2500} />
                             </BarChart>

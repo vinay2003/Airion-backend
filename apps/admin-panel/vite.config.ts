@@ -15,11 +15,11 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5175,
+    port: Number(process.env.VITE_ADMIN_PORT) || 5175,
     strictPort: true,
     host: true,
     hmr: {
-      port: 5175,
+      port: Number(process.env.VITE_ADMIN_PORT) || 5175,
     },
     fs: {
       allow: ['..'],

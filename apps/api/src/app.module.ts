@@ -27,6 +27,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { AIModule } from './ai/ai.module';
 import { AdminModule } from './admin/admin.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
     imports: [
@@ -90,6 +91,7 @@ import { AvailabilityModule } from './availability/availability.module';
         AIModule,
         AdminModule,
         AvailabilityModule,
+        ContactsModule,
     ],
     controllers: [AppController],
 })

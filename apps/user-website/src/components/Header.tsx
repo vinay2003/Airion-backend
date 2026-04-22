@@ -58,12 +58,12 @@ const UserProfileMenu = ({
                     </div>
                     <div className="p-2">
                         <Link
-                            to="/dashboard"
+                            to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
                             onClick={() => setIsUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
                         >
                             <LayoutDashboard size={18} />
-                            User Dashboard
+                            {user?.role === 'vendor' ? 'Vendor Dashboard' : (user?.role === 'admin' ? 'Admin Panel' : 'User Dashboard')}
                         </Link>
                         <Link
                             to="/dashboard/settings"
@@ -253,7 +253,17 @@ const Header: React.FC = () => {
                 )}
                 {isAuthenticated && (
                     <Link
-                        to="/dashboard"
+                        to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
+                        onClick={() => setHasNewNotifications(false)}
+                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative group"
+                        title={user?.role === 'vendor' ? 'Go to Vendor Dashboard' : (user?.role === 'admin' ? 'Go to Admin Panel' : 'Go to User Dashboard')}
+                    >
+                        <LayoutDashboard size={20} className="group-hover:scale-110 transition-transform" />
+                    </Link>
+                )}
+                {isAuthenticated && (
+                    <Link
+                        to={user?.role === 'vendor' ? '/vendor/enquiries' : '/dashboard'}
                         onClick={() => setHasNewNotifications(false)}
                         className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
                     >
@@ -438,12 +448,12 @@ const Header: React.FC = () => {
                                             </div>
                                         </div>
                                         <Link
-                                            to="/dashboard"
+                                            to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
                                             onClick={toggleMenu}
                                             className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
                                         >
                                             <LayoutDashboard size={18} />
-                                            Access Dashboard
+                                            {user?.role === 'vendor' ? 'Vendor Portal' : (user?.role === 'admin' ? 'Admin Node' : 'User Dashboard')}
                                         </Link>
                                         <button
                                             onClick={async () => {

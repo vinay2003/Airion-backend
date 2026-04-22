@@ -163,7 +163,7 @@ const Home: React.FC = () => {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
                             {[
-                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
+                                { title: 'Weddings', image: 'https://images.unsplash.com/photo-1587271407850-8d438ca9fdf2?w=2000&auto=format&fit=crop&q=80', link: '/marketplace?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
                                 { title: 'Birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=birthdays', class: 'col-span-1 h-64' },
                                 { title: 'Corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=corporate', class: 'col-span-1 h-64' },
                                 { title: 'Parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
@@ -172,7 +172,7 @@ const Home: React.FC = () => {
                                 { title: 'Decor', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=decor', class: 'col-span-1 h-64' },
                                 { title: 'Music & DJs', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=music', class: 'col-span-1 h-64' },
                                 { title: 'Venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Makeup', image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=makeup', class: 'col-span-1 h-64' },
+                                { title: 'Makeup', image: 'https://plus.unsplash.com/premium_photo-1677526496597-aa0f49053ce2?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwcHJvZHVjdHN8ZW58MHx8MHx8fDA%3D', link: '/marketplace?category=makeup', class: 'col-span-1 h-64' },
                                 { title: 'Planning', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=planning', class: 'col-span-1 h-64' },
                             ].map((cat, idx) => (
                                 <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>

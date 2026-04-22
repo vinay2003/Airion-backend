@@ -46,16 +46,24 @@ const CalendarPage: React.FC = () => {
     const bookingsOnDays = useMemo(() => {
         const map: { [key: number]: any[] } = {};
 
-        if (bookings) {
+        if (bookings && Array.isArray(bookings)) {
             bookings.forEach(b => {
-                const date = new Date(b.eventDate);
+                // Parse date string carefully. Support both YYYY-MM-DD and ISO formats.
+                let date: Date;
+                if (b.eventDate.includes('T')) {
+                    date = new Date(b.eventDate);
+                } else {
+                    const [y, m, d] = b.eventDate.split('-').map(Number);
+                    date = new Date(y, m - 1, d);
+                }
+
                 if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
                     const day = date.getDate();
                     if (!map[day]) map[day] = [];
                     map[day].push({
                         id: b.id,
                         title: b.listingName || 'Service Booking',
-                        time: new Date(b.eventDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                        time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                         client: b.userName || 'Customer',
                         status: b.status.charAt(0).toUpperCase() + b.status.slice(1),
                         type: 'booking'
@@ -64,14 +72,17 @@ const CalendarPage: React.FC = () => {
             });
         }
 
-        if (availabilityBlocks) {
+        if (availabilityBlocks && Array.isArray(availabilityBlocks)) {
             availabilityBlocks.forEach((ab: any) => {
-                const date = new Date(ab.date);
+                // Parse date string carefully to avoid timezone shifts (YYYY-MM-DD -> Local)
+                const [year, month, day] = ab.date.split('-').map(Number);
+                const date = new Date(year, month - 1, day);
+
                 if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
-                    const day = date.getDate() + 1;
-                    if (!map[day]) map[day] = [];
+                    const dayNum = date.getDate();
+                    if (!map[dayNum]) map[dayNum] = [];
                     if (ab.status === 'blocked') {
-                        map[day].push({
+                        map[dayNum].push({
                             id: ab.id,
                             title: ab.reason || 'Personal Block',
                             time: 'Full Day',
@@ -150,10 +161,28 @@ const CalendarPage: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex items-center gap-5">
-                    <Button variant="secondary" className="h-14 px-8 rounded-2xl font-bold text-xs uppercase tracking-widest" leftIcon={<Filter size={20} />}>
+                    <Button
+                        variant="secondary"
+                        className="h-14 px-8 rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+                        leftIcon={<Filter size={20} />}
+                        onClick={() => alert('Filter system coming soon! You will be able to filter by event type, status, and client.')}
+                    >
                         Filter Events
                     </Button>
-                    <Button className="h-14 px-10 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20" leftIcon={<PlusCircle size={20} />}>
+                    <Button
+                        className="h-14 px-10 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all"
+                        leftIcon={<PlusCircle size={20} />}
+                        onClick={() => {
+                            if (selectedDate) {
+                                const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+                                if (confirm(`Would you like to block ${dateStr} for personal use?`)) {
+                                    blockMutation.mutate(dateStr);
+                                }
+                            } else {
+                                alert('Please select a date on the calendar first to add an event.');
+                            }
+                        }}
+                    >
                         Add Event
                     </Button>
                 </div>
@@ -262,7 +291,23 @@ const CalendarPage: React.FC = () => {
                             </div>
                         )}
 
-                        <Button className="w-full !h-16 text-xs font-bold uppercase tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20">
+                        <Button
+                            className="w-full !h-16 text-xs font-bold uppercase tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all"
+                            onClick={() => {
+                                if (!vendorId) {
+                                    alert('Vendor profile not found. Please complete onboarding.');
+                                    return;
+                                }
+                                if (selectedDate) {
+                                    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+                                    if (confirm(`Add a new availability block for ${dateStr}?`)) {
+                                        blockMutation.mutate(dateStr);
+                                    }
+                                } else {
+                                    alert('Please select a date first.');
+                                }
+                            }}
+                        >
                             Add New Entry
                         </Button>
                     </div>

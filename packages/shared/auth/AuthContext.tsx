@@ -63,8 +63,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         healthCheckPromise
       ]);
 
-      // 🔥 RACE CONDITION FIX: Do not overwrite if a user is already set (by loginWithResponse)
-      setUser(prev => prev || userData);
+      // 🔥 SYNC PROTOCOL: Always update user state with fresh data from server to ensure gallery/ads are current
+      setUser(userData);
       setBackendAvailable(health);
     } catch (error) {
       console.error('[SharedAuth] Auth check failed:', error);

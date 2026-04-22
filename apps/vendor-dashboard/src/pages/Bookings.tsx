@@ -14,7 +14,8 @@ import {
     Target,
     Activity,
     Zap,
-    Filter
+    Filter,
+    Plus
 } from 'lucide-react';
 import { Tabs, Input, Button, Badge } from '@ease2event/ui';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
@@ -93,6 +94,8 @@ const Bookings: React.FC = () => {
         { label: 'Target Capture', value: '₹12.4L', icon: Target, trend: '+18%' },
     ];
 
+    const [viewMode, setViewMode] = useState<'daily' | 'weekly'>('daily');
+
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -122,7 +125,7 @@ const Bookings: React.FC = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="space-y-10 pb-24 px-4 sm:px-6 max-w-7xl mx-auto"
+            className="space-y-10 pb-24 px-0 w-full"
         >
             {/* Header: Operational Matrix */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
@@ -138,8 +141,24 @@ const Bookings: React.FC = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner">
-                    <button className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] rounded-xl shadow-md border border-[var(--ease2event-border-base)] transition-all">Daily</button>
-                    <button className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">Weekly</button>
+                    <button
+                        onClick={() => setViewMode('daily')}
+                        className={`px-6 py-2.5 text-sm font-bold uppercase tracking-widest rounded-xl transition-all ${viewMode === 'daily'
+                            ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-md border border-[var(--ease2event-border-base)]'
+                            : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
+                            }`}
+                    >
+                        Daily
+                    </button>
+                    <button
+                        onClick={() => setViewMode('weekly')}
+                        className={`px-6 py-2.5 text-sm font-bold uppercase tracking-widest rounded-xl transition-all ${viewMode === 'weekly'
+                            ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] shadow-md border border-[var(--ease2event-border-base)]'
+                            : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
+                            }`}
+                    >
+                        Weekly
+                    </button>
                 </motion.div>
             </div>
 
@@ -196,91 +215,145 @@ const Bookings: React.FC = () => {
             {/* Registry Flow (The "Table" replacement) */}
             <div className="grid grid-cols-1 gap-6">
                 <AnimatePresence mode="popLayout">
-                    {filteredBookings.map((booking, idx) => (
+                    {viewMode === 'weekly' ? (
                         <motion.div
-                            key={booking.id}
-                            layout
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            className="card-minimal !p-0 overflow-hidden hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-500 group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] shadow-lg"
+                            key="weekly-timeline"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="bg-[var(--ease2event-bg-elevated)]/30 rounded-[2.5rem] border border-[var(--ease2event-border-subtle)] p-10 shadow-inner"
                         >
-                            <div className="flex flex-col xl:flex-row xl:items-stretch">
-                                {/* Left Side: Branding */}
-                                <div className="xl:w-2/3 p-8 flex flex-col justify-between border-b xl:border-b-0 xl:border-r border-[var(--ease2event-border-subtle)]">
-                                    <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10">
-                                        <div className="space-y-2 flex-1 min-w-0">
-                                            <div className="flex items-center gap-3">
-                                                <h3 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter uppercase leading-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors truncate">{booking.venueName}</h3>
-                                                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
-                                            </div>
-                                            <p className="text-xs sm:text-base font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest truncate">{booking.eventType}</p>
-                                        </div>
-                                        <Badge className={`font-black text-[9px] px-4 py-2 rounded-2xl uppercase tracking-widest border shadow-sm shrink-0 ${booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30' :
-
-                                            booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' : 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
-                                            }`}>
-                                            {booking.status}
-                                        </Badge>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                                            <div className="space-y-1.5">
-                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Venue</p>
-                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
-                                                    <MapPin size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                    Main Level Hub
-                                                </div>
-                                            </div>
-                                            <div className="space-y-1.5">
-                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Date</p>
-                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
-                                                    <CalendarIcon size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                    {booking.date}
-                                                </div>
-                                            </div>
-                                            <div className="space-y-1.5">
-                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Guests</p>
-                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
-                                                    <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
-                                                    {booking.guests} People
-                                                </div>
-                                            </div>
-                                            <div className="space-y-1.5">
-                                                <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Amount</p>
-                                                <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
-                                                    <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400" />
-                                                    {booking.amount}
-                                                </div>
-                                            </div>
-                                        </div>         </div>
-                                </div>
-
-                                {/* Right Side: Actions & Client */}
-                                <div className="xl:w-1/3 bg-[var(--ease2event-bg-elevated)]/30 p-8 flex flex-col justify-between">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest opacity-70">Registry Authority</p>
-                                            <h4 className="font-black text-lg text-[var(--ease2event-text-primary)] uppercase tracking-tight">{booking.clientName}</h4>
-                                        </div>
-                                        <button className="p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
-                                            <MoreVertical size={16} />
-                                        </button>
-                                    </div>
-
-                                    <div className="flex gap-4">
-                                        <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-[var(--ease2event-bg-elevated)]">
-                                            View Details
-                                        </Button>
-                                        {booking.status === 'Pending' && (
-                                            <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
-                                                Approve
-                                            </Button>
-                                        )}
-                                    </div>
+                            <div className="flex items-center justify-between mb-10">
+                                <h2 className="text-2xl font-bold uppercase tracking-tighter text-[var(--ease2event-text-primary)]">Weekly Timeline</h2>
+                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest">
+                                    <Clock size={14} /> Real-time Sync
                                 </div>
                             </div>
+                            <div className="overflow-x-auto pb-10 scrollbar-hide">
+                                <div className="grid grid-cols-7 gap-6 min-w-[1000px] lg:min-w-0">
+                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                                        <div key={day} className="flex flex-col gap-6">
+                                            <div className="text-center py-4 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-sm">
+                                                <p className="text-[11px] font-black text-[var(--ease2event-brand-primary)] uppercase tracking-[0.2em]">{day}</p>
+                                            </div>
+                                            <div className="flex-1 min-h-[250px] bg-[var(--ease2event-bg-elevated)]/40 rounded-3xl border border-dashed border-[var(--ease2event-border-subtle)]/40 flex flex-col items-center justify-start p-3 gap-4">
+                                                {day === 'Wed' || day === 'Sat' ? (
+                                                    <div className="w-full p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-[var(--ease2event-border-subtle)] hover:scale-[1.05] transition-all cursor-pointer animate-in zoom-in duration-500">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <Clock size={12} className="text-[var(--ease2event-brand-primary)]" />
+                                                            <p className="text-[9px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest">10:00 AM</p>
+                                                        </div>
+                                                        <p className="text-xs font-bold text-[var(--ease2event-text-primary)] leading-tight">Wedding Reception</p>
+                                                        <p className="text-[8px] font-bold text-[var(--ease2event-text-muted)] uppercase mt-2">Grand Ballroom</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="mt-20 w-10 h-10 rounded-full border-2 border-dashed border-[var(--ease2event-text-muted)]/10 flex items-center justify-center">
+                                                        <Plus size={14} className="text-[var(--ease2event-text-muted)]/20" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="mt-10 p-6 bg-[var(--ease2event-brand-primary)]/5 rounded-2xl border border-[var(--ease2event-brand-primary)]/20">
+                                <p className="text-sm font-bold text-[var(--ease2event-brand-primary)] flex items-center gap-2">
+                                    <AlertCircle size={18} /> PRO TIP: Your weekly capacity is at 85% for this cluster.
+                                </p>
+                            </div>
                         </motion.div>
-                    ))}
+                    ) : (
+                        filteredBookings.map((booking, idx) => (
+                            <motion.div
+                                key={booking.id}
+                                layout
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                                className="card-minimal !p-0 overflow-hidden hover:border-[var(--ease2event-brand-primary)]/40 transition-all duration-500 group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] shadow-lg"
+                            >
+                                <div className="flex flex-col xl:flex-row xl:items-stretch">
+                                    {/* Left Side: Branding */}
+                                    <div className="xl:w-2/3 p-8 flex flex-col justify-between border-b xl:border-b-0 xl:border-r border-[var(--ease2event-border-subtle)]">
+                                        <div className="flex flex-col justify-between h-full">
+                                            <div className="space-y-6">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-3 flex-wrap">
+                                                        <h3 className="text-sm sm:text-base font-bold text-[var(--ease2event-text-primary)] tracking-tight uppercase leading-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{booking.venueName}</h3>
+                                                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
+                                                    </div>
+                                                    <p className="text-[10px] sm:text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.15em] leading-relaxed">{booking.eventType}</p>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                                    <div className="space-y-1.5">
+                                                        <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Venue</p>
+                                                        <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                            <MapPin size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                            Main Level Hub
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Date</p>
+                                                        <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                            <CalendarIcon size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                            {booking.date}
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Guests</p>
+                                                        <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                            <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                                            {booking.guests} People
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Amount</p>
+                                                        <div className="flex items-center gap-2 text-sm font-bold text-[var(--ease2event-text-primary)]">
+                                                            <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400" />
+                                                            {booking.amount}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-10 flex justify-start">
+                                                <Badge className={`font-black text-[10px] px-5 py-2.5 rounded-2xl uppercase tracking-widest border shadow-sm shrink-0 ${booking.status === 'Confirmed' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30' :
+                                                    booking.status === 'Pending' ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' : 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
+                                                    }`}>
+                                                    {booking.status}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Right Side: Actions & Client */}
+                                    <div className="xl:w-1/3 bg-[var(--ease2event-bg-elevated)]/30 p-8 flex flex-col justify-between">
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-widest opacity-70">Registry Authority</p>
+                                                <h4 className="font-black text-lg text-[var(--ease2event-text-primary)] uppercase tracking-tight">{booking.clientName}</h4>
+                                            </div>
+                                            <button className="p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
+                                                <MoreVertical size={16} />
+                                            </button>
+                                        </div>
+
+                                        <div className="flex gap-4">
+                                            <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-[var(--ease2event-bg-elevated)]">
+                                                View Details
+                                            </Button>
+                                            {booking.status === 'Pending' && (
+                                                <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                                                    Approve
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )))}
                 </AnimatePresence>
 
                 {filteredBookings.length === 0 && (

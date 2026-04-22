@@ -281,6 +281,7 @@ const Header: React.FC = () => {
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
 
+                <span className="hidden">
                 <button
                     onClick={toggleMenu}
                     className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all active:scale-95"
@@ -288,6 +289,7 @@ const Header: React.FC = () => {
                 >
                     {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
+                </span>
 
                 {isAuthenticated ? (
                     <UserProfileMenu

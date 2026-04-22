@@ -15,23 +15,23 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  confirmed:  'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-confirmed)]',
-  pending:    'bg-[var(--ease2event-status-pending-bg)]    text-[var(--ease2event-status-pending)]',
-  cancelled:  'bg-[var(--ease2event-status-cancelled-bg)]  text-[var(--ease2event-status-cancelled)]',
-  new:        'bg-[var(--ease2event-status-new-bg)]        text-[var(--ease2event-status-new)]',
+  confirmed: 'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-confirmed)]',
+  pending: 'bg-[var(--ease2event-status-pending-bg)]    text-[var(--ease2event-status-pending)]',
+  cancelled: 'bg-[var(--ease2event-status-cancelled-bg)]  text-[var(--ease2event-status-cancelled)]',
+  new: 'bg-[var(--ease2event-status-new-bg)]        text-[var(--ease2event-status-new)]',
   inprogress: 'bg-[var(--ease2event-status-inprogress-bg)] text-[var(--ease2event-status-inprogress)]',
-  verified:   'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-verified)]',
-  default:    'bg-[var(--ease2event-bg-elevated)]           text-[var(--ease2event-text-secondary)]',
+  verified: 'bg-[var(--ease2event-status-confirmed-bg)]  text-[var(--ease2event-status-verified)]',
+  default: 'bg-[var(--ease2event-bg-elevated)]           text-[var(--ease2event-text-secondary)]',
 };
 
 const dotColors: Record<BadgeVariant, string> = {
-  confirmed:  'bg-[var(--ease2event-status-confirmed)]',
-  pending:    'bg-[var(--ease2event-status-pending)]',
-  cancelled:  'bg-[var(--ease2event-status-cancelled)]',
-  new:        'bg-[var(--ease2event-status-new)]',
+  confirmed: 'bg-[var(--ease2event-status-confirmed)]',
+  pending: 'bg-[var(--ease2event-status-pending)]',
+  cancelled: 'bg-[var(--ease2event-status-cancelled)]',
+  new: 'bg-[var(--ease2event-status-new)]',
   inprogress: 'bg-[var(--ease2event-status-inprogress)]',
-  verified:   'bg-[var(--ease2event-status-verified)]',
-  default:    'bg-[var(--ease2event-text-muted)]',
+  verified: 'bg-[var(--ease2event-status-verified)]',
+  default: 'bg-[var(--ease2event-text-muted)]',
 };
 
 export const Badge = ({
@@ -43,7 +43,7 @@ export const Badge = ({
 }: BadgeProps) => (
   <span
     className={[
-      'inline-flex items-center gap-2 px-6 py-2 rounded-full',
+      'inline-flex items-center gap-2 rounded-full',
       'text-[10px] font-black tracking-[0.2em] uppercase italic',
       variantStyles[variant],
       className,

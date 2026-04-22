@@ -102,15 +102,30 @@ export class ServicesService {
     }
 
     async findOne(idOrSlug: string): Promise<Service> {
-        let service = await this.serviceRepository.findOne({
-            where: [{ id: idOrSlug }, { slug: idOrSlug }],
-            relations: ['vendor', 'category', 'packages'],
-        });
+        try {
+            // Check if input is a valid UUID
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+            
+            const where = isUuid 
+                ? [{ id: idOrSlug }, { slug: idOrSlug }] 
+                : [{ slug: idOrSlug }];
 
-        if (!service) {
-            throw new NotFoundException(`Service with identifiers ${idOrSlug} not found`);
+            const service = await this.serviceRepository.findOne({
+                where,
+                relations: ['vendor', 'category', 'packages'],
+            });
+
+            if (!service) {
+                throw new NotFoundException(`Service with identifier "${idOrSlug}" not found`);
+            }
+            return service;
+        } catch (error) {
+            if (error instanceof NotFoundException) throw error;
+            
+            // Log for internal tracking but throw a controlled exception
+            console.error('[ServicesService] Database Query Error:', error);
+            throw new NotFoundException(`Service not found or invalid identifier format`);
         }
-        return service;
     }
 
     async update(id: string, updateDto: Partial<CreateServiceDto>): Promise<Service> {

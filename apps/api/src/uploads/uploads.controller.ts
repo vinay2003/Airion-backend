@@ -9,28 +9,21 @@ export class UploadsController {
 
     @Post('image')
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('file', {
+        limits: {
+            fileSize: 1024 * 1024 * 1024 // 1GB limit
+        }
+    }))
     async uploadImage(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             throw new BadRequestException('File is missing');
         }
         
-        // Allowed formats (Image + Video support)
-        const allowedMimeTypes = [
-            'image/jpeg', 'image/png', 'image/webp', 'image/gif', 
-            'image/heic', 'image/heif', 'image/bmp',
-            'video/mp4', 'video/quicktime'
-        ];
-        
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-            throw new BadRequestException('Invalid file format. Only JPEG, PNG, WebP, GIF, HEIC and MP4/MOV are allowed.');
-        }
-
         const result = await this.uploadsService.uploadFile(file);
         return {
             success: true,
             url: result.url,
-            message: 'Image uploaded successfully'
+            message: 'File uploaded successfully'
         };
     }
 }

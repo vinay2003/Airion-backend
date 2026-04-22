@@ -23,6 +23,27 @@ const Listings: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this listing?')) return;
+        
+        try {
+            // Optimistic update
+            setListings(prev => prev.filter(l => l.id !== id));
+            
+            // Background API call
+            await api.delete(`/services/${id}`);
+        } catch (error: any) {
+            // Ignore 404 errors (happens with mock data)
+            if (error?.statusCode === 404) {
+                console.warn('Listing was not found on server (mock data), but removed from UI.');
+                return;
+            }
+            
+            console.error('Failed to delete listing:', error);
+            alert('Failed to delete listing from server.');
+        }
+    };
+
     useEffect(() => {
         const fetchListings = async () => {
             try {
@@ -56,7 +77,7 @@ const Listings: React.FC = () => {
     );
 
     return (
-        <div className="space-y-12 animate-in fade-in duration-700 pb-20">
+        <div className="space-y-12 animate-in fade-in duration-700 pb-20 px-0 w-full">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-[var(--ease2event-border-subtle)] pb-12">
                 <div className="space-y-4">
@@ -128,7 +149,7 @@ const Listings: React.FC = () => {
                     ))
                 ) : (
                     filteredListings.map((listing, i) => (
-                        <div key={listing.id || i} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--ease2event-shadow-xl)] border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
+                        <div key={listing.id || `listing-${i}`} className="card-minimal p-0 overflow-hidden flex flex-col group h-full shadow-2xl hover:shadow-[var(--ease2event-shadow-xl)] border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/40 hover:scale-[1.02] transition-all duration-500 rounded-[3rem]">
                             <div className="relative h-56 md:h-72 shrink-0 overflow-hidden">
                                 <img
                                     src={listing.image}
@@ -168,8 +189,17 @@ const Listings: React.FC = () => {
                                         <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Base Price</p>
                                         <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{listing.price}</p>
                                     </div>
-                                    <Button variant="secondary" size="md" className="px-8 h-14 rounded-2xl font-bold text-xs uppercase bg-[var(--ease2event-bg-elevated)] border-[var(--ease2event-border-subtle)]" rightIcon={<ChevronRight size={20} />}>
-                                        Manage
+                                    <Button 
+                                        variant="outline" 
+                                        size="md" 
+                                        className="px-8 h-14 rounded-2xl font-bold text-xs uppercase border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                                        leftIcon={<Trash2 size={20} />}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete(listing.id);
+                                        }}
+                                    >
+                                        Delete
                                     </Button>
                                 </div>
                             </div>

@@ -25,7 +25,7 @@ export class VendorAd {
     @Column('varchar', { length: 255 })
     title: string;
 
-    @Column('varchar', { length: 512 })
+    @Column('text')
     imageUrl: string;
 
     @Column('decimal', { precision: 12, scale: 2, default: 0 })

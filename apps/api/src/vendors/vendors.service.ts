@@ -28,6 +28,8 @@ export class VendorsService {
         private galleryRepository: Repository<VendorGallery>,
         @InjectRepository(Availability)
         private availabilityRepository: Repository<Availability>,
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
@@ -117,7 +119,7 @@ export class VendorsService {
         try {
             const vendor = await this.vendorRepository.findOne({
                 where: { userId },
-                relations: ['user', 'category', 'subcategory'],
+                relations: ['user', 'category', 'subcategory', 'gallery', 'ads'],
             });
 
             return vendor || null;
@@ -241,16 +243,23 @@ export class VendorsService {
         };
     }
 
-    // --- ADS MANAGEMENT ---
-
+    // --- ADS MANAGEMENT
     async createAd(userId: string, adData: any): Promise<VendorAd> {
-        const vendor = await this.findByUserId(userId);
-        if (!vendor) throw new NotFoundException('Vendor profile not found');
+        let vendor = await this.findByUserId(userId);
+        
+        if (!vendor) {
+            const user = await this.userRepository.findOne({ where: { id: userId } });
+            vendor = this.vendorRepository.create({ 
+                userId,
+                businessName: user?.name || 'VND-' + userId.substring(0, 5),
+                isProfileComplete: false
+            });
+            vendor = await this.vendorRepository.save(vendor);
+        }
 
-        const ad = this.adRepository.create({
-            ...adData,
-            vendorId: vendor.id,
-        });
+        const ad = new VendorAd();
+        Object.assign(ad, adData);
+        ad.vendor = vendor;
 
         return this.adRepository.save(ad) as unknown as Promise<VendorAd>;
     }
@@ -263,22 +272,55 @@ export class VendorsService {
         return this.adRepository.save(ad);
     }
 
-    // --- GALLERY MANAGEMENT ---
-
     async addToGallery(userId: string, item: any): Promise<VendorGallery> {
-        const vendor = await this.findByUserId(userId);
-        if (!vendor) throw new NotFoundException('Vendor profile not found');
+        try {
+            let vendor = await this.findByUserId(userId);
+            
+            if (!vendor) {
+                const user = await this.userRepository.findOne({ where: { id: userId } });
+                vendor = this.vendorRepository.create({ 
+                    userId,
+                    businessName: user?.name || 'Vendor-' + userId.substring(0, 8),
+                    verificationStatus: 'pending',
+                    isProfileComplete: false
+                });
+                vendor = await this.vendorRepository.save(vendor);
+                console.log('[VendorsService.addToGallery] Auto-Onboarded Vendor:', vendor.id);
+            }
 
-        const galleryItem = this.galleryRepository.create({
-            ...item,
-            vendorId: vendor.id,
-        });
+            const galleryItem = new VendorGallery();
+            galleryItem.imageUrl = item.imageUrl;
+            galleryItem.title = item.title;
+            galleryItem.vendor = vendor;
 
-        return this.galleryRepository.save(galleryItem) as unknown as Promise<VendorGallery>;
+            console.log('[VendorsService.addToGallery] Saving Asset to Registry:', {
+                vendorId: vendor.id,
+                title: item.title
+            });
+
+            return await this.galleryRepository.save(galleryItem) as unknown as Promise<VendorGallery>;
+        } catch (error: any) {
+            const detail = error?.detail || error?.message || 'Unknown DB Error';
+            console.error('[VendorsService.addToGallery] CRITICAL FAILURE:', detail, error);
+            throw new BadRequestException(`Gallery Sync Failed: ${detail}`);
+        }
     }
 
     async removeFromGallery(userId: string, itemId: string): Promise<void> {
-        await this.galleryRepository.delete({ id: itemId });
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+        
+        const item = await this.galleryRepository.findOne({ where: { id: itemId, vendorId: vendor.id } });
+        if (!item) throw new NotFoundException('Asset not found in your gallery');
+
+        await this.galleryRepository.remove(item);
+    }
+
+    async purgeGallery(userId: string): Promise<void> {
+        const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+        
+        await this.galleryRepository.delete({ vendorId: vendor.id });
     }
 
     /**

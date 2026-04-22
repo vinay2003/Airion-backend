@@ -57,7 +57,7 @@ const Analytics: React.FC = () => {
     });
 
     const performanceData = useMemo(() => {
-        if (Array.isArray(performanceDataRaw)) {
+        if (Array.isArray(performanceDataRaw) && performanceDataRaw.length > 0) {
             return performanceDataRaw.map((v: any) => ({
                 ...v,
                 capture: v.views * 100 // Simulated revenue relative to views for chart aesthetics
@@ -163,7 +163,7 @@ const Analytics: React.FC = () => {
 
             {/* 📊 Spectrum Analytics Flow */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <motion.div variants={itemVariants} className="card-premium p-6 sm:!p-10 relative overflow-hidden group">
+                <motion.div variants={itemVariants} className="card-premium p-6 sm:!p-10 relative group">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-12 relative z-10 gap-6 sm:gap-0">
                         <div className="flex items-center gap-4 sm:gap-6">
                             <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-6 rounded-[2.5rem] border-2 border-[var(--ease2event-border-subtle)] shadow-inner">
@@ -183,8 +183,8 @@ const Analytics: React.FC = () => {
                             <AreaChart data={performanceData}>
                                 <defs>
                                     <linearGradient id="visGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0.8} />
-                                        <stop offset="95%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.8} />
+                                        <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="var(--ease2event-border-subtle)" strokeOpacity={0.1} />
@@ -200,7 +200,7 @@ const Analytics: React.FC = () => {
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="card-premium !p-10 relative overflow-hidden group">
+                <motion.div variants={itemVariants} className="card-premium !p-10 relative group">
                     <div className="flex items-center justify-between mb-12 relative z-10">
                         <div className="flex items-center gap-6">
                             <div className="w-2 h-12 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>

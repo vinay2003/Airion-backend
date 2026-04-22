@@ -125,6 +125,10 @@ export class VendorsController {
     @Post('gallery')
     @UseGuards(JwtAuthGuard)
     async addToGallery(@Request() req: any, @Body() item: any) {
+        console.log('[VendorsController.addToGallery] Incoming Sync Request:', {
+            userId: req.user?.userId,
+            item: { ...item, imageUrl: item.imageUrl?.substring(0, 50) + '...' } // Don't log full base64
+        });
         return this.vendorsService.addToGallery(req.user.userId, item);
     }
 
@@ -132,6 +136,12 @@ export class VendorsController {
     @UseGuards(JwtAuthGuard)
     async removeFromGallery(@Request() req: any, @Param('itemId') itemId: string) {
         return this.vendorsService.removeFromGallery(req.user.userId, itemId);
+    }
+
+    @Delete('gallery-purge')
+    @UseGuards(JwtAuthGuard)
+    async purgeGallery(@Request() req: any) {
+        return this.vendorsService.purgeGallery(req.user.userId);
     }
 
     @Get(':id/performance')

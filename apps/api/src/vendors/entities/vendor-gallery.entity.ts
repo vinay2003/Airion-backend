@@ -14,7 +14,7 @@ export class VendorGallery {
     @Column({ name: 'vendor_id', insert: false, update: false })
     vendorId: string;
 
-    @Column('varchar', { length: 512 })
+    @Column('text')
     imageUrl: string;
 
     @Column('varchar', { length: 255, nullable: true })

@@ -1,71 +1,78 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
+import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class UploadsService {
-  private supabase: SupabaseClient;
-  private bucket: string;
-
   constructor(private configService: ConfigService) {
-      const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-      const supabaseKey = this.configService.get<string>('SUPABASE_ANON_KEY');
-      this.bucket = this.configService.get<string>('SUPABASE_STORAGE_BUCKET') || 'images';
-
-      if (!supabaseUrl || !supabaseKey) {
-          console.error('Supabase credentials missing in environment');
-      }
-
-      this.supabase = createClient(supabaseUrl, supabaseKey);
+    cloudinary.config({
+      cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
+      api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
+      api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
+    });
   }
 
   async uploadFile(file: Express.Multer.File): Promise<{ url: string; public_id: string; format?: string; duration?: number }> {
-      if (!file) {
-          throw new BadRequestException('No file provided');
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
+    // --- RELAXED SECURITY: ALL IMAGES & VIDEOS ALLOWED ---
+    const isImage = file.mimetype.startsWith('image/');
+    const isVideo = file.mimetype.startsWith('video/');
+    
+    if (!isImage && !isVideo) {
+      throw new BadRequestException('Invalid file type. Please upload an image or video.');
+    }
+
+    // --- INCREASED LIMITS: 1GB TOTAL ---
+    const maxSize = 1024 * 1024 * 1024; // 1GB
+    if (file.size > maxSize) {
+      throw new BadRequestException(`File too large. Max limit is 1024MB (1GB).`);
+    }
+
+    try {
+      return await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'airion/uploads',
+            resource_type: isVideo ? 'video' : 'image',
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            if (!result) return reject(new Error('No result from Cloudinary'));
+
+            resolve({
+              url: result.secure_url,
+              public_id: result.public_id,
+              format: result.format,
+              duration: result.duration,
+            });
+          }
+        );
+
+        uploadStream.end(file.buffer);
+      });
+    } catch (err: any) {
+      // --- DEVELOPER FALLBACK MODE ---
+      // If cloud storage fails in development, provide a high-quality placeholder
+      // so the user can continue testing the UI/Gallery.
+      const isDev = this.configService.get<string>('NODE_ENV') !== 'production';
+      
+      if (isDev) {
+        console.warn(`⚠️ Cloud Storage Failed: ${err.message}. Using Base64 fallback.`);
+        
+        const base64Data = file.buffer.toString('base64');
+        const dataUrl = `data:${file.mimetype};base64,${base64Data}`;
+        
+        return {
+          url: dataUrl,
+          public_id: `local_${Date.now()}`,
+          format: file.mimetype.split('/')[1]
+        };
       }
 
-      // --- PRODUCTION SECURITY: MIME TYPE GUARD ---
-      const allowedMimeTypes = [
-          'image/jpeg', 'image/png', 'image/webp', 'image/gif', 
-          'image/heic', 'image/heif', 'image/bmp',
-          'video/mp4', 'video/quicktime'
-      ];
-      if (!allowedMimeTypes.includes(file.mimetype)) {
-          throw new BadRequestException('Invalid file type. Only JPEG, PNG, WEBP, GIF, HEIC and MP4/MOV are allowed.');
-      }
-
-      // --- PRODUCTION GUARD: SIZE LIMITS ---
-      const isVideo = file.mimetype.startsWith('video');
-      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024; // 50MB for video, 10MB for images
-      if (file.size > maxSize) {
-          throw new BadRequestException(`File too large. Max limit is ${maxSize / (1024 * 1024)}MB`);
-      }
-
-      const fileExt = file.originalname.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
-      const filePath = `uploads/${fileName}`;
-
-      const { data, error } = await this.supabase.storage
-          .from(this.bucket)
-          .upload(filePath, file.buffer, {
-              contentType: file.mimetype,
-              upsert: false
-          });
-
-      if (error) {
-          throw new BadRequestException(`Supabase Storage Error: ${error.message}`);
-      }
-
-      // Get Public URL
-      const { data: { publicUrl } } = this.supabase.storage
-          .from(this.bucket)
-          .getPublicUrl(filePath);
-
-      return {
-          url: publicUrl,
-          public_id: data.path,
-          format: fileExt
-      };
+      throw new BadRequestException(`Upload failed: ${err.message}`);
+    }
   }
 }

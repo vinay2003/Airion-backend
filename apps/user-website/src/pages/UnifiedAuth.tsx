@@ -276,7 +276,7 @@ const UnifiedAuth: React.FC = () => {
                 {/* 🧭 Navigation Link */}
                 <Link
                     to="/"
-                    className="absolute top-6 left-6 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
+                    className="absolute top-6 left-2 md:top-10 md:left-12 flex items-center gap-2 text-neutral-500 hover:text-red-600 transition-all group z-20 text-base font-semibold"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1.5 transition-transform" />
                     Back
@@ -507,7 +507,7 @@ const UnifiedAuth: React.FC = () => {
                     {/* 📜 Legal Footprint */}
                     <div className="mt-14 pt-10 border-t-2 border-neutral-100 dark:border-slate-800/80">
                         <p className="text-base md:text-lg text-center text-neutral-500 dark:text-neutral-400 font-bold leading-relaxed max-w-2xl mx-auto">
-                            By proceeding, you verify you are of legal age and agree to our <br className="hidden sm:block" />
+                            You verify you are of legal age and agree to our <br className="hidden sm:block" />
                             <Link to="/terms" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Terms of Service</Link> and <Link to="/privacy" className="text-red-500 dark:text-red-400 underline underline-offset-8 hover:text-red-600 cursor-pointer decoration-2 transition-all">Privacy Policy</Link>.
                         </p>
                     </div>

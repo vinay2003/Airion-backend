@@ -4,37 +4,43 @@ export default api;
 
 // AI & Chat
 export const generateEasyReply = async (inquiry: string, voice?: string) =>
-    (await api.post('/ai/easy-reply', { inquiry, voice })).data;
+    await api.post('/ai/easy-reply', { inquiry, voice });
 
 // Analytics & Performance
 export const fetchVendorPerformance = async (vendorId: string, days: number = 7) =>
-    (await api.get(`/analytics/vendor/${vendorId}/performance`, { params: { days } })).data;
+    await api.get(`/analytics/vendor/${vendorId}/performance`, { params: { days } });
 
 // Wallet & Financials
 export const fetchWalletOverview = async () =>
-    (await api.get('/wallet/overview')).data;
+    await api.get('/wallet/overview');
 
 export const requestWithdrawal = async (amount: number, bankDetails?: any) =>
-    (await api.post('/wallet/withdraw', { amount, bankDetails })).data;
+    await api.post('/wallet/withdraw', { amount, bankDetails });
 
 // Availability & Calendar
 export const fetchVendorSchedule = async (vendorId: string) =>
-    (await api.get(`/vendors/${vendorId}/availability`)).data;
+    await api.get(`/vendors/${vendorId}/availability`);
 
 export const blockDate = async (date: string, reason?: string) =>
-    (await api.post('/availability/block', { date, reason })).data;
+    await api.post('/availability/block', { date, reason });
 
 export const unblockDate = async (date: string) =>
-    (await api.delete(`/availability/block/${date}`)).data;
+    await api.delete(`/availability/block/${date}`);
 
 // Profile & Public
 export const updateProfile = async (data: any) =>
-    (await api.patch('/auth/profile', data)).data;
+    await api.patch('/auth/profile', data);
 
 export const uploadImage = async (file: File) => {
     const fd = new FormData();
-    fd.append('file', file);
-    return (await api.post('/uploads/image', fd, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    })).data;
+    fd.append('file', file, file.name);
+    
+    // api.post already unwraps the response data thanks to interceptors
+    return await api.post<any>('/uploads/image', fd, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
+
+

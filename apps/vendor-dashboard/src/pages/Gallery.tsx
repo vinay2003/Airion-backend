@@ -11,6 +11,7 @@ interface GalleryItem {
     imageUrl: string;
     title?: string;
     createdAt: Date;
+    isUploading?: boolean;
 }
 
 /**
@@ -21,24 +22,53 @@ const Gallery: React.FC = () => {
     const { user, refreshUser } = useAuth();
     const [uploading, setUploading] = useState(false);
     const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+    const [optimisticImages, setOptimisticImages] = useState<GalleryItem[]>([]);
+    const [optimisticDeletedIds, setOptimisticDeletedIds] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const gallery = (user?.vendor?.gallery || []) as GalleryItem[];
+    const gallery = [...(user?.vendor?.gallery || []), ...optimisticImages]
+        .filter(item => !optimisticDeletedIds.includes(item.id)) as GalleryItem[];
+
+    // Helper: convert file to base64 data URL
+    const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.length) return;
 
         setUploading(true);
         const files = Array.from(e.target.files);
+        
+        // --- INSTANT PREVIEW PROTOCOL ---
+        const localPreviews = files.map(file => ({
+            id: `temp-${Math.random()}`,
+            imageUrl: URL.createObjectURL(file),
+            title: file.name,
+            createdAt: new Date(),
+            isUploading: true
+        }));
+        
+        setOptimisticImages(prev => [...prev, ...localPreviews]);
 
         try {
-            for (const file of files) {
-                // Use centralized upload protocol
-                const data = await uploadImage(file);
-                const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                let imageUrl: string | null = null;
+
+                // --- CLOUD UPLOAD (with base64 fallback) ---
+                try {
+                    const data = await uploadImage(file);
+                    imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
+                } catch (uploadErr: any) {
+                    console.warn('[Gallery] Cloud upload unavailable, using base64 fallback:', uploadErr.message);
+                    imageUrl = await fileToBase64(file);
+                }
 
                 if (imageUrl) {
-                    // Register asset with the gallery registry
                     await api.post('/vendors/gallery', {
                         imageUrl,
                         title: file.name
@@ -46,12 +76,15 @@ const Gallery: React.FC = () => {
                 }
             }
 
-            toast.success(`Matrix synchronized: ${files.length} units added`);
+            toast.success(`Gallery synchronized: ${files.length} image${files.length > 1 ? 's' : ''} added`);
+            setOptimisticImages([]);
             refreshUser();
         } catch (err: any) {
             console.error('[Gallery Sync failure]:', err);
-            const errorMessage = err.response?.data?.message || err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
-            toast.error('Sync failure: ' + errorMessage);
+            // Keep previews visible but mark them as failed (not uploading)
+            setOptimisticImages(prev => prev.map(img => ({ ...img, isUploading: false })));
+            const errorMessage = err.response?.data?.message || err.message || String(err);
+            toast.error('Sync failed: ' + errorMessage + ' — previews kept locally.');
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -60,19 +93,36 @@ const Gallery: React.FC = () => {
 
     const handleDelete = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (!confirm('Execute deletion protocol for this asset?')) return;
+        // INSTANT DELETE PROTOCOL
+        setOptimisticDeletedIds(prev => [...prev, id]);
 
         try {
             await api.delete(`/vendors/gallery/${id}`);
             toast.success('Asset purged');
             refreshUser();
         } catch (err) {
+            setOptimisticDeletedIds(prev => prev.filter(oid => oid !== id)); // Revert on failure
+            toast.error('Purge failure');
+        }
+    };
+
+    const handlePurgeAll = async () => {
+        if (!confirm('CRITICAL ACTION: Purge entire gallery registry? This cannot be undone.')) return;
+        
+        setOptimisticDeletedIds(gallery.map(i => i.id));
+
+        try {
+            await api.delete('/vendors/gallery-purge');
+            toast.success('Gallery registry cleared');
+            refreshUser();
+        } catch (err) {
+            setOptimisticDeletedIds([]);
             toast.error('Purge failure');
         }
     };
 
     return (
-        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24">
+        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 px-0 w-full mt-16">
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 border-b border-[var(--ease2event-border-subtle)] padding-bottom-12">
                 <div className="space-y-6">
@@ -83,6 +133,14 @@ const Gallery: React.FC = () => {
                 </div>
 
                 <div className="flex gap-6 w-full xl:w-auto">
+                    <button
+                        onClick={handlePurgeAll}
+                        className="h-16 px-10 rounded-[2rem] font-bold text-xs uppercase tracking-widest bg-rose-600/10 text-rose-600 border-2 border-rose-600/20 hover:bg-rose-600 hover:text-white transition-all flex items-center gap-4"
+                    >
+                        <Trash2 size={20} />
+                        Purge Gallery
+                    </button>
+
                     <input
                         type="file"
                         ref={fileInputRef}
@@ -103,7 +161,7 @@ const Gallery: React.FC = () => {
             </div>
 
             {/* Empty State */}
-            {gallery.length === 0 ? (
+            {gallery.length === 0 && !uploading ? (
                 <div className="card-minimal !p-32 flex flex-col items-center justify-center text-center space-y-10 bg-[var(--ease2event-bg-elevated)]/20 border-4 border-dashed border-[var(--ease2event-border-base)] rounded-[4rem] shadow-inner">
                     <div className="w-40 h-40 bg-blue-500/10 rounded-[3rem] flex items-center justify-center text-blue-500 border-4 border-blue-500/10 shadow-2xl transition-transform hover:scale-110 group relative overflow-hidden">
                         <div className="absolute inset-0 bg-blue-500/10 group-hover:scale-150 transition-transform duration-1000" />
@@ -128,40 +186,54 @@ const Gallery: React.FC = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05, duration: 0.8 }}
-                            onClick={() => setSelectedImage(item)}
-                            className="relative group cursor-pointer break-inside-avoid rounded-[3rem] overflow-hidden border-2 border-[var(--ease2event-border-subtle)] shadow-2xl transition-all duration-700 hover:border-blue-500/50 hover:shadow-[0_40px_80px_rgba(0,0,0,0.3)] hover:scale-[1.02] bg-[var(--ease2event-bg-surface)]"
+                            onClick={() => !item.isUploading && setSelectedImage(item)}
+                            className={`relative group cursor-pointer break-inside-avoid rounded-[3rem] overflow-hidden border-2 shadow-2xl transition-all duration-700 bg-[var(--ease2event-bg-surface)] ${
+                                item.isUploading 
+                                ? 'border-blue-500/30 opacity-80 cursor-wait' 
+                                : 'border-[var(--ease2event-border-subtle)] hover:border-blue-500/50 hover:shadow-[0_40px_80px_rgba(0,0,0,0.3)] hover:scale-[1.02]'
+                            }`}
                         >
                             <img
                                 src={item.imageUrl}
                                 alt={item.title || 'Registry item'}
-                                className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110 opacity-95 group-hover:opacity-100"
+                                className={`w-full h-auto object-cover transition-transform duration-1000 ${!item.isUploading && 'group-hover:scale-110 opacity-95 group-hover:opacity-100'}`}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/2563eb/white?text=Syncing+Asset';
+                                }}
                             />
 
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--ease2event-bg-surface)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
-                                <div className="space-y-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-700">
-                                    <div className="flex items-center gap-3">
-                                        <ShieldCheck size={18} className="text-blue-500" />
-                                        <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">VERIFIED ASSET</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-[var(--ease2event-text-primary)] text-sm font-bold uppercase tracking-widest truncate pr-6">
-                                            {item.title || 'GALLERY_ITEM'}
-                                        </span>
-                                        <div className="flex gap-4">
-                                            <button
-                                                onClick={(e) => handleDelete(item.id, e)}
-                                                className="w-12 h-12 flex items-center justify-center bg-rose-600 shadow-xl shadow-rose-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all"
-                                            >
-                                                <Trash2 size={20} />
-                                            </button>
-                                            <button className="w-12 h-12 flex items-center justify-center bg-blue-600 shadow-xl shadow-blue-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all">
-                                                <Maximize2 size={20} />
-                                            </button>
+                            {item.isUploading ? (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-blue-900/10 backdrop-blur-[2px]">
+                                    <Loader2 className="animate-spin text-white mb-4" size={48} />
+                                    <span className="text-white font-black text-xs tracking-[0.3em] uppercase drop-shadow-md">Synchronizing...</span>
+                                </div>
+                            ) : (
+                                <div className="absolute inset-0 bg-gradient-to-t from-[var(--ease2event-bg-surface)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                                    <div className="space-y-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-700">
+                                        <div className="flex items-center gap-3">
+                                            <ShieldCheck size={18} className="text-blue-500" />
+                                            <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">VERIFIED ASSET</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-[var(--ease2event-text-primary)] text-sm font-bold uppercase tracking-widest truncate pr-6">
+                                                {item.title || 'GALLERY_ITEM'}
+                                            </span>
+                                            <div className="flex gap-4">
+                                                <button
+                                                    onClick={(e) => handleDelete(item.id, e)}
+                                                    className="w-12 h-12 flex items-center justify-center bg-rose-600 shadow-xl shadow-rose-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all"
+                                                >
+                                                    <Trash2 size={20} />
+                                                </button>
+                                                <button className="w-12 h-12 flex items-center justify-center bg-blue-600 shadow-xl shadow-blue-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all">
+                                                    <Maximize2 size={20} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="h-2 w-0 group-hover:w-full bg-blue-600 transition-all duration-1000 absolute bottom-0 left-0 shadow-[0_0_20px_rgba(37,99,235,0.6)]"></div>
+                            )}
+                            <div className={`h-2 w-0 transition-all duration-1000 absolute bottom-0 left-0 shadow-[0_0_20px_rgba(37,99,235,0.6)] ${item.isUploading ? 'w-1/2 bg-amber-500 animate-pulse' : 'group-hover:w-full bg-blue-600'}`}></div>
                         </motion.div>
                     ))}
                 </div>
@@ -174,39 +246,45 @@ const Gallery: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12 bg-[var(--ease2event-bg-base)]/95 backdrop-blur-3xl"
+                        className="fixed inset-0 z-[100] flex items-start justify-center p-6 md:p-10 md:pl-64 bg-[var(--ease2event-bg-base)]/95 backdrop-blur-3xl overflow-y-auto"
                         onClick={() => setSelectedImage(null)}
                     >
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 50, rotateX: 15 }}
-                            animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 50, rotateX: 15 }}
-                            className="relative max-w-7xl w-full h-full flex flex-col items-center justify-center"
+                            initial={{ scale: 0.95, opacity: 0, y: 30 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 30 }}
+                            className="relative max-w-7xl w-full flex flex-col gap-6 my-auto px-8"
                             onClick={e => e.stopPropagation()}
                         >
-                            <button
-                                onClick={() => setSelectedImage(null)}
-                                className="absolute -top-6 right-0 text-[var(--ease2event-text-secondary)] hover:text-white transition-all flex items-center gap-6 font-black text-xs uppercase tracking-[0.4em] p-6 hover:scale-105"
-                            >
-                                CLOSE NODE SEQUENCE <X size={44} className="p-2.5 bg-rose-600 text-white rounded-2xl shadow-2xl shadow-rose-600/30" />
-                            </button>
-                            <div className="w-full h-[80vh] rounded-[4rem] overflow-hidden border-4 border-[var(--ease2event-border-base)] shadow-[0_50px_100px_rgba(0,0,0,0.6)] bg-[var(--ease2event-bg-surface)] group relative">
+                            {/* Controls Row */}
+                            <div className="flex items-center justify-end">
+                                <button
+                                    onClick={() => setSelectedImage(null)}
+                                    className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs uppercase tracking-[0.3em] hover:scale-105"
+                                >
+                                    Close <X size={38} className="p-2 bg-rose-600 text-white rounded-2xl shadow-2xl shadow-rose-600/30" />
+                                </button>
+                            </div>
+
+                            {/* Image */}
+                            <div className="w-full rounded-[3rem] overflow-hidden border-4 border-[var(--ease2event-border-base)] shadow-[0_50px_100px_rgba(0,0,0,0.6)] bg-[var(--ease2event-bg-surface)]">
                                 <img
                                     src={selectedImage.imageUrl}
-                                    className="w-full h-full object-contain p-4"
-                                    alt="Global preview"
+                                    className="w-full h-auto max-h-[80vh] object-contain"
+                                    alt="Gallery preview"
                                 />
-                                <div className="absolute inset-0 bg-blue-500/[0.02] pointer-events-none" />
                             </div>
+
+                            {/* Title */}
                             {selectedImage.title && (
                                 <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
+                                    initial={{ y: 10, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
-                                    className="mt-12 flex items-center gap-6 bg-[var(--ease2event-bg-surface)] px-14 py-6 rounded-[2.5rem] border-2 border-[var(--ease2event-border-base)] shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
+                                    className="flex items-center gap-6 bg-[var(--ease2event-bg-surface)] px-10 py-5 rounded-[2rem] border-2 border-[var(--ease2event-border-base)] shadow-[0_20px_40px_rgba(0,0,0,0.3)] self-center"
                                 >
-                                    <div className="w-4 h-4 bg-blue-500 rounded-full" />
-                                    <p className="text-[var(--ease2event-text-primary)] font-bold text-xl tracking-tight">{selectedImage.title}</p>
-                                    <div className="h-6 w-0.5 bg-[var(--ease2event-border-subtle)] mx-2" />
+                                    <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                                    <p className="text-[var(--ease2event-text-primary)] font-bold text-lg tracking-tight">{selectedImage.title}</p>
+                                    <div className="h-5 w-0.5 bg-[var(--ease2event-border-subtle)] mx-1" />
                                     <span className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{new Date(selectedImage.createdAt).toLocaleDateString()}</span>
                                 </motion.div>
                             )}

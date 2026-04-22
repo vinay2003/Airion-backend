@@ -289,7 +289,7 @@ export class AuthService {
 
         const user = await this.userRepository.findOne({
             where: whereConditions,
-            relations: ['vendor'],
+            relations: ['vendor', 'vendor.category', 'vendor.subcategory', 'vendor.gallery', 'vendor.ads'],
         });
 
         let loggedInUser = user;
@@ -424,7 +424,7 @@ export class AuthService {
     async getUserById(userId: string): Promise<Partial<User>> {
         const user = await this.userRepository.findOne({
             where: { id: userId },
-            relations: ['vendor'], // Load vendor to expose isProfileComplete
+            relations: ['vendor', 'vendor.gallery', 'vendor.ads', 'vendor.category', 'vendor.subcategory'], // Deep load vendor assets
         });
 
         if (!user) {

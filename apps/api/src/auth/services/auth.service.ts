@@ -74,7 +74,7 @@ export class AuthService {
         
         return {
             message: 'OTP sent successfully',
-            _dev_otp: isProduction ? undefined : otpCode,
+            _dev_otp: otpCode,
         };
     }
 
@@ -197,7 +197,7 @@ export class AuthService {
 
         return {
             message: 'OTP sent successfully',
-            _dev_otp: isProduction ? undefined : otpCode,
+            _dev_otp: otpCode,
         };
     }
 
@@ -242,8 +242,8 @@ export class AuthService {
         const isProduction = this.configService.get('NODE_ENV') === 'production';
 
         return {
-            message: 'OTP sent to your registered admin number',
-            _dev_otp: isProduction ? undefined : otpCode,
+            message: 'OTP sent successfully to admin number',
+            _dev_otp: otpCode, // Temporarily visible for testing
         };
     }
 

@@ -25,12 +25,12 @@ const VendorLogin: React.FC = () => {
         // Redirection to the Unified Auth System on Port 5173
         // This ensures a single source of truth for authentication
         if (!user) {
-            window.location.href = 'http://localhost:5173/login?portal=vendor';
+            window.location.href = '/login?portal=vendor';
         } else if (user.role === 'vendor' || user.role === 'admin') {
             navigate('/');
         } else {
             // User-role accounts should NOT be in vendor dashboard
-            window.location.href = 'http://localhost:5173/dashboard';
+            window.location.href = '/dashboard';
         }
     }, [user, navigate]);
 

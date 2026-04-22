@@ -17,7 +17,7 @@ const AdminLogin: React.FC = () => {
         // Redirection to the Unified Auth System on Port 5173
         // This ensures a single source of truth for ALL roles including Admin
         if (!user) {
-            window.location.href = 'http://localhost:5173/login?portal=admin';
+            window.location.href = '/login?portal=admin';
         } else {
             navigate('/');
         }

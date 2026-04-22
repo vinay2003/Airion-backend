@@ -10,6 +10,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { theme, toggleTheme } = useTheme();
+    const { logout } = useAuth();
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -72,7 +73,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                         {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
                     </button>
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-500 rounded-xl transition-colors">
+                    <button 
+                        onClick={logout}
+                        className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-500 rounded-xl transition-colors"
+                    >
                         <LogOut size={20} />
                         Logout
                     </button>

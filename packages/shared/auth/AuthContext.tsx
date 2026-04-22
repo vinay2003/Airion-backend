@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // 🚀 Global Identity Reset: Redirect to Central Auth Portal
       const isCentralAuth = window.location.port === '5173';
-      const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || 'http://localhost:5173/login';
+      const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || '/login';
 
       if (!isCentralAuth) {
         // 🔥 CRITICAL FIX: Do not call setUser(null) here!

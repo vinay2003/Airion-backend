@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
     // If this is a user-role account trying to access vendor/admin areas,
     // redirect them to the user website dashboard
     if (user.role === 'user') {
-      window.location.href = 'http://localhost:5173/dashboard';
+      window.location.href = '/dashboard';
       return null;
     }
     // Otherwise redirect to home

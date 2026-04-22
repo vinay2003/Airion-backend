@@ -134,7 +134,7 @@ const VendorSignupBasic: React.FC = () => {
                     navigate('/signup-form', { state: { basicDetails } });
                 } else {
                     // Normal users shouldn't be here, send them back to the main site
-                    window.location.href = 'http://localhost:5173/dashboard';
+                    window.location.href = '/dashboard';
                 }
             }, 1000);
         } catch (err: any) {

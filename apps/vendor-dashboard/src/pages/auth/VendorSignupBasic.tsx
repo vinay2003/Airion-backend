@@ -89,7 +89,7 @@ const VendorSignupBasic: React.FC = () => {
                         },
                     });
                 } else {
-                    window.location.href = 'http://localhost:5173/dashboard';
+                    window.location.href = '/dashboard';
                 }
             }, 1500);
         } catch (err: any) {

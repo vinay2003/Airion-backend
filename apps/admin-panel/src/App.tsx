@@ -33,7 +33,7 @@ const App: React.FC = () => {
                 <Route path="/" element={
                   <ProtectedRoute 
                     allowedRoles={['admin']} 
-                    redirectUrl="http://localhost:5173/admin/login"
+                    redirectUrl="/admin/login"
                   >
                     <Layout />
                   </ProtectedRoute>

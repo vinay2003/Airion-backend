@@ -21,10 +21,10 @@ export class Availability {
     status: string;
 
     @Column({ name: 'reason', nullable: true })
-    reason: string; // e.g., "Personal Event", "Booking #123"
+    reason: string | null; // e.g., "Personal Event", "Booking #123"
 
     @Column({ name: 'booking_id', nullable: true })
-    bookingId: string; // Reference to the booking that took this slot
+    bookingId: string | null; // Reference to the booking that took this slot
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

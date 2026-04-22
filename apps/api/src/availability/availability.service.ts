@@ -32,7 +32,7 @@ export class AvailabilityService {
 
         if (existing) {
             existing.status = status;
-            existing.reason = reason;
+            existing.reason = reason ?? null;
             return this.availabilityRepository.save(existing);
         }
 

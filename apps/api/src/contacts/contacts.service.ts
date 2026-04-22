@@ -32,7 +32,11 @@ export class ContactsService {
     }
 
     async findOne(id: string): Promise<Contact> {
-        return this.contactRepository.findOne({ where: { id } });
+        const contact = await this.contactRepository.findOne({ where: { id } });
+        if (!contact) {
+            throw new Error(`Contact with ID ${id} not found`);
+        }
+        return contact;
     }
 
     async updateStatus(id: string, status: 'unread' | 'read' | 'replied'): Promise<Contact> {

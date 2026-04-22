@@ -7,7 +7,7 @@ export class AIService {
     private readonly apiKey: string;
 
     constructor(private configService: ConfigService) {
-        this.apiKey = this.configService.get<string>('LLM_API_KEY');
+        this.apiKey = this.configService.get<string>('LLM_API_KEY') || '';
     }
 
     /**

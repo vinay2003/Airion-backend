@@ -69,6 +69,7 @@ export class AuthService {
         });
         await this.otpRepository.save(otp);
 
+        this.logger.log(`🔑 [OTP_DEBUG] Signup OTP for ${identifier}: ${otpCode}`);
         const isProduction = this.configService.get('NODE_ENV') === 'production';
         
         return {
@@ -191,6 +192,7 @@ export class AuthService {
 
         await this.otpRepository.save(otp);
 
+        this.logger.log(`🔑 [OTP_DEBUG] Login OTP for ${identifier}: ${otpCode}`);
         const isProduction = this.configService.get('NODE_ENV') === 'production';
 
         return {
@@ -235,6 +237,7 @@ export class AuthService {
         await this.otpRepository.save(otp);
 
         // Production: Send SMS via provider
+        this.logger.log(`🔑 [OTP_DEBUG] Admin OTP for ${identifier}: ${otpCode}`);
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
         const isProduction = this.configService.get('NODE_ENV') === 'production';
 

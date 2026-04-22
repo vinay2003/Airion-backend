@@ -20,10 +20,10 @@ export class Availability {
     @Column({ default: 'available' }) // available, blocked, booked
     status: string;
 
-    @Column({ name: 'reason', nullable: true })
+    @Column({ name: 'reason', type: 'text', nullable: true })
     reason: string | null; // e.g., "Personal Event", "Booking #123"
 
-    @Column({ name: 'booking_id', nullable: true })
+    @Column({ name: 'booking_id', type: 'text', nullable: true })
     bookingId: string | null; // Reference to the booking that took this slot
 
     @CreateDateColumn({ name: 'created_at' })

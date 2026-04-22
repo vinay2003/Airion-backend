@@ -19,7 +19,7 @@ export class ApiClient {
 
   constructor(baseURL?: string) {
     this.instance = axios.create({
-      baseURL: baseURL || (import.meta.env?.VITE_API_URL as string) || 'http://localhost:3000/api',
+      baseURL: baseURL || (import.meta.env?.VITE_API_URL as string) || '/api',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -78,10 +78,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
                 <div className="p-4 border-t border-[var(--ease2event-border-subtle)]">
                     <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)]">
-                        <Avatar 
+                        <Avatar
                             src={user?.vendor?.logo}
-                            name={user?.name || user?.email || 'Vendor'} 
-                            size="md" 
+                            name={user?.name || user?.email || 'Vendor'}
+                            size="md"
                         />
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>

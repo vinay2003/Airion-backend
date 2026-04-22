@@ -154,7 +154,7 @@ const Header: React.FC = () => {
     useEffect(() => {
         if (!user?.id) return;
         const socket = getSocket();
-        
+
         if (socket) {
             socket.on('notification_received', () => {
                 setHasNewNotifications(true);
@@ -172,18 +172,21 @@ const Header: React.FC = () => {
 
     return (
         <header
-            className={`w-full py-4 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
-                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md'
+            className={`w-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
+                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md py-2'
                 : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
                 } border-b border-red-100 dark:border-slate-800`}
         >
             {/* ── Logo ── */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-bold z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                className="z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <Sparkles size={28} className="text-red-600 hidden sm:block animate-pulse" />
-                <span className="text-red-600">Ease2event</span>
+                <img 
+                    src="/logo.svg" 
+                    alt="Ease2Event Logo" 
+                    className={`${isScrolled ? 'h-8 md:h-10' : 'h-10 md:h-12'} w-auto transition-all duration-300`} 
+                />
             </Link>
 
             {/* ── Desktop Nav ── */}
@@ -256,7 +259,7 @@ const Header: React.FC = () => {
                     >
                         <Bell size={20} />
                         {hasNewNotifications && (
-                            <motion.span 
+                            <motion.span
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
@@ -282,13 +285,13 @@ const Header: React.FC = () => {
                 </button>
 
                 <span className="hidden">
-                <button
-                    onClick={toggleMenu}
-                    className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all active:scale-95"
-                    aria-label="Toggle menu"
-                >
-                    {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-                </button>
+                    <button
+                        onClick={toggleMenu}
+                        className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all active:scale-95"
+                        aria-label="Toggle menu"
+                    >
+                        {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                    </button>
                 </span>
 
                 {isAuthenticated ? (

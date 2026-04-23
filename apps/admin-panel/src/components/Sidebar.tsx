@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '@ease2event/shared';
 
 interface SidebarProps {
     isOpen: boolean;

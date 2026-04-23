@@ -142,7 +142,7 @@ const Products: React.FC = () => {
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
-                className="w-full max-w-6xl mx-auto space-y-12 pb-32 px-4"
+                className="space-y-12 pb-32 px-0 w-full"
             >
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
@@ -352,7 +352,7 @@ const Products: React.FC = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
+            className="space-y-12 pb-32 px-0 w-full"
         >
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)]">

@@ -14,7 +14,7 @@ import { Button, Badge } from '@ease2event/ui';
 interface Ad {
     id: string;
     title: string;
-    image: string;
+    imageUrl: string;
     budget: number;
     status: 'Active' | 'Pending' | 'Rejected';
     createdAt: Date;
@@ -30,7 +30,7 @@ const Ads: React.FC = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [adData, setAdData] = useState({
         title: '',
-        image: '',
+        imageUrl: '',
         budget: ''
     });
 
@@ -45,17 +45,17 @@ const Ads: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const finalImage = adData.image || `https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800`;
+            const finalImage = adData.imageUrl || `https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800`;
 
             await api.post('/vendors/ads', {
-                ...adData,
-                image: finalImage,
+                title: adData.title,
+                imageUrl: finalImage,
                 budget: parseFloat(adData.budget)
             });
 
             toast.success('Campaign created - Pending Review');
             setShowCreateModal(false);
-            setAdData({ title: '', image: '', budget: '' });
+            setAdData({ title: '', imageUrl: '', budget: '' });
             refreshUser();
         } catch (err) {
             toast.error('Failed to create campaign');
@@ -82,7 +82,7 @@ const Ads: React.FC = () => {
     };
 
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 px-6 sm:px-12 max-w-7xl mx-auto">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 px-0 w-full">
             {/* Header Section */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 sm:gap-10 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-10">
                 <div className="space-y-6">
@@ -174,7 +174,7 @@ const Ads: React.FC = () => {
                                 className="card-minimal !p-0 overflow-hidden group border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40 flex flex-col h-full shadow-2xl hover:shadow-blue-500/10 transition-all duration-700 rounded-[3.5rem] bg-[var(--ease2event-bg-surface)]"
                             >
                                 <div className="h-72 relative overflow-hidden">
-                                    <img src={ad.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={ad.title} />
+                                    <img src={ad.imageUrl} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={ad.title} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[var(--ease2event-bg-surface)] via-transparent to-transparent opacity-95" />
                                     <div className="absolute top-8 right-8">
                                         <StatusBadge status={ad.status} />
@@ -282,8 +282,8 @@ const Ads: React.FC = () => {
                                                     <ExternalLink className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
                                                     <input
                                                         placeholder="https://repository.asset..."
-                                                        value={adData.image}
-                                                        onChange={e => setAdData({ ...adData, image: e.target.value })}
+                                                        value={adData.imageUrl}
+                                                        onChange={e => setAdData({ ...adData, imageUrl: e.target.value })}
                                                         className="w-full input-dark-glass !pl-14 sm:!pl-20 font-medium text-sm sm:text-base h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 focus:ring-8 focus:ring-blue-500/5 transition-all"
                                                     />
                                                 </div>

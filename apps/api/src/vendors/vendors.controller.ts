@@ -44,6 +44,22 @@ export class VendorsController {
         }
     }
 
+    @Get('ads')
+    @UseGuards(JwtAuthGuard)
+    async getAds(@Request() req: any) {
+        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        if (!vendor) return [];
+        return vendor.ads || [];
+    }
+
+    @Get('gallery')
+    @UseGuards(JwtAuthGuard)
+    async getGallery(@Request() req: any) {
+        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        if (!vendor) return [];
+        return vendor.gallery || [];
+    }
+
     @Get(':id')
     async findOne(@Param('id') id: string, @Request() req: any) {
         const vendor = await this.vendorsService.findOne(id);

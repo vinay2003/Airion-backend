@@ -110,7 +110,7 @@ const Analytics: React.FC = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="space-y-12 pb-32 px-4 sm:px-6 max-w-7xl mx-auto"
+            className="space-y-12 pb-32 px-0 w-full"
         >
             {/* 🛸 Intelligence Matrix Header */}
             <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 sm:gap-10 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">

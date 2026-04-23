@@ -17,7 +17,7 @@ import {
     Filter,
     Plus
 } from 'lucide-react';
-import { Tabs, Input, Button, Badge } from '@ease2event/ui';
+import { Tabs, Input, Button, Badge, Modal, notify } from '@ease2event/ui';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface Booking {
@@ -39,8 +39,10 @@ interface Booking {
 const Bookings: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'Confirmed' | 'Pending' | 'Cancelled'>('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-    const bookings: Booking[] = [
+    const [bookings, setBookings] = useState<Booking[]>([
         {
             id: 1,
             venueName: 'Grand Ballroom',
@@ -85,7 +87,7 @@ const Bookings: React.FC = () => {
             status: 'Cancelled',
             eventType: 'Anniversary Gala'
         },
-    ];
+    ]);
 
     const stats = [
         { label: 'Total Volume', value: '28', icon: Activity, trend: '+12%' },
@@ -113,6 +115,16 @@ const Bookings: React.FC = () => {
         { id: 'Cancelled', label: 'Terminated' },
     ];
 
+    const handleApprove = (id: number) => {
+        setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'Confirmed' } : b));
+        notify.success('Booking Cluster Approved Successfully');
+    };
+
+    const handleOpenDetails = (booking: Booking) => {
+        setSelectedBooking(booking);
+        setIsDetailsOpen(true);
+    };
+
     const filteredBookings = bookings.filter(booking => {
         const matchesFilter = filter === 'all' || booking.status === filter;
         const matchesSearch = booking.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,10 +140,10 @@ const Bookings: React.FC = () => {
             className="space-y-10 pb-24 px-0 w-full"
         >
             {/* Header: Operational Matrix */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)]">
                 <motion.div variants={itemVariants}>
                     <h1 className="text-3xl font-bold tracking-tight text-[var(--ease2event-text-primary)]">Bookings Manager</h1>
-                    <div className="flex items-center gap-3 mt-4">
+                    <div className="flex items-center gap-3 mt-2">
                         <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase rounded-full border border-blue-500/30">
                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                             Connected
@@ -212,7 +224,7 @@ const Bookings: React.FC = () => {
                 </motion.div>
             </div>
 
-            {/* Registry Flow (The "Table" replacement) */}
+            {/* Registry Flow (The \"Table\" replacement) */}
             <div className="grid grid-cols-1 gap-6">
                 <AnimatePresence mode="popLayout">
                     {viewMode === 'weekly' ? (
@@ -341,11 +353,17 @@ const Bookings: React.FC = () => {
                                         </div>
 
                                         <div className="flex gap-4">
-                                            <Button className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-[var(--ease2event-bg-elevated)]">
+                                            <Button 
+                                                onClick={() => handleOpenDetails(booking)}
+                                                className="flex-1 h-12 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-[var(--ease2event-bg-elevated)]"
+                                            >
                                                 View Details
                                             </Button>
                                             {booking.status === 'Pending' && (
-                                                <Button className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                                                <Button 
+                                                    onClick={() => handleApprove(booking.id)}
+                                                    className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"
+                                                >
                                                     Approve
                                                 </Button>
                                             )}
@@ -368,6 +386,68 @@ const Bookings: React.FC = () => {
                     </motion.div>
                 )}
             </div>
+
+            {/* High-Fidelity Details Modal */}
+            <Modal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                title="Event Particulars"
+                size="lg"
+            >
+                {selectedBooking && (
+                    <div className="space-y-8 py-4">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Venue Node</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase">{selectedBooking.venueName}</p>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Registry Authority</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase">{selectedBooking.clientName}</p>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Operational Window</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase">{selectedBooking.date} • {selectedBooking.time}</p>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Classification</p>
+                                <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase">{selectedBooking.eventType}</p>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Guest Payload</p>
+                                <div className="flex items-center gap-2">
+                                    <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
+                                    <p className="text-sm font-black text-[var(--ease2event-text-primary)] uppercase">{selectedBooking.guests} Nodes</p>
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em] opacity-60">Transaction Value</p>
+                                <div className="flex items-center gap-2">
+                                    <DollarSign size={14} className="text-emerald-500" />
+                                    <p className="text-sm font-black text-emerald-500 uppercase">{selectedBooking.amount}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 bg-[var(--ease2event-bg-elevated)]/50 rounded-2xl border border-[var(--ease2event-border-subtle)]">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-[var(--ease2event-bg-surface)] rounded-xl border border-[var(--ease2event-border-subtle)]">
+                                        <Activity size={16} className="text-[var(--ease2event-brand-primary)]" />
+                                    </div>
+                                    <p className="text-[11px] font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest">Operational Status</p>
+                                </div>
+                                <Badge 
+                                    variant={selectedBooking.status.toLowerCase() as any}
+                                    className="uppercase font-black text-[9px] tracking-widest px-4"
+                                >
+                                    {selectedBooking.status}
+                                </Badge>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </motion.div>
     );
 };

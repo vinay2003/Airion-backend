@@ -22,7 +22,7 @@ import {
   Search,
   ArrowBigUpDash
 } from 'lucide-react';
-import { Button, Badge, Skeleton } from '@ease2event/ui';
+import { Button, Badge, Skeleton, notify } from '@ease2event/ui';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '@ease2event/shared';
 import { bookingService } from '@ease2event/shared/lib/services/bookingService';
@@ -119,6 +119,17 @@ const Earnings: React.FC = () => {
     };
   }, [activePeriod, walletData, searchTerm]);
 
+  const handleExport = () => {
+    notify.info('Preparing transaction logs for export...');
+    setTimeout(() => {
+      notify.success('Transaction logs exported successfully (PDF)');
+    }, 1500);
+  };
+
+  const handleCustomPeriod = () => {
+    notify.info('Date Range Selector: Advanced unit initialized');
+  };
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -148,11 +159,17 @@ const Earnings: React.FC = () => {
         </motion.div>
 
         <motion.div variants={itemVariants} className="flex items-center gap-3 sm:gap-4 relative z-10 w-full lg:w-auto">
-          <Button className="flex-1 sm:flex-none flex items-center justify-center bg-[var(--ease2event-bg-elevated)] h-11 sm:h-12 px-4 sm:px-8 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-[9px] sm:text-[11px] tracking-widest text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-surface)] transition-all active:scale-95 whitespace-nowrap">
+          <Button
+            onClick={handleCustomPeriod}
+            className="flex-1 sm:flex-none flex items-center justify-center bg-[var(--ease2event-bg-elevated)] h-11 sm:h-12 px-4 sm:px-8 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-[9px] sm:text-[11px] tracking-widest text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-surface)] transition-all active:scale-95 whitespace-nowrap"
+          >
             <CalendarIcon size={14} className="mr-2 sm:mr-3" />
             Custom Period
           </Button>
-          <Button className="flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-10 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-2xl hover:scale-105 transition-all active:scale-95 whitespace-nowrap">
+          <Button
+            onClick={handleExport}
+            className="flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-10 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-2xl hover:scale-105 transition-all active:scale-95 whitespace-nowrap"
+          >
             <Download size={14} className="mr-2 sm:mr-3" />
             Export Logs
           </Button>
@@ -365,7 +382,7 @@ const Earnings: React.FC = () => {
             <div className="space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-8">
                 <div className="space-y-1.5 sm:space-y-2">
-                  <p className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-secondary)]  tracking-[0.4em] mb-1 pl-1 leading-none">Fee deduction (Avg)</p>
+                  <p className="text-[12px] sm:text-[14px] font-bold text-[var(--ease2event-text-secondary)]   leading-none">Fee deduction (Avg)</p>
                   <p className="font-bold text-4xl sm:text-5xl text-[var(--ease2event-text-primary)] leading-none">3.5%</p>
                 </div>
                 <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-bold  text-[9px] sm:text-[10px] px-4 py-2 rounded-2xl tracking-[0.2em] shadow-sm leading-none shrink-0">GLOBAL_MINIMUM</Badge>

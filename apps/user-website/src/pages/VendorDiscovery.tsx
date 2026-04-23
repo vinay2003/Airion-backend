@@ -34,6 +34,7 @@ const VendorDiscovery: React.FC = () => {
         const loadVendors = async () => {
             try {
                 const data = await fetchEvents();
+                console.log('[VendorDiscovery] Fetched vendors:', data.length);
                 setVendors(data);
             } catch (err) {
                 console.error('Failed to fetch vendors:', err);
@@ -68,12 +69,14 @@ const VendorDiscovery: React.FC = () => {
     }, [categoryQuery, vendors.length > 0]);
 
     const handleApplyFilters = (filters: FilterValues) => {
+        console.log('[VendorDiscovery] Applying filters:', filters);
         setAppliedFilters(filters);
         const chips: string[] = [];
         if (filters.locationInput) chips.push(filters.locationInput);
         filters.selectedEventTypes.forEach(t => chips.push(t));
         if (filters.selectedCapacity) chips.push(filters.selectedCapacity);
         if (filters.selectedDate) chips.push(filters.selectedDate);
+        filters.selectedAmenities.forEach(a => chips.push(a));
         setActiveFilters(chips);
         setShowMobileFilters(false);
     };
@@ -81,66 +84,103 @@ const VendorDiscovery: React.FC = () => {
     const filteredVendors = useMemo(() => {
         if (!appliedFilters) return vendors;
 
-        return vendors.filter(v => {
-            // 1. Location (Case-insensitive partial match)
-            if (appliedFilters.locationInput && appliedFilters.locationInput.trim() !== '') {
-                const city = appliedFilters.locationInput.toLowerCase().trim();
-                const vLoc = (v.location || '').toLowerCase();
-                if (!vLoc.includes(city)) return false;
-            }
+        // ─── Normalization map: sidebar label → canonical lowercase ──────────────
+        const CATEGORY_ALIASES: Record<string, string[]> = {
+            'wedding':       ['wedding', 'weddings'],
+            'corporate':     ['corporate'],
+            'birthday':      ['birthday', 'birthdays'],
+            'private party': ['private party'],
+            'engagement':    ['engagement'],
+            'party':         ['parties', 'party'],
+        };
 
-            // 2. Price (Default 1,000,000 means no limit)
-            if (appliedFilters.priceRange && appliedFilters.priceRange < 1000000) {
-                const raw = typeof v.price === 'string'
-                    ? v.price.replace(/[^\d]/g, '')
-                    : String(v.price || '');
-                const priceValue = raw ? parseInt(raw, 10) : 0;
-                if (priceValue > 0 && priceValue > appliedFilters.priceRange) return false;
-            }
+        if (import.meta.env.DEV) {
+            console.groupCollapsed('[VendorDiscovery] Filter run');
+            console.log('Active filters:', appliedFilters);
+            console.log('Total vendors before filter:', vendors.length);
+            console.groupEnd();
+        }
 
-            // 3. Event Type (Multi-select OR logic + Singular/Plural Normalization)
-            if (appliedFilters.selectedEventTypes && appliedFilters.selectedEventTypes.length > 0) {
-                const vCat = (v.category || '').toLowerCase();
-                const matchesAnyType = appliedFilters.selectedEventTypes.some(t => {
-                    const filter = t.toLowerCase();
-                    // Flexible matching: "wedding" matches "weddings", "party" matches "parties"
-                    return vCat.includes(filter) || 
-                           filter.includes(vCat) || 
-                           (vCat === 'weddings' && filter === 'wedding') ||
-                           (vCat === 'parties' && filter === 'party') ||
-                           (vCat === 'birthdays' && filter === 'birthday');
-                });
-                if (!matchesAnyType) return false;
-            }
+        const result = vendors.filter(v => {
+            const vendorId = v.id;
 
-            // 4. Capacity
-            if (appliedFilters.selectedCapacity && appliedFilters.selectedCapacity.trim() !== '') {
-                const vCapRaw = (v.capacity || '').toLowerCase();
-                if (vCapRaw !== 'contact vendor') {
-                    // Extract first number found (e.g. "200 guests" -> 200, "100-200" -> 100)
-                    const capacityValue = parseInt(v.capacity?.match(/\d+/)?.[0] || '0', 10);
-                    
-                    if (appliedFilters.selectedCapacity === 'Small Intimate') {
-                        if (capacityValue > 50) return false;
-                    } else if (appliedFilters.selectedCapacity === 'Medium Gathering') {
-                        if (capacityValue < 50 || capacityValue > 200) return false;
-                    } else if (appliedFilters.selectedCapacity === 'Large Celebration') {
-                        if (capacityValue < 200) return false;
-                    }
+            // ── 1. Location: case-insensitive, partial match ──────────────────────
+            if (appliedFilters.locationInput?.trim()) {
+                const needle = appliedFilters.locationInput.toLowerCase().trim();
+                const haystack = (v.location || '').toLowerCase();
+                if (!haystack.includes(needle)) {
+                    if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Location mismatch: "${v.location}" ≠ "${needle}"`);
+                    return false;
                 }
             }
 
-            // 5. Amenities (All selected must be present)
-            if (appliedFilters.selectedAmenities && appliedFilters.selectedAmenities.length > 0) {
-                const vAmenities = v.amenities || [];
-                const hasAllAmenities = appliedFilters.selectedAmenities.every(a => 
-                    vAmenities.some((va: string) => va.toLowerCase() === a.toLowerCase())
-                );
-                if (!hasAllAmenities) return false;
+            // ── 2. Price: skip when at max (1,000,000 = no limit) ─────────────────
+            if (appliedFilters.priceRange && appliedFilters.priceRange < 1000000) {
+                const raw = typeof v.price === 'string' ? v.price.replace(/[^\d]/g, '') : String(v.price || '');
+                const priceValue = raw ? parseInt(raw, 10) : 0;
+                if (priceValue > 0 && priceValue > appliedFilters.priceRange) {
+                    if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Price mismatch: ₹${priceValue} > ₹${appliedFilters.priceRange}`);
+                    return false;
+                }
+            }
+
+            // ── 3. Event Type: OR logic, alias-aware, no false positives ──────────
+            if (appliedFilters.selectedEventTypes?.length > 0) {
+                const vCat = (v.category || '').toLowerCase().trim();
+                const matchesAnyType = appliedFilters.selectedEventTypes.some(t => {
+                    const key = t.toLowerCase().trim();
+                    const aliases = CATEGORY_ALIASES[key] ?? [key];
+                    // Exact alias match first, then fallback to inclusion
+                    return aliases.includes(vCat) || vCat === key;
+                });
+                if (!matchesAnyType) {
+                    if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Category mismatch: "${v.category}" not in [${appliedFilters.selectedEventTypes.join(', ')}]`);
+                    return false;
+                }
+            }
+
+            // ── 4. Date: optional — only filter if a date was selected AND the
+            //    vendor has explicit available dates to compare against ─────────────
+            if (appliedFilters.selectedDate?.trim()) {
+                const vendorDates: string[] = (v as any).availableDates ?? [];
+                if (vendorDates.length > 0 && !vendorDates.includes(appliedFilters.selectedDate)) {
+                    if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Date mismatch: "${appliedFilters.selectedDate}" not in vendor dates`);
+                    return false;
+                }
+                // If vendor has no date data, we DON'T exclude — assume always available
+            }
+
+            // ── 5. Capacity ───────────────────────────────────────────────────────
+            if (appliedFilters.selectedCapacity?.trim()) {
+                const vCapRaw = (v.capacity || '').toLowerCase();
+                if (vCapRaw !== 'contact vendor') {
+                    // Handles "500+ guests", "200 guests", "100-200" — takes first number
+                    const capNum = parseInt(v.capacity?.match(/\d+/)?.[0] ?? '0', 10);
+                    const sel = appliedFilters.selectedCapacity;
+                    if (sel === 'Small Intimate'    && capNum > 50)          { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} > 50 for Small Intimate`);  return false; }
+                    if (sel === 'Medium Gathering'  && (capNum < 50 || capNum > 200)) { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} out of 50-200`); return false; }
+                    if (sel === 'Large Celebration' && capNum < 200)         { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} < 200 for Large`);        return false; }
+                }
+            }
+
+            // ── 6. Amenities: ALL selected must be present (AND logic) ────────────
+            if (appliedFilters.selectedAmenities?.length > 0) {
+                const vAmenities = (v.amenities ?? []).map((a: string) => a.toLowerCase());
+                const missing = appliedFilters.selectedAmenities.filter(a => !vAmenities.includes(a.toLowerCase()));
+                if (missing.length > 0) {
+                    if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Missing amenities: [${missing.join(', ')}]`);
+                    return false;
+                }
             }
 
             return true;
         });
+
+        if (import.meta.env.DEV) {
+            console.log(`[VendorDiscovery] ${result.length}/${vendors.length} vendors passed filters`);
+        }
+
+        return result;
     }, [vendors, appliedFilters]);
 
     const sortedVendors = useMemo(() => {
@@ -170,7 +210,24 @@ const VendorDiscovery: React.FC = () => {
     const removeFilter = (filter: string) => {
         const updated = activeFilters.filter(f => f !== filter);
         setActiveFilters(updated);
-        if (updated.length === 0) setAppliedFilters(null);
+        
+        if (updated.length === 0) {
+            setAppliedFilters(null);
+            return;
+        }
+
+        if (appliedFilters) {
+            const newFilters = { ...appliedFilters };
+            
+            if (newFilters.locationInput === filter) newFilters.locationInput = '';
+            if (newFilters.selectedCapacity === filter) newFilters.selectedCapacity = '';
+            if (newFilters.selectedDate === filter) newFilters.selectedDate = '';
+            
+            newFilters.selectedEventTypes = newFilters.selectedEventTypes.filter(t => t !== filter);
+            newFilters.selectedAmenities = newFilters.selectedAmenities.filter(a => a !== filter);
+            
+            setAppliedFilters(newFilters);
+        }
     };
 
     return (
@@ -321,7 +378,7 @@ const VendorDiscovery: React.FC = () => {
                             </div>
                         ) : isMapView ? (
                             <div className="h-[calc(100vh-200px)] rounded-3xl overflow-hidden shadow-sm border border-neutral-200/60 dark:border-slate-800">
-                                <MapView vendors={vendors} />
+                                <MapView vendors={sortedVendors} />
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

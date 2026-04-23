@@ -23,9 +23,24 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedDate, setSelectedDate] = useState(initialFilters?.selectedDate || '');
+    const [dateError, setDateError] = useState<string | null>(null);
     const [selectedEventTypes, setSelectedEventTypes] = useState<string[]>(initialFilters?.selectedEventTypes || []);
     const [selectedCapacity, setSelectedCapacity] = useState(initialFilters?.selectedCapacity || '');
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>(initialFilters?.selectedAmenities || []);
+    const [isApplying, setIsApplying] = useState(false);
+
+    // Sync internal state when initialFilters changes (e.g. from parent clearing)
+    React.useEffect(() => {
+        if (initialFilters) {
+            setPriceRange(initialFilters.priceRange || 1000000);
+            setLocationInput(initialFilters.locationInput || '');
+            setSelectedDate(initialFilters.selectedDate || '');
+            setSelectedEventTypes(initialFilters.selectedEventTypes || []);
+            setSelectedCapacity(initialFilters.selectedCapacity || '');
+            setSelectedAmenities(initialFilters.selectedAmenities || []);
+            setDateError(null);
+        }
+    }, [initialFilters]);
 
     // Mock data for city suggestions
     const cities = [
@@ -57,16 +72,22 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        if (!value) return setSelectedDate('');
+        if (!value) {
+            setSelectedDate('');
+            setDateError(null);
+            return;
+        }
 
         const selectedDateObj = new Date(value);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         if (selectedDateObj < today) {
-            showToast('Please select a current or future date.', 'error');
+            setDateError('Please select current or future date');
+            showToast('Please select current or future date', 'error');
             return;
         }
+        setDateError(null);
         setSelectedDate(value);
     };
 
@@ -83,33 +104,47 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
     };
 
     const handleClearAll = () => {
-        setPriceRange(50000);
+        setPriceRange(1000000);
         setLocationInput('');
         setSuggestions([]);
         setShowSuggestions(false);
         setSelectedDate('');
+        setDateError(null);
         setSelectedEventTypes([]);
         setSelectedCapacity('');
         setSelectedAmenities([]);
         onApply?.({
             locationInput: '',
-            priceRange: 50000,
+            priceRange: 1000000,
             selectedDate: '',
             selectedEventTypes: [],
             selectedCapacity: '',
             selectedAmenities: [],
         });
+        showToast('All filters cleared', 'success');
     };
 
     const handleApply = () => {
-        onApply?.({
-            locationInput,
-            priceRange,
-            selectedDate,
-            selectedEventTypes,
-            selectedCapacity,
-            selectedAmenities,
-        });
+        if (dateError) {
+            showToast('Please fix the errors before applying', 'error');
+            return;
+        }
+
+        setIsApplying(true);
+        
+        // Add a small delay for visual feedback of the button click
+        setTimeout(() => {
+            onApply?.({
+                locationInput,
+                priceRange,
+                selectedDate,
+                selectedEventTypes,
+                selectedCapacity,
+                selectedAmenities,
+            });
+            setIsApplying(false);
+            showToast('Filters applied successfully', 'success');
+        }, 100);
     };
 
     const selectLocation = (city: string) => {
@@ -201,9 +236,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                         type="date"
                         value={selectedDate}
                         onChange={handleDateChange}
-                        className="w-full pl-10 pr-4 py-3 border border-neutral-200/80 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium"
+                        className={`w-full pl-10 pr-4 py-3 border ${dateError ? 'border-red-500' : 'border-neutral-200/80 dark:border-slate-700'} bg-neutral-50 dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-neutral-900 dark:text-white transition-all font-medium`}
                     />
                 </div>
+                {dateError && (
+                    <p className="mt-2 text-[10px] font-black uppercase tracking-wider text-red-500 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                        <span className="w-1 h-1 rounded-full bg-red-500" />
+                        {dateError}
+                    </p>
+                )}
             </div>
 
             {/* Event Type Filter */}
@@ -299,10 +340,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                 <button
                     type="button"
                     onClick={handleApply}
-                    className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                    disabled={isApplying}
+                    className={`w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${isApplying ? 'opacity-70 cursor-not-allowed scale-95' : ''}`}
                 >
-                    <Search size={18} />
-                    Apply Filters
+                    {isApplying ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                        <Search size={18} />
+                    )}
+                    {isApplying ? 'Applying...' : 'Apply Filters'}
                 </button>
                 <button
                     onClick={handleClearAll}

@@ -122,9 +122,9 @@ const Gallery: React.FC = () => {
     };
 
     return (
-        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 px-0 w-full mt-16">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000 pb-24 px-0 w-full">
             {/* Header Section */}
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 border-b border-[var(--ease2event-border-subtle)] padding-bottom-12">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)]">
                 <div className="space-y-6">
                     <h1 className="text-3xl font-bold tracking-tight">Gallery</h1>
                     <p className="text-base font-semibold text-[var(--ease2event-text-secondary)] flex items-center gap-2">

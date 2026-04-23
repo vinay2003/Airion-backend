@@ -122,7 +122,11 @@ const Settings: React.FC = () => {
     const handleSavePersonal = async () => {
         setSubmitting(true);
         try {
-            await api.patch('/auth/profile', personalData);
+            await api.patch('/auth/profile', {
+                name: personalData.name,
+                phoneNumber: personalData.phone,
+                avatar: personalData.profileImage
+            });
             toast.success('Profile updated successfully!');
             refreshUser();
         } catch (err) {
@@ -193,7 +197,7 @@ const Settings: React.FC = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="space-y-10 max-w-7xl mx-auto pb-32 px-4 sm:px-6"
+            className="space-y-10 px-0 w-full pb-32"
         >
             {/* Header: Matrix Genesis */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-0 pb-10 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
@@ -286,17 +290,40 @@ const Settings: React.FC = () => {
                                         <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">Personal Information</h3>
                                     </div>
 
-                                    <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner">
+                                    <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner relative">
+                                        <input 
+                                            type="file" 
+                                            id="profile-upload" 
+                                            className="hidden" 
+                                            accept="image/*"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                const loaderId = toast.loading('Uploading profile picture...');
+                                                try {
+                                                    const data = await uploadImage(file);
+                                                    const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
+                                                    if (imageUrl) {
+                                                        setPersonalData(prev => ({ ...prev, profileImage: imageUrl }));
+                                                        toast.success('Profile picture updated', { id: loaderId });
+                                                    }
+                                                } catch (err) {
+                                                    toast.error('Upload failed', { id: loaderId });
+                                                }
+                                            }}
+                                        />
                                         <div className="relative">
                                             <Avatar name={personalData.name} src={personalData.profileImage} size="xl" className="size-24 sm:size-32 shadow-2xl ring-8 sm:ring-12 ring-[var(--ease2event-bg-surface)] group-hover:ring-[var(--ease2event-brand-primary)]/20 transition-all duration-700" />
-                                            <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:left-auto md:bottom-1 md:right-1 md:translate-x-0 md:translate-y-0 p-3 bg-[var(--ease2event-brand-primary)]/80 md:bg-[var(--ease2event-brand-primary)] text-white rounded-full md:rounded-2xl shadow-2xl hover:scale-110 active:scale-95 transition-all backdrop-blur-sm md:backdrop-blur-none">
+                                            <label htmlFor="profile-upload" className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-auto md:left-auto md:bottom-1 md:right-1 md:translate-x-0 md:translate-y-0 p-3 bg-[var(--ease2event-brand-primary)]/80 md:bg-[var(--ease2event-brand-primary)] text-white rounded-full md:rounded-2xl shadow-2xl hover:scale-110 active:scale-95 transition-all backdrop-blur-sm md:backdrop-blur-none z-10">
                                                 <Camera size={18} />
-                                            </button>
+                                            </label>
                                         </div>
                                         <div className="space-y-4 sm:space-y-5 text-center md:text-left flex-1">
                                             <h3 className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal ">Profile Picture</h3>
                                             <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed max-w-sm">Upload a professional photo to improve your credibility and brand visibility.</p>
-                                            <Button className="h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm font-bold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto">Update Photo</Button>
+                                            <label htmlFor="profile-upload" className="cursor-pointer inline-flex items-center justify-center h-10 sm:h-11 px-6 sm:px-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm text-[var(--ease2event-text-primary)] font-bold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto transition-all">
+                                                Update Photo
+                                            </label>
                                         </div>
                                     </div>
 

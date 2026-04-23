@@ -595,13 +595,17 @@ export class AuthService {
     }
 
     async updateProfile(userId: string, dto: any): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: userId } });
-        if (!user) {
-            throw new BadRequestException('User not found');
-        }
+        try {
+            const user = await this.userRepository.findOne({ where: { id: userId } });
+            if (!user) {
+                throw new BadRequestException('User not found');
+            }
 
-        Object.assign(user, dto);
-        return this.userRepository.save(user);
+            Object.assign(user, dto);
+            return await this.userRepository.save(user);
+        } catch (error: any) {
+            throw new BadRequestException(error.message || 'Error saving user');
+        }
     }
 
     async findAllUsers(role?: string): Promise<User[]> {

@@ -20,8 +20,14 @@ const CategoryPage: React.FC = () => {
                 const allEvents = await fetchEvents();
                 const catParam = category?.toLowerCase() || '';
                 setCategoryEvents(allEvents.filter(e => {
-                    const eCat = e.category.toLowerCase();
-                    return eCat.includes(catParam) || catParam.includes(eCat);
+                    const eCat = (e.category || '').toLowerCase();
+                    // Flexible match: "wedding" matches "weddings", "party" matches "parties"
+                    return eCat.includes(catParam) || 
+                           catParam.includes(eCat) ||
+                           (eCat === 'weddings' && catParam === 'wedding') ||
+                           (catParam === 'weddings' && eCat === 'wedding') ||
+                           (eCat === 'parties' && catParam === 'party') ||
+                           (catParam === 'parties' && eCat === 'party');
                 }));
             } catch (err) {
                 console.error(err);
@@ -137,7 +143,10 @@ const CategoryPage: React.FC = () => {
                     {/* Sidebar */}
                     <aside className={`w-full lg:w-1/4 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-24">
-                            <FilterSidebar onApply={handleApplyFilters} />
+                            <FilterSidebar 
+                                onApply={handleApplyFilters} 
+                                initialFilters={appliedFilters}
+                            />
                         </div>
                     </aside>
 

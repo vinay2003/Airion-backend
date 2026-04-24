@@ -320,16 +320,13 @@ const Home: React.FC = () => {
                                     >
                                         <Link
                                             to={step.path}
-                                            className="block h-full bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center group cursor-pointer active:scale-95"
+                                            className="block h-full bg-white dark:bg-slate-800 p-5 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center group cursor-pointer active:scale-95"
                                         >
-                                            <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
-                                                <step.icon size={32} className="text-red-500 group-hover:text-white transition-colors" />
+                                            <div className="w-12 h-12 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
+                                                <step.icon size={24} className="text-red-500 group-hover:text-white transition-colors" />
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-red-600 transition-colors">{step.title}</h3>
-                                            <p className="text-gray-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
-                                            <div className="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-red-500 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                                                Get Started <ArrowRight size={16} />
-                                            </div>
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-red-600 transition-colors">{step.title}</h3>
+                                            <p className="text-sm text-gray-600 dark:text-slate-400 leading-snug">{step.desc}</p>
                                         </Link>
                                     </motion.div>
                                 ))}

@@ -98,11 +98,11 @@ const CategorySlider: React.FC = () => {
     };
 
     return (
-        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8 bg-white dark:bg-slate-950 z-20">
+        <div className="relative max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8 bg-white dark:bg-slate-950 z-20">
             {/* Left fade/arrow */}
             {showLeftArrow && (
                 <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-slate-950 to-transparent flex items-center pl-4 z-10">
-                        <button
+                    <button
                         onClick={() => slide('left')}
                         type="button"
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
@@ -120,7 +120,7 @@ const CategorySlider: React.FC = () => {
                 onMouseLeave={onMouseLeave}
                 onMouseUp={onMouseUp}
                 onMouseMove={onMouseMove}
-                className={`flex overflow-x-auto justify-between gap-2 md:gap-3 px-4 py-6 hide-scrollbar -mx-4 sm:mx-0 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                className={`flex overflow-x-auto items-center justify-start md:justify-center gap-8 md:gap-10 py-4 px-4 hide-scrollbar border-b border-gray-200 dark:border-slate-800 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {CATEGORIES.map((category) => {
@@ -130,16 +130,12 @@ const CategorySlider: React.FC = () => {
                             key={category.id}
                             type="button"
                             onClick={() => !isDragging && handleCategoryClick(category.id)}
-                            className={`flex flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 group transition-all duration-300 rounded-full border shadow-sm hover:shadow-md whitespace-nowrap gap-2.5 pointer-events-auto ${isActive
-                                ? 'bg-gradient-to-r from-red-600 to-red-500 border-red-500 text-white scale-105 shadow-red-500/20'
-                                : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-600 dark:text-gray-300 hover:border-red-200 dark:hover:border-red-900/50 hover:-translate-y-0.5'
+                            className={`pointer-events-auto ${isActive
+                                ? 'text-red-500 scale-110 border-b-2 border-red-500 whitespace-nowrap font-bold transition-all duration-300'
+                                : 'text-gray-500 dark:text-slate-400 hover:text-red-500 hover:scale-110 border-b-2 border-transparent hover:border-red-500 transition-all duration-300 whitespace-nowrap font-medium'
                                 }`}
                         >
-                            <category.icon size={18} className={`transition-colors ${isActive ? 'text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-red-500'}`} />
-                            <span className={`text-sm tracking-wide font-bold transition-colors ${isActive ? 'text-white' : 'group-hover:text-gray-900 dark:group-hover:text-white'
-                                }`}>
-                                {category.label}
-                            </span>
+                            {category.label}
                         </button>
                     );
                 })}
@@ -148,7 +144,7 @@ const CategorySlider: React.FC = () => {
             {/* Right fade/arrow */}
             {showRightArrow && (
                 <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-slate-950 to-transparent flex items-center justify-end pr-4 z-10">
-                        <button
+                    <button
                         onClick={() => slide('right')}
                         type="button"
                         className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"

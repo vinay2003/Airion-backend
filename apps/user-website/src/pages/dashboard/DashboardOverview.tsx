@@ -74,7 +74,7 @@ const DashboardOverview: React.FC = () => {
                         <div><span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span> </div>
                     </div>
                     <div className="space-y-1">
-                        <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight italic leading-tight">
+                        <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight leading-tight">
                             Ease2event Matrix, <span className="text-red-500">Welcome {firstName}</span>
                         </h1>
                         <p className="text-xs sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Synchronizing your event lifecycle in real-time.</p>
@@ -113,7 +113,7 @@ const DashboardOverview: React.FC = () => {
                         >
                             <div className="relative z-10">
                                 <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.title}</p>
-                                <h3 className="text-4xl font-black text-neutral-900 dark:text-white italic">{stat.value}</h3>
+                                <h3 className="text-4xl font-black text-neutral-900 dark:text-white">{stat.value}</h3>
                             </div>
                             <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all group-hover:rotate-12 ${stat.bg} ${stat.text}`}>
                                 <stat.icon size={32} />
@@ -143,7 +143,7 @@ const DashboardOverview: React.FC = () => {
                                     <Zap size={14} fill="currentColor" />
                                     {deals[currentBanner].subtitle}
                                 </div>
-                                <h3 className="text-white text-3xl font-black max-w-[400px] leading-tight mb-6 italic">{deals[currentBanner].title}</h3>
+                                <h3 className="text-white text-3xl font-black max-w-[400px] leading-tight mb-6">{deals[currentBanner].title}</h3>
                                 <Link to={deals[currentBanner].link} className="w-fit bg-white text-black hover:bg-red-500 hover:text-white text-xs font-black px-8 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-xl">
                                     SYNCHRONIZE NOW <ChevronRight size={18} />
                                 </Link>
@@ -163,7 +163,7 @@ const DashboardOverview: React.FC = () => {
                 {/* Active Booking Nodes */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white italic tracking-tight">Active Registries</h2>
+                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Active Registries</h2>
                         <Link to="/dashboard/bookings" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2 uppercase">
                             Full Registry <ArrowRight size={16} />
                         </Link>
@@ -182,13 +182,13 @@ const DashboardOverview: React.FC = () => {
                                 <div className="flex-1 flex flex-col justify-between py-2">
                                     <div className="space-y-3">
                                         <div className="flex flex-wrap items-center justify-between gap-4">
-                                            <span className="text-[10px] font-black text-red-500 tracking-[0.2em] uppercase italic bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/20">{booking.category}</span>
+                                            <span className="text-[10px] font-black text-red-500 tracking-[0.2em] uppercase bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/20">{booking.category}</span>
                                             <div className="flex items-center gap-2 px-4 py-1.5 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full font-black text-[9px] uppercase tracking-widest shadow-lg">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 {booking.status}
                                             </div>
                                         </div>
-                                        <h3 className="text-3xl font-black text-neutral-900 dark:text-white truncate italic tracking-tighter">{booking.vendorName}</h3>
+                                        <h3 className="text-3xl font-black text-neutral-900 dark:text-white truncate tracking-tighter">{booking.vendorName}</h3>
                                         <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 dark:text-slate-500 uppercase">
                                             <MapPin size={16} className="text-red-500" />
                                             <span>{booking.location}</span>
@@ -200,7 +200,7 @@ const DashboardOverview: React.FC = () => {
                                             <div className="w-1 h-1 bg-neutral-300 rounded-full" />
                                             <div className="flex items-center gap-2"><Clock size={16} className="text-red-500" /> {booking.time}</div>
                                         </div>
-                                        <span className="text-2xl font-black text-neutral-900 dark:text-white italic tracking-tighter">₹{booking.price.toLocaleString()}</span>
+                                        <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tighter">₹{booking.price.toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 -mr-16 -mt-16 rounded-full blur-3xl group-hover:bg-red-500/10 transition-all" />
@@ -224,7 +224,7 @@ const DashboardOverview: React.FC = () => {
 
                 {/* Economic Matrix (Budget) */}
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white italic tracking-tight">Capital Matrix</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Capital Matrix</h2>
                     <div className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
                         <div className="h-56 w-full relative z-10">
                             <ResponsiveContainer width="100%" height="100%">
@@ -239,12 +239,12 @@ const DashboardOverview: React.FC = () => {
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                 <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Utilized</span>
-                                <span className="text-3xl font-black text-neutral-900 dark:text-white italic">{Math.round((stats.budgetSpent / 500000) * 100)}%</span>
+                                <span className="text-3xl font-black text-neutral-900 dark:text-white">{Math.round((stats.budgetSpent / 500000) * 100)}%</span>
                             </div>
                         </div>
                         <div className="text-center mt-6 space-y-1 z-10">
                             <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-widest">Capital Reserved</p>
-                            <h3 className="text-3xl font-black text-neutral-900 dark:text-white italic">₹{(500000 - stats.budgetSpent).toLocaleString()}</h3>
+                            <h3 className="text-3xl font-black text-neutral-900 dark:text-white">₹{(500000 - stats.budgetSpent).toLocaleString()}</h3>
                             <p className="text-xs text-neutral-500 font-bold uppercase tracking-tighter">of ₹5,00,000 threshold</p>
                         </div>
                         <Link to="/dashboard/budget" className="w-full text-center text-xs font-black text-red-500 hover:tracking-[0.2em] transition-all mt-8 pt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 uppercase z-10">
@@ -258,7 +258,7 @@ const DashboardOverview: React.FC = () => {
             {/* 🔥 High-Value Recommendations */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white italic tracking-tight">Tailored Nodes 🔥</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Tailored Nodes 🔥</h2>
                     <Link to="/marketplace" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2 uppercase">
                         Expand Results <ArrowRight size={16} />
                     </Link>
@@ -286,7 +286,7 @@ const DashboardOverview: React.FC = () => {
                             <div className="p-6 space-y-4">
                                 <div>
                                     <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-black text-neutral-900 dark:text-white text-lg italic truncate flex-1 pr-3 tracking-tight">{vendor.name}</h3>
+                                        <h3 className="font-black text-neutral-900 dark:text-white text-lg truncate flex-1 pr-3 tracking-tight">{vendor.name}</h3>
                                         <div className="flex items-center gap-1 px-2 py-1 bg-amber-400/10 text-amber-500 rounded-lg border border-amber-400/20">
                                             <Star size={12} fill="currentColor" />
                                             <span className="text-[10px] font-black">{vendor.rating}</span>
@@ -299,7 +299,7 @@ const DashboardOverview: React.FC = () => {
                                 <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800">
                                     <div className="space-y-0.5">
                                         <span className="block text-[9px] font-black text-neutral-600 uppercase tracking-widest">Base Rate</span>
-                                        <span className="text-xl font-black text-neutral-900 dark:text-white italic">{vendor.price}</span>
+                                        <span className="text-xl font-black text-neutral-900 dark:text-white">{vendor.price}</span>
                                     </div>
                                     <Link to={`/event/${vendor.id}`} className="bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-red-500 hover:text-white text-[10px] font-black px-6 py-3 rounded-xl transition-all shadow-xl uppercase tracking-widest">
                                         Lock Node
@@ -322,7 +322,7 @@ const DashboardOverview: React.FC = () => {
                         <div className="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-500/40">
                             <CreditCard size={24} />
                         </div>
-                        <h3 className="text-2xl font-black italic tracking-tighter uppercase">Fiscal Elasticity Protocol</h3>
+                        <h3 className="text-2xl font-black tracking-tighter uppercase">Fiscal Elasticity Protocol</h3>
                     </div>
                     <p className="text-neutral-400 font-medium max-w-md">De-risk your event capital strategy. Deploy payments across 3–12 month synchronized cycles. Zero upfront liquidity required for verified nodes.</p>
                 </div>

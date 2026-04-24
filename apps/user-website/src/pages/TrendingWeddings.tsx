@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles, Search } from 'lucide-react';
 import ListingCard from '../components/ListingCard';
 import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import SEO from '../components/SEO';

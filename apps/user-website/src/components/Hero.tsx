@@ -78,7 +78,7 @@ const Hero: React.FC = () => {
 
                         {/* ✅ Welcome badge */}
                         {isAuthenticated && (
-                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-black shadow-2xl">
+                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl">
                                 <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]"></div>
 
                                 Welcome back,
@@ -93,18 +93,22 @@ const Hero: React.FC = () => {
                         <h1 className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                             {isAuthenticated ? (
                                 <>
-                                    Your Event Dashboard <br className="hidden md:block" />
-                                    <span className="bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent italic px-2">
-                                        is Waiting for You
-                                    </span>
+                                    <h1 className="text-3xl md:text-5xl font-semibold text-neutral-100 tracking-wide leading-tight font-serif">
+                                        Your Event Dashboard <br className="hidden md:block" />
+                                        <span className="font-medium">
+                                            is Waiting for You
+                                        </span>
+                                    </h1>
                                 </>
                             ) : (
                                 <>
-                                    Create Unforgettable <br className="hidden md:block" />
-                                    <span>
-                                        Moments
-                                    </span>
-                                    {" "}With Ease2event
+                                    <h1 className="text-3xl md:text-5xl font-bold text-neutral-100 tracking-wide leading-tight font-serif">
+                                        Where Every Gathering <br className="hidden md:block" />
+                                        <span className="font-medium">
+                                            Becomes a Story
+                                        </span>
+                                    </h1>
+
                                 </>
                             )}
                         </h1>

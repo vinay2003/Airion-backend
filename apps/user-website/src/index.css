@@ -72,7 +72,7 @@
 }
 
 body {
-  @apply bg-transparent text-[#1A1A2E] antialiased;
+  @apply bg-white dark:bg-slate-950 text-[#1A1A2E] dark:text-white antialiased;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 

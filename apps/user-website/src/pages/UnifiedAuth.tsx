@@ -196,7 +196,7 @@ const UnifiedAuth: React.FC = () => {
 
             // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
             if (errorMsg.includes('User not found') || err.response?.status === 401) {
-                toast.error('Identity Node not indexed. Reconciling to Genesis Protocol...');
+                toast.error('Account not found in our registry. Redirecting to registration...');
                 setTimeout(() => {
                     setMode('signup');
                     setStep('phone');

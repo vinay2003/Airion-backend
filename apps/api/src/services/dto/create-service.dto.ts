@@ -2,21 +2,24 @@ import { IsString, IsNotEmpty, IsUUID, Length, IsNumber, Min, Max, IsArray, IsOp
 
 export class CreateServiceDto {
     @IsUUID()
-    vendorId: string;
+    @IsOptional()
+    vendorId?: string;
 
     @IsUUID()
-    categoryId: string;
+    @IsOptional()
+    categoryId?: string;
 
     @IsUUID()
-    subcategoryId: string;
+    @IsOptional()
+    subcategoryId?: string;
 
     @IsString()
     @IsNotEmpty()
     title: string;
 
     @IsString()
-    @Length(50, 2000)
-    description: string;
+    @IsOptional()
+    description?: string;
 
     @IsNumber()
     @Min(0)
@@ -27,16 +30,18 @@ export class CreateServiceDto {
     currency: string = 'INR';
 
     @IsNumber()
-    @Min(1)
-    @Max(24)
-    durationHours: number;
+    @IsOptional()
+    @Min(0)
+    @Max(168) // Up to a week
+    durationHours?: number;
 
     @IsArray()
     @IsOptional()
     images?: string[];
 
     @IsArray()
-    features: Array<{
+    @IsOptional()
+    features?: Array<{
         name: string;
         included: boolean;
         description?: string;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Search, Filter, ChevronRight, FileText } from 'lucide-react';
 
 import { fetchMyBookings } from '../../lib/api';
@@ -8,6 +9,8 @@ const MyBookings: React.FC = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('All');
+    const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+    const navigate = useNavigate();
 
     const tabs = ['All', 'Upcoming', 'Pending', 'Completed', 'Cancelled'];
 
@@ -124,7 +127,8 @@ const MyBookings: React.FC = () => {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.3 }}
                                 key={booking.id}
-                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-5 shadow-sm border border-neutral-200 dark:border-slate-800 hover:shadow-xl hover:border-red-500/30 transition-all duration-300 group flex flex-col sm:flex-row gap-6 cursor-pointer"
+                                onClick={() => setSelectedBooking(booking)}
+                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-5 shadow-sm border border-neutral-300 dark:border-slate-800 hover:shadow-xl hover:border-red-500/30 transition-all duration-300 group flex flex-col sm:flex-row gap-6 cursor-pointer"
                             >
                                 <div className="sm:w-48 h-40 sm:h-full rounded-2xl overflow-hidden shrink-0 relative">
                                     <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
@@ -161,17 +165,22 @@ const MyBookings: React.FC = () => {
                                             <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button 
+                                            <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     window.open(`${import.meta.env.VITE_API_URL}/bookings/${booking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank');
                                                 }}
-                                                className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip" 
+                                                className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip"
                                                 title="Download Invoice"
                                             >
                                                 <FileText size={18} />
                                             </button>
-                                            <button className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedBooking(booking);
+                                                }}
+                                                className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
                                                 Details
                                             </button>
                                         </div>
@@ -190,6 +199,89 @@ const MyBookings: React.FC = () => {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Booking Detail Modal */}
+            <AnimatePresence>
+                {selectedBooking && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedBooking(null)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-2xl border border-neutral-200 dark:border-slate-800"
+                        >
+                            <div className="h-48 sm:h-64 relative">
+                                <img src={selectedBooking.vendor?.portfolioImages?.[0]} alt="Vendor" className="w-full h-full object-cover" />
+                                <button
+                                    onClick={() => setSelectedBooking(null)}
+                                    className="absolute top-6 right-6 w-10 h-10 bg-black/40 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors"
+                                >
+                                    <ChevronRight className="rotate-180" size={24} />
+                                </button>
+                                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h2 className="text-2xl sm:text-3xl font-black text-white">{selectedBooking.vendor?.businessName}</h2>
+                                    <p className="text-white/70 font-medium flex items-center gap-2 mt-1">
+                                        <MapPin size={16} className="text-red-500" /> {selectedBooking.vendor?.city}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="p-8 space-y-8">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Booking ID</p>
+                                        <p className="font-bold text-neutral-900 dark:text-white">#{selectedBooking.bookingCode}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Event Date</p>
+                                        <p className="font-bold text-neutral-900 dark:text-white">{new Date(selectedBooking.eventDate).toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Status</p>
+                                        <p className={`font-bold capitalize ${getStatusStyles(selectedBooking.status).text}`}>{selectedBooking.status}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Total Amount</p>
+                                        <p className="font-black text-red-500 text-lg">₹{parseFloat(selectedBooking.totalAmount).toLocaleString()}</p>
+                                    </div>
+                                </div>
+
+                                <div className="p-6 bg-neutral-50 dark:bg-slate-800/50 rounded-3xl border border-neutral-100 dark:border-slate-800">
+                                    <h4 className="font-black text-neutral-900 dark:text-white mb-4 uppercase text-xs tracking-widest">Service Overview</h4>
+                                    <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">
+                                        You have a confirmed reservation with {selectedBooking.vendor?.businessName}.
+                                        Our synchronized protocol ensures all logistics are aligned for your event on {new Date(selectedBooking.eventDate).toLocaleDateString()}.
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={() => window.open(`${import.meta.env.VITE_API_URL}/bookings/${selectedBooking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank')}
+                                        className="flex-1 py-4 bg-neutral-100 dark:bg-slate-800 text-neutral-900 dark:text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neutral-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <FileText size={18} /> Download Invoice
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedBooking(null);
+                                            navigate('/dashboard/inbox');
+                                        }}
+                                        className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-red-500/20">
+                                        Contact Vendor
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

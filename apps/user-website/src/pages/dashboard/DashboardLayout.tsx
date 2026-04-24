@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { useAuth } from '@shared/auth/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const ShootingStars = () => {
     return (
@@ -123,8 +124,8 @@ const FlowerPetals = () => {
 const DashboardLayout: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-    const [isDark, setIsDark] = useState(false);
     const { user, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     // Zustand
@@ -140,10 +141,7 @@ const DashboardLayout: React.FC = () => {
         }
     };
 
-    const toggleTheme = () => {
-        setIsDark(!isDark);
-        document.documentElement.classList.toggle('dark');
-    };
+
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
@@ -157,7 +155,7 @@ const DashboardLayout: React.FC = () => {
     ];
 
     return (
-        <div className={`min-h-screen bg-neutral-50 dark:bg-slate-950 flex font-sans ${isDark ? 'dark' : ''}`}>
+        <div className={`min-h-screen bg-neutral-50 dark:bg-slate-950 flex font-sans transition-colors duration-300`}>
             {/* Backdrop for mobile */}
             <AnimatePresence>
                 {isSidebarOpen && (
@@ -173,11 +171,11 @@ const DashboardLayout: React.FC = () => {
 
             {/* Sidebar */}
             <aside className={`
-                fixed lg:sticky top-0 left-0 z-40 h-screen w-68 bg-white dark:bg-slate-900 border-r border-neutral-200/80 dark:border-slate-800
+                fixed lg:sticky top-0 left-0 z-40 h-screen w-68 bg-white dark:bg-slate-900 border-r border-neutral-300/80 dark:border-slate-800
                 transform transition-all duration-300 ease-in-out flex flex-col
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
-                <div className="p-6 flex items-center justify-between border-b border-neutral-100 dark:border-slate-800">
+                <div className="p-6 flex items-center justify-between border-b border-neutral-200 dark:border-slate-800">
                     <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
                         <span className="text-red-500">Ease2event</span>
                     </h2>
@@ -219,13 +217,13 @@ const DashboardLayout: React.FC = () => {
 
                 </nav>
 
-                <div className="p-4 border-t border-neutral-100 dark:border-slate-800 space-y-2">
+                <div className="p-4 border-t border-neutral-200 dark:border-slate-800 space-y-2">
                     <button
                         onClick={toggleTheme}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-neutral-600 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-all font-medium text-sm"
                     >
-                        {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                        {isDark ? 'Light Mode' : 'Dark Mode'}
+                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                        {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                     </button>
 
                     <button
@@ -241,12 +239,12 @@ const DashboardLayout: React.FC = () => {
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0">
                 {/* Header Sub-Nav */}
-                <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-slate-800/60 h-16 flex items-center justify-between px-4 md:px-6">
+                <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-neutral-300/60 dark:border-slate-800/60 h-16 flex items-center justify-between px-4 md:px-6">
                     <button className="lg:hidden p-2 text-neutral-600 hover:bg-neutral-100 rounded-lg" onClick={() => setIsSidebarOpen(true)}>
                         <Menu size={20} />
                     </button>
 
-                    <div className="flex-1 max-w-md mx-4 hidden md:flex items-center gap-2 bg-neutral-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-neutral-200/30 dark:border-slate-700/50">
+                    <div className="flex-1 max-w-md mx-4 hidden md:flex items-center gap-2 bg-neutral-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-neutral-300/30 dark:border-slate-700/50">
                         <Search size={16} className="text-neutral-400" />
                         <input type="text" placeholder="Search budget, vendors..." className="bg-transparent border-none outline-none text-sm text-neutral-700 dark:text-neutral-200 w-full focus:ring-0" />
                     </div>
@@ -277,9 +275,9 @@ const DashboardLayout: React.FC = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                             transition={{ duration: 0.15 }}
-                                            className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-2xl shadow-xl z-20 overflow-hidden"
+                                            className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-2xl shadow-xl z-20 overflow-hidden"
                                         >
-                                            <div className="p-4 border-b border-neutral-100 dark:border-slate-800 flex items-center justify-between">
+                                            <div className="p-4 border-b border-neutral-200 dark:border-slate-800 flex items-center justify-between">
                                                 <span className="font-bold text-neutral-900 dark:text-white">Notifications</span>
                                                 {unreadNotifications > 0 && (
                                                     <button className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors">Mark all read</button>
@@ -289,7 +287,7 @@ const DashboardLayout: React.FC = () => {
                                                 {notifications.length === 0 ? (
                                                     <div className="p-6 text-center text-sm text-neutral-500">No new notifications</div>
                                                 ) : notifications.map(n => (
-                                                    <div key={n.id} className="p-4 border-b border-neutral-50 dark:border-slate-800/40 hover:bg-neutral-50 dark:hover:bg-slate-800/50 cursor-pointer flex gap-3">
+                                                    <div key={n.id} className="p-4 border-b border-neutral-100 dark:border-slate-800/40 hover:bg-neutral-50 dark:hover:bg-slate-800/50 cursor-pointer flex gap-3">
                                                         <div className={`mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${n.type === 'offer' ? 'bg-green-100 text-green-600 dark:bg-green-500/20' : n.type === 'booking' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20' : n.type === 'reminder' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20' : 'bg-red-100 text-red-600 dark:bg-red-500/20'}`}>
                                                             {n.type === 'offer' ? <Sparkles size={14} /> : n.type === 'booking' ? <Calendar size={14} /> : <Mail size={14} />}
                                                         </div>
@@ -304,7 +302,7 @@ const DashboardLayout: React.FC = () => {
                                                     </div>
                                                 ))}
                                             </div>
-                                            <div className="p-3 border-t border-neutral-100 dark:border-slate-800 text-center">
+                                            <div className="p-3 border-t border-neutral-200 dark:border-slate-800 text-center">
                                                 <button className="text-sm font-bold text-neutral-600 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white transition-colors">View all</button>
                                             </div>
                                         </motion.div>
@@ -320,28 +318,30 @@ const DashboardLayout: React.FC = () => {
                 </header>
 
                 <main className="flex-1 overflow-y-auto p-6 md:p-8 relative">
-                    {/* 🌈 Dynamic RGB Spectrum Background */}
-                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-                        <motion.div
-                            animate={{
-                                filter: ['hue-rotate(0deg)', 'hue-rotate(360deg)']
-                            }}
-                            transition={{
-                                duration: 20,
-                                repeat: Infinity,
-                                ease: "linear"
-                            }}
-                            className="absolute inset-0"
-                        >
-                            <div className="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] rounded-full bg-red-600/10 dark:bg-red-500/[0.15] blur-[100px] sm:blur-[160px] animate-pulse" />
-                            <div className="absolute top-[20%] -right-[5%] w-[35%] h-[35%] rounded-full bg-blue-600/10 dark:bg-indigo-500/[0.15] blur-[100px] sm:blur-[140px]" />
-                            <div className="absolute -bottom-[10%] left-[15%] w-[45%] h-[45%] rounded-full bg-purple-600/10 dark:bg-purple-500/[0.15] blur-[100px] sm:blur-[180px]" />
-                        </motion.div>
-                        <div className="absolute inset-0 bg-neutral-50/20 dark:bg-slate-950/40 backdrop-blur-[2px]" />
-                        <ShootingStars />
-                        <Snowfall />
-                        <FlowerPetals />
-                    </div>
+                    {/* 🌈 Dynamic RGB Spectrum Background - Only visible in Dark Mode */}
+                    {theme === 'dark' && (
+                        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+                            <motion.div
+                                animate={{
+                                    filter: ['hue-rotate(0deg)', 'hue-rotate(360deg)']
+                                }}
+                                transition={{
+                                    duration: 20,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="absolute inset-0"
+                            >
+                                <div className="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] rounded-full bg-red-600/10 dark:bg-red-500/[0.15] blur-[100px] sm:blur-[160px] animate-pulse" />
+                                <div className="absolute top-[20%] -right-[5%] w-[35%] h-[35%] rounded-full bg-blue-600/10 dark:bg-indigo-500/[0.15] blur-[100px] sm:blur-[140px]" />
+                                <div className="absolute -bottom-[10%] left-[15%] w-[45%] h-[45%] rounded-full bg-purple-600/10 dark:bg-purple-500/[0.15] blur-[100px] sm:blur-[180px]" />
+                            </motion.div>
+                            <div className="absolute inset-0 bg-neutral-50/20 dark:bg-slate-950/40 backdrop-blur-[2px]" />
+                            <ShootingStars />
+                            <Snowfall />
+                            <FlowerPetals />
+                        </div>
+                    )}
 
                     <div className="max-w-7xl mx-auto relative z-10">
                         <Outlet />

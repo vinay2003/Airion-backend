@@ -5,34 +5,7 @@ const AboutUs: React.FC = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
             <SEO title="About Us" description="We bring your vision to life. Ease2event is your trusted partner for unforgettable events." />
-            {/* Hero Section */}
-            <div className="relative py-20 bg-gray-50 dark:bg-slate-900 overflow-hidden">
-                <div className="absolute inset-0 opacity-10 dark:opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                <div className="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10">
-                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter">
-                        We<span className="ml-1"></span> Create <span className="ml-1">Memories</span>
-                    </h1>
-                    <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-bold text-xs tracking-widest">
-                        We help you turn your ideas into a well-planned event with simple steps and no confusion                    </p>
-                </div>
-            </div>
 
-            {/* Stats Section */}
-            <div className="max-w-6xl mx-auto px-4 md:px-8 -mt-10 relative z-18">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 grid grid-cols-2 md:grid-cols-4 gap-8 border border-gray-100 dark:border-slate-700">
-                    {[
-                        { label: 'Events Planned', value: '500+' },
-                        { label: 'Happy Clients', value: '10k+' },
-                        { label: 'Verified Vendors', value: '250+' },
-                        { label: 'Cities Covered', value: '15+' },
-                    ].map((stat, idx) => (
-                        <div key={idx} className="text-center">
-                            <div className="text-3xl md:text-4xl font-bold text-red-500 mb-2">{stat.value}</div>
-                            <div className="text-sm text-gray-500 dark:text-slate-400 font-medium uppercase tracking-wide">{stat.label}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
             {/* Story & Vision */}
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-24 space-y-24">

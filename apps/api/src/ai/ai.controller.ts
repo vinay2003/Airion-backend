@@ -15,4 +15,11 @@ export class AIController {
     async generateReply(@Body() body: { inquiry: string; voice?: string }) {
         return this.aiService.generateEasyReply(body.inquiry, body.voice);
     }
+
+    @Post('support')
+    @Roles(UserRole.USER, UserRole.ADMIN, UserRole.VENDOR)
+    async supportChat(@Body() body: { message: string }) {
+        const response = await this.aiService.getSupportResponse(body.message);
+        return { response };
+    }
 }

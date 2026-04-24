@@ -71,7 +71,7 @@ export class AuthService {
 
         this.logger.log(`🔑 [OTP_DEBUG] Signup OTP for ${identifier}: ${otpCode}`);
         const isProduction = this.configService.get('NODE_ENV') === 'production';
-        
+
         return {
             message: 'OTP sent successfully',
             _dev_otp: otpCode,
@@ -137,12 +137,12 @@ export class AuthService {
         const isProfileComplete = false;
 
         // Generate JWT token — include isProfileComplete for vendor routing decisions
-        const payload = { 
-            sub: user.id, 
-            email: user.email, 
+        const payload = {
+            sub: user.id,
+            email: user.email,
             role: user.role,
             isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
-            vendorId: (user as any).vendor?.id 
+            vendorId: (user as any).vendor?.id
         };
         const access_token = this.jwtService.sign(payload);
 
@@ -168,14 +168,24 @@ export class AuthService {
             throw new BadRequestException('Please provide either phone or email');
         }
 
-        // Check if user exists
+        // Check if user exists with flexible phone matching
         const whereConditions: any[] = [];
-        if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
+        if (dto.phone) {
+            whereConditions.push({ phoneNumber: dto.phone });
+            // Also try matching without +91 if provided
+            if (dto.phone.startsWith('+91')) {
+                whereConditions.push({ phoneNumber: dto.phone.substring(3) });
+            }
+            // Also try matching with +91 if not provided
+            else if (dto.phone.length === 10) {
+                whereConditions.push({ phoneNumber: `+91${dto.phone}` });
+            }
+        }
         if (dto.email) whereConditions.push({ email: dto.email });
 
         // User lookup
         const user = await this.userRepository.findOne({ where: whereConditions });
-        
+
         // Parallelize user check and OTP cleanup
         await this.otpRepository.delete({ identifier, type: 'login' });
 
@@ -204,15 +214,15 @@ export class AuthService {
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
         const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
-        
+
         if (dto.phone !== adminPhone) {
             this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
             throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
         }
 
         // Check if admin user exists in DB
-        const adminUser = await this.userRepository.findOne({ 
-            where: { phoneNumber: dto.phone, role: UserRole.ADMIN } 
+        const adminUser = await this.userRepository.findOne({
+            where: { phoneNumber: dto.phone, role: UserRole.ADMIN }
         });
 
         if (!adminUser) {
@@ -287,7 +297,14 @@ export class AuthService {
 
         // Get user — load vendor relation to get isProfileComplete
         const whereConditions: any[] = [];
-        if (dto.phone) whereConditions.push({ phoneNumber: dto.phone });
+        if (dto.phone) {
+            whereConditions.push({ phoneNumber: dto.phone });
+            if (dto.phone.startsWith('+91')) {
+                whereConditions.push({ phoneNumber: dto.phone.substring(3) });
+            } else if (dto.phone.length === 10) {
+                whereConditions.push({ phoneNumber: `+91${dto.phone}` });
+            }
+        }
         if (dto.email) whereConditions.push({ email: dto.email });
 
         const user = await this.userRepository.findOne({
@@ -328,9 +345,9 @@ export class AuthService {
         const vendorId = (loggedInUser as any).vendor?.id;
 
         // Generate JWT token — include isProfileComplete for client-side routing
-        const payload = { 
-            sub: loggedInUser.id, 
-            email: loggedInUser.email, 
+        const payload = {
+            sub: loggedInUser.id,
+            email: loggedInUser.email,
             role: loggedInUser.role,
             isProfileComplete: loggedInUser.role === UserRole.VENDOR ? isProfileComplete : undefined,
             vendorId,
@@ -343,7 +360,7 @@ export class AuthService {
         // 🔐 SECURE REFRESH SYSTEM: Generate Entropy-Rich Token
         const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
         const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
-        
+
         // Persist session node
         const refreshToken = this.refreshTokenRepository.create({
             userId: loggedInUser.id,
@@ -363,7 +380,7 @@ export class AuthService {
     // Verify OTP for Admin
     async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
         const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
-        
+
         if (dto.phone !== adminPhone) {
             throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
         }
@@ -401,16 +418,16 @@ export class AuthService {
         await this.otpRepository.delete({ identifier });
 
         // Find existing admin record (Strict: No auto-create)
-        const adminUser = await this.userRepository.findOne({ 
-            where: { phoneNumber: identifier, role: UserRole.ADMIN } 
+        const adminUser = await this.userRepository.findOne({
+            where: { phoneNumber: identifier, role: UserRole.ADMIN }
         });
 
         if (!adminUser) {
             throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
         }
 
-        const payload = { 
-            sub: adminUser.id, 
+        const payload = {
+            sub: adminUser.id,
             role: adminUser.role,
             name: adminUser.name
         };
@@ -435,6 +452,12 @@ export class AuthService {
         }
 
         const { password, ...userWithoutPassword } = user;
+
+        // Prevent circular reference issues during serialization
+        if (userWithoutPassword.vendor) {
+            delete (userWithoutPassword.vendor as any).user;
+        }
+
         return userWithoutPassword;
     }
 
@@ -458,11 +481,11 @@ export class AuthService {
 
         await this.userRepository.save(user);
 
-        const payload = { 
-            sub: user.id, 
-            email: user.email, 
+        const payload = {
+            sub: user.id,
+            email: user.email,
             role: user.role,
-            vendorId: (user as any).vendor?.id 
+            vendorId: (user as any).vendor?.id
         };
         const access_token = this.jwtService.sign(payload);
 
@@ -525,7 +548,7 @@ export class AuthService {
         }
 
         const user = refreshToken.user;
-        
+
         // 🔐 ROTATE: Revoke old cipher immediately
         refreshToken.isRevoked = true;
         await this.refreshTokenRepository.save(refreshToken);
@@ -534,9 +557,9 @@ export class AuthService {
         const isProfileComplete = (user as any).vendor?.isProfileComplete ?? false;
         const vendorId = (user as any).vendor?.id;
 
-        const payload = { 
-            sub: user.id, 
-            email: user.email, 
+        const payload = {
+            sub: user.id,
+            email: user.email,
             role: user.role,
             isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
             vendorId,
@@ -545,7 +568,7 @@ export class AuthService {
 
         const newRefreshTokenPlain = CryptoUtil.generateSecureToken(32);
         const newTokenHash = CryptoUtil.hashValue(newRefreshTokenPlain);
-        
+
         const newRefreshToken = this.refreshTokenRepository.create({
             userId: user.id,
             tokenHash: newTokenHash,
@@ -594,17 +617,63 @@ export class AuthService {
         return { message: 'Password reset successfully' };
     }
 
-    async updateProfile(userId: string, dto: any): Promise<User> {
+    async updateProfile(userId: string, dto: any): Promise<any> {
         try {
-            const user = await this.userRepository.findOne({ where: { id: userId } });
-            if (!user) {
-                throw new BadRequestException('User not found');
+            // Strict filtering of fields to ensure database compatibility
+            const allowedFields = ['name', 'email', 'avatar', 'location', 'language', 'interests', 'marketingConsent', 'phoneNumber'];
+            const filteredDto: any = {};
+
+            for (const key of allowedFields) {
+                if (dto[key] !== undefined && dto[key] !== null) {
+                    const value = typeof dto[key] === 'string' ? dto[key].trim() : dto[key];
+                    if (value !== '') {
+                        filteredDto[key] = value;
+                    }
+                }
             }
 
-            Object.assign(user, dto);
-            return await this.userRepository.save(user);
+            // Check if phone number or email is already taken by ANOTHER user
+            if (filteredDto.email) {
+                const existingEmail = await this.userRepository.findOne({
+                    where: { email: filteredDto.email }
+                });
+                if (existingEmail && existingEmail.id !== userId) {
+                    throw new BadRequestException('This email address is already associated with another account.');
+                }
+            }
+
+            if (filteredDto.phoneNumber) {
+                const existingPhone = await this.userRepository.findOne({
+                    where: { phoneNumber: filteredDto.phoneNumber }
+                });
+                if (existingPhone && existingPhone.id !== userId) {
+                    throw new BadRequestException('This phone number is already associated with another account.');
+                }
+            }
+
+            if (Object.keys(filteredDto).length === 0) {
+                return this.getUserById(userId);
+            }
+
+            await this.userRepository
+                .createQueryBuilder()
+                .update(User)
+                .set(filteredDto)
+                .where("id = :id", { id: userId })
+                .execute();
+
+            // Return a clean version of the user without circular relations to avoid 500 errors during JSON serialization
+            const updatedUser = await this.userRepository.findOne({ where: { id: userId } });
+            if (!updatedUser) {
+                throw new Error('User not found after update');
+            }
+
+            // Remove sensitive fields
+            const { password, ...safeUser } = updatedUser;
+            return safeUser;
         } catch (error: any) {
-            throw new BadRequestException(error.message || 'Error saving user');
+            this.logger.error(`CRITICAL: Profile update failed for user ${userId}. Error: ${error.message}`, error.stack);
+            throw new BadRequestException(error.message || 'Error saving user information');
         }
     }
 
@@ -613,7 +682,7 @@ export class AuthService {
         if (role) {
             where.role = role;
         }
-        
+
         return this.userRepository.find({
             where,
             order: { createdAt: 'DESC' },

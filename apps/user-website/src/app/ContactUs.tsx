@@ -23,7 +23,7 @@ const ContactUs: React.FC = () => {
         setIsSubmitting(true);
 
         try {
-            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+            const apiBase = import.meta.env.VITE_API_URL || '/api';
             await axios.post(`${apiBase}/contacts`, {
                 ...formData,
                 source: 'aayojan'

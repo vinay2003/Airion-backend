@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('bookings')
 @UseGuards(JwtAuthGuard) // Require login for all booking actions
 export class BookingsController {
-    constructor(private readonly bookingsService: BookingsService) {}
+    constructor(private readonly bookingsService: BookingsService) { }
 
     /**
      * Create a new booking
@@ -45,7 +45,7 @@ export class BookingsController {
     @Get('vendor')
     async getVendorBookings(@Req() req: any) {
         if (req.user.role !== 'vendor') {
-             throw new BadRequestException('Access denied: You are not a vendor');
+            throw new BadRequestException('Access denied: You are not a vendor');
         }
         // Service will find vendorId from userId internally or we pass userId
         return this.bookingsService.findAllByVendorUserId(req.user.userId);

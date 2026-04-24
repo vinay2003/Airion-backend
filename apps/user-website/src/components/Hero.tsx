@@ -90,7 +90,7 @@ const Hero: React.FC = () => {
                         )}
 
                         {/* ✅ Dynamic Heading — MOBILE FIX: Responsive scale */}
-                        <h1 className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
+                        <div className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                             {isAuthenticated ? (
                                 <>
                                     <h1 className="text-3xl md:text-5xl font-semibold text-neutral-100 tracking-wide leading-tight font-serif">
@@ -111,7 +111,7 @@ const Hero: React.FC = () => {
 
                                 </>
                             )}
-                        </h1>
+                        </div>
 
                         {/* ✅ Dynamic Description */}
                         <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">

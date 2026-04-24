@@ -10,8 +10,17 @@ export class ServicesController {
     @Post()
     @UseGuards(JwtAuthGuard)
     async create(@Body() createDto: CreateServiceDto, @Request() req: any) {
-        // Enforce Vendor ID from Auth Header payload or require absolute creation checks
-        const vendorId = req.user.vendorId || req.user.userId; // Fallback if they do not hold separate profiles
+        // Enforce Vendor ID from Auth Header payload or body. NEVER fallback to userId.
+        const vendorId = req.user.vendorId || createDto.vendorId;
+        
+        if (!vendorId) {
+            throw new BadRequestException('Vendor profile not found. Please complete vendor onboarding.');
+        }
+
+        // Prevent empty strings from breaking UUID database columns
+        if (createDto.categoryId === '') delete (createDto as any).categoryId;
+        if (createDto.subcategoryId === '') delete (createDto as any).subcategoryId;
+
         return this.servicesService.create(createDto, vendorId);
     }
 

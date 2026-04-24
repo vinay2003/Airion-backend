@@ -131,6 +131,7 @@ export const fetchConversations = async () => (await api.get('/chat/conversation
 export const fetchMessages = async (id: string) => (await api.get(`/chat/messages/${id}`)).data;
 export const startConversation = async (vId: string) => (await api.post('/chat/start', { vendorId: vId })).data;
 export const updateProfile = async (d: any) => (await api.patch('/auth/profile', d)).data;
+export const changePassword = async (d: any) => (await api.post('/auth/change-password', d)).data;
 // --- VENDOR DASHBOARD & ANALYTICS (Step 6 Coordination) ---
 export const fetchWalletOverview = async () => (await api.get('/wallet/overview')).data;
 export const requestWithdrawal = async (amount: number, bankDetails?: any) => (await api.post('/wallet/withdraw', { amount, bankDetails })).data;
@@ -143,5 +144,11 @@ export const checkAvailability = async (vId: string, date: string) => (await api
 
 export const uploadImage = async (file: File) => {
     const fd = new FormData(); fd.append('file', file);
-    return (await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })).data;
+    const res = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return res.data || res;
+};
+
+export const askSupportAI = async (message: string) => {
+    const res = await api.post('/ai/support', { message });
+    return res.data || res;
 };

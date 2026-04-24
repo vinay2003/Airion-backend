@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDashboardStore, BudgetItem } from '../../store/useDashboardStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
-import { Plus, Download, AlertCircle, CheckCircle, TrendingUp, DollarSign } from 'lucide-react';
+import { Plus, Download, AlertCircle, CheckCircle, TrendingUp, DollarSign, FileText } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'];
 
@@ -15,7 +16,7 @@ const BudgetPlanner: React.FC = () => {
     useEffect(() => {
         fetchBudget();
     }, [fetchBudget]);
-    
+
     const totalSpent = budgetItems.reduce((acc, item) => acc + item.spent, 0);
     const remainingBudget = totalBudget - totalSpent;
     const spentPercentage = (totalSpent / totalBudget) * 100;
@@ -27,13 +28,42 @@ const BudgetPlanner: React.FC = () => {
     }));
 
     const handleAddExpense = () => {
-        if (!selectedCategory || !expenseAmount) return;
+        if (!selectedCategory || !expenseAmount) {
+            toast.error('Please select a category and enter an amount');
+            return;
+        }
         const item = budgetItems.find(i => i.category === selectedCategory);
         if (item) {
             addExpense(item.id, parseFloat(expenseAmount));
             setExpenseAmount('');
             setIsAddingExpense(false);
+            toast.success(`₹${parseFloat(expenseAmount).toLocaleString()} added to ${selectedCategory}`);
         }
+    };
+
+    const handleExportPDF = () => {
+        toast.loading('Generating budget report...', { duration: 2000 });
+
+        setTimeout(() => {
+            // Mock PDF generation and download
+            const reportData = `
+                EASE2EVENT Budget Planner Report
+                Total Budget: ₹${totalBudget.toLocaleString()}
+                Total Spent: ₹${totalSpent.toLocaleString()}
+                Remaining: ₹${remainingBudget.toLocaleString()}
+            `;
+            const blob = new Blob([reportData], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Ease2event_Budget_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            toast.success('Budget PDF exported successfully!');
+        }, 2000);
     };
 
     return (
@@ -45,10 +75,13 @@ const BudgetPlanner: React.FC = () => {
                     <p className="text-neutral-500 dark:text-slate-400 mt-1">Track allocations, spent costs, and auto vendor-cost sync.</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-slate-800 rounded-xl font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-slate-800 transition">
+                    <button
+                        onClick={handleExportPDF}
+                        className="flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-slate-800 rounded-xl font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-slate-800 transition"
+                    >
                         <Download size={16} /> Export PDF
                     </button>
-                    <button 
+                    <button
                         onClick={() => setIsAddingExpense(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/10 font-semibold text-sm hover:bg-red-600 transition"
                     >
@@ -192,12 +225,12 @@ const BudgetPlanner: React.FC = () => {
                             <h3 className="text-xl font-bold text-neutral-900 dark:text-white flex items-center gap-2">
                                 <AlertCircle size={20} className="text-red-500" /> Add Expense
                             </h3>
-                            
+
                             <div className="space-y-4 mt-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-neutral-700 dark:text-slate-300">Category</label>
-                                    <select 
-                                        value={selectedCategory} 
+                                    <select
+                                        value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                         className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200"
                                     >
@@ -207,12 +240,12 @@ const BudgetPlanner: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-neutral-700 dark:text-slate-300">Amount (₹)</label>
-                                    <input 
-                                        type="number" 
-                                        value={expenseAmount} 
+                                    <input
+                                        type="number"
+                                        value={expenseAmount}
                                         onChange={(e) => setExpenseAmount(e.target.value)}
-                                        placeholder="Enter spent amount..." 
-                                        className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200" 
+                                        placeholder="Enter spent amount..."
+                                        className="w-full bg-neutral-100 dark:bg-slate-800 border-none outline-none mt-1 p-2.5 rounded-xl text-neutral-800 dark:text-neutral-200"
                                     />
                                 </div>
                                 <div className="flex gap-3 pt-2">

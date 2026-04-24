@@ -156,7 +156,7 @@ const Home: React.FC = () => {
                         className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">What you need for your event</h2>
+                            <h2 className="ttext-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">What you need for your event</h2>
                             <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
                                 Discover everything you need to make your next event truly unforgettable.
                             </p>
@@ -194,7 +194,7 @@ const Home: React.FC = () => {
                     <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                             <div className="space-y-1">
-                                <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">Featured Events This Month</h2>
+                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Events This Month</h2>
                                 <p className="text-s text-gray-400 font-black tracking-widest opacity-60">Handpicked Premium Experiences</p>
                             </div>
                             <Link to="/marketplace" className="text-white dark:text-white hover:text-red-600 font-black flex items-center gap-2 group text-md tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
@@ -221,7 +221,7 @@ const Home: React.FC = () => {
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
 
                                 <div className="space-y-1">
-                                    <h2 className="text-xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                                    <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
                                         Plan Your Event Without Stress
                                     </h2>
 
@@ -300,7 +300,7 @@ const Home: React.FC = () => {
                     >
                         <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                             <div className="text-center mb-16">
-                                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
+                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">How It Works</h2>
                                 <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
                                     Planning your event has never been easier. Follow these simple steps to book your dream venue.
                                 </p>
@@ -357,7 +357,7 @@ const Home: React.FC = () => {
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-bold text-center whitespace-nowrap mb-10 tracking-tight">
+                            <h2 className="text-xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 font-bold text-center whitespace-nowrap mb-10 tracking-tight">
                                 <span className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
                                     Why Ease2event?
                                 </span>

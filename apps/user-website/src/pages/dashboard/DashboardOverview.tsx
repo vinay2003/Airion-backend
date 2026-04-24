@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { userDashboard } from '@shared/auth/api';
 import { Calendar, Clock, CreditCard, ArrowRight, Plus, MapPin, Heart, Star, ChevronRight, TrendingUp, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useAuth } from '@shared/auth';
 
@@ -25,6 +26,7 @@ const DashboardSkeleton = () => (
 
 const DashboardOverview: React.FC = () => {
     const { user } = useAuth();
+    const { theme } = useTheme();
     const [currentBanner, setCurrentBanner] = useState(0);
     const [savedVendors, setSavedVendors] = useState<string[]>([]);
 
@@ -74,10 +76,10 @@ const DashboardOverview: React.FC = () => {
                         <div><span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span> </div>
                     </div>
                     <div className="space-y-1">
-                        <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight leading-tight">
-                            Ease2event Matrix, <span className="text-red-500">Welcome {firstName}</span>
+                        <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                            Ease2event Matrix, Welcome {firstName}
                         </h1>
-                        <p className="text-xs sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Synchronizing your event lifecycle in real-time.</p>
+                        <p className="text-s sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Synchronizing your event lifecycle in real-time.</p>
                     </div>
                 </motion.div>
                 <motion.div
@@ -109,7 +111,7 @@ const DashboardOverview: React.FC = () => {
                     >
                         <Link
                             to={stat.link}
-                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
+                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
                         >
                             <div className="relative z-10">
                                 <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.title}</p>
@@ -136,15 +138,15 @@ const DashboardOverview: React.FC = () => {
                             transition={{ duration: 0.8 }}
                             className="absolute inset-0"
                         >
-                            <img src={deals[currentBanner].image} alt={deals[currentBanner].title} className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/40 to-transparent" />
+                            <img src={deals[currentBanner].image} alt={deals[currentBanner].title} className="w-full h-full object-cover grayscale-[0.2] dark:grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/20 to-transparent dark:from-neutral-950 dark:via-neutral-950/40 dark:to-transparent" />
                             <div className="absolute inset-0 p-10 flex flex-col justify-center">
                                 <div className="flex items-center gap-2 text-red-400 text-[10px] font-black uppercase tracking-widest mb-2">
                                     <Zap size={14} fill="currentColor" />
                                     {deals[currentBanner].subtitle}
                                 </div>
-                                <h3 className="text-white text-3xl font-black max-w-[400px] leading-tight mb-6">{deals[currentBanner].title}</h3>
-                                <Link to={deals[currentBanner].link} className="w-fit bg-white text-black hover:bg-red-500 hover:text-white text-xs font-black px-8 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-xl">
+                                <h3 className="text-neutral-900 dark:text-white text-3xl font-black max-w-[400px] leading-tight mb-6">{deals[currentBanner].title}</h3>
+                                <Link to={deals[currentBanner].link} className="w-fit bg-red-500 text-white hover:bg-black dark:hover:bg-white dark:hover:text-black text-xs font-black px-8 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-xl">
                                     SYNCHRONIZE NOW <ChevronRight size={18} />
                                 </Link>
                             </div>
@@ -173,7 +175,7 @@ const DashboardOverview: React.FC = () => {
                             <motion.div
                                 key={booking.id}
                                 whileHover={{ y: -5 }}
-                                className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all group relative overflow-hidden"
+                                className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all group relative overflow-hidden"
                             >
                                 <div className="w-full sm:w-40 sm:h-40 aspect-square rounded-[2rem] overflow-hidden flex-shrink-0 bg-neutral-100 dark:bg-slate-800 shadow-xl relative">
                                     <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
@@ -183,7 +185,7 @@ const DashboardOverview: React.FC = () => {
                                     <div className="space-y-3">
                                         <div className="flex flex-wrap items-center justify-between gap-4">
                                             <span className="text-[10px] font-black text-red-500 tracking-[0.2em] uppercase bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/20">{booking.category}</span>
-                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full font-black text-[9px] uppercase tracking-widest shadow-lg">
+                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-neutral-100 dark:bg-white/10 text-neutral-900 dark:text-white rounded-full font-black text-[9px] uppercase tracking-widest border border-neutral-200 dark:border-white/10 shadow-sm">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 {booking.status}
                                             </div>
@@ -225,7 +227,7 @@ const DashboardOverview: React.FC = () => {
                 {/* Economic Matrix (Budget) */}
                 <div className="space-y-6">
                     <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Capital Matrix</h2>
-                    <div className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
+                    <div className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
                         <div className="h-56 w-full relative z-10">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -268,7 +270,7 @@ const DashboardOverview: React.FC = () => {
                         <motion.div
                             key={vendor.id}
                             whileHover={{ y: -10 }}
-                            className="flex-shrink-0 w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-neutral-200 dark:border-slate-800 shadow-xl group cursor-pointer"
+                            className="flex-shrink-0 w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-neutral-300 dark:border-slate-800 shadow-xl group cursor-pointer"
                         >
                             <div className="relative h-48 overflow-hidden">
                                 <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 blur-[0.5px] group-hover:blur-0" />
@@ -296,7 +298,7 @@ const DashboardOverview: React.FC = () => {
                                         <MapPin size={14} className="text-red-500" />{vendor.location}
                                     </p>
                                 </div>
-                                <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between pt-4 border-t border-neutral-200 dark:border-slate-800">
                                     <div className="space-y-0.5">
                                         <span className="block text-[9px] font-black text-neutral-600 uppercase tracking-widest">Base Rate</span>
                                         <span className="text-xl font-black text-neutral-900 dark:text-white">{vendor.price}</span>
@@ -315,7 +317,7 @@ const DashboardOverview: React.FC = () => {
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-neutral-900 text-white rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.3)]"
+                className="bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white border border-neutral-300 dark:border-none rounded-[3rem] p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl dark:shadow-[0_30px_60px_rgba(0,0,0,0.3)]"
             >
                 <div className="relative z-10 space-y-2 text-center md:text-left">
                     <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
@@ -326,11 +328,18 @@ const DashboardOverview: React.FC = () => {
                     </div>
                     <p className="text-neutral-400 font-medium max-w-md">De-risk your event capital strategy. Deploy payments across 3–12 month synchronized cycles. Zero upfront liquidity required for verified nodes.</p>
                 </div>
-                <button className="relative z-10 whitespace-nowrap px-10 py-5 bg-red-500 text-white rounded-[1.5rem] text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black shadow-2xl transition-all hover:scale-105 active:scale-95">
+                <Link
+                    to="/dashboard/budget"
+                    className="relative z-10 whitespace-nowrap text-sm font-black uppercase tracking-[0.2em] text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-500 border-b-2 border-transparent hover:border-red-500 transition-all pb-1"
+                >
                     Verify Eligibility
-                </button>
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500 opacity-[0.03] blur-[120px] -mr-40 -mt-20 pointer-events-none" />
-                <div className="absolute left-0 bottom-0 w-[300px] h-[300px] bg-blue-500 opacity-[0.02] blur-[100px] -ml-20 -mb-20 pointer-events-none" />
+                </Link>
+                {theme === 'dark' && (
+                    <>
+                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500 opacity-[0.03] blur-[120px] -mr-40 -mt-20 pointer-events-none" />
+                        <div className="absolute left-0 bottom-0 w-[300px] h-[300px] bg-blue-500 opacity-[0.02] blur-[100px] -ml-20 -mb-20 pointer-events-none" />
+                    </>
+                )}
             </motion.div>
         </div>
     );

@@ -21,8 +21,14 @@ export class User {
     @Column({ unique: true, type: 'varchar', length: 255, nullable: true })
     email: string;
 
-    @Column({ type: 'varchar', length: 500, nullable: true })
+    @Column({ type: 'text', nullable: true })
     avatar: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    location: string;
+
+    @Column({ type: 'varchar', length: 10, default: 'en' })
+    language: string;
 
     @Index()
     @Column({ name: 'phone_number', type: 'varchar', length: 20, nullable: true })

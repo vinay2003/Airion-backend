@@ -99,4 +99,11 @@ export class AuthController {
     async updateProfile(@Request() req: any, @Body() dto: any) {
         return this.authService.updateProfile(req.user.userId, dto);
     }
+
+    @Post('change-password')
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.OK)
+    async changePassword(@Request() req: any, @Body() dto: any) {
+        return this.authService.changePassword(req.user.userId, dto);
+    }
 }

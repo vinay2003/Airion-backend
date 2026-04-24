@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User as UserIcon, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle } from 'lucide-react';
+import { User as UserIcon, Bell, Shield, Globe, MapPin, Camera, Save, Loader, HelpCircle, Lock, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@shared/auth/AuthContext';
-import { updateProfile, uploadImage } from '../../lib/api';
+import { updateProfile, uploadImage, changePassword } from '../../lib/api';
 import { toast } from 'react-hot-toast';
 
 const LANGUAGES = [
@@ -19,15 +20,26 @@ const CURRENCIES = ['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'];
 
 const ProfileSettings: React.FC = () => {
     const { user, refreshUser } = useAuth();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [passwordLoading, setPasswordLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Form State
-    const [name, setName] = useState(user?.name || '');
+    // Password change state
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    // Form State - Clear default "User +91..." names for a better UX
+    const [name, setName] = useState(() => {
+        if (!user?.name) return '';
+        if (user.name.startsWith('User +')) return '';
+        return user.name;
+    });
     const [email, setEmail] = useState(user?.email || '');
-    const [phone] = useState(user?.phoneNumber || '');
+    const [phone, setPhone] = useState(user?.phoneNumber || '');
     const [location, setLocation] = useState(user?.location || 'Mumbai, IN');
     const [language, setLanguage] = useState(user?.language || 'en');
     const [currency, setCurrency] = useState('INR (₹)');
@@ -36,18 +48,65 @@ const ProfileSettings: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await updateProfile({
+            // Filter and prepare data
+            const updateData: any = {
                 name,
-                email,
                 location,
                 language,
-            });
+                phoneNumber: phone, // Map 'phone' state to 'phoneNumber' DB field
+            };
+
+            // Only send email if it's a valid string to avoid unique constraint issues with empty strings
+            if (email && email.trim() !== '') {
+                updateData.email = email.trim().toLowerCase();
+            }
+
+            await updateProfile(updateData);
             await refreshUser();
             toast.success('Profile updated successfully');
-        } catch (error) {
-            toast.error('Failed to update profile');
+        } catch (error: any) {
+            console.error('Update failed. Server response:', error.response?.data);
+            const message = error.response?.data?.message || 'Failed to update profile';
+            toast.error(typeof message === 'string' ? message : 'Update failed');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!newPassword || !currentPassword) {
+            toast.error('Please fill in all password fields');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            toast.error('New passwords do not match');
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            toast.error('New password must be at least 8 characters long');
+            return;
+        }
+
+        setPasswordLoading(true);
+        try {
+            await changePassword({
+                currentPassword,
+                newPassword
+            });
+            toast.success('Password updated successfully');
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+        } catch (error: any) {
+            console.error('Password update failed:', error.response?.data);
+            const message = error.response?.data?.message || 'Failed to update password';
+            toast.error(typeof message === 'string' ? message : 'Update failed');
+        } finally {
+            setPasswordLoading(false);
         }
     };
 
@@ -57,12 +116,21 @@ const ProfileSettings: React.FC = () => {
 
         setUploading(true);
         try {
-            const { url } = await uploadImage(file);
+            const response = await uploadImage(file);
+            // Ultra-safe extraction of the URL
+            const url = response?.url || response?.data?.url || (typeof response === 'string' ? response : null);
+            
+            if (!url || typeof url !== 'string') {
+                console.error('Failed to extract URL from:', response);
+                throw new Error('Invalid response format');
+            }
+
             await updateProfile({ avatar: url });
             await refreshUser();
-            toast.success('Photo uploaded successfully');
+            toast.success('Photo updated successfully');
         } catch (error) {
-            toast.error('Upload failed');
+            console.error('Upload error:', error);
+            toast.error('Upload failed. Please try again.');
         } finally {
             setUploading(false);
         }
@@ -120,20 +188,24 @@ const ProfileSettings: React.FC = () => {
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Personal Information</h2>
 
                             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-neutral-200 dark:border-slate-800">
-                                <div className="relative">
-                                    <div className="w-24 h-24 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg flex items-center justify-center overflow-hidden">
+                                <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                                    <div className="w-28 h-28 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105 active:scale-95">
                                         {uploading ? (
-                                            <Loader className="animate-spin text-red-500" size={32} />
+                                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center backdrop-blur-sm">
+                                                <Loader className="animate-spin text-white" size={32} />
+                                            </div>
                                         ) : (
                                             <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`} alt="Profile" className="w-full h-full object-cover" />
                                         )}
+                                        {!uploading && (
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <Camera className="text-white" size={24} />
+                                            </div>
+                                        )}
                                     </div>
-                                    <button 
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="absolute bottom-0 right-0 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-colors"
-                                    >
-                                        <Camera size={14} />
-                                    </button>
+                                    <div className="absolute bottom-1 right-1 bg-red-500 text-white p-2.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900 z-10 group-hover:scale-110 transition-transform">
+                                        <Camera size={16} />
+                                    </div>
                                     <input 
                                         type="file" 
                                         ref={fileInputRef} 
@@ -142,9 +214,10 @@ const ProfileSettings: React.FC = () => {
                                         onChange={handlePhotoUpload} 
                                     />
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-lg text-neutral-900 dark:text-white">Profile Photo</h3>
-                                    <p className="text-sm text-neutral-500 dark:text-slate-400 mt-1">We recommend a 300x300px image.</p>
+                                <div className="space-y-1">
+                                    <h3 className="font-black text-xl text-neutral-900 dark:text-white uppercase tracking-tight">Profile Photo</h3>
+                                    <p className="text-sm font-medium text-neutral-500 dark:text-slate-400">Personalize your identity across the platform.</p>
+                                    <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded inline-block">Recommended: 300x300px</p>
                                 </div>
                             </div>
 
@@ -160,8 +233,13 @@ const ProfileSettings: React.FC = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Phone Number</label>
-                                        <Input type="tel" value={phone} className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-500" disabled />
-                                        <p className="text-xs text-neutral-400 mt-1">Phone number is used for OTP logins.</p>
+                                        <Input 
+                                            type="tel" 
+                                            value={phone} 
+                                            onChange={e => setPhone(e.target.value)}
+                                            className="bg-neutral-50 dark:bg-slate-800 border-neutral-200 dark:border-slate-700 py-3 font-medium text-neutral-900 dark:text-white" 
+                                        />
+                                        <p className="text-xs text-neutral-400 mt-1">Changing your phone number may require re-verification on next login.</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Location</label>
@@ -248,25 +326,48 @@ const ProfileSettings: React.FC = () => {
                             <div className="space-y-6">
                                 <div className="p-6 border border-neutral-200 dark:border-slate-800 rounded-2xl bg-neutral-50 dark:bg-slate-800/30">
                                     <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-4">Change Password</h3>
-                                    <div className="space-y-4">
+                                    <form onSubmit={handleChangePassword} className="space-y-4">
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">Current Password</label>
-                                            <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                            <Input 
+                                                type="password" 
+                                                placeholder="••••••••" 
+                                                value={currentPassword}
+                                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                                className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" 
+                                            />
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">New Password</label>
-                                                <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                                <Input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={newPassword}
+                                                    onChange={(e) => setNewPassword(e.target.value)}
+                                                    className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" 
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-sm font-bold text-neutral-600 dark:text-slate-400">Confirm New Password</label>
-                                                <Input type="password" placeholder="••••••••" className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" />
+                                                <Input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={confirmPassword}
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    className="bg-white dark:bg-slate-800 border-neutral-200 dark:border-slate-700" 
+                                                />
                                             </div>
                                         </div>
-                                        <Button className="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-2 rounded-xl">
+                                        <Button 
+                                            type="submit" 
+                                            disabled={passwordLoading}
+                                            className="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-2 rounded-xl flex items-center gap-2"
+                                        >
+                                            {passwordLoading ? <Loader className="animate-spin" size={18} /> : <Lock size={18} />}
                                             Update Password
                                         </Button>
-                                    </div>
+                                    </form>
                                 </div>
 
                                 <div className="p-6 border border-neutral-200 dark:border-slate-800 rounded-2xl bg-neutral-50 dark:bg-slate-800/30">
@@ -308,7 +409,10 @@ const ProfileSettings: React.FC = () => {
                             </div>
                             <div className="mt-8 p-6 bg-red-50 dark:bg-red-900/10 rounded-2xl text-center">
                                 <p className="font-bold text-red-600 dark:text-red-400 mb-4">Still need help?</p>
-                                <Button className="bg-red-600 text-white font-bold px-8 py-3 rounded-xl">
+                                <Button 
+                                    onClick={() => navigate('/dashboard/support')}
+                                    className="bg-red-600 text-white font-bold px-8 py-3 rounded-xl"
+                                >
                                     Contact Support
                                 </Button>
                             </div>

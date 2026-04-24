@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { askSupportAI } from '@/lib/api';
 
 export const Payments: React.FC = () => {
     const transactions = [
@@ -159,51 +160,172 @@ export const DigitalInvites: React.FC = () => {
     );
 };
 
-export const Support: React.FC = () => (
-    <div className="max-w-4xl space-y-8">
-        <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Help & Support</h2>
-            <p className="text-gray-500">Need assistance? We're here to help you coordinate your perfect event.</p>
-        </div>
+export const Support: React.FC = () => {
+    const [isChatting, setIsChatting] = useState(false);
+    const [messages, setMessages] = useState([
+        { id: 1, text: "Hello! I'm your Airion AI Assistant. How can I help you plan your event today?", sender: 'support', time: 'Just now' }
+    ]);
+    const [inputValue, setInputValue] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
-        <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/10 rounded-2xl border border-red-100 dark:border-red-900/30">
-                <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 text-red-500 shadow-sm">
-                    <MessageSquare size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Live Chat</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Talk to our event support specialists instantly for immediate resolution.</p>
-                <Button className="bg-red-500 hover:bg-red-600 text-white rounded-xl w-full">Start Chat</Button>
-            </div>
+    // Auto-scroll to bottom
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, isTyping]);
 
-            <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm">
-                <div className="grid gap-6">
-                    <div className="flex items-start gap-4">
-                        <div className="p-3 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 dark:text-gray-300">
-                            <Phone size={20} />
-                        </div>
+    const handleSendMessage = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inputValue.trim() || isTyping) return;
+
+        const userMsg = inputValue;
+        const newUserMessage = {
+            id: Date.now(),
+            text: userMsg,
+            sender: 'user',
+            time: 'Just now'
+        };
+
+        setMessages(prev => [...prev, newUserMessage]);
+        setInputValue('');
+        setIsTyping(true);
+
+        try {
+            const result = await askSupportAI(userMsg);
+            const aiResponse = result?.response || "I'm sorry, I encountered a brief neural glitch. Could you repeat that?";
+            
+            setMessages(prev => [...prev, {
+                id: Date.now() + 1,
+                text: aiResponse,
+                sender: 'support',
+                time: 'Just now'
+            }]);
+        } catch (error) {
+            setMessages(prev => [...prev, {
+                id: Date.now() + 1,
+                text: "My apologies, I'm having trouble connecting to my central knowledge base. Please try again in a moment.",
+                sender: 'support',
+                time: 'Just now'
+            }]);
+        } finally {
+            setIsTyping(false);
+        }
+    };
+
+    if (isChatting) {
+        return (
+            <div className="max-w-2xl mx-auto h-[550px] flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div className="p-5 bg-gradient-to-r from-red-500 to-red-600 text-white flex justify-between items-center shadow-lg relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center font-black text-xl shadow-inner">AI</div>
                         <div>
-                            <h4 className="font-bold text-gray-900 dark:text-white">Call Us</h4>
-                            <p className="text-sm text-gray-500">+91 1800-Ease2event (Toll Free)</p>
-                            <p className="text-xs text-gray-400 mt-1">Mon-Sun, 9:00 AM - 9:00 PM</p>
+                            <h3 className="font-black uppercase tracking-tighter text-lg">Airion Assistant</h3>
+                            <div className="flex items-center gap-1.5 opacity-90">
+                                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <p className="text-[10px] font-black uppercase tracking-widest">Neural Network Active</p>
+                            </div>
                         </div>
                     </div>
-
-                    <div className="flex items-start gap-4">
-                        <div className="p-3 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 dark:text-gray-300">
-                            <MailIcon size={20} />
+                    <button onClick={() => setIsChatting(false)} className="px-4 py-2 bg-black/10 hover:bg-black/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2">
+                        <ArrowLeft size={14} /> Exit
+                    </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/30 dark:bg-slate-950/20">
+                    {messages.map((msg) => (
+                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-[85%] p-4 rounded-[1.5rem] shadow-sm relative transition-all ${
+                                msg.sender === 'user' 
+                                ? 'bg-red-500 text-white rounded-tr-none' 
+                                : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none'
+                            }`}>
+                                <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                                <span className={`text-[9px] font-bold uppercase tracking-widest mt-2 block ${msg.sender === 'user' ? 'text-red-100' : 'text-gray-400'}`}>
+                                    {msg.time}
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="font-bold text-gray-900 dark:text-white">Email Support</h4>
-                            <p className="text-sm text-gray-500">support@ease2event.com</p>
-                            <p className="text-xs text-gray-400 mt-1">We typically reply within 24 hours</p>
+                    ))}
+                    {isTyping && (
+                        <div className="flex justify-start">
+                            <div className="bg-white dark:bg-slate-800 px-5 py-3 rounded-[1.5rem] rounded-tl-none border border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                                <Loader2 size={16} className="text-red-500 animate-spin" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-red-500 animate-pulse">Assistant is thinking...</span>
+                            </div>
+                        </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                </div>
+
+                <form onSubmit={handleSendMessage} className="p-5 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-3">
+                    <div className="flex-1 relative">
+                        <Input 
+                            placeholder="Ask me anything about your event..." 
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            disabled={isTyping}
+                            className="h-14 px-6 rounded-2xl bg-neutral-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-red-500/20 transition-all font-medium pr-12"
+                        />
+                    </div>
+                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="h-14 w-14 bg-red-500 hover:bg-red-600 text-white rounded-2xl shadow-xl shadow-red-500/20 hover:scale-105 active:scale-95 transition-all shrink-0">
+                        <Send size={20} />
+                    </Button>
+                </form>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-4xl space-y-8">
+            <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Help & Support</h2>
+                <p className="text-gray-500">Need assistance? We're here to help you coordinate your perfect event.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="p-6 bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/10 rounded-2xl border border-red-100 dark:border-red-900/30">
+                    <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 text-red-500 shadow-sm">
+                        <MessageSquare size={24} />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Live Chat</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Talk to our event support specialists instantly for immediate resolution.</p>
+                    <Button 
+                        onClick={() => setIsChatting(true)}
+                        className="bg-red-500 hover:bg-red-600 text-white rounded-xl w-full"
+                    >
+                        Start Chat
+                    </Button>
+                </div>
+
+                <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm">
+                    <div className="grid gap-6">
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 dark:text-gray-300">
+                                <Phone size={20} />
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-gray-900 dark:text-white">Call Us</h4>
+                                <p className="text-sm text-gray-500">+91 1800-Ease2event (Toll Free)</p>
+                                <p className="text-xs text-gray-400 mt-1">Mon-Sun, 9:00 AM - 9:00 PM</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 dark:text-gray-300">
+                                <MailIcon size={20} />
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-gray-900 dark:text-white">Email Support</h4>
+                                <p className="text-sm text-gray-500">support@ease2event.com</p>
+                                <p className="text-xs text-gray-400 mt-1">We typically reply within 24 hours</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 export const Terms: React.FC = () => (
     <div className="max-w-4xl mx-auto py-12 px-6">

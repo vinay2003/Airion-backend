@@ -20,14 +20,14 @@ export class Service {
     @JoinColumn({ name: 'category_id' })
     category: Category;
 
-    @Column({ name: 'category_id' })
+    @Column({ name: 'category_id', nullable: true })
     categoryId: string;
 
     @ManyToOne(() => Subcategory)
     @JoinColumn({ name: 'subcategory_id' })
     subcategory: Subcategory;
 
-    @Column({ name: 'subcategory_id' })
+    @Column({ name: 'subcategory_id', nullable: true })
     subcategoryId: string;
 
     @Column()

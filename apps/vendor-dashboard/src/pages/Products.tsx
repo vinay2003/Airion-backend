@@ -28,6 +28,7 @@ const Products: React.FC = () => {
     const vendorId = user?.vendor?.id || '';
     const [searchTerm, setSearchTerm] = useState('');
     const [isAdding, setIsAdding] = useState(false);
+    const [activeTab, setActiveTab] = useState('ALL_NODES');
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState<any[]>([]);
@@ -122,9 +123,13 @@ const Products: React.FC = () => {
         setFormData({ ...formData, packages: newPackages });
     };
 
-    const filteredProducts = products.filter(p =>
-        p.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredProducts = products.filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase());
+        let matchesTab = true;
+        if (activeTab === 'ACTIVE_SYNC') matchesTab = p.isActive !== false;
+        if (activeTab === 'ARCHIVE_CMD') matchesTab = p.isActive === false;
+        return matchesSearch && matchesTab;
+    });
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
@@ -389,14 +394,16 @@ const Products: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex bg-[var(--ease2event-bg-surface)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-md">
+                <div className="flex gap-8 items-center px-4">
                     {['ALL_NODES', 'ACTIVE_SYNC', 'ARCHIVE_CMD'].map(tab => (
                         <button
                             key={tab}
-                            onClick={() => { }}
-                            className={`px-8 py-3 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all ${tab === 'ALL_NODES' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-indigo-500/20' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+                            onClick={() => setActiveTab(tab)}
+                            className={`py-4 text-sm font-bold uppercase tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
                         >
-                            {tab.replace('_', ' ')}
+                            <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-hover:border-red-500'}`}>
+                                {tab.replace('_', ' ')}
+                            </span>
                         </button>
                     ))}
                 </div>

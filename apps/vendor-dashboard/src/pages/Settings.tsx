@@ -28,6 +28,12 @@ const Settings: React.FC = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [subcategories, setSubcategories] = useState<any[]>([]);
 
+    const [passwords, setPasswords] = useState({
+        current: '',
+        new: '',
+        confirm: ''
+    });
+
     const [personalData, setPersonalData] = useState({
         name: '',
         phone: '',
@@ -169,6 +175,35 @@ const Settings: React.FC = () => {
         }
     };
 
+    const handleUpdatePassword = async () => {
+        if (!passwords.current) {
+            toast.error('Please enter your current password');
+            return;
+        }
+        if (!passwords.new) {
+            toast.error('Please enter a new password');
+            return;
+        }
+        if (passwords.new !== passwords.confirm) {
+            toast.error('Passwords do not match');
+            return;
+        }
+        setSubmitting(true);
+        try {
+            await api.post('/auth/change-password', {
+                oldPassword: passwords.current,
+                newPassword: passwords.new,
+                confirmPassword: passwords.confirm
+            });
+            toast.success('Password updated successfully!');
+            setPasswords({ current: '', new: '', confirm: '' });
+        } catch (err: any) {
+            toast.error(err.error || err.response?.data?.message || 'Failed to update password');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const calculateStrength = () => {
         const fields = [
             businessData.businessName, businessData.businessPhone,
@@ -291,10 +326,10 @@ const Settings: React.FC = () => {
                                     </div>
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner relative">
-                                        <input 
-                                            type="file" 
-                                            id="profile-upload" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            id="profile-upload"
+                                            className="hidden"
                                             accept="image/*"
                                             onChange={async (e) => {
                                                 const file = e.target.files?.[0];
@@ -416,14 +451,14 @@ const Settings: React.FC = () => {
                                                             </motion.div>
                                                         ))}
                                                         <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-2 sm:gap-3 group cursor-pointer">
-                                                            <input 
-                                                                type="file" 
-                                                                className="hidden" 
-                                                                accept="image/*" 
+                                                            <input
+                                                                type="file"
+                                                                className="hidden"
+                                                                accept="image/*"
                                                                 onChange={async (e) => {
                                                                     const file = e.target.files?.[0];
                                                                     if (!file) return;
-                                                                    
+
                                                                     const loaderId = toast.loading('Synchronizing asset...');
                                                                     try {
                                                                         const data = await uploadImage(file);
@@ -488,10 +523,42 @@ const Settings: React.FC = () => {
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Change Password</label>
-                                                <input type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
+                                                <input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={passwords.current}
+                                                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                />
                                             </div>
-                                            <Button className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">UPDATE PASSWORD</Button>
+                                            <div className="space-y-4 sm:space-y-5">
+                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
+                                                <input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={passwords.new}
+                                                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                />
+                                            </div>
+                                            <div className="space-y-4 sm:space-y-5">
+                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
+                                                <input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={passwords.confirm}
+                                                    onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                />
+                                            </div>
+                                            <Button 
+                                                onClick={handleUpdatePassword}
+                                                disabled={submitting}
+                                                className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"
+                                            >
+                                                {submitting ? <Loader2 className="animate-spin" /> : 'UPDATE PASSWORD'}
+                                            </Button>
                                         </div>
 
                                         <div className="card-minimal !p-10 bg-gradient-to-br from-amber-500/[0.04] to-transparent border-amber-500/20 flex flex-col justify-between shadow-xl rounded-[2.5rem]">

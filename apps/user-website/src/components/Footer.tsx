@@ -14,8 +14,12 @@ const Footer: React.FC = () => {
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>
                         <div className="flex gap-4">
-                            {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 bg-white dark:bg-slate-800 border border-neutral-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all">
+                            {[
+                                { Icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61560780569664' },
+                                { Icon: Instagram, href: 'https://www.instagram.com/ease2event' },
+                                { Icon: Twitter, href: 'https://x.com/' }
+                            ].map(({ Icon, href }, i) => (
+                                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white dark:bg-slate-800 border border-neutral-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all">
                                     <Icon size={18} />
                                 </a>
                             ))}

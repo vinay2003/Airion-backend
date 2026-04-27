@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
 
@@ -42,6 +42,25 @@ const Hero: React.FC = () => {
 
     return (
         <div className="relative w-full">
+            {/* ✅ India's #1 Premium Event Platform badge - Positioned just below header */}
+            {!isAuthenticated && (
+                <div className="absolute top-[2px] left-0 right-0 z-40 flex justify-center pointer-events-none">
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                        className="bg-yellow-400/10 backdrop-blur-md border border-yellow-500/20 px-4 py-1.5 rounded-full overflow-hidden relative pointer-events-auto shadow-sm"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer" />
+                        <span className="relative text-yellow-100 text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] flex items-center gap-3">
+                            <Sparkles size={12} className="text-yellow-500 animate-pulse" />
+                            India's #1 Premium Event Platform
+                            <Sparkles size={12} className="text-yellow-500 animate-pulse" />
+                        </span>
+                    </motion.div>
+                </div>
+            )}
+
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
             <div className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
 
@@ -114,13 +133,12 @@ const Hero: React.FC = () => {
                         </div>
 
                         {/* ✅ Dynamic Description */}
-                        <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
+                        <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                             {isAuthenticated
                                 ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
                                 : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events. Zero stress."
                             }
                         </p>
-
                         {/* ✅ CTA Button */}
                         {isAuthenticated && (
                             <Link

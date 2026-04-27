@@ -47,7 +47,8 @@ export class VendorsController {
     @Get('ads')
     @UseGuards(JwtAuthGuard)
     async getAds(@Request() req: any) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) return [];
         return vendor.ads || [];
     }
@@ -55,7 +56,8 @@ export class VendorsController {
     @Get('gallery')
     @UseGuards(JwtAuthGuard)
     async getGallery(@Request() req: any) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) return [];
         return vendor.gallery || [];
     }
@@ -78,13 +80,14 @@ export class VendorsController {
     @Put('me')
     @UseGuards(JwtAuthGuard)
     async updateProfile(@Body() updateVendorDto: Partial<CreateVendorDto>, @Request() req: any) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
 
         if (!vendor) {
             throw new NotFoundException('Vendor profile not found');
         }
 
-        return this.vendorsService.update(vendor.id, updateVendorDto, req.user.userId);
+        return this.vendorsService.update(vendor.id, updateVendorDto, userId);
     }
 
     /**
@@ -127,13 +130,15 @@ export class VendorsController {
     @Post('ads')
     @UseGuards(JwtAuthGuard)
     async createAd(@Request() req: any, @Body() adData: any) {
-        return this.vendorsService.createAd(req.user.userId, adData);
+        const userId = req.user.userId || req.user.sub;
+        return this.vendorsService.createAd(userId, adData);
     }
 
     @Put('ads/:adId')
     @UseGuards(JwtAuthGuard)
     async updateAd(@Request() req: any, @Param('adId') adId: string, @Body() updateData: any) {
-        return this.vendorsService.updateAd(req.user.userId, adId, updateData);
+        const userId = req.user.userId || req.user.sub;
+        return this.vendorsService.updateAd(userId, adId, updateData);
     }
 
     // --- GALLERY ENDPOINTS ---
@@ -141,23 +146,26 @@ export class VendorsController {
     @Post('gallery')
     @UseGuards(JwtAuthGuard)
     async addToGallery(@Request() req: any, @Body() item: any) {
+        const userId = req.user.userId || req.user.sub;
         console.log('[VendorsController.addToGallery] Incoming Sync Request:', {
-            userId: req.user?.userId,
+            userId: userId,
             item: { ...item, imageUrl: item.imageUrl?.substring(0, 50) + '...' } // Don't log full base64
         });
-        return this.vendorsService.addToGallery(req.user.userId, item);
+        return this.vendorsService.addToGallery(userId, item);
     }
 
     @Delete('gallery/:itemId')
     @UseGuards(JwtAuthGuard)
     async removeFromGallery(@Request() req: any, @Param('itemId') itemId: string) {
-        return this.vendorsService.removeFromGallery(req.user.userId, itemId);
+        const userId = req.user.userId || req.user.sub;
+        return this.vendorsService.removeFromGallery(userId, itemId);
     }
 
     @Delete('gallery-purge')
     @UseGuards(JwtAuthGuard)
     async purgeGallery(@Request() req: any) {
-        return this.vendorsService.purgeGallery(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        return this.vendorsService.purgeGallery(userId);
     }
 
     @Get(':id/performance')

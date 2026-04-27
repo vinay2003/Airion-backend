@@ -689,4 +689,31 @@ export class AuthService {
             select: ['id', 'name', 'email', 'phoneNumber', 'createdAt', 'role', 'lastLoginAt']
         });
     }
+
+    async changePassword(userId: string, dto: any): Promise<{ message: string }> {
+        const { oldPassword, newPassword } = dto;
+        
+        if (!oldPassword || !newPassword) {
+            throw new BadRequestException('Both current and new passwords are required.');
+        }
+
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new BadRequestException('User session invalid or user not found.');
+        }
+
+        if (user.password && user.password !== 'otp-auth-user') {
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!isMatch) {
+                this.logger.warn(`Password mismatch for user ${userId}`);
+                throw new BadRequestException('The current password you entered is incorrect.');
+            }
+        }
+
+        user.password = newPassword; // Will be hashed by @BeforeUpdate hook
+        await this.userRepository.save(user);
+        
+        this.logger.log(`Password successfully updated for user ${userId}`);
+        return { message: 'Password updated successfully' };
+    }
 }

@@ -11,9 +11,9 @@ import {
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
 import api from '../lib/api'; // Use common api instance
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchVendorPerformance } from '../lib/api';
-import { Badge, Button, Skeleton } from '@ease2event/ui';
+import { Badge, Button, Skeleton, notify } from '@ease2event/ui';
 
 type AnalysisPeriod = '7D' | '30D' | '90D' | 'YTD';
 
@@ -25,6 +25,17 @@ const Analytics: React.FC = () => {
     const { user } = useAuth();
     const vendorId = user?.vendor?.id || user?.id || '';
     const [period, setPeriod] = useState<AnalysisPeriod>('30D');
+    const queryClient = useQueryClient();
+
+    const handleUpdateReports = async () => {
+        try {
+            await queryClient.invalidateQueries({ queryKey: ['vendorStats', vendorId] });
+            await queryClient.invalidateQueries({ queryKey: ['vendorPerformance', vendorId] });
+            notify.success('Reports updated successfully');
+        } catch (error) {
+            notify.error('Failed to update reports');
+        }
+    };
 
     // 🛰️ Real-time Operational Insights Fetching
     const { data: statsData, isLoading } = useQuery({
@@ -244,7 +255,13 @@ const Analytics: React.FC = () => {
                             <p className="text-[9px] sm:text-[11px] font-semibold text-[var(--ease2event-text-secondary)] mt-3 sm:mt-4">Highest performing services and listings</p>
                         </div>
                     </div>
-                    <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-semibold tracking-normal w-full xl:w-auto">Update Reports</Button>
+                    <Button 
+                        variant="outline" 
+                        onClick={handleUpdateReports}
+                        className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-semibold tracking-normal w-full xl:w-auto hover:bg-[var(--ease2event-brand-primary)] hover:text-white transition-all"
+                    >
+                        Update Reports
+                    </Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">

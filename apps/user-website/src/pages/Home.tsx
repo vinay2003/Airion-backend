@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet } from 'lucide-react';
+import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet, Phone, DollarSign } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategorySlider from '../components/CategorySlider';
 import CategorySection from '../components/CategorySection';
@@ -10,6 +10,7 @@ import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '@ease2event/shared/auth';
 import FallingPetals from '../components/FallingPetals';
+import FallingLeaves from '../components/FallingLeaves';
 
 import { fetchEvents } from '../lib/api';
 import type { Event } from '../types';
@@ -156,7 +157,8 @@ const Home: React.FC = () => {
                         className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
                     >
                         <div className="text-center mb-12">
-                            <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">What you need for your event</h2>
+                            <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Whatever You're Celebrating,
+                                We Have the Perfect Space</h2>
                             <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
                                 Discover everything you need to make your next event truly unforgettable.
                             </p>
@@ -194,10 +196,11 @@ const Home: React.FC = () => {
                     <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                             <div className="space-y-1">
-                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Events This Month</h2>
-                                <p className="text-s text-gray-400 font-black tracking-widest opacity-60">Handpicked Premium Experiences</p>
+                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Top Booked Venues This Season</h2>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
+                                    Real-time availability — book before someone else does.</p>
                             </div>
-                            <Link to="/marketplace" className="text-white dark:text-white hover:text-red-600 font-black flex items-center gap-2 group text-md tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
+                            <Link to="/marketplace" className="text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-400 font-black flex items-center gap-2 group text-md tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
                                 See More <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -290,46 +293,76 @@ const Home: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* How It Works */}
+                    {/* The Process */}
                     <motion.section
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="bg-white/5 backdrop-blur-md dark:bg-slate-950/20 py-20 transition-colors duration-300 relative z-10"
+                        className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 overflow-hidden"
                     >
-                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
-                            <div className="text-center mb-16">
-                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">How It Works</h2>
-                                <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
-                                    Planning your event has never been easier. Follow these simple steps to book your dream venue.
+                        {/* Confined Falling Leaf Effect */}
+                        <div className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen -z-10">
+                            <FallingLeaves />
+                        </div>
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8 relative">
+                            <div className="text-center mb-20 relative">
+                                {/* Decorative elements matching the image */}
+
+                                <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">The Process</p>
+                                <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
+                                    From Idea to Celebration in 4 Simple Steps
+                                </h2>
+                                <p className="text-gray-500 dark:text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                                    Most clients go from first search to confirmed booking in under 48 hours.
                                 </p>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                                {[
-                                    { icon: Search, title: 'Browse & Discover', desc: 'Search events by category, location, and dates to find your perfect match.', path: '/marketplace' },
-                                    { icon: Calendar, title: 'Book & Confirm', desc: 'Select your preferred date and explore our curated event packages.', path: '/packages' },
-                                    { icon: Star, title: 'Enjoy Your Event', desc: 'Relax and celebrate. Your chosen vendor will take care of absolutely everything else.', path: '/inspiration' },
-                                ].map((step, idx) => (
-                                    <motion.div
-                                        key={idx}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: idx * 0.2, duration: 0.5 }}
-                                    >
-                                        <Link
-                                            to={step.path}
-                                            className="block h-full bg-white dark:bg-slate-800 p-5 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-slate-700 text-center group cursor-pointer active:scale-95"
+
+                            <div className="relative max-w-[1100px] mx-auto">
+                                {/* Connecting Line */}
+                                <div className="hidden md:block absolute top-[40px] left-[12%] right-[12%] h-[1px] bg-[#C25844]/40 -z-10" />
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 relative z-10">
+                                    {[
+                                        {
+                                            num: '01',
+                                            title: 'Tell Us Your Vision',
+                                            desc: 'Fill a 2-minute brief — occasion, city, guest count, budget. No sign-up required to get started.'
+                                        },
+                                        {
+                                            num: '02',
+                                            title: 'Get Curated Matches',
+                                            desc: 'Our team sends you 3-5 handpicked venue and vendor proposals within 2 hours, tailored to your brief.'
+                                        },
+                                        {
+                                            num: '03',
+                                            title: 'Customise & Confirm',
+                                            desc: 'Negotiate, tweak packages, do site visits — your dedicated concierge handles all back-and-forth.'
+                                        },
+                                        {
+                                            num: '04',
+                                            title: 'Celebrate Stress-Free',
+                                            desc: 'On the day, our on-ground coordinator ensures everything runs perfectly. You just enjoy every moment.'
+                                        }
+                                    ].map((step, idx) => (
+                                        <motion.div
+                                            key={idx}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: idx * 0.15, duration: 0.6 }}
+                                            className="flex flex-col items-center text-center group"
                                         >
-                                            <div className="w-12 h-12 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
-                                                <step.icon size={24} className="text-red-500 group-hover:text-white transition-colors" />
+                                            <div className="w-20 h-20 bg-[#FAF8F5] dark:bg-slate-900 border-[1.5px] border-[#C25844] rounded-full flex items-center justify-center mb-6 transition-transform duration-300 group-hover:bg-[#C25844] group-hover:text-white">
+                                                <span className="text-xl font-bold text-[#C25844] font-serif group-hover:text-white transition-colors">{step.num}</span>
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-red-600 transition-colors">{step.title}</h3>
-                                            <p className="text-sm text-gray-600 dark:text-slate-400 leading-snug">{step.desc}</p>
-                                        </Link>
-                                    </motion.div>
-                                ))}
+                                            <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-3 font-serif transition-colors">{step.title}</h3>
+                                            <p className="text-[13px] text-gray-500 dark:text-slate-400 leading-relaxed px-2">
+                                                {step.desc}
+                                            </p>
+                                        </motion.div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </motion.section>
@@ -352,62 +385,99 @@ const Home: React.FC = () => {
                 </section>
             )}
 
-            {/* Why Choose Us */}
-            <section className="bg-slate-50/50 dark:bg-black/20 backdrop-blur-lg text-slate-900 dark:text-white py-20 relative z-10 border-t border-slate-200 dark:border-white/5">
+            {/* Our Promise To You */}
+            <section className="bg-white dark:bg-slate-950 py-24 relative z-10 overflow-hidden border-t border-gray-100 dark:border-slate-800/50">
+                {/* Confined Falling Leaf Effect */}
+                <div className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen -z-10">
+                    <FallingLeaves />
+                </div>
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                        {/* Left Side: Image with Badges */}
+                        <div className="relative pl-4 md:pl-8 pr-4 md:pr-8">
+                            <div className="relative h-[500px] lg:h-[600px] rounded-sm overflow-hidden shadow-xl">
+                                <img
+                                    src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
+                                    alt="Event Planning"
+                                    loading="lazy"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+
+                            {/* Top Left Badge */}
+                            <div className="absolute top-10 left-0 md:left-4 bg-[#C25844] text-white px-6 py-5 rounded shadow-2xl z-20">
+                                <div className="text-4xl font-serif font-bold mb-1 leading-none">₹0</div>
+                                <div className="text-[10px] tracking-wider uppercase opacity-90 font-medium mt-1">Hidden Fees. Ever.</div>
+                            </div>
+
+                            {/* Bottom Right Badge */}
+                            <div className="absolute bottom-10 right-0 md:right-4 bg-white dark:bg-slate-800 px-8 py-6 rounded shadow-2xl z-20 text-center border border-gray-100 dark:border-slate-700">
+                                <div className="text-4xl font-serif font-bold text-[#C25844] mb-2 leading-none">98%</div>
+                                <div className="text-xs text-gray-500 font-medium">Client Satisfaction Score</div>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Content */}
                         <div>
-                            <h2 className="text-xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 font-bold text-center whitespace-nowrap mb-10 tracking-tight">
-                                <span className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
-                                    Why Ease2event?
-                                </span>
+                            <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Our Promise To You</p>
+                            <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
+                                5 Reasons 10,000+ Hosts Choose Ease2event
                             </h2>
+                            <p className="text-gray-500 dark:text-slate-400 mb-12 text-sm md:text-base">
+                                We're not just a marketplace. We're your personal event team.
+                            </p>
+
                             <div className="space-y-8">
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Shield size={24} />
+                                <div className="flex gap-5 group">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                        <CheckCircle2 size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold mb-2">Verified Vendors</h3>
-                                        <p className="text-slate-600 dark:text-gray-400">
-                                            Every venue and vendor is personally verified by our team to ensure quality and reliability.
+                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Every Vendor is Personally Verified</h3>
+                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            We physically inspect every venue. Only 1 in 4 applicants make it onto Ease2event.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Heart size={24} />
+                                <div className="flex gap-5 group">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                        <DollarSign size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold mb-2">Best Price Guarantee</h3>
-                                        <p className="text-slate-600 dark:text-gray-400">
-                                            We negotiate the best rates so you don't have to. Find a lower price? We'll match it.
+                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Price Match Guarantee</h3>
+                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            Found the same venue cheaper? We'll match it — no arguments, no conditions.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Star size={24} />
+                                <div className="flex gap-5 group relative">
+                                    {/* Decorative dot from image */}
+
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                        <Phone size={22} strokeWidth={1.5} />
+                                    </div>
+                                    <div className="lg:pr-12">
+                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Concierge Available 24/7</h3>
+                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            Call, WhatsApp, or email — your dedicated coordinator responds within the hour.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-5 group">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                        <Shield size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold mb-2">24/7 Support</h3>
-                                        <p className="text-slate-600 dark:text-gray-400">
-                                            Our dedicated support team is available around the clock to assist you with any queries.
+                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Secure Payments & Cancellation Cover</h3>
+                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                            All bookings are protected. 100% refund within 48 hours. Partial refunds up to 7 days before.
                                         </p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-slate-800">
-                            <img
-                                src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
-                                alt="Event Planning"
-                                loading="lazy"
-                                className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-gray-900 via-transparent to-transparent opacity-60"></div>
                         </div>
                     </div>
                 </div>

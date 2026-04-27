@@ -188,19 +188,19 @@ const Earnings: React.FC = () => {
               <div className="p-4 sm:p-5 bg-emerald-500/10 text-emerald-500 rounded-[20px] sm:rounded-[24px] shadow-sm border border-emerald-500/10">
                 <ShieldCheck size={24} className="sm:w-[28px] sm:h-[28px]" />
               </div>
-              <div className="flex items-center gap-2 text-[var(--ease2event-text-secondary)] text-[9px] sm:text-[10px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 uppercase tracking-widest border border-[var(--ease2event-border-subtle)] rounded-2xl bg-[var(--ease2event-bg-elevated)] leading-none">
+              <div className="flex items-center gap-2 text-[var(--ease2event-text-secondary)] text-[12px] sm:text-[13px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 uppercase tracking-widest border border-[var(--ease2event-border-subtle)] rounded-2xl bg-[var(--ease2event-bg-elevated)] leading-none">
                 <span className="opacity-70">SYNCED :</span>
                 <span className="text-[var(--ease2event-text-primary)]">OCT 15, 2023</span>
               </div>
             </div>
-            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] sm:text-[11px]  tracking-widest mb-3 sm:mb-4">Total Balance</p>
+            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-3 sm:mb-4">Total Balance</p>
             <h2 className="text-4xl sm:text-5xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">
               {isLoading ? <Skeleton className="h-12 w-32 rounded-xl" /> : `₹${displayData.totalBalance.toLocaleString('en-IN')}`}
             </h2>
           </div>
           <div className="mt-10 pt-8 border-t border-[var(--ease2event-border-subtle)]">
             <button className="flex items-center justify-between w-full p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[2rem] transition-all group active:scale-95 shadow-inner">
-              <span className="text-[11px] font-bold text-[var(--ease2event-text-primary)]  tracking-widest flex items-center gap-3">
+              <span className="text-sm font-bold text-[var(--ease2event-text-primary)]  tracking-widest flex items-center gap-3">
                 <CreditCard size={18} className="text-emerald-500" />
                 Withdrawal
               </span>
@@ -215,12 +215,12 @@ const Earnings: React.FC = () => {
               <div className="p-4 sm:p-5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] rounded-[20px] sm:rounded-[24px] shadow-sm border border-[var(--ease2event-brand-primary)]/10">
                 <TrendingUp size={24} className="sm:w-[28px] sm:h-[28px]" />
               </div>
-              <div className="flex items-center gap-2 text-emerald-600 text-[9px] sm:text-[11px] font-bold bg-emerald-500/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-emerald-500/20  tracking-widest">
+              <div className="flex items-center gap-2 text-emerald-600 text-[12px] sm:text-[13px] font-bold bg-emerald-500/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-emerald-500/20  tracking-widest">
                 <ArrowBigUpDash size={16} />
                 <span>{displayData.growth}</span>
               </div>
             </div>
-            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] sm:text-[11px]  tracking-widest mb-3 sm:mb-4">{activePeriod} Revenue</p>
+            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-3 sm:mb-4">{activePeriod} Revenue</p>
             <h2 className="text-4xl sm:text-5xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">
               {isLoading ? <Skeleton className="h-12 w-32 rounded-xl" /> : `₹${displayData.periodRevenue.toLocaleString('en-IN')}`}
             </h2>
@@ -229,14 +229,14 @@ const Earnings: React.FC = () => {
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map(i => <div key={i} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md" />)}
             </div>
-            <p className="text-[9px] sm:text-[10px] text-[var(--ease2event-text-secondary)] font-bold  tracking-[0.2em] leading-none">Nodes Updated <span className="text-emerald-600">Live Telemetry</span></p>
+            <p className="text-[11px] sm:text-[12px] text-[var(--ease2event-text-secondary)] font-bold  tracking-[0.2em] leading-none">Nodes Updated <span className="text-emerald-600">Live Telemetry</span></p>
           </div>
         </motion.div>
 
         <motion.div variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} className="card-minimal p-6 sm:p-10 flex flex-col justify-between hover:border-amber-500/40 hover:shadow-2xl transition-all duration-500 bg-[var(--ease2event-bg-surface)]">
           <div className="flex justify-between items-start mb-6 sm:mb-8">
             <div className="flex-1">
-              <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] sm:text-[11px]  tracking-widest mb-1 sm:mb-2">Monthly Target</p>
+              <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-1 sm:mb-2">Monthly Target</p>
               <h3 className="text-2xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">
                 {isLoading ? <Skeleton className="h-10 w-28 rounded-xl" /> : `₹${displayData.payoutTarget.toLocaleString()} GOAL`}
               </h3>
@@ -255,13 +255,13 @@ const Earnings: React.FC = () => {
                 className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full"
               />
             </div>
-            <div className="flex justify-between items-center text-[8px] sm:text-[10px] font-bold  tracking-widest text-[var(--ease2event-text-secondary)] leading-none">
+            <div className="flex justify-between items-center text-[10px] sm:text-[12px] font-bold  tracking-widest text-[var(--ease2event-text-secondary)] leading-none">
               <span>{displayData.payoutProgress}% Progress</span>
               <span className="text-[var(--ease2event-brand-primary)] tracking-tight">SETTLEMENT: {displayData.payoutDate}</span>
             </div>
           </div>
           <button className="mt-8 sm:mt-10 flex items-center justify-between w-full p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-[1.5rem] sm:rounded-[2rem] transition-all group active:scale-95 shadow-inner">
-            <span className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-primary)]  tracking-widest leading-none">Modify Target Matrix</span>
+            <span className="text-xs sm:text-sm font-bold text-[var(--ease2event-text-primary)]  tracking-widest leading-none">Modify Target Matrix</span>
             <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] text-[var(--ease2event-brand-primary)] group-hover:translate-x-2 transition-transform" />
           </button>
         </motion.div>
@@ -367,7 +367,10 @@ const Earnings: React.FC = () => {
                 </div>
               ))}
             </div>
-            <button className="w-full mt-12 py-5 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] rounded-[1.5rem] text-xs font-bold  tracking-[0.2em] text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/40 hover:shadow-xl transition-all active:scale-95 shadow-inner">
+            <button
+              onClick={() => document.getElementById('transactions-registry')?.scrollIntoView({ behavior: 'smooth' })}
+              className="w-full mt-12 py-5 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] rounded-[1.5rem] text-sm font-semibold tracking-normal text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/40 hover:shadow-xl transition-all active:scale-95 shadow-inner"
+            >
               Access Ledger Logs
             </button>
           </div>
@@ -396,7 +399,7 @@ const Earnings: React.FC = () => {
       </div>
 
       {/* 🧾 Intelligence Registry (Enhanced Table) */}
-      <motion.div variants={itemVariants} className="card-minimal !p-0 overflow-hidden border-[var(--ease2event-border-base)] shadow-[0_48px_80px_-24px_rgba(0,0,0,0.15)] bg-[var(--ease2event-bg-surface)] rounded-[40px]">
+      <motion.div id="transactions-registry" variants={itemVariants} className="card-minimal !p-0 overflow-hidden border-[var(--ease2event-border-base)] shadow-[0_48px_80px_-24px_rgba(0,0,0,0.15)] bg-[var(--ease2event-bg-surface)] rounded-[40px]">
         <div className="p-10 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10">
           <div>
             <h3 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter  leading-none">Transactions</h3>

@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, UseGuards, Request, HttpCode, HttpStatus, Patch } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from '../services/auth.service';
-import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto } from '../dto/otp.dto';
+import { SendOtpDto, VerifySignupOtpDto, VerifyLoginOtpDto, ChangePasswordDto } from '../dto/otp.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -103,7 +103,7 @@ export class AuthController {
     @Post('change-password')
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
-    async changePassword(@Request() req: any, @Body() dto: any) {
+    async changePassword(@Request() req: any, @Body() dto: ChangePasswordDto) {
         return this.authService.changePassword(req.user.userId, dto);
     }
 }

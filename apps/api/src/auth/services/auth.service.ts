@@ -617,6 +617,28 @@ export class AuthService {
         return { message: 'Password reset successfully' };
     }
 
+    async changePassword(userId: string, dto: { oldPassword?: string; newPassword: string }): Promise<{ message: string }> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
+
+        // If user already has a password, verify old password unless it's an OTP-only user with placeholder password
+        if (user.password && user.password !== 'otp-auth-user' && dto.oldPassword) {
+            const isMatch = await bcrypt.compare(dto.oldPassword, user.password);
+            if (!isMatch) {
+                throw new BadRequestException('Incorrect current password');
+            }
+        } else if (user.password && user.password !== 'otp-auth-user' && !dto.oldPassword) {
+            throw new BadRequestException('Current password is required to change password');
+        }
+
+        user.password = await bcrypt.hash(dto.newPassword, 10);
+        await this.userRepository.save(user);
+
+        return { message: 'Password changed successfully' };
+    }
+
     async updateProfile(userId: string, dto: any): Promise<any> {
         try {
             // Strict filtering of fields to ensure database compatibility
@@ -688,40 +710,5 @@ export class AuthService {
             order: { createdAt: 'DESC' },
             select: ['id', 'name', 'email', 'phoneNumber', 'createdAt', 'role', 'lastLoginAt']
         });
-    }
-
-    async changePassword(userId: string, dto: any): Promise<{ message: string }> {
-        try {
-            const { currentPassword, newPassword } = dto;
-            
-            if (!currentPassword || !newPassword) {
-                throw new BadRequestException('Both current and new passwords are required.');
-            }
-
-            const user = await this.userRepository.findOne({ where: { id: userId } });
-            if (!user) {
-                throw new BadRequestException('User session invalid or user not found.');
-            }
-
-            // Support both password and OTP authenticated accounts
-            if (user.password && user.password !== 'otp-auth-user') {
-                const isMatch = await bcrypt.compare(currentPassword, user.password);
-                if (!isMatch) {
-                    this.logger.warn(`Password mismatch for user ${userId}`);
-                    throw new BadRequestException('The current password you entered is incorrect.');
-                }
-            }
-
-            // Apply new password
-            user.password = await bcrypt.hash(newPassword, 10);
-            await this.userRepository.save(user);
-            
-            this.logger.log(`Password successfully updated for user ${userId}`);
-            return { message: 'Password updated successfully' };
-        } catch (error: any) {
-            this.logger.error(`CRITICAL: Password update failed for user ${userId}. Error: ${error.message}`, error.stack);
-            throw new BadRequestException(error.message || 'Error updating password');
-        }
-    }
     }
 }

@@ -7,7 +7,7 @@ import { CreateVendorDto } from './dto/create-vendor.dto';
 import { User } from '../auth/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Booking } from '../bookings/entities/booking.entity';
-import { VendorAd, AdStatus } from './entities/vendor-ad.entity';
+import { VendorAd } from './entities/vendor-ad.entity';
 import { VendorGallery } from './entities/vendor-gallery.entity';
 import { Availability } from '../availability/entities/availability.entity';
 
@@ -245,46 +245,23 @@ export class VendorsService {
 
     // --- ADS MANAGEMENT
     async createAd(userId: string, adData: any): Promise<VendorAd> {
-        try {
-            console.log('[VendorsService.createAd] Initializing Creation for User:', userId);
-            let vendor = await this.findByUserId(userId);
-            
-            if (!vendor) {
-                console.log('[VendorsService.createAd] Vendor profile missing, auto-creating stub...');
-                const user = await this.userRepository.findOne({ where: { id: userId } });
-                vendor = this.vendorRepository.create({ 
-                    userId,
-                    businessName: user?.name || 'VND-' + userId?.substring(0, 5),
-                    isProfileComplete: false,
-                    verificationStatus: 'pending'
-                });
-                vendor = await this.vendorRepository.save(vendor);
-            }
-
-            const ad = this.adRepository.create({
-                title: adData.title,
-                imageUrl: adData.imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-                budget: Number(adData.budget) || 0,
-                vendor: vendor,
-                status: AdStatus.PENDING,
-                spent: 0,
-                impressions: 0,
-                clicks: 0
+        let vendor = await this.findByUserId(userId);
+        
+        if (!vendor) {
+            const user = await this.userRepository.findOne({ where: { id: userId } });
+            vendor = this.vendorRepository.create({ 
+                userId,
+                businessName: user?.name || 'VND-' + userId.substring(0, 5),
+                isProfileComplete: false
             });
-
-            const savedAd = await this.adRepository.save(ad);
-            
-            // Critical Fix: Remove recursive vendor relation before return to prevent Circular JSON error
-            if (savedAd.vendor) {
-                delete (savedAd as any).vendor;
-            }
-            
-            console.log('[VendorsService.createAd] Success:', savedAd.id);
-            return savedAd;
-        } catch (error: any) {
-            console.error('[VendorsService.createAd] CRITICAL FAILURE:', error);
-            throw new BadRequestException(`Campaign Creation Failed: ${error.message || 'Database Constraint'}`);
+            vendor = await this.vendorRepository.save(vendor);
         }
+
+        const ad = new VendorAd();
+        Object.assign(ad, adData);
+        ad.vendor = vendor;
+
+        return this.adRepository.save(ad) as unknown as Promise<VendorAd>;
     }
 
     async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {
@@ -292,11 +269,7 @@ export class VendorsService {
         if (!ad) throw new NotFoundException('Ad not found');
 
         Object.assign(ad, updateData);
-        const savedAd = await this.adRepository.save(ad);
-        if (savedAd.vendor) {
-           delete (savedAd as any).vendor;
-        }
-        return savedAd;
+        return this.adRepository.save(ad);
     }
 
     async addToGallery(userId: string, item: any): Promise<VendorGallery> {
@@ -325,11 +298,7 @@ export class VendorsService {
                 title: item.title
             });
 
-            const savedItem = await this.galleryRepository.save(galleryItem);
-            if (savedItem.vendor) {
-               delete (savedItem as any).vendor;
-            }
-            return savedItem as unknown as Promise<VendorGallery>;
+            return await this.galleryRepository.save(galleryItem) as unknown as Promise<VendorGallery>;
         } catch (error: any) {
             const detail = error?.detail || error?.message || 'Unknown DB Error';
             console.error('[VendorsService.addToGallery] CRITICAL FAILURE:', detail, error);

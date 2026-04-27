@@ -76,7 +76,7 @@ const Products: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const submission: any = {
+            const submission = {
                 ...formData,
                 vendorId,
                 basePrice: Number(formData.basePrice),
@@ -88,19 +88,13 @@ const Products: React.FC = () => {
                 }))
             };
 
-            // Prevent blank category strings from triggering backend class-validator UUID errors
-            if (!submission.categoryId) delete submission.categoryId;
-            if (!submission.subcategoryId) delete submission.subcategoryId;
-
             await api.post('/services', submission);
             toast.success('Inventory node synchronized!');
             setIsAdding(false);
             const res = await api.get(`/services?vendorId=${vendorId}`) as { data: any[] };
             setProducts(res.data || []);
-        } catch (err: any) {
-            console.error('Product registration error:', err.response?.data || err);
-            const message = err.response?.data?.message || 'Failed to synchronize node.';
-            toast.error(typeof message === 'string' ? message : message[0] || 'Sync failed');
+        } catch (err) {
+            toast.error('Failed to synchronize node.');
         } finally {
             setSubmitting(false);
         }
@@ -169,20 +163,7 @@ const Products: React.FC = () => {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="flex items-center gap-4">
-                        <Button onClick={() => {
-                            setFormData({
-                                title: '', description: '', basePrice: '',
-                                categoryId: user?.vendor?.categoryId || '', subcategoryId: user?.vendor?.subcategoryId || '',
-                                guestCapacity: '', locationType: 'onsite', address: '',
-                                city: user?.vendor?.city || '', state: '', images: [], features: [],
-                                packages: [
-                                    { name: 'Silver', price: '', description: 'Basic tier with essential features', features: [], isPopular: false },
-                                    { name: 'Gold', price: '', description: 'Most popular choice for premium events', features: [], isPopular: true },
-                                    { name: 'Platinum', price: '', description: 'Luxury all-inclusive experience', features: [], isPopular: false },
-                                ]
-                            });
-                            setIsAdding(false);
-                        }} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-bold text-xs uppercase tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">
+                        <Button onClick={() => setIsAdding(false)} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-bold text-xs uppercase tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">
                             Discard
                         </Button>
                         <Button

@@ -4,7 +4,8 @@ import {
   VerifyOtpBaseSchema,
   VerifySignupOtpSchema,
   VerifyLoginOtpSchema,
-  ResetPasswordSchema 
+  ResetPasswordSchema,
+  ChangePasswordSchema
 } from '@ease2event/types';
 
 export class SendOtpDto extends createZodDto(SendOtpSchema) {}
@@ -30,3 +31,8 @@ export class VerifyLoginOtpDto extends createZodDto(VerifyLoginOtpSchema) {}
  * Reset Password DTO.
  */
 export class ResetPasswordDto extends createZodDto(ResetPasswordSchema) {}
+
+/**
+ * Change Password DTO.
+ */
+export class ChangePasswordDto extends createZodDto(ChangePasswordSchema) {}

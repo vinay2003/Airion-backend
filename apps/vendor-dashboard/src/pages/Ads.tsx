@@ -16,7 +16,7 @@ interface Ad {
     title: string;
     imageUrl: string;
     budget: number;
-    status: 'active' | 'pending' | 'rejected' | 'Active' | 'Pending' | 'Rejected';
+    status: 'Active' | 'Pending' | 'Rejected';
     createdAt: Date;
 }
 
@@ -57,29 +57,26 @@ const Ads: React.FC = () => {
             setShowCreateModal(false);
             setAdData({ title: '', imageUrl: '', budget: '' });
             refreshUser();
-        } catch (err: any) {
-            console.error('Ad creation error:', err.response?.data || err);
-            const message = err.response?.data?.message || 'Failed to create campaign';
-            toast.error(typeof message === 'string' ? message : message[0] || 'Update failed');
+        } catch (err) {
+            toast.error('Failed to create campaign');
         } finally {
             setSubmitting(false);
         }
     };
 
     const StatusBadge = ({ status }: { status: string }) => {
-        const normalizedStatus = status.toLowerCase();
-        let badgeColor = 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)]';
-        
-        if (normalizedStatus === 'active') badgeColor = 'chip-soft-emerald';
-        else if (normalizedStatus === 'pending') badgeColor = 'chip-soft-amber';
-        else if (normalizedStatus === 'rejected') badgeColor = 'chip-soft-rose';
+        const colors = {
+            'Active': 'chip-soft-emerald',
+            'Pending': 'chip-soft-amber',
+            'Rejected': 'chip-soft-rose'
+        }[status] || 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)]';
 
         return (
-            <span className={`chip ${badgeColor} h-10 px-8 shadow-2xl backdrop-blur-xl font-semibold text-[10px] tracking-normal border-2`}>
-                {normalizedStatus === 'active' && <CheckCircle size={16} className="mr-2" />}
-                {normalizedStatus === 'pending' && <Clock size={16} className="mr-2" />}
-                {normalizedStatus === 'rejected' && <AlertCircle size={16} className="mr-2" />}
-                {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+            <span className={`chip ${colors} h-10 px-8 shadow-2xl backdrop-blur-xl font-semibold text-[10px] tracking-normal border-2`}>
+                {status === 'Active' && <CheckCircle size={16} className="mr-2" />}
+                {status === 'Pending' && <Clock size={16} className="mr-2" />}
+                {status === 'Rejected' && <AlertCircle size={16} className="mr-2" />}
+                {status}
             </span>
         );
     };

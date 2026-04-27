@@ -24,12 +24,6 @@ const Settings: React.FC = () => {
     const { user, refreshUser } = useAuth();
     const [activeTab, setActiveTab] = useState('personal');
     const [submitting, setSubmitting] = useState(false);
-    
-    // Password States
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordLoading, setPasswordLoading] = useState(false);
 
     const [categories, setCategories] = useState<any[]>([]);
     const [subcategories, setSubcategories] = useState<any[]>([]);
@@ -60,6 +54,12 @@ const Settings: React.FC = () => {
         categoryId: '',
         subcategoryId: '',
         portfolioImages: [] as string[],
+    });
+
+    const [passwords, setPasswords] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
     });
 
     useEffect(() => {
@@ -129,16 +129,15 @@ const Settings: React.FC = () => {
         setSubmitting(true);
         try {
             await api.patch('/auth/profile', {
-                name: personalData.name,
-                phoneNumber: personalData.phone,
-                avatar: personalData.profileImage
+                name: personalData.name || undefined,
+                phoneNumber: personalData.phone || undefined,
+                avatar: personalData.profileImage || undefined
             });
             toast.success('Profile updated successfully!');
             refreshUser();
         } catch (err: any) {
-            console.error('Personal update error:', err.response?.data);
-            const message = err.response?.data?.message || 'Failed to update profile.';
-            toast.error(typeof message === 'string' ? message : message[0] || 'Update failed');
+            const msg = err.response?.data?.message || 'Failed to update profile.';
+            toast.error(Array.isArray(msg) ? msg[0] : msg);
         } finally {
             setSubmitting(false);
         }
@@ -152,76 +151,76 @@ const Settings: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const submissionData: any = {
-                ...businessData,
+            // Filter out empty strings and redundant fields for clean submission
+            const cleanBusinessData: any = {};
+            Object.entries(businessData).forEach(([key, value]) => {
+                // Skip specific keys that are handled separately or might be redundant/empty
+                const skipKeys = ['address', 'city', 'state', 'zipCode', 'website', 'instagram', 'avgBookingPrice'];
+                if (!skipKeys.includes(key) && value !== '' && value !== null && (Array.isArray(value) ? value.length > 0 : true)) {
+                    cleanBusinessData[key] = value;
+                }
+            });
+
+            const ensureUrl = (url: string | null) => {
+                if (!url) return null;
+                if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                return `https://${url}`;
+            };
+
+            const submissionData = {
+                ...cleanBusinessData,
                 averageBookingPrice: Number(businessData.avgBookingPrice) || 0,
                 businessAddress: {
-                    street: businessData.address,
-                    city: businessData.city,
-                    state: businessData.state,
+                    street: businessData.address || '',
+                    city: businessData.city || '',
+                    state: businessData.state || '',
                     country: 'India',
-                    zipCode: businessData.zipCode
+                    zipCode: businessData.zipCode || ''
                 },
                 socialLinks: {
-                    website: businessData.website || undefined,
-                    instagram: businessData.instagram || undefined
+                    website: ensureUrl(businessData.website),
+                    instagram: ensureUrl(businessData.instagram)
                 }
             };
-            
-            // Clean up empty strings to avoid Zod validation errors
-            if (!submissionData.gstNumber) delete submissionData.gstNumber;
+
+            // Remove category/subcategory if they are empty strings (Zod uuid check)
             if (!submissionData.categoryId) delete submissionData.categoryId;
             if (!submissionData.subcategoryId) delete submissionData.subcategoryId;
-            if (!submissionData.yearsInBusiness) delete submissionData.yearsInBusiness;
-            if (!submissionData.monthlyEventVolume) delete submissionData.monthlyEventVolume;
-            if (!submissionData.businessEmail) delete submissionData.businessEmail;
-            
+
             await api.put('/vendors/me', submissionData);
             toast.success('Business profile updated!');
             refreshUser();
         } catch (err: any) {
-            console.error('Business update error:', err.response?.data);
-            const message = err.response?.data?.message || 'Failed to update business profile.';
-            toast.error(typeof message === 'string' ? message : message[0] || 'Update failed');
+            const msg = err.response?.data?.message || 'Failed to update business profile.';
+            toast.error(Array.isArray(msg) ? msg[0] : msg);
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleChangePassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        if (!newPassword || !currentPassword) {
-            toast.error('Please fill in all password fields');
+    const handleUpdatePassword = async () => {
+        if (!passwords.newPassword) {
+            toast.error('Please enter a new password');
+            return;
+        }
+        if (passwords.newPassword !== passwords.confirmPassword) {
+            toast.error('Passwords do not match');
             return;
         }
 
-        if (newPassword !== confirmPassword) {
-            toast.error('New passwords do not match');
-            return;
-        }
-
-        if (newPassword.length < 8) {
-            toast.error('New password must be at least 8 characters long');
-            return;
-        }
-
-        setPasswordLoading(true);
+        setSubmitting(true);
         try {
             await api.post('/auth/change-password', {
-                currentPassword,
-                newPassword
+                oldPassword: passwords.oldPassword,
+                newPassword: passwords.newPassword
             });
-            toast.success('Password updated successfully');
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-        } catch (error: any) {
-            console.error('Password update failed:', error.response?.data);
-            const message = error.response?.data?.message || 'Failed to update password';
-            toast.error(typeof message === 'string' ? message : 'Update failed');
+            toast.success('Password updated successfully!');
+            setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (err: any) {
+            const msg = err.response?.data?.message || 'Failed to update password.';
+            toast.error(Array.isArray(msg) ? msg[0] : msg);
         } finally {
-            setPasswordLoading(false);
+            setSubmitting(false);
         }
     };
 
@@ -347,10 +346,10 @@ const Settings: React.FC = () => {
                                     </div>
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner relative">
-                                        <input
-                                            type="file"
-                                            id="profile-upload"
-                                            className="hidden"
+                                        <input 
+                                            type="file" 
+                                            id="profile-upload" 
+                                            className="hidden" 
                                             accept="image/*"
                                             onChange={async (e) => {
                                                 const file = e.target.files?.[0];
@@ -472,14 +471,14 @@ const Settings: React.FC = () => {
                                                             </motion.div>
                                                         ))}
                                                         <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-2 sm:gap-3 group cursor-pointer">
-                                                            <input
-                                                                type="file"
-                                                                className="hidden"
-                                                                accept="image/*"
+                                                            <input 
+                                                                type="file" 
+                                                                className="hidden" 
+                                                                accept="image/*" 
                                                                 onChange={async (e) => {
                                                                     const file = e.target.files?.[0];
                                                                     if (!file) return;
-
+                                                                    
                                                                     const loaderId = toast.loading('Synchronizing asset...');
                                                                     try {
                                                                         const data = await uploadImage(file);
@@ -543,20 +542,44 @@ const Settings: React.FC = () => {
 
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
-                                            <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
-                                                <input value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                                            <div className="space-y-8">
+                                                <div className="space-y-4 sm:space-y-5">
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
+                                                    <input 
+                                                        type="password" 
+                                                        value={passwords.oldPassword}
+                                                        onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+                                                        placeholder="••••••••" 
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                    />
+                                                </div>
+                                                <div className="space-y-4 sm:space-y-5">
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
+                                                    <input 
+                                                        type="password" 
+                                                        value={passwords.newPassword}
+                                                        onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                                                        placeholder="••••••••" 
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                    />
+                                                </div>
+                                                <div className="space-y-4 sm:space-y-5">
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
+                                                    <input 
+                                                        type="password" 
+                                                        value={passwords.confirmPassword}
+                                                        onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
+                                                        placeholder="••••••••" 
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
-                                                <input value={newPassword} onChange={e => setNewPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
-                                            </div>
-                                            <div className="space-y-4 sm:space-y-5">
-                                                <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
-                                                <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
-                                            </div>
-                                            <Button onClick={handleChangePassword} disabled={passwordLoading} className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
-                                                {passwordLoading ? <Loader2 className="animate-spin text-white flex justify-center w-full" /> : 'UPDATE PASSWORD'}
+                                            <Button 
+                                                onClick={handleUpdatePassword}
+                                                disabled={submitting}
+                                                className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"
+                                            >
+                                                {submitting ? <Loader2 className="animate-spin mx-auto" /> : 'UPDATE PASSWORD'}
                                             </Button>
                                         </div>
 

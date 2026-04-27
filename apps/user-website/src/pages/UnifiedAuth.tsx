@@ -48,7 +48,8 @@ const UnifiedAuth: React.FC = () => {
             setMode('login');
         } else if (portal === 'vendor') {
             setSelectedRole(UserRole.VENDOR);
-        } else if (portal === 'user') {
+        } else {
+            // Default to USER for all other paths including plain /login
             setSelectedRole(UserRole.USER);
         }
     }, [location.pathname, searchParams]);
@@ -327,13 +328,12 @@ const UnifiedAuth: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* 👤 Role Selector - Admin Hidden (Accessible via direct URL /admin/login Only) */}
-                    {step === 'phone' && !location.pathname.includes('/admin/login') && (
-                        <div className={`w-full grid ${mode === 'signup' ? 'grid-cols-2' : 'grid-cols-2'} gap-3.5 mb-10 bg-neutral-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-neutral-100 dark:border-slate-800/50`}>
+                    {/* 👤 Role Selector */}
+                    {step === 'phone' && (
+                        <div className={`w-full grid grid-cols-2 gap-3.5 mb-10 bg-neutral-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-neutral-100 dark:border-slate-800/50`}>
                             {[
                                 { id: UserRole.USER, label: 'User', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
-                                { id: UserRole.VENDOR, label: 'Vendor', icon: Building, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=vendor` },
-                                // { id: UserRole.ADMIN, label: 'Admin', icon: ShieldCheck, path: '/admin/login', hideOnSignup: true } // Removed for stealth access
+                                { id: UserRole.VENDOR, label: 'Vendor', icon: Building, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=vendor` }
                             ].map(role => (
                                 <button
                                     key={role.id}

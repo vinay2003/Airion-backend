@@ -41,12 +41,11 @@ const faqs = [
     }
 ];
 
-const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const FAQItem = ({ question, answer, isOpen, onToggle }: { question: string; answer: string; isOpen: boolean; onToggle: () => void }) => {
     return (
         <div className="bg-white dark:bg-slate-800 rounded-sm shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-all duration-300">
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={onToggle}
                 className="w-full flex items-center justify-between p-5 md:p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#C25844]/20"
             >
                 <span className="font-bold text-[#1A1A1A] dark:text-white text-[15px] pr-4">{question}</span>
@@ -76,6 +75,7 @@ const Home: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [marketplaceTab, setMarketplaceTab] = useState('All');
+    const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
 
     const [subscribeEmail, setSubscribeEmail] = useState('');
     const [subscribeError, setSubscribeError] = useState('');
@@ -139,58 +139,6 @@ const Home: React.FC = () => {
             <SEO title="Home" description="Find and book the perfect venue for your wedding, birthday, or corporate event with Ease2event." />
             <Hero />
 
-            {/* Dashboard Highlights for Logged-in Users */}
-            {isAuthenticated && activeCategory === 'all' && (
-                <motion.section
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    className="max-w-[1400px] mx-auto px-4 md:px-8 mt-8 mb-12 relative z-40"
-                >
-                    <div className="bg-white/95 backdrop-blur-3xl dark:bg-slate-900/95 rounded-[2rem] shadow-xl shadow-black/10 border border-white/20 dark:border-white/10 p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8">
-                        <div className="flex-1 w-full text-center lg:text-left">
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase">Your Plan Hub</h2>
-                            <p className="text-sm text-gray-500 dark:text-slate-400 font-medium mb-6">Manage your dream event from your personalized dashboard.</p>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto lg:mx-0">
-                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="p-1.5 bg-red-100/50 text-red-600 rounded-lg"><Clock size={16} /></div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Next Milestone</span>
-                                    </div>
-                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">Book Wedding Photographer</p>
-                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">Due in 2 days</p>
-                                </div>
-                                <div className="p-4 bg-neutral-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="p-1.5 bg-green-100/50 text-green-600 rounded-lg"><Wallet size={16} /></div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Budget Spent</span>
-                                    </div>
-                                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200">₹45,000 / ₹2,00,000</p>
-                                    <p className="text-[10px] text-gray-500 font-medium mt-0.5">22.5% of total budget</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex-shrink-0 w-full lg:w-auto grid grid-cols-2 gap-3 relative z-50">
-                            <Link to="/dashboard" className="flex flex-col items-center justify-center p-4 bg-red-600 text-white rounded-2xl hover:bg-black transition-all shadow-lg shadow-red-500/10 group relative pointer-events-auto min-w-[120px]">
-                                <LayoutDashboard size={24} className="mb-1.5 group-hover:scale-110 transition-transform" />
-                                <span className="text-[10px] font-black uppercase tracking-tight">Overview</span>
-                            </Link>
-                            <Link to="/dashboard/bookings" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
-                                <Calendar size={24} className="mb-1.5" />
-                                <span className="text-[10px] font-black uppercase tracking-tight">Bookings</span>
-                            </Link>
-                            <Link to="/dashboard/inbox" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
-                                <Search size={24} className="mb-1.5" />
-                                <span className="text-[10px] font-black uppercase tracking-tight">Messages</span>
-                            </Link>
-                            <Link to="/dashboard/budget" className="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl border border-gray-100 dark:border-slate-700 hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm relative pointer-events-auto min-w-[120px]">
-                                <Star size={24} className="mb-1.5" />
-                                <span className="text-[10px] font-black uppercase tracking-tight">Saved</span>
-                            </Link>
-                        </div>
-                    </div>
-                </motion.section>
-            )}
 
             <CategorySlider />
 
@@ -599,13 +547,17 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8 lg:px-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
                         {faqs.map((faq, idx) => (
-                            <FAQItem key={idx} question={faq.question} answer={faq.answer} />
+                            <FAQItem
+                                key={idx}
+                                question={faq.question}
+                                answer={faq.answer}
+                                isOpen={openFaqIdx === idx}
+                                onToggle={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
+                            />
                         ))}
                     </div>
-
-
                 </div>
             </section>
 

@@ -13,7 +13,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Listings = lazy(() => import('./pages/Listings'));
 const Inbox = lazy(() => import('./pages/Inbox'));
 const VendorLogin = lazy(() => import('./pages/VendorLogin'));
-const VendorSignupBasic = lazy(() => import('./pages/VendorSignupBasic'));
+const VendorSignupBasic = lazy(() => import('./pages/auth/VendorSignupBasic'));
 const VendorSignupForm = lazy(() => import('./pages/VendorSignup'));
 const Bookings = lazy(() => import('./pages/Bookings'));
 const Analytics = lazy(() => import('./pages/Analytics'));

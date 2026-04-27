@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Phone, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import api from '../../lib/api';
-import LoadingButton from '../@ease2event/shared/components/LoadingButton';
-import StatusAlert from '../@ease2event/shared/components/StatusAlert';
+import { LoadingButton, StatusAlert } from '../../components/shared';
 
 const VendorSignupBasic: React.FC = () => {
     const navigate = useNavigate();
@@ -35,17 +33,21 @@ const VendorSignupBasic: React.FC = () => {
 
         setLoading(true);
         try {
-            const response = await api.post('/auth/signup/send-otp', { phoneNumber: phone });
+            // FIX: Backend expects 'phone', not 'phoneNumber'
+            const response = await api.post<any>('/auth/signup/send-otp', { phone });
 
-            if (response.data.otp) {
-                setSuccess(`OTP sent! Your code is: ${response.data.otp}`);
-                alert(`Development Info:\n\n🔑 Your Signup OTP is: ${response.data.otp}`);
+            // api already unwraps the response data
+            const devOtp = response._dev_otp;
+            
+            if (devOtp) {
+                setSuccess(`OTP sent! For development, use: ${devOtp}`);
             } else {
                 setSuccess('OTP sent successfully! Please check your phone.');
             }
             setStep('otp');
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Failed to send OTP. Please try again.';
+            // ApiClient returns a standard error object { error: string, ... }
+            const errorMessage = err.error || 'Failed to send OTP. Please try again.';
             setError(errorMessage);
         } finally {
             setLoading(false);
@@ -64,21 +66,21 @@ const VendorSignupBasic: React.FC = () => {
         }
 
         try {
-            const response = await api.post('/auth/signup/verify-otp', {
-                phoneNumber: phone,
+            // FIX: Backend expects 'phone', not 'phoneNumber'
+            const response = await api.post<any>('/auth/signup/verify-otp', {
+                phone,
                 otp,
                 role: 'vendor',
             });
 
-            // Store token
-            const authData = response.data;
+            // FIX: response is already the unwrapped data
+            const authData = response;
             if (authData.access_token) {
                 localStorage.setItem('ease2event_token', authData.access_token);
             }
 
             setSuccess('OTP verified! Redirecting to complete your profile...');
 
-            // Redirect maintaining portal boundaries
             setTimeout(() => {
                 const role = authData.user?.role || 'vendor';
                 if (role === 'vendor' || role === 'admin') {
@@ -93,7 +95,7 @@ const VendorSignupBasic: React.FC = () => {
                 }
             }, 1500);
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Invalid OTP. Please try again.';
+            const errorMessage = err.error || 'Invalid OTP. Please try again.';
             setError(errorMessage);
         } finally {
             setLoading(false);
@@ -106,16 +108,16 @@ const VendorSignupBasic: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await api.post('/auth/signup/send-otp', { phoneNumber: phone });
-
-            if (response.data.otp) {
-                setSuccess(`OTP resent! Your code is: ${response.data.otp}`);
-                alert(`Development Info:\n\n🔑 Your Resent OTP is: ${response.data.otp}`);
+            const response = await api.post<any>('/auth/signup/send-otp', { phone });
+            const devOtp = response._dev_otp;
+            
+            if (devOtp) {
+                setSuccess(`OTP resent! For development, use: ${devOtp}`);
             } else {
                 setSuccess('OTP resent successfully!');
             }
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Failed to resend OTP';
+            const errorMessage = err.error || 'Failed to resend OTP';
             setError(errorMessage);
         } finally {
             setLoading(false);
@@ -191,6 +193,7 @@ const VendorSignupBasic: React.FC = () => {
                             <p className="text-sm text-center text-gray-600">
                                 Already have an account?{' '}
                                 <button 
+                                    type="button"
                                     onClick={() => navigate('/login')}
                                     className="text-purple-600 hover:underline"
                                 >

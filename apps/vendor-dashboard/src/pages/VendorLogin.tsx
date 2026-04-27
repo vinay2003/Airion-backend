@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@ease2event/shared';
+import { useAuth, OTPInput } from '@ease2event/shared';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
-import OTPInput from '@shared/components/OTPInput';
 
 const VendorLogin: React.FC = () => {
     const navigate = useNavigate();

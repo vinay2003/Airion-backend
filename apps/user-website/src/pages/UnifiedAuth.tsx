@@ -56,6 +56,17 @@ const UnifiedAuth: React.FC = () => {
 
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
+        const action = searchParams.get('action');
+        
+        // If we just logged out, don't auto-redirect anywhere
+        if (action === 'logout') {
+            if (isAuthenticated) {
+                // This shouldn't happen as tokens are cleared, but safety first
+                return;
+            }
+            return;
+        }
+
         if (isAuthenticated && user && !authLoading) {
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
             const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
@@ -63,18 +74,19 @@ const UnifiedAuth: React.FC = () => {
             const token = tokenService.getAccessToken();
 
             if (user.role === UserRole.VENDOR) {
-                const target = `${VENDOR_URL}/vendor/`.replace('//vendor', '/vendor');
-                window.location.href = `${target}?token=${token}`;
+                // On production, VENDOR_URL is empty, so we use relative path /vendor/
+                const target = VENDOR_URL ? `${VENDOR_URL}/vendor/` : '/vendor/';
+                window.location.href = `${target.replace('//', '/')}${token ? `?token=${token}` : ''}`;
             } else if (user.role === UserRole.ADMIN) {
-                const target = `${ADMIN_URL}/admin/`.replace('//admin', '/admin');
-                window.location.href = `${target}?token=${token}`;
+                const target = ADMIN_URL ? `${ADMIN_URL}/admin/` : '/admin/';
+                window.location.href = `${target.replace('//', '/')}${token ? `?token=${token}` : ''}`;
             } else {
                 // For 'user' role, if we are already on signup/details step, don't interrupt
                 if (step === 'details') return;
                 navigate('/dashboard');
             }
         }
-    }, [isAuthenticated, user, authLoading, navigate, step]);
+    }, [isAuthenticated, user, authLoading, navigate, step, searchParams]);
 
     useEffect(() => {
         if (resendTimer > 0) {

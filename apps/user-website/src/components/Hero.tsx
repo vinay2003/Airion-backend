@@ -103,9 +103,9 @@ const Hero: React.FC = () => {
                             ) : (
                                 <>
                                     <h1 className="text-3xl md:text-5xl font-bold text-neutral-100 tracking-wide leading-tight font-serif">
-                                        Where Every Gathering <br className="hidden md:block" />
+                                        Turn Your Dream <br className="hidden md:block" />
                                         <span className="font-medium">
-                                            Becomes a Story
+                                            Event Into Reality
                                         </span>
                                     </h1>
 
@@ -117,7 +117,7 @@ const Hero: React.FC = () => {
                         <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                             {isAuthenticated
                                 ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
-                                : "Discover the world's most exclusive venues and services for weddings, parties, and corporate galas."
+                                : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events. Zero stress."
                             }
                         </p>
 

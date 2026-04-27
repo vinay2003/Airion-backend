@@ -24,15 +24,15 @@ const Settings: React.FC = () => {
     const { user, refreshUser } = useAuth();
     const [activeTab, setActiveTab] = useState('personal');
     const [submitting, setSubmitting] = useState(false);
+    
+    // Password States
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordLoading, setPasswordLoading] = useState(false);
 
     const [categories, setCategories] = useState<any[]>([]);
     const [subcategories, setSubcategories] = useState<any[]>([]);
-
-    const [passwords, setPasswords] = useState({
-        current: '',
-        new: '',
-        confirm: ''
-    });
 
     const [personalData, setPersonalData] = useState({
         name: '',
@@ -135,8 +135,10 @@ const Settings: React.FC = () => {
             });
             toast.success('Profile updated successfully!');
             refreshUser();
-        } catch (err) {
-            toast.error('Failed to update profile.');
+        } catch (err: any) {
+            console.error('Personal update error:', err.response?.data);
+            const message = err.response?.data?.message || 'Failed to update profile.';
+            toast.error(typeof message === 'string' ? message : message[0] || 'Update failed');
         } finally {
             setSubmitting(false);
         }
@@ -150,7 +152,7 @@ const Settings: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const submissionData = {
+            const submissionData: any = {
                 ...businessData,
                 averageBookingPrice: Number(businessData.avgBookingPrice) || 0,
                 businessAddress: {
@@ -161,46 +163,65 @@ const Settings: React.FC = () => {
                     zipCode: businessData.zipCode
                 },
                 socialLinks: {
-                    website: businessData.website,
-                    instagram: businessData.instagram
+                    website: businessData.website || undefined,
+                    instagram: businessData.instagram || undefined
                 }
             };
+            
+            // Clean up empty strings to avoid Zod validation errors
+            if (!submissionData.gstNumber) delete submissionData.gstNumber;
+            if (!submissionData.categoryId) delete submissionData.categoryId;
+            if (!submissionData.subcategoryId) delete submissionData.subcategoryId;
+            if (!submissionData.yearsInBusiness) delete submissionData.yearsInBusiness;
+            if (!submissionData.monthlyEventVolume) delete submissionData.monthlyEventVolume;
+            if (!submissionData.businessEmail) delete submissionData.businessEmail;
+            
             await api.put('/vendors/me', submissionData);
             toast.success('Business profile updated!');
             refreshUser();
-        } catch (err) {
-            toast.error('Failed to update business profile.');
+        } catch (err: any) {
+            console.error('Business update error:', err.response?.data);
+            const message = err.response?.data?.message || 'Failed to update business profile.';
+            toast.error(typeof message === 'string' ? message : message[0] || 'Update failed');
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleUpdatePassword = async () => {
-        if (!passwords.current) {
-            toast.error('Please enter your current password');
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!newPassword || !currentPassword) {
+            toast.error('Please fill in all password fields');
             return;
         }
-        if (!passwords.new) {
-            toast.error('Please enter a new password');
+
+        if (newPassword !== confirmPassword) {
+            toast.error('New passwords do not match');
             return;
         }
-        if (passwords.new !== passwords.confirm) {
-            toast.error('Passwords do not match');
+
+        if (newPassword.length < 8) {
+            toast.error('New password must be at least 8 characters long');
             return;
         }
-        setSubmitting(true);
+
+        setPasswordLoading(true);
         try {
             await api.post('/auth/change-password', {
-                oldPassword: passwords.current,
-                newPassword: passwords.new,
-                confirmPassword: passwords.confirm
+                currentPassword,
+                newPassword
             });
-            toast.success('Password updated successfully!');
-            setPasswords({ current: '', new: '', confirm: '' });
-        } catch (err: any) {
-            toast.error(err.error || err.response?.data?.message || 'Failed to update password');
+            toast.success('Password updated successfully');
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+        } catch (error: any) {
+            console.error('Password update failed:', error.response?.data);
+            const message = error.response?.data?.message || 'Failed to update password';
+            toast.error(typeof message === 'string' ? message : 'Update failed');
         } finally {
-            setSubmitting(false);
+            setPasswordLoading(false);
         }
     };
 
@@ -524,40 +545,18 @@ const Settings: React.FC = () => {
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-4 sm:space-y-5">
                                                 <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
-                                                <input 
-                                                    type="password" 
-                                                    placeholder="••••••••" 
-                                                    value={passwords.current}
-                                                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
-                                                />
+                                                <input value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
                                             <div className="space-y-4 sm:space-y-5">
                                                 <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
-                                                <input 
-                                                    type="password" 
-                                                    placeholder="••••••••" 
-                                                    value={passwords.new}
-                                                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
-                                                />
+                                                <input value={newPassword} onChange={e => setNewPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
                                             <div className="space-y-4 sm:space-y-5">
                                                 <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
-                                                <input 
-                                                    type="password" 
-                                                    placeholder="••••••••" 
-                                                    value={passwords.confirm}
-                                                    onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                                    className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
-                                                />
+                                                <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" />
                                             </div>
-                                            <Button 
-                                                onClick={handleUpdatePassword}
-                                                disabled={submitting}
-                                                className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"
-                                            >
-                                                {submitting ? <Loader2 className="animate-spin" /> : 'UPDATE PASSWORD'}
+                                            <Button onClick={handleChangePassword} disabled={passwordLoading} className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all">
+                                                {passwordLoading ? <Loader2 className="animate-spin text-white flex justify-center w-full" /> : 'UPDATE PASSWORD'}
                                             </Button>
                                         </div>
 

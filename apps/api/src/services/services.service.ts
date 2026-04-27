@@ -54,6 +54,7 @@ export class ServicesService {
         const qb = this.serviceRepository.createQueryBuilder('service')
             .leftJoinAndSelect('service.vendor', 'vendor')
             .leftJoinAndSelect('service.category', 'category')
+            .leftJoinAndSelect('service.packages', 'packages')
             .where('service.isActive = :active', { active: true });
 
         if (query.category) {

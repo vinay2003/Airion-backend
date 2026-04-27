@@ -691,29 +691,37 @@ export class AuthService {
     }
 
     async changePassword(userId: string, dto: any): Promise<{ message: string }> {
-        const { oldPassword, newPassword } = dto;
-        
-        if (!oldPassword || !newPassword) {
-            throw new BadRequestException('Both current and new passwords are required.');
-        }
-
-        const user = await this.userRepository.findOne({ where: { id: userId } });
-        if (!user) {
-            throw new BadRequestException('User session invalid or user not found.');
-        }
-
-        if (user.password && user.password !== 'otp-auth-user') {
-            const isMatch = await bcrypt.compare(oldPassword, user.password);
-            if (!isMatch) {
-                this.logger.warn(`Password mismatch for user ${userId}`);
-                throw new BadRequestException('The current password you entered is incorrect.');
+        try {
+            const { currentPassword, newPassword } = dto;
+            
+            if (!currentPassword || !newPassword) {
+                throw new BadRequestException('Both current and new passwords are required.');
             }
-        }
 
-        user.password = newPassword; // Will be hashed by @BeforeUpdate hook
-        await this.userRepository.save(user);
-        
-        this.logger.log(`Password successfully updated for user ${userId}`);
-        return { message: 'Password updated successfully' };
+            const user = await this.userRepository.findOne({ where: { id: userId } });
+            if (!user) {
+                throw new BadRequestException('User session invalid or user not found.');
+            }
+
+            // Support both password and OTP authenticated accounts
+            if (user.password && user.password !== 'otp-auth-user') {
+                const isMatch = await bcrypt.compare(currentPassword, user.password);
+                if (!isMatch) {
+                    this.logger.warn(`Password mismatch for user ${userId}`);
+                    throw new BadRequestException('The current password you entered is incorrect.');
+                }
+            }
+
+            // Apply new password
+            user.password = await bcrypt.hash(newPassword, 10);
+            await this.userRepository.save(user);
+            
+            this.logger.log(`Password successfully updated for user ${userId}`);
+            return { message: 'Password updated successfully' };
+        } catch (error: any) {
+            this.logger.error(`CRITICAL: Password update failed for user ${userId}. Error: ${error.message}`, error.stack);
+            throw new BadRequestException(error.message || 'Error updating password');
+        }
+    }
     }
 }

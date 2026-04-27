@@ -273,6 +273,12 @@ export class VendorsService {
             });
 
             const savedAd = await this.adRepository.save(ad);
+            
+            // Critical Fix: Remove recursive vendor relation before return to prevent Circular JSON error
+            if (savedAd.vendor) {
+                delete (savedAd as any).vendor;
+            }
+            
             console.log('[VendorsService.createAd] Success:', savedAd.id);
             return savedAd;
         } catch (error: any) {
@@ -286,7 +292,11 @@ export class VendorsService {
         if (!ad) throw new NotFoundException('Ad not found');
 
         Object.assign(ad, updateData);
-        return this.adRepository.save(ad);
+        const savedAd = await this.adRepository.save(ad);
+        if (savedAd.vendor) {
+           delete (savedAd as any).vendor;
+        }
+        return savedAd;
     }
 
     async addToGallery(userId: string, item: any): Promise<VendorGallery> {
@@ -315,7 +325,11 @@ export class VendorsService {
                 title: item.title
             });
 
-            return await this.galleryRepository.save(galleryItem) as unknown as Promise<VendorGallery>;
+            const savedItem = await this.galleryRepository.save(galleryItem);
+            if (savedItem.vendor) {
+               delete (savedItem as any).vendor;
+            }
+            return savedItem as unknown as Promise<VendorGallery>;
         } catch (error: any) {
             const detail = error?.detail || error?.message || 'Unknown DB Error';
             console.error('[VendorsService.addToGallery] CRITICAL FAILURE:', detail, error);

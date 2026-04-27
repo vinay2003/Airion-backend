@@ -44,18 +44,18 @@ const Hero: React.FC = () => {
         <div className="relative w-full">
             {/* ✅ India's #1 Premium Event Platform badge - Positioned just below header */}
             {!isAuthenticated && (
-                <div className="absolute top-[2px] left-0 right-0 z-40 flex justify-center pointer-events-none">
+                <div className="absolute top-4 left-0 right-0 z-40 flex justify-center pointer-events-none">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.5 }}
-                        className="bg-yellow-400/10 backdrop-blur-md border border-yellow-500/20 px-4 py-1.5 rounded-full overflow-hidden relative pointer-events-auto shadow-sm"
+                        className="bg-yellow-400/10 backdrop-blur-md border border-yellow-500/20 px-5 py-2 rounded-full overflow-hidden relative pointer-events-auto shadow-sm"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer" />
-                        <span className="relative text-yellow-100 text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] flex items-center gap-3">
-                            <Sparkles size={12} className="text-yellow-500 animate-pulse" />
+                        <span className="relative text-yellow-100 text-xs md:text-sm font-bold uppercase tracking-widest flex items-center gap-3">
+                            <Sparkles size={14} className="text-yellow-500 animate-pulse" />
                             India's #1 Premium Event Platform
-                            <Sparkles size={12} className="text-yellow-500 animate-pulse" />
+                            <Sparkles size={14} className="text-yellow-500 animate-pulse" />
                         </span>
                     </motion.div>
                 </div>
@@ -136,9 +136,27 @@ const Hero: React.FC = () => {
                         <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                             {isAuthenticated
                                 ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
-                                : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events. Zero stress."
+                                : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events"
                             }
                         </p>
+
+                        {/* ✅ Trust Badges */}
+                        {!isAuthenticated && (
+                            <div className="flex flex-wrap justify-center items-center gap-5 md:gap-8 mt-2">
+                                <span className="flex items-center gap-2 text-white/80 text-sm md:text-base font-medium drop-shadow">
+                                    <span className="text-yellow-400">★</span> 4.9/5 · 8,200+ reviews
+                                </span>
+                                <span className="flex items-center gap-2 text-white/80 text-sm md:text-base font-medium drop-shadow">
+                                    <span className="text-yellow-300">⚡</span> Response within 2 hours
+                                </span>
+                                <span className="flex items-center gap-2 text-white/80 text-sm md:text-base font-medium drop-shadow">
+                                    <span>🔒</span> 100% Secure Booking
+                                </span>
+                                <span className="flex items-center gap-2 text-white/80 text-sm md:text-base font-medium drop-shadow">
+                                    <span className="text-green-400">✓</span> Verified Vendors Only
+                                </span>
+                            </div>
+                        )}
                         {/* ✅ CTA Button */}
                         {isAuthenticated && (
                             <Link

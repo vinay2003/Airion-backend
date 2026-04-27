@@ -12,17 +12,17 @@ const FallingLeaves: React.FC = () => {
     const [leaves, setLeaves] = useState<Array<{ id: number; left: number; size: number; duration: number; delay: number; sway: number; color: string }>>([]);
 
     useEffect(() => {
-        // Solid, realistic dark green leaf colors
+        // Softer, slightly transparent green leaf colors
         const colors = [
-            'text-[#204014]', // Dark moss green
-            'text-[#13310B]', // Deep forest green
-            'text-[#2D5A1E]', // Rich green
-            'text-[#193F10]', // Pine green
-            'text-[#346624]'  // Slightly lighter leaf green
+            'text-[#3b6e2d]/80', // Lighter moss green
+            'text-[#2e5c23]/70', // Soft forest green
+            'text-[#447833]/80', // Rich lighter green
+            'text-[#25521b]/70', // Medium pine green
+            'text-[#4d8738]/80'  // Bright leaf green
         ];
         
-        // Increased to 100 leaves scattered across the section
-        const generatedLeaves = Array.from({ length: 100 }).map((_, i) => ({
+        // Drastically reduced to 15 leaves for a very sparse effect
+        const generatedLeaves = Array.from({ length: 15 }).map((_, i) => ({
             id: i,
             left: Math.random() * 100, // 0 to 100% across the section width
             size: Math.random() * 14 + 10, // 10px to 24px (realistic small leaves)

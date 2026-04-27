@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet, Phone, DollarSign } from 'lucide-react';
+import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet, Phone, DollarSign, Plus, X } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategorySlider from '../components/CategorySlider';
 import CategorySection from '../components/CategorySection';
@@ -14,7 +14,56 @@ import FallingLeaves from '../components/FallingLeaves';
 
 import { fetchEvents } from '../lib/api';
 import type { Event } from '../types';
+const faqs = [
+    {
+        question: "How quickly can I get venue proposals after submitting a brief?",
+        answer: "Most clients receive 3–5 personalised venue proposals within 2 hours of submitting their brief during business hours. For urgent requests, use the Priority Planning option and we'll respond within 30 minutes."
+    },
+    {
+        question: "Is there a fee to use Ease2event's planning service?",
+        answer: "Browsing, shortlisting, and getting proposals is completely free. We charge a planning service fee only when you confirm a booking — and this is clearly quoted upfront with zero hidden charges."
+    },
+    {
+        question: "Can I cancel or reschedule after booking?",
+        answer: "Yes. Full refunds are available within 48 hours of booking. For cancellations 7+ days before the event, we offer a 70% refund. Our concierge will also help you find alternate dates with the same venue at no extra cost."
+    },
+    {
+        question: "Do you cover events outside major cities?",
+        answer: "Yes! Ease2event currently operates in 42 cities including Tier 2 cities like Indore, Coimbatore, Surat, and Lucknow. For destination events in remote locations, our travel event specialists personally handle all logistics."
+    },
+    {
+        question: "Can I list my venue or vendor business on Ease2event?",
+        answer: "Absolutely. We accept applications from venues, caterers, photographers, decorators, and entertainment providers. All listings undergo a verification process. Apply via our \"List Your Business\" page — we typically respond within 5 business days."
+    },
+    {
+        question: "What if something goes wrong on the event day?",
+        answer: "Every Ease2event booking includes an on-ground coordinator present throughout the event. In the rare case of vendor issues, our emergency response team can arrange replacements within 2–4 hours. You'll never be left stranded."
+    }
+];
 
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-sm shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-all duration-300">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between p-5 md:p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#C25844]/20"
+            >
+                <span className="font-bold text-[#1A1A1A] dark:text-white text-[15px] pr-4">{question}</span>
+                <div className={`w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full bg-[#C25844] text-white transition-transform duration-300 ${isOpen ? 'rotate-180 bg-[#C25844]/80' : ''}`}>
+                    {isOpen ? <X size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
+                </div>
+            </button>
+            <div
+                className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+            >
+                <div className="px-5 md:px-6 pb-6 text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-slate-700 pt-4">
+                    {answer}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const Home: React.FC = () => {
     const { showToast } = useToast();
@@ -318,7 +367,7 @@ const Home: React.FC = () => {
                                 </p>
                             </div>
 
-                            <div className="relative max-w-[1100px] mx-auto">
+                            <div className="relative max-w-[1400px] xl:max-w-[1536px] mx-auto">
                                 {/* Connecting Line */}
                                 <div className="hidden md:block absolute top-[40px] left-[12%] right-[12%] h-[1px] bg-[#C25844]/40 -z-10" />
 
@@ -366,6 +415,60 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                     </motion.section>
+
+                    {/* Comparison Table */}
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-slate-700 to-transparent my-2 opacity-50"></div>
+                    <section className="bg-white dark:bg-slate-950 py-24 relative z-10">
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
+                            <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Why Ease2event Wins</p>
+                            <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
+                                How We Stack Up Against Planning on Your Own
+                            </h2>
+                            <p className="text-gray-600 dark:text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
+                                See why 10,000+ hosts chose Ease2event over DIY or traditional planners.
+                            </p>
+                        </div>
+
+                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
+                            <div className="overflow-x-auto rounded-lg shadow-2xl bg-[#FAF8F5] dark:bg-slate-900 border border-gray-200 dark:border-slate-700">
+                                <table className="w-full text-left border-collapse min-w-[800px]">
+                                    <thead>
+                                        <tr>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 w-[35%] rounded-tl-lg">Feature</th>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[20%]">DIY Planning</th>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[20%]">Traditional Planner</th>
+                                            <th className="bg-[#C25844] text-white text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[25%] rounded-tr-lg">Ease2event ✓</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-sm md:text-[15px] text-gray-800 dark:text-gray-200">
+                                        {[
+                                            { feature: 'Verified venue database', diy: 'X', trad: 'Partial', ease: '✓ 1,200+ venues' },
+                                            { feature: 'Transparent pricing', diy: 'X', trad: 'X Hidden commissions', ease: '✓ All-inclusive quotes' },
+                                            { feature: 'Response time', diy: 'Days of calling', trad: '1-3 business days', ease: '✓ Within 2 hours' },
+                                            { feature: 'Dedicated coordinator', diy: 'X', trad: 'Sometimes', ease: '✓ Every booking' },
+                                            { feature: 'Day-of on-ground support', diy: 'X', trad: 'Extra cost', ease: '✓ Included' },
+                                            { feature: 'Best price guarantee', diy: 'X', trad: 'X', ease: '✓ Price-matched' },
+                                        ].map((row, i) => {
+                                            const renderCell = (val: string) => {
+                                                if (val === 'X') return <span className="text-gray-400 dark:text-slate-500 font-bold">X</span>;
+                                                if (val.startsWith('X ')) return <><span className="text-gray-400 dark:text-slate-500 font-bold mr-1">X</span> <span className="text-gray-700 dark:text-gray-300 font-semibold">{val.slice(2)}</span></>;
+                                                if (val.startsWith('✓ ')) return <><span className="text-green-600 dark:text-green-500 font-bold mr-1">✓</span> <span className="text-[#C25844] dark:text-[#E07A66] font-bold">{val.slice(2)}</span></>;
+                                                return <span className="text-gray-700 dark:text-slate-300 font-semibold">{val}</span>;
+                                            };
+                                            return (
+                                                <tr key={i} className={i % 2 === 0 ? 'bg-[#FAF8F5] dark:bg-slate-900/30' : 'bg-white dark:bg-slate-800'}>
+                                                    <td className="p-6 font-bold text-[#1A1A1A] dark:text-white border-b border-gray-200 dark:border-slate-700/50">{row.feature}</td>
+                                                    <td className="p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.diy)}</td>
+                                                    <td className="p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.trad)}</td>
+                                                    <td className="p-6 text-center bg-[#C25844]/5 border-b border-[#C25844]/10">{renderCell(row.ease)}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
                 </>
             ) : (
                 <section id="marketplace-results" className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
@@ -391,10 +494,10 @@ const Home: React.FC = () => {
                 <div className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen -z-10">
                     <FallingLeaves />
                 </div>
-                <div className="max-w-[1536px] mx-auto px-4 md:px-8">
+                <div className="max-w-[1700px] mx-auto px-4 md:px-8 lg:px-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                         {/* Left Side: Image with Badges */}
-                        <div className="relative pl-4 md:pl-8 pr-4 md:pr-8">
+                        <div className="relative">
                             <div className="relative h-[500px] lg:h-[600px] rounded-sm overflow-hidden shadow-xl">
                                 <img
                                     src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
@@ -483,35 +586,73 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
+            {/* FAQ Section */}
+            <section className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 border-t border-gray-200 dark:border-slate-800">
+                <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
+                    <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Got Questions?</p>
+                    <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
+                        Everything You Need to Know Before Booking
+                    </h2>
+                    <p className="text-gray-500 dark:text-slate-400 text-sm md:text-base">
+                        Still unsure? Chat with our team — available right now.
+                    </p>
+                </div>
+
+                <div className="max-w-[1536px] mx-auto px-4 md:px-8 lg:px-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                        {faqs.map((faq, idx) => (
+                            <FAQItem key={idx} question={faq.question} answer={faq.answer} />
+                        ))}
+                    </div>
+
+
+                </div>
+            </section>
+
             {/* Newsletter */}
-            <section className="py-20 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Stay Updated</h2>
-                    <p className="text-gray-600 dark:text-slate-400 mb-8">Subscribe to our newsletter for the latest venue additions, exclusive offers, and event planning tips.</p>
-                    <form className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto relative" onSubmit={handleSubscribe} noValidate>
-                        <div className="flex-1 relative">
-                            <input
-                                type="email"
-                                value={subscribeEmail}
-                                onChange={(e) => {
-                                    setSubscribeEmail(e.target.value);
-                                    if (e.target.value) setSubscribeError('');
-                                }}
-                                required
-                                placeholder="Enter your email address"
-                                className={`w-full px-6 py-4 rounded-full border bg-white dark:bg-slate-800 text-gray-900 dark:text-white outline-none focus:ring-2 transition-all ${subscribeError
-                                    ? 'border-red-500 focus:ring-red-500 dark:focus:ring-red-500'
-                                    : 'border-gray-200 dark:border-slate-700 focus:ring-red-500 dark:focus:ring-red-400'
-                                    }`}
-                            />
-                            {subscribeError && (
-                                <p className="absolute -bottom-6 left-6 text-sm text-red-500 font-bold">{subscribeError}</p>
-                            )}
+            <section className="relative py-28 px-4 md:px-8 bg-gradient-to-b from-[#1A1A1A] to-black overflow-hidden z-10">
+                {/* Raining / Falling Flower Effect confined to this section */}
+                <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-60 -z-10">
+                    <FallingPetals />
+                </div>
+
+                <div className="max-w-[1536px] mx-auto text-center relative z-10">
+                    <div className="max-w-4xl mx-auto">
+                        <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Stay in the loop</p>
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 font-serif tracking-tight">Exclusive Venues.</h2>
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif tracking-tight">Early Access. Every Week.</h2>
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12 mt-4">
+                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> New venue alerts</span>
+                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Subscriber-only discounts</span>
+                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Expert planning tips</span>
                         </div>
-                        <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-red-500/20 hover:scale-105">
-                            Subscribe
-                        </button>
-                    </form>
+
+                        <form className="flex flex-col md:flex-row max-w-3xl mx-auto relative mb-6 shadow-2xl" onSubmit={handleSubscribe} noValidate>
+                            <div className="flex-1 relative">
+                                <input
+                                    type="email"
+                                    value={subscribeEmail}
+                                    onChange={(e) => {
+                                        setSubscribeEmail(e.target.value);
+                                        if (e.target.value) setSubscribeError('');
+                                    }}
+                                    required
+                                    placeholder="Enter your email address"
+                                    className={`w-full h-full px-8 py-5 rounded-t-md md:rounded-l-md md:rounded-tr-none border-0 bg-white/5 backdrop-blur-md text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-[#C25844] focus:z-10 relative transition-all`}
+                                />
+                                {subscribeError && (
+                                    <p className="absolute -bottom-8 left-8 text-sm text-red-400 font-bold text-left">{subscribeError}</p>
+                                )}
+                            </div>
+                            <button className="bg-[#C25844] hover:bg-[#d86650] text-white px-10 py-5 rounded-b-md md:rounded-r-md md:rounded-bl-none font-bold transition-colors whitespace-nowrap tracking-wide uppercase text-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#C25844] focus:z-10 relative">
+                                JOIN 12,000+ HOSTS
+                            </button>
+                        </form>
+
+                        <p className="text-gray-500 text-xs md:text-sm tracking-wide mt-10">
+                            No spam. Unsubscribe anytime. We respect your privacy.
+                        </p>
+                    </div>
                 </div>
             </section>
         </main>

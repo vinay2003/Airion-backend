@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 const Footer: React.FC = () => {
     return (
         <footer className="bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+            <div className="max-w-[1536px] mx-auto px-4 md:px-8 lg:px-16 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-3xl font-black text-red-500 tracking-tighter hover:scale-105 transition-transform inline-block">Ease2event</Link>
-                        <p className="text-gray-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
+                        <p className="text-gray-500 dark:text-slate-400 text-[15px] font-medium leading-relaxed">
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>
                         <div className="flex gap-4">
@@ -29,29 +29,29 @@ const Footer: React.FC = () => {
                     {/* Quick Links */}
                     <div>
                         <h4 className="font-bold text-gray-900 dark:text-white mb-4">Quick Links</h4>
-                        <ul className="space-y-2 text-sm">
-                            <li><Link to="/about" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">About Us</Link></li>
-                            <li><Link to="/marketplace?category=weddings" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Weddings</Link></li>
-                            <li><Link to="/marketplace?category=parties" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Parties</Link></li>
-                            <li><Link to="/inspiration" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Inspiration</Link></li>
+                        <ul className="space-y-2 text-[15px]">
+                            <li><Link to="/about" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">About Us</Link></li>
+                            <li><Link to="/marketplace?category=weddings" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Weddings</Link></li>
+                            <li><Link to="/marketplace?category=parties" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Parties</Link></li>
+                            <li><Link to="/inspiration" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Inspiration</Link></li>
                         </ul>
                     </div>
 
                     {/* For Vendors */}
                     <div>
                         <h4 className="font-bold text-gray-900 dark:text-white mb-4">For Vendors</h4>
-                        <ul className="space-y-2 text-sm">
-                            <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">List Your Business</Link></li>
-                            <li><Link to="/packages" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Pricing</Link></li>
-                            <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Vendor Hub</Link></li>
-                            <li><Link to="/contact" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400">Support</Link></li>
+                        <ul className="space-y-2 text-[15px]">
+                            <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">List Your Business</Link></li>
+                            <li><Link to="/packages" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Pricing</Link></li>
+                            <li><Link to="/become-vendor" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Vendor Hub</Link></li>
+                            <li><Link to="/contact" className="text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">Support</Link></li>
                         </ul>
                     </div>
 
                     {/* Contact */}
-                    <div className="space-y-6">
-                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">Contact</h4>
-                        <ul className="space-y-4 text-sm font-bold text-gray-500 dark:text-slate-400">
+                    <div className="space-y-4">
+                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] mb-4">Contact</h4>
+                        <ul className="space-y-3 text-[15px] font-bold text-gray-500 dark:text-slate-400">
                             <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
                                 <Mail size={18} className="text-red-500" />
                                 <span>contact@ease2event.com</span>
@@ -61,15 +61,19 @@ const Footer: React.FC = () => {
                                 <span>+91 81306 07796</span>
                             </li>
                             <li className="flex items-start gap-3">
-                                <MapPin size={18} className="text-red-500 mt-1 flex-shrink-0" />
+                                <MapPin size={18} className="text-red-500 mt-0.5 flex-shrink-0" />
                                 <span>Patna, Bihar 800001</span>
                             </li>
                         </ul>
                     </div>
                 </div >
 
-                <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-slate-400">
+                <div className="border-t border-gray-200 dark:border-slate-800 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-600 dark:text-slate-400">
                     <p>&copy; 2024 Ease2event. All rights reserved.</p>
+                    <div className="flex gap-6">
+                        <Link to="/privacy" className="hover:text-red-500 transition-colors">Privacy Policy</Link>
+                        <Link to="/terms" className="hover:text-red-500 transition-colors">Terms of Service</Link>
+                    </div>
                 </div>
             </div >
         </footer >

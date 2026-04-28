@@ -21,10 +21,13 @@ const VendorLogin: React.FC = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Redirection to the Unified Auth System on Port 5173
+        // Redirection to the Unified Auth System
         // This ensures a single source of truth for authentication
         if (!user) {
-            window.location.href = '/login?portal=vendor';
+            const authUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:5173/login?portal=vendor'
+                : '/login?portal=vendor';
+            window.location.href = authUrl;
         } else if (user.role === 'vendor' || user.role === 'admin') {
             navigate('/');
         } else {

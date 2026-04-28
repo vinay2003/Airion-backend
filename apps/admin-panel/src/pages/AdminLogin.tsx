@@ -11,7 +11,10 @@ const AdminLogin: React.FC = () => {
         // This ensures a single source of truth for authentication
         if (!user) {
             // Redirect to the main website login with portal context
-            window.location.href = '/login?portal=admin';
+            const authUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:5173/login?portal=admin'
+                : '/login?portal=admin';
+            window.location.href = authUrl;
         } else if (user.role === 'admin') {
             // If already logged in as admin, go to dashboard
             navigate('/');

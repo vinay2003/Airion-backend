@@ -11,72 +11,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [backendAvailable, setBackendAvailable] = useState<boolean>(true);
 
   const fetchUser = useCallback(async () => {
-    // Check health in parallel with auth check
-    const healthCheckPromise = commonAuth.healthCheck();
-
-    // 🔐 JWT Handshake Protocol: Multi-Portal Monorepo Handoff
     const urlParams = new URL(window.location.href).searchParams;
-    const isLogout = urlParams.get('action') === 'logout';
-
-    if (isLogout) {
-      tokenService.clearTokens();
-
-      // Clean URL
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('action');
-      window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
-
-      setUser(null);
-      setIsLoading(false);
-      return;
-    }
-
     const urlToken = urlParams.get('token') || urlParams.get('ease2event_token');
-
+    
     if (urlToken) {
       tokenService.setAccessToken(urlToken);
-      // 🔥 Clean URL to prevent re-capturing token on reload or security leaks
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('token');
       newUrl.searchParams.delete('ease2event_token');
-      window.history.replaceState({ redirected: true }, '', newUrl.pathname + newUrl.search + newUrl.hash);
-
-      const returnPath = urlParams.get('redirect_to');
-      if (returnPath) {
-        window.location.href = returnPath;
-        return;
-      }
+      window.history.replaceState({}, '', newUrl.pathname + newUrl.search + newUrl.hash);
     }
 
     if (!tokenService.hasToken()) {
-      const health = await healthCheckPromise;
-      setBackendAvailable(health);
-      // 🔥 Only clear user if it wasn't set by a late login event
-      setUser(prev => prev);
       setIsLoading(false);
       return;
     }
 
     try {
-      const [userData, health] = await Promise.all([
-        commonAuth.checkAuth(),
-        healthCheckPromise
-      ]);
-
-      // 🔥 SYNC PROTOCOL: Always update user state with fresh data from server to ensure gallery/ads are current
+      setIsLoading(true);
+      const userData = await commonAuth.checkAuth();
       setUser(userData);
-      setBackendAvailable(health);
     } catch (error) {
       console.error('[SharedAuth] Auth check failed:', error);
-      // 🔥 Don't clear tokens if we just logged in! Only if we are not in login flow.
-      // We check if the current user exists; if not, then clear.
-      setUser(prev => {
-        if (!prev) tokenService.clearTokens();
-        return prev;
-      });
-
-      const health = await healthCheckPromise;
-      setBackendAvailable(health);
+      tokenService.clearTokens();
+      setUser(null);
     } finally {
       setIsLoading(false);
     }

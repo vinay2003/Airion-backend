@@ -115,8 +115,6 @@ const App: React.FC = () => {
               } />
 
               <Route path="/user/*" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/vendor/*" element={<HardRedirect to="/vendor/" />} />
-              <Route path="/admin/*" element={<HardRedirect to="/admin/" />} />
 
               {/* Dashboard Routes */}
               <Route path="/dashboard" element={

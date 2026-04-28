@@ -15,22 +15,16 @@ const queryClient = new QueryClient({
   },
 })
 
-// 🛑 Strict Portal Guard: Prevent landing page from mounting on portal routes
+// 🛑 Strict Portal Guard: Silent Redirect instead of Halt
 if (typeof window !== 'undefined' && !(window as any).__IS_PORTAL__) {
   const path = window.location.pathname;
-  // Ignore assets and only block actual application routes for portals
   if (!path.includes('/assets/') && (path.startsWith('/admin') || path.startsWith('/vendor'))) {
-    console.warn('[PortalGuard] Landing page detected on portal route. Redirecting to correct portal...');
+    console.warn('[PortalGuard] Landing page detected on portal route. Redirecting...');
     
-    // Force a clean reload to let Vercel rewrites or sub-apps take over
     if (!window.location.search.includes('portal_redirect')) {
       const separator = window.location.search ? '&' : '?';
       window.location.replace(window.location.href + separator + 'portal_redirect=1');
     }
-    
-    // Render nothing and stop further execution
-    const rootElement = document.getElementById('root');
-    if (rootElement) rootElement.innerHTML = '';
   }
 }
 

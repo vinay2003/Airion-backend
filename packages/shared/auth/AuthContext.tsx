@@ -12,6 +12,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = useCallback(async () => {
     const urlParams = new URL(window.location.href).searchParams;
+    const isLogout = urlParams.get('action') === 'logout';
+
+    if (isLogout) {
+      tokenService.clearTokens();
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('action');
+      window.history.replaceState({}, '', newUrl.pathname + newUrl.search + newUrl.hash);
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
     const urlToken = urlParams.get('token') || urlParams.get('ease2event_token');
     
     if (urlToken) {
@@ -75,23 +87,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (err) {
       console.warn('[SharedAuth] Logout request failed:', err);
     } finally {
-      // Clear tokens immediately
       tokenService.clearTokens();
-
-      // 🚀 Global Identity Reset: Redirect to Central Auth Portal
-      const isCentralAuth = window.location.port === '5173';
-      const LOGIN_URL = (import.meta.env.VITE_LOGIN_URL as string) || '/login';
-
-      if (!isCentralAuth) {
-        // 🔥 CRITICAL FIX: Do not call setUser(null) here!
-        // Calling setUser(null) synchronously triggers ProtectedRoute to Navigate to local /login.
-        // The local /login (e.g. VendorLogin) unconditionally redirects to /login?portal=vendor,
-        // creating a race condition that overrides this action=logout redirect!
-        window.location.href = LOGIN_URL + (LOGIN_URL.includes('?') ? '&' : '?') + 'action=logout';
-      } else {
-        setUser(null);
-        window.location.href = '/login?action=logout';
-      }
+      
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const centralLoginUrl = isLocal ? 'http://localhost:5173/login' : '/login';
+      
+      window.location.href = `${centralLoginUrl}?action=logout`;
     }
   }, []);
 

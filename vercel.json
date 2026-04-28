@@ -11,10 +11,6 @@
     { "source": "/admin/assets/:path*", "destination": "/admin/assets/:path*" },
     { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
     { "source": "/admin/:path*", "destination": "/admin/index.html" },
-    { "source": "/login", "destination": "/index.html" },
-    { "source": "/signup", "destination": "/index.html" },
-    { "source": "/dashboard/:path*", "destination": "/index.html" },
-    { "source": "/assets/:path*", "destination": "/assets/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/user/index.html" }
   ]
 }

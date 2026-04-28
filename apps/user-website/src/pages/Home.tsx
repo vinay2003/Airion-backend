@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Calendar, Star, Shield, Heart, ArrowRight, Sparkles, LayoutDashboard, Clock, CheckCircle2, Wallet, Phone, DollarSign, Plus, X } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategorySlider from '../components/CategorySlider';
@@ -68,6 +68,7 @@ const Home: React.FC = () => {
     const { showToast } = useToast();
     const { user, isAuthenticated } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
     const activeCategory = searchParams.get('category') || 'all';
 

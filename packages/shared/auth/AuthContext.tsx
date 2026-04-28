@@ -90,9 +90,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       tokenService.clearTokens();
       
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const centralLoginUrl = isLocal ? 'http://localhost:5173/login' : '/login';
+      const homeUrl = isLocal ? 'http://localhost:5173/' : '/';
       
-      window.location.href = `${centralLoginUrl}?action=logout`;
+      window.location.href = homeUrl;
     }
   }, []);
 

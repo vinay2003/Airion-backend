@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "npm run kill-dev && turbo dev",
     "kill-dev": "npx -y kill-port 5173 5174 5175 3000 || true",
-    "build": "turbo build --no-cache && rm -rf dist && mkdir -p dist/vendor dist/admin && cp -r apps/user-website/dist/* dist/ && cp -r apps/vendor-dashboard/dist/* dist/vendor/ && cp -r apps/admin-panel/dist/* dist/admin/",
+    "build": "turbo build --no-cache && rm -rf dist && mkdir -p dist/main dist/vendor dist/admin && cp -r apps/user-website/dist/* dist/main/ && cp -r apps/vendor-dashboard/dist/* dist/vendor/ && cp -r apps/admin-panel/dist/* dist/admin/",
     "build:user": "turbo build --filter=@ease2event/user-website",
     "build:vendor": "turbo build --filter=@ease2event/vendor-dashboard",
     "build:admin": "turbo build --filter=@ease2event/admin-panel",

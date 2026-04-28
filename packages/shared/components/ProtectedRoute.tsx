@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { getPortalUrl } from '../auth/utils';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -41,17 +42,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
     // 🛡️ Role-Based Portal Enforcement
     // Prevents cross-portal access and redirect loops
     if (user.role === 'user') {
-      window.location.href = '/dashboard';
+      window.location.href = getPortalUrl('user');
       return null;
     }
 
     if (user.role === 'vendor') {
-      window.location.href = '/vendor/';
+      window.location.href = getPortalUrl('vendor');
       return null;
     }
 
     if (user.role === 'admin') {
-      window.location.href = '/admin/';
+      window.location.href = getPortalUrl('admin');
       return null;
     }
 

@@ -248,3 +248,38 @@ export const getCurrentUserRole = (): UserRole | null => {
     const payload = decodeToken(token);
     return payload?.role || null;
 };
+
+/**
+ * Environment helpers for multi-portal redirection
+ */
+export const isLocal = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.includes('192.168.')
+);
+
+export const getPortalUrl = (role: 'user' | 'vendor' | 'admin'): string => {
+    if (typeof window === 'undefined') return '/';
+
+    const env = (import.meta as any).env || {};
+    
+    if (role === 'admin') {
+        const adminUrl = env.VITE_ADMIN_URL;
+        if (adminUrl) return adminUrl;
+        return isLocal ? `http://${window.location.hostname}:5175/admin/` : '/admin/';
+    }
+    
+    if (role === 'vendor') {
+        const vendorUrl = env.VITE_VENDOR_URL;
+        if (vendorUrl) return vendorUrl;
+        return isLocal ? `http://${window.location.hostname}:5174/vendor/` : '/vendor/';
+    }
+    
+    if (role === 'user') {
+        const userUrl = env.VITE_USER_URL;
+        if (userUrl) return userUrl;
+        return '/dashboard';
+    }
+    
+    return '/';
+};

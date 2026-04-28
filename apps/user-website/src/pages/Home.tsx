@@ -8,7 +8,7 @@ import CategorySection from '../components/CategorySection';
 import { useToast } from '../context/ToastContext';
 import SEO from '../components/SEO';
 import ListingCard from '../components/ListingCard';
-import { useAuth } from '@ease2event/shared/auth';
+import { useAuth, getPortalUrl } from '@ease2event/shared/auth';
 import FallingPetals from '../components/FallingPetals';
 import FallingLeaves from '../components/FallingLeaves';
 
@@ -84,11 +84,11 @@ const Home: React.FC = () => {
     useEffect(() => {
         if (isAuthenticated && user) {
             if (user.role === 'admin') {
-                window.location.href = '/admin/';
+                window.location.href = getPortalUrl('admin');
             } else if (user.role === 'vendor') {
-                window.location.href = '/vendor/';
+                window.location.href = getPortalUrl('vendor');
             } else if (user.role === 'user') {
-                navigate('/dashboard');
+                navigate(getPortalUrl('user'));
             }
         }
     }, [isAuthenticated, user, navigate]);

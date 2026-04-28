@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://airion-backend-1.onrender.com/api/:path*" },
     { "source": "/vendor/assets/:path*", "destination": "/vendor/assets/:path*" },

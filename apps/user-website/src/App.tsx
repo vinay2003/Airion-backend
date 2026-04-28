@@ -47,9 +47,30 @@ const PageLoader = () => (
 
 const HardRedirect: React.FC<{ to: string }> = ({ to }) => {
   React.useEffect(() => {
-    window.location.href = to;
+    // 🛑 Loop Guard: Only redirect if the destination is different from current URL
+    // Also handles port changes in local development
+    const currentUrl = window.location.href;
+    const isLocal = currentUrl.includes('localhost') || currentUrl.includes('127.0.0.1');
+    
+    if (isLocal) {
+      // In local, we always redirect to cross ports (e.g. 5173 -> 5174)
+      window.location.href = to;
+    } else {
+      // In production, only redirect if the path is actually different or we are stuck in the wrong app
+      const targetPath = to.split('?')[0];
+      if (!window.location.pathname.startsWith(targetPath)) {
+        window.location.href = to;
+      }
+    }
   }, [to]);
-  return null;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="text-center animate-pulse">
+        <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-slate-400 font-medium">Switching to Secure Portal...</p>
+      </div>
+    </div>
+  );
 };
 
 const App: React.FC = () => {

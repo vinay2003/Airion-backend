@@ -5,10 +5,11 @@
     { "source": "/api/:path*", "destination": "https://airion-backend-1.onrender.com/api/:path*" },
     { "source": "/vendor/assets/:path*", "destination": "/vendor/assets/:path*" },
     { "source": "/admin/assets/:path*", "destination": "/admin/assets/:path*" },
-    { "source": "/vendor/(.*)", "destination": "/vendor/index.html" },
+    { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
     { "source": "/vendor", "destination": "/vendor/index.html" },
-    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/admin/:path*", "destination": "/admin/index.html" },
     { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/assets/:path*", "destination": "/assets/:path*" },
     { "source": "/((?!api|vendor|admin|assets).*)", "destination": "/index.html" }
   ]
 }

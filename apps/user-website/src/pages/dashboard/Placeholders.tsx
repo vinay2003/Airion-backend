@@ -193,7 +193,7 @@ export const Support: React.FC = () => {
         try {
             const result = await askSupportAI(userMsg);
             const aiResponse = result?.response || "I'm sorry, I encountered a brief neural glitch. Could you repeat that?";
-            
+
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,
                 text: aiResponse,
@@ -230,15 +230,14 @@ export const Support: React.FC = () => {
                         <ArrowLeft size={14} /> Exit
                     </button>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/30 dark:bg-slate-950/20">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] p-4 rounded-[1.5rem] shadow-sm relative transition-all ${
-                                msg.sender === 'user' 
-                                ? 'bg-red-500 text-white rounded-tr-none' 
-                                : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none'
-                            }`}>
+                            <div className={`max-w-[85%] p-4 rounded-[1.5rem] shadow-sm relative transition-all ${msg.sender === 'user'
+                                    ? 'bg-red-500 text-white rounded-tr-none'
+                                    : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none'
+                                }`}>
                                 <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                                 <span className={`text-[9px] font-bold uppercase tracking-widest mt-2 block ${msg.sender === 'user' ? 'text-red-100' : 'text-gray-400'}`}>
                                     {msg.time}
@@ -259,8 +258,8 @@ export const Support: React.FC = () => {
 
                 <form onSubmit={handleSendMessage} className="p-5 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-3">
                     <div className="flex-1 relative">
-                        <Input 
-                            placeholder="Ask me anything about your event..." 
+                        <Input
+                            placeholder="Ask me anything about your event..."
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             disabled={isTyping}
@@ -289,7 +288,7 @@ export const Support: React.FC = () => {
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Live Chat</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Talk to our event support specialists instantly for immediate resolution.</p>
-                    <Button 
+                    <Button
                         onClick={() => setIsChatting(true)}
                         className="bg-red-500 hover:bg-red-600 text-white rounded-xl w-full"
                     >

@@ -41,23 +41,21 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
     // 🛡️ Role-Based Portal Enforcement
     // Prevents cross-portal access and redirect loops
-    if (user.role === 'user') {
-      window.location.href = getPortalUrl('user');
-      return null;
+    const targetUrl = getPortalUrl(user.role as any);
+    const currentPath = window.location.pathname;
+
+    // 🛑 Loop Guard: If we are already on the target portal/path, don't redirect again
+    const isAlreadyOnTarget = targetUrl.startsWith('http') 
+      ? window.location.href.startsWith(targetUrl)
+      : currentPath.startsWith(targetUrl) || (targetUrl === '/dashboard' && currentPath.includes('/dashboard'));
+
+    if (isAlreadyOnTarget) {
+      console.warn(`[ProtectedRoute] User role ${user.role} is already on target ${targetUrl}. Avoiding redirect loop.`);
+      return <>{children}</>;
     }
 
-    if (user.role === 'vendor') {
-      window.location.href = getPortalUrl('vendor');
-      return null;
-    }
-
-    if (user.role === 'admin') {
-      window.location.href = getPortalUrl('admin');
-      return null;
-    }
-
-    // Default failsafe: Clear and go to login
-    return <Navigate to="/login" replace />;
+    window.location.href = targetUrl;
+    return null;
   }
 
   return <>{children}</>;

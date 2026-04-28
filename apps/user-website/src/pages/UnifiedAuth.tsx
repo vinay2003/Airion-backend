@@ -68,18 +68,20 @@ const UnifiedAuth: React.FC = () => {
         }
 
         if (isAuthenticated && user && !authLoading) {
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
-            const ADMIN_URL = isLocal ? (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5175') : '';
+            const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : '');
+            const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : '');
             const token = tokenService.getAccessToken();
 
             if (user.role === UserRole.VENDOR) {
-                // On production, VENDOR_URL is empty, so we use relative path /vendor/
-                const target = VENDOR_URL ? `${VENDOR_URL}/vendor/` : '/vendor/';
-                window.location.href = `${target.replace('//', '/')}${token ? `?token=${token}` : ''}`;
+                // 🛡️ Secure Portal Handoff for Vendors
+                const targetBase = VENDOR_URL || '/vendor';
+                const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
+                window.location.href = `${target}${token ? `?token=${token}` : ''}`;
             } else if (user.role === UserRole.ADMIN) {
-                const target = ADMIN_URL ? `${ADMIN_URL}/admin/` : '/admin/';
-                window.location.href = `${target.replace('//', '/')}${token ? `?token=${token}` : ''}`;
+                // 🛡️ Secure Portal Handoff for Admins
+                const targetBase = ADMIN_URL || '/admin';
+                const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
+                window.location.href = `${target}${token ? `?token=${token}` : ''}`;
             } else {
                 // For 'user' role, if we are already on signup/details step, don't interrupt
                 if (step === 'details') return;
@@ -188,15 +190,16 @@ const UnifiedAuth: React.FC = () => {
                 toast.success('Synchronization complete. Welcome back.');
 
                 setTimeout(() => {
-                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                    const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
-                    const ADMIN_URL = isLocal ? (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5175') : '';
+                    const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : '');
+                    const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : '');
 
                     if (role === 'vendor') {
-                        const target = `${VENDOR_URL}/vendor/`.replace('//vendor', '/vendor');
+                        const targetBase = VENDOR_URL || '/vendor';
+                        const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
                         window.location.href = `${target}?token=${response.access_token}`;
                     } else if (role === 'admin') {
-                        const target = `${ADMIN_URL}/admin/`.replace('//admin', '/admin');
+                        const targetBase = ADMIN_URL || '/admin';
+                        const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
                         window.location.href = `${target}?token=${response.access_token}`;
                     } else {
                         navigate('/dashboard');

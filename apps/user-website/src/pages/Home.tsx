@@ -81,6 +81,18 @@ const Home: React.FC = () => {
     const [subscribeError, setSubscribeError] = useState('');
 
     useEffect(() => {
+        if (isAuthenticated && user) {
+            if (user.role === 'admin') {
+                window.location.href = '/admin/';
+            } else if (user.role === 'vendor') {
+                window.location.href = '/vendor/';
+            } else if (user.role === 'user') {
+                navigate('/dashboard');
+            }
+        }
+    }, [isAuthenticated, user, navigate]);
+
+    useEffect(() => {
         fetchEvents()
             .then(data => {
                 setEvents(data);

@@ -56,7 +56,9 @@ const Ads: React.FC = () => {
             toast.success('Campaign created - Pending Review');
             setShowCreateModal(false);
             setAdData({ title: '', imageUrl: '', budget: '' });
-            refreshUser();
+            
+            // 🔥 Sync fresh data from server
+            await refreshUser();
         } catch (err) {
             toast.error('Failed to create campaign');
         } finally {
@@ -65,17 +67,19 @@ const Ads: React.FC = () => {
     };
 
     const StatusBadge = ({ status }: { status: string }) => {
+        const normalizedStatus = status.toLowerCase();
         const colors = {
-            'Active': 'chip-soft-emerald',
-            'Pending': 'chip-soft-amber',
-            'Rejected': 'chip-soft-rose'
-        }[status] || 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)]';
+            'active': 'chip-soft-emerald',
+            'pending': 'chip-soft-amber',
+            'rejected': 'chip-soft-rose',
+            'paused': 'chip-soft-rose'
+        }[normalizedStatus] || 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)]';
 
         return (
-            <span className={`chip ${colors} h-10 px-8 shadow-2xl backdrop-blur-xl font-semibold text-[10px] tracking-normal border-2`}>
-                {status === 'Active' && <CheckCircle size={16} className="mr-2" />}
-                {status === 'Pending' && <Clock size={16} className="mr-2" />}
-                {status === 'Rejected' && <AlertCircle size={16} className="mr-2" />}
+            <span className={`chip ${colors} h-10 px-8 shadow-2xl backdrop-blur-xl font-semibold text-[10px] tracking-normal border-2 uppercase`}>
+                {normalizedStatus === 'active' && <CheckCircle size={16} className="mr-2" />}
+                {normalizedStatus === 'pending' && <Clock size={16} className="mr-2" />}
+                {normalizedStatus === 'rejected' && <AlertCircle size={16} className="mr-2" />}
                 {status}
             </span>
         );

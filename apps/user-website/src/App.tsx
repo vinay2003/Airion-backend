@@ -103,18 +103,11 @@ const App: React.FC = () => {
                   <UnifiedAuth />
                 </Suspense>
               } />
-              <Route path="/admin/login" element={
-                <Suspense fallback={<PageLoader />}>
-                  <UnifiedAuth />
-                </Suspense>
-              } />
               <Route path="/onboarding/interests" element={
                 <Suspense fallback={<PageLoader />}>
                   <InterestSelection />
                 </Suspense>
               } />
-
-              <Route path="/user/*" element={<Navigate to="/dashboard" replace />} />
 
               {/* Dashboard Routes */}
               <Route path="/dashboard" element={

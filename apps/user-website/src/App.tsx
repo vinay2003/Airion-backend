@@ -45,6 +45,13 @@ const PageLoader = () => (
   </div>
 );
 
+const HardRedirect: React.FC<{ to: string }> = ({ to }) => {
+  React.useEffect(() => {
+    window.location.href = to;
+  }, [to]);
+  return null;
+};
+
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -87,6 +94,8 @@ const App: React.FC = () => {
               } />
 
               <Route path="/user/*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/vendor/*" element={<HardRedirect to="/vendor/" />} />
+              <Route path="/admin/*" element={<HardRedirect to="/admin/" />} />
 
               {/* Dashboard Routes */}
               <Route path="/dashboard" element={

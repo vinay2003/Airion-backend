@@ -21,6 +21,7 @@ const UnifiedAuth: React.FC = () => {
     const { loginWithToken, user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
     const location = useLocation();
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     // UI States
     const [mode, setMode] = useState<AuthMode>(() => {
@@ -175,7 +176,6 @@ const UnifiedAuth: React.FC = () => {
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
                         toast.success('Establishing Vendor Node. Redirecting to Registry Form.');
-                        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
                         const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
                         const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
                         setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);

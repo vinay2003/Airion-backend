@@ -245,23 +245,31 @@ export class VendorsService {
 
     // --- ADS MANAGEMENT
     async createAd(userId: string, adData: any): Promise<VendorAd> {
-        let vendor = await this.findByUserId(userId);
-        
-        if (!vendor) {
-            const user = await this.userRepository.findOne({ where: { id: userId } });
-            vendor = this.vendorRepository.create({ 
-                userId,
-                businessName: user?.name || 'VND-' + userId.substring(0, 5),
-                isProfileComplete: false
+        try {
+            let vendor = await this.findByUserId(userId);
+            
+            if (!vendor) {
+                const user = await this.userRepository.findOne({ where: { id: userId } });
+                vendor = this.vendorRepository.create({ 
+                    userId,
+                    businessName: user?.name || 'VND-' + userId.substring(0, 5),
+                    isProfileComplete: false
+                });
+                vendor = await this.vendorRepository.save(vendor);
+            }
+
+            const ad = this.adRepository.create({
+                title: adData.title,
+                imageUrl: adData.imageUrl,
+                budget: Number(adData.budget) || 0,
+                vendor: vendor
             });
-            vendor = await this.vendorRepository.save(vendor);
+
+            return await this.adRepository.save(ad);
+        } catch (error: any) {
+            console.error('[VendorsService.createAd] Critical Failure:', error.message, error.stack);
+            throw new BadRequestException(`Failed to create advertising campaign: ${error.message}`);
         }
-
-        const ad = new VendorAd();
-        Object.assign(ad, adData);
-        ad.vendor = vendor;
-
-        return this.adRepository.save(ad) as unknown as Promise<VendorAd>;
     }
 
     async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {

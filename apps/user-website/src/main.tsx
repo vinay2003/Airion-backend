@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 })
 
 // 🛑 Strict Portal Guard: Prevent landing page from mounting on portal routes
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && !(window as any).__IS_PORTAL__) {
   const path = window.location.pathname;
   // Ignore assets and only block actual application routes for portals
   if (!path.includes('/assets/') && (path.startsWith('/admin') || path.startsWith('/vendor'))) {

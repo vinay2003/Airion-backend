@@ -18,13 +18,10 @@ const queryClient = new QueryClient({
 // 🛑 Strict Portal Guard: Prevent landing page from mounting on portal routes
 if (typeof window !== 'undefined') {
   const path = window.location.pathname;
-  if (path.startsWith('/admin') || path.startsWith('/vendor')) {
+  // Ignore assets and only block actual application routes for portals
+  if (!path.includes('/assets/') && (path.startsWith('/admin') || path.startsWith('/vendor'))) {
     console.warn('[PortalGuard] Landing page blocked on portal route. Redirecting...');
-    // If we're stuck here, something is wrong with rewrites, force a clean reload
-    if (!window.location.hash.includes('retry')) {
-       window.location.replace(window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'retry=1');
-    }
-    // Stop React from mounting
+    // Halt React mounting to let Vercel rewrites or forced reloads take over
     throw new Error('Incorrect portal context');
   }
 }

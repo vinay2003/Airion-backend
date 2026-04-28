@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles?: string[];
   /** Optional URL to redirect to if not authenticated (external or internal) */
-  redirectUrl?: string; 
+  redirectUrl?: string;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles, redirectUrl }) => {
@@ -26,8 +26,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
       // If redirectUrl is an external link (different portal)
       if (redirectUrl.startsWith('http')) {
         const currentUrl = encodeURIComponent(window.location.href);
-        window.location.href = redirectUrl.includes('?') 
-          ? `${redirectUrl}&redirect_to=${currentUrl}` 
+        window.location.href = redirectUrl.includes('?')
+          ? `${redirectUrl}&redirect_to=${currentUrl}`
           : `${redirectUrl}?redirect_to=${currentUrl}`;
         return null;
       }
@@ -44,7 +44,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
       window.location.href = '/dashboard';
       return null;
     }
-    
+
     if (user.role === 'vendor') {
       window.location.href = '/vendor/';
       return null;

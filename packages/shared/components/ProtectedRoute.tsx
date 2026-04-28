@@ -38,14 +38,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    // If this is a user-role account trying to access vendor/admin areas,
-    // redirect them to the user website dashboard
+    // 🛡️ Role-Based Portal Enforcement
+    // Prevents cross-portal access and redirect loops
     if (user.role === 'user') {
       window.location.href = '/dashboard';
       return null;
     }
-    // Otherwise redirect to home
-    return <Navigate to="/" replace />;
+    
+    if (user.role === 'vendor') {
+      window.location.href = '/vendor/';
+      return null;
+    }
+
+    if (user.role === 'admin') {
+      window.location.href = '/admin/';
+      return null;
+    }
+
+    // Default failsafe: Clear and go to login
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

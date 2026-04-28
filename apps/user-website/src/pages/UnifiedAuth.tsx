@@ -16,12 +16,14 @@ type AuthMode = 'login' | 'signup';
  * Reconciles Identity Registry for Users, Vendors, and Administrative Entities.
  * Implements Zero-Trust Protocols for Administrative Access (1000000000 restricted).
  */
+
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
 const UnifiedAuth: React.FC = () => {
     const navigate = useNavigate();
     const { loginWithToken, user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
     const location = useLocation();
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     // UI States
     const [mode, setMode] = useState<AuthMode>(() => {

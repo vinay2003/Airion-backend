@@ -1,16 +1,14 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "redirects": [
-    { "source": "/admin", "destination": "/admin/", "permanent": false },
-    { "source": "/vendor", "destination": "/vendor/", "permanent": false }
-  ],
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://airion-backend-1.onrender.com/api/:path*" },
-    { "source": "/vendor/assets/:path*", "destination": "/vendor/assets/:path*" },
-    { "source": "/admin/assets/:path*", "destination": "/admin/assets/:path*" },
-    { "source": "/vendor/:path*", "destination": "/vendor/index.html" },
-    { "source": "/admin/:path*", "destination": "/admin/index.html" },
-    { "source": "/(.*)", "destination": "/user/index.html" }
+    { "source": "/admin/assets/(.*)", "destination": "/admin/assets/$1" },
+    { "source": "/vendor/assets/(.*)", "destination": "/vendor/assets/$1" },
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/vendor/(.*)", "destination": "/vendor/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/vendor", "destination": "/vendor/index.html" },
+    { "source": "/((?!api|admin|vendor).*)", "destination": "/user/index.html" }
   ]
 }

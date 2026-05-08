@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { SubscriptionsService } from './subscriptions.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { Roles } from '../auth/guards/roles.decorator';
 import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('subscriptions')
@@ -17,19 +18,19 @@ export class SubscriptionsController {
 
     @UseGuards(JwtAuthGuard)
     @Get('my-plan')
-    getMyPlan(@Req() req) {
+    getMyPlan(@Req() req: Request & { user: any }) {
         return this.subscriptionsService.getUserActiveSubscription(req.user.id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('checkout')
-    createCheckoutSession(@Req() req, @Body() body: { planId: string }) {
+    createCheckoutSession(@Req() req: Request & { user: any }, @Body() body: { planId: string }) {
         return this.subscriptionsService.createCheckoutSession(req.user.id, body.planId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('cancel')
-    cancelSubscription(@Req() req) {
+    cancelSubscription(@Req() req: Request & { user: any }) {
         return this.subscriptionsService.cancelSubscription(req.user.id);
     }
 

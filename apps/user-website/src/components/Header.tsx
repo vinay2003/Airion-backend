@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     User as UserIcon, Globe, Moon, Sun,
-    Sparkles, ChevronDown, LayoutDashboard, LogOut,
+    ChevronDown, LayoutDashboard, LogOut,
     Settings, ArrowRight, X, Menu, Bell
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -182,11 +182,16 @@ const Header: React.FC = () => {
                 to="/"
                 className="z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
             >
-                <img 
-                    src="/logo.svg" 
-                    alt="Ease2Event Logo" 
-                    className={`${isScrolled ? 'h-8 md:h-10' : 'h-10 md:h-12'} w-auto transition-all duration-300`} 
-                />
+                <div className={`${isScrolled ? 'h-9 w-9 md:h-11 md:w-11' : 'h-11 w-11 md:h-13 md:w-13'} transition-all duration-300 flex-shrink-0 rounded-full overflow-hidden bg-black dark:bg-black shadow-md ring-2 ring-red-500/20`}>
+                    <img 
+                        src="/logo.svg" 
+                        alt="Ease2Event Logo" 
+                        className="w-full h-full object-contain"
+                    />
+                </div>
+                <span className={`${isScrolled ? 'text-base' : 'text-lg'} font-black tracking-tight text-gray-900 dark:text-white hidden sm:block transition-all duration-300`}>
+                    Ease<span className="text-red-500">2</span>Event
+                </span>
             </Link>
 
             {/* ── Desktop Nav ── */}
@@ -348,11 +353,11 @@ const Header: React.FC = () => {
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
                             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/20">
-                                        <Sparkles size={20} className="text-white animate-pulse" />
+                                    <div className="h-10 w-10 rounded-full overflow-hidden bg-black shadow-lg ring-2 ring-red-500/30 flex-shrink-0">
+                                        <img src="/logo.svg" alt="Ease2Event Logo" className="w-full h-full object-contain" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Explore</span>
+                                        <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Ease<span className="text-red-500">2</span>Event</span>
                                         <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Ease2event Menu</span>
                                     </div>
                                 </div>

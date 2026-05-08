@@ -1,4 +1,5 @@
 import { io, Socket } from 'socket.io-client';
+import { tokenService } from './tokenService';
 
 const getBaseUrl = () => {
     const url = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -10,7 +11,10 @@ let socket: Socket | null = null;
 export const initiateSocketConnection = (userId: string): Socket => {
     if (socket) return socket;
 
+    const token = tokenService.getAccessToken();
+
     socket = io(`${getBaseUrl()}/chat`, {
+        auth: { token },           // ✅ WsJwtGuard reads from handshake.auth.token
         query: { userId },
         transports: ['websocket'],
     });

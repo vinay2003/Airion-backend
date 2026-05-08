@@ -15,6 +15,7 @@ const Users = lazy(() => import('./pages/Users'));
 const Bookings = lazy(() => import('./pages/Bookings'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const Subscriptions = lazy(() => import('./pages/Subscriptions'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -43,6 +44,7 @@ const App: React.FC = () => {
                   <Route path="vendors" element={<Vendors />} />
                   <Route path="users" element={<Users />} />
                   <Route path="bookings" element={<Bookings />} />
+                  <Route path="subscriptions" element={<Subscriptions />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>

@@ -28,6 +28,7 @@ import { AIModule } from './ai/ai.module';
 import { AdminModule } from './admin/admin.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 @Module({
     imports: [
@@ -92,6 +93,7 @@ import { ContactsModule } from './contacts/contacts.module';
         AdminModule,
         AvailabilityModule,
         ContactsModule,
+        SubscriptionsModule,
     ],
     controllers: [AppController],
 })

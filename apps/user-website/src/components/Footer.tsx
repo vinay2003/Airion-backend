@@ -9,7 +9,12 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="space-y-4">
-                        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-3xl font-black text-red-500 tracking-tighter hover:scale-105 transition-transform inline-block">Ease2event</Link>
+                        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 hover:scale-105 transition-transform inline-flex">
+                            <div className="h-12 w-12 flex-shrink-0 rounded-full overflow-hidden bg-black shadow-lg ring-2 ring-red-500/30">
+                                <img src="/logo.svg" alt="Ease2Event Logo" className="w-full h-full object-contain" />
+                            </div>
+                            <span className="text-3xl font-black text-red-500 tracking-tighter">Ease<span className="text-gray-900 dark:text-white">2</span>event</span>
+                        </Link>
                         <p className="text-gray-500 dark:text-slate-400 text-[15px] font-medium leading-relaxed">
                             The premier digital ecosystem for event orchestration. Discover, collaborate, and execute flawless experiences with verified vendors.
                         </p>

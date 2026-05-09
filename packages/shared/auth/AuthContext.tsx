@@ -91,11 +91,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (isLocal) {
-        // Always redirect to main user-website on logout
-        window.location.href = 'http://localhost:5173/';
+        // Redirect to main app with action=logout so it clears its own localStorage too (different ports = different storage)
+        window.location.href = 'http://localhost:5173/?action=logout';
       } else {
-        // In production, redirect to home page
-        window.location.href = '/';
+        // In production, everything is on the same domain, but we can still be safe
+        window.location.href = '/?action=logout';
       }
     }
   }, []);

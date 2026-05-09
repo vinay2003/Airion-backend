@@ -627,9 +627,9 @@ const Packages: React.FC = () => {
                       <span className="flex items-center gap-1.5 font-bold"><Calendar size={14} /> {pkg.days}</span>
                       <span className="flex items-center gap-1.5 font-bold"><Users size={14} /> {pkg.guests}</span>
                     </div>
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex items-baseline gap-1.5 whitespace-nowrap">
                       <span className="text-3xl font-black text-white">{pkg.price}</span>
-                      <span className="text-white/60 text-sm uppercase tracking-widest font-bold">/ {pkg.priceNote}</span>
+                      <span className="text-white/60 text-[11px] uppercase tracking-widest font-bold">/ {pkg.priceNote}</span>
                     </div>
                   </div>
 

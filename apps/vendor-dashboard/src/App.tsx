@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -37,7 +37,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#ffffff', color: '#1a1a2e', border: '1px solid #f0effe' } }} />
-        <Router>
+        <Router basename={import.meta.env.PROD ? '/vendor' : '/'}>
           <AuthProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>

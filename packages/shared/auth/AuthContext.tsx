@@ -90,9 +90,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       tokenService.clearTokens();
       
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const homeUrl = isLocal ? 'http://localhost:5173/' : '/';
-      
-      window.location.href = homeUrl;
+      if (isLocal) {
+        // Always redirect to main user-website on logout
+        window.location.href = 'http://localhost:5173/';
+      } else {
+        // In production, redirect to home page
+        window.location.href = '/';
+      }
     }
   }, []);
 

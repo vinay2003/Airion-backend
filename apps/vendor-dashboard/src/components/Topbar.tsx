@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bell, Search, ChevronDown, Menu, Moon, Sun } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
 import { useTheme } from '../context/ThemeContext';
@@ -13,6 +14,7 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
+    const navigate = useNavigate();
     const [isNotifOpen, setIsNotifOpen] = React.useState(false);
     const [isProfileOpen, setIsProfileOpen] = React.useState(false);
 
@@ -119,12 +121,12 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
                                 <p className="text-xs text-[var(--ease2event-text-muted)] truncate">{user?.email || 'vendor@ease2event.in'}</p>
                             </div>
                             <div className="p-2 space-y-1">
-                                <a href="/vendor/settings" className="block px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+                                <button onClick={() => { setIsProfileOpen(false); navigate('/settings'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
                                     Account Settings
-                                </a>
-                                <a href="/vendor" className="block px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+                                </button>
+                                <button onClick={() => { setIsProfileOpen(false); navigate('/'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
                                     Dashboard
-                                </a>
+                                </button>
                                 <button onClick={logout} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-colors">
                                     Logout
                                 </button>

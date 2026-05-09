@@ -15,26 +15,16 @@ const queryClient = new QueryClient({
   },
 })
 
-// 🛑 Strict Portal Guard: Redirect to correct apps in dev, or let Vercel handle in prod
+// 🛑 Portal Guard: Only redirect in local dev. In production, Vercel handles routing via vercel.json.
 if (typeof window !== 'undefined' && !(window as any).__IS_PORTAL__) {
   const path = window.location.pathname;
-  if (!path.includes('/assets/') && (path.startsWith('/admin') || path.startsWith('/vendor'))) {
-    console.warn('[PortalGuard] Landing page detected on portal route. Handling redirect...');
-    
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    if (isLocal) {
-      if (path.startsWith('/vendor')) {
-        window.location.href = `http://localhost:5174${path}${window.location.search}`;
-      } else if (path.startsWith('/admin')) {
-        window.location.href = `http://localhost:5175${path}${window.location.search}`;
-      }
-    } else {
-      // In production, Vercel rewrite should handle this, but if it falls through, we force a hard reload
-      if (!window.location.search.includes('portal_redirect')) {
-        const separator = window.location.search ? '&' : '?';
-        window.location.replace(window.location.href + separator + 'portal_redirect=1');
-      }
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  if (isLocal && !path.includes('/assets/')) {
+    if (path.startsWith('/vendor')) {
+      window.location.href = `http://localhost:5174${path}${window.location.search}`;
+    } else if (path.startsWith('/admin')) {
+      window.location.href = `http://localhost:5175${path}${window.location.search}`;
     }
   }
 }

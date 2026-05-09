@@ -71,20 +71,29 @@ const UnifiedAuth: React.FC = () => {
         }
 
         if (isAuthenticated && user && !authLoading) {
-            const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : '');
-            const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : '');
             const token = tokenService.getAccessToken();
+            const tokenParam = token ? `?token=${token}` : '';
 
             if (user.role === UserRole.VENDOR) {
                 // 🛡️ Secure Portal Handoff for Vendors
-                const targetBase = VENDOR_URL || '/vendor';
-                const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
-                window.location.href = `${target}${token ? `?token=${token}` : ''}`;
+                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : null);
+                if (VENDOR_URL) {
+                    const target = VENDOR_URL.endsWith('/') ? VENDOR_URL : `${VENDOR_URL}/`;
+                    window.location.href = `${target}${tokenParam}`;
+                } else {
+                    // Production: use path-based routing (handled by vercel.json)
+                    window.location.href = `/vendor/${tokenParam}`;
+                }
             } else if (user.role === UserRole.ADMIN) {
                 // 🛡️ Secure Portal Handoff for Admins
-                const targetBase = ADMIN_URL || '/admin';
-                const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
-                window.location.href = `${target}${token ? `?token=${token}` : ''}`;
+                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : null);
+                if (ADMIN_URL) {
+                    const target = ADMIN_URL.endsWith('/') ? ADMIN_URL : `${ADMIN_URL}/`;
+                    window.location.href = `${target}${tokenParam}`;
+                } else {
+                    // Production: use path-based routing (handled by vercel.json)
+                    window.location.href = `/admin/${tokenParam}`;
+                }
             } else {
                 // For 'user' role, if we are already on signup/details step, don't interrupt
                 if (step === 'details') return;
@@ -192,17 +201,24 @@ const UnifiedAuth: React.FC = () => {
                 toast.success('Synchronization complete. Welcome back.');
 
                 setTimeout(() => {
-                    const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : '');
-                    const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : '');
+                    const tokenParam = `?token=${response.access_token}`;
 
                     if (role === 'vendor') {
-                        const targetBase = VENDOR_URL || '/vendor';
-                        const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
-                        window.location.href = `${target}?token=${response.access_token}`;
+                        const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : null);
+                        if (VENDOR_URL) {
+                            const target = VENDOR_URL.endsWith('/') ? VENDOR_URL : `${VENDOR_URL}/`;
+                            window.location.href = `${target}${tokenParam}`;
+                        } else {
+                            window.location.href = `/vendor/${tokenParam}`;
+                        }
                     } else if (role === 'admin') {
-                        const targetBase = ADMIN_URL || '/admin';
-                        const target = targetBase.endsWith('/') ? targetBase : `${targetBase}/`;
-                        window.location.href = `${target}?token=${response.access_token}`;
+                        const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : null);
+                        if (ADMIN_URL) {
+                            const target = ADMIN_URL.endsWith('/') ? ADMIN_URL : `${ADMIN_URL}/`;
+                            window.location.href = `${target}${tokenParam}`;
+                        } else {
+                            window.location.href = `/admin/${tokenParam}`;
+                        }
                     } else {
                         navigate('/dashboard');
                     }

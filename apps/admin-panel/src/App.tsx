@@ -28,7 +28,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Toaster position="top-right" toastOptions={{ duration: 6000, style: { background: '#ffffff', color: '#1a1a2e', border: '1px solid #f0effe' } }} />
-        <Router basename="/admin">
+        <Router basename={import.meta.env.PROD ? '/admin' : '/'}>
           <AuthProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>

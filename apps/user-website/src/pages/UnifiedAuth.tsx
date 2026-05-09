@@ -75,27 +75,22 @@ const UnifiedAuth: React.FC = () => {
             const tokenParam = token ? `?token=${token}` : '';
 
             if (user.role === UserRole.VENDOR) {
-                // 🛡️ Secure Portal Handoff for Vendors
-                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : null);
-                if (VENDOR_URL) {
-                    const target = VENDOR_URL.endsWith('/') ? VENDOR_URL : `${VENDOR_URL}/`;
-                    window.location.href = `${target}${tokenParam}`;
+                if (isLocal) {
+                    // In dev, vendor app runs at localhost:5174 with basename=/
+                    window.location.href = `http://localhost:5174/${tokenParam}`;
                 } else {
-                    // Production: use path-based routing (handled by vercel.json)
-                    window.location.href = `/vendor/${tokenParam}`;
+                    const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
+                    window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
                 }
             } else if (user.role === UserRole.ADMIN) {
-                // 🛡️ Secure Portal Handoff for Admins
-                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : null);
-                if (ADMIN_URL) {
-                    const target = ADMIN_URL.endsWith('/') ? ADMIN_URL : `${ADMIN_URL}/`;
-                    window.location.href = `${target}${tokenParam}`;
+                if (isLocal) {
+                    // In dev, admin app runs at localhost:5175 with basename=/
+                    window.location.href = `http://localhost:5175/${tokenParam}`;
                 } else {
-                    // Production: use path-based routing (handled by vercel.json)
-                    window.location.href = `/admin/${tokenParam}`;
+                    const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
+                    window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
                 }
             } else {
-                // For 'user' role, if we are already on signup/details step, don't interrupt
                 if (step === 'details') return;
                 navigate('/dashboard');
             }
@@ -204,20 +199,18 @@ const UnifiedAuth: React.FC = () => {
                     const tokenParam = `?token=${response.access_token}`;
 
                     if (role === 'vendor') {
-                        const VENDOR_URL = import.meta.env.VITE_VENDOR_URL || (isLocal ? 'http://localhost:5174' : null);
-                        if (VENDOR_URL) {
-                            const target = VENDOR_URL.endsWith('/') ? VENDOR_URL : `${VENDOR_URL}/`;
-                            window.location.href = `${target}${tokenParam}`;
+                        if (isLocal) {
+                            window.location.href = `http://localhost:5174/${tokenParam}`;
                         } else {
-                            window.location.href = `/vendor/${tokenParam}`;
+                            const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
+                            window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
                         }
                     } else if (role === 'admin') {
-                        const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || (isLocal ? 'http://localhost:5175' : null);
-                        if (ADMIN_URL) {
-                            const target = ADMIN_URL.endsWith('/') ? ADMIN_URL : `${ADMIN_URL}/`;
-                            window.location.href = `${target}${tokenParam}`;
+                        if (isLocal) {
+                            window.location.href = `http://localhost:5175/${tokenParam}`;
                         } else {
-                            window.location.href = `/admin/${tokenParam}`;
+                            const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
+                            window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
                         }
                     } else {
                         navigate('/dashboard');

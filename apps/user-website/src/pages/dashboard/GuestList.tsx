@@ -96,7 +96,7 @@ const GuestList: React.FC = () => {
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">Guest List</h1>
-                    <p className="text-neutral-500 dark:text-slate-400 font-medium">Manage your event attendees and RSVP status.</p>
+                    <p className="text-neutral-500 dark:text-slate-400 font-medium">Manage your event attendees and status.</p>
                 </div>
                 <Button onClick={() => setIsAddModalOpen(true)} className="bg-red-600 hover:bg-neutral-900 text-white font-bold rounded-xl flex items-center gap-2">
                     <Plus size={18} /> Add Guest
@@ -126,8 +126,8 @@ const GuestList: React.FC = () => {
                                         setFilterGroup(group);
                                     }}
                                     className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border shadow-sm ${filterGroup === group
-                                            ? 'bg-red-600 border-red-600 text-white shadow-red-500/20'
-                                            : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
+                                        ? 'bg-red-600 border-red-600 text-white shadow-red-500/20'
+                                        : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
                                         }`}
                                 >
                                     {group}

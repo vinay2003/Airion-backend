@@ -79,7 +79,7 @@ const DashboardOverview: React.FC = () => {
                         <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
                             Ease2event Matrix, Welcome {firstName}
                         </h1>
-                        <p className="text-s sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Synchronizing your event lifecycle in real-time.</p>
+                        <p className="text-s sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Managing your events in real time</p>
                     </div>
                 </motion.div>
                 <motion.div
@@ -217,7 +217,8 @@ const DashboardOverview: React.FC = () => {
                                     <p className="text-neutral-500 font-medium">Your event registry is currently empty.</p>
                                 </div>
                                 <Link to="/marketplace" className="inline-flex items-center gap-2 px-8 py-3 bg-red-500 text-white rounded-2xl font-black text-xs hover:bg-black shadow-xl transition-all">
-                                    EXPLORE MARKETPLACE <ArrowRight size={16} />
+                                    Browse Services
+                                    <ArrowRight size={16} />
                                 </Link>
                             </div>
                         )}
@@ -260,7 +261,7 @@ const DashboardOverview: React.FC = () => {
             {/* 🔥 High-Value Recommendations */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Tailored Nodes 🔥</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Custom Options 🔥</h2>
                     <Link to="/marketplace" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2 uppercase">
                         Expand Results <ArrowRight size={16} />
                     </Link>
@@ -324,13 +325,13 @@ const DashboardOverview: React.FC = () => {
                         <div className="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-500/40">
                             <CreditCard size={24} />
                         </div>
-                        <h3 className="text-2xl font-black tracking-tighter uppercase">Fiscal Elasticity Protocol</h3>
+                        <h3 className="text-2xl font-black tracking-tighter ">Flexible Payment System</h3>
                     </div>
-                    <p className="text-neutral-400 font-medium max-w-md">De-risk your event capital strategy. Deploy payments across 3–12 month synchronized cycles. Zero upfront liquidity required for verified nodes.</p>
+                    <p className="text-neutral-400 font-medium max-w-md">Manage event payments easily with flexible monthly plans and no upfront payment for verified users.</p>
                 </div>
                 <Link
                     to="/dashboard/budget"
-                    className="relative z-10 whitespace-nowrap text-sm font-black uppercase tracking-[0.2em] text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-500 border-b-2 border-transparent hover:border-red-500 transition-all pb-1"
+                    className="relative z-10 whitespace-nowrap text-sm font-black tracking-[0.1em] text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-500 border-b-2 border-transparent hover:border-red-500 transition-all pb-1"
                 >
                     Verify Eligibility
                 </Link>

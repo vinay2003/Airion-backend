@@ -181,7 +181,7 @@ export const Inbox: React.FC = () => {
                     {filteredConversations.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full text-neutral-400 p-10 opacity-30">
                             <Mail size={48} strokeWidth={1} className="mb-4" />
-                            <p className="text-sm font-bold uppercase tracking-widest text-center">Neural nodes inactive</p>
+                            <p className="text-sm font-bold tracking-widest text-center">Neural nodes inactive</p>
                         </div>
                     )}
                 </div>
@@ -291,8 +291,8 @@ export const Inbox: React.FC = () => {
                         <div className="p-10 bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl border border-neutral-100 dark:border-slate-700 mb-8 transform hover:scale-110 transition-transform duration-1000">
                             <Send size={48} className="text-red-500" strokeWidth={1} />
                         </div>
-                        <h3 className="text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter mb-2">Initialize Matrix</h3>
-                        <p className="text-sm font-bold uppercase tracking-widest opacity-40">Select a neural node to start messaging</p>
+                        <h3 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tighter mb-2">Ready to Connect?</h3>
+                        <p className="text-sm opacity-40">Select a node to start messaging</p>
                     </div>
                 )}
             </div>

@@ -262,7 +262,7 @@ const Settings: React.FC = () => {
                         <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-semibold rounded-full border border-[var(--ease2event-brand-primary)]/20">
                             Dashboard Settings
                         </span>
-                        <p className="text-base font-semibold tracking-normal flex items-center gap-2">Manage your account and storefront</p>
+                        <p className="text-base font-semibold tracking-normal flex items-center gap-2">Manage your account</p>
                     </div>
                 </div>
 
@@ -346,10 +346,10 @@ const Settings: React.FC = () => {
                                     </div>
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner relative">
-                                        <input 
-                                            type="file" 
-                                            id="profile-upload" 
-                                            className="hidden" 
+                                        <input
+                                            type="file"
+                                            id="profile-upload"
+                                            className="hidden"
                                             accept="image/*"
                                             onChange={async (e) => {
                                                 const file = e.target.files?.[0];
@@ -471,14 +471,14 @@ const Settings: React.FC = () => {
                                                             </motion.div>
                                                         ))}
                                                         <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all duration-500 gap-2 sm:gap-3 group cursor-pointer">
-                                                            <input 
-                                                                type="file" 
-                                                                className="hidden" 
-                                                                accept="image/*" 
+                                                            <input
+                                                                type="file"
+                                                                className="hidden"
+                                                                accept="image/*"
                                                                 onChange={async (e) => {
                                                                     const file = e.target.files?.[0];
                                                                     if (!file) return;
-                                                                    
+
                                                                     const loaderId = toast.loading('Synchronizing asset...');
                                                                     try {
                                                                         const data = await uploadImage(file);
@@ -545,36 +545,36 @@ const Settings: React.FC = () => {
                                             <div className="space-y-8">
                                                 <div className="space-y-4 sm:space-y-5">
                                                     <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
-                                                    <input 
-                                                        type="password" 
+                                                    <input
+                                                        type="password"
                                                         value={passwords.oldPassword}
                                                         onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
-                                                        placeholder="••••••••" 
-                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                        placeholder="••••••••"
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                     />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-5">
                                                     <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
-                                                    <input 
-                                                        type="password" 
+                                                    <input
+                                                        type="password"
                                                         value={passwords.newPassword}
                                                         onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-                                                        placeholder="••••••••" 
-                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                        placeholder="••••••••"
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                     />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-5">
                                                     <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
-                                                    <input 
-                                                        type="password" 
+                                                    <input
+                                                        type="password"
                                                         value={passwords.confirmPassword}
                                                         onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
-                                                        placeholder="••••••••" 
-                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                                                        placeholder="••••••••"
+                                                        className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-surface)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold tracking-widest text-base sm:text-lg outline-none focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                     />
                                                 </div>
                                             </div>
-                                            <Button 
+                                            <Button
                                                 onClick={handleUpdatePassword}
                                                 disabled={submitting}
                                                 className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"

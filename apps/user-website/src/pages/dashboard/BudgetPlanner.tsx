@@ -172,7 +172,7 @@ const BudgetPlanner: React.FC = () => {
             {/* Category Items List */}
             <div className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl overflow-hidden">
                 <div className="p-6 border-b border-neutral-100 dark:border-slate-800">
-                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Expense Tracker</h3>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Expense Manager</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">

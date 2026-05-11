@@ -56,7 +56,7 @@ const Ads: React.FC = () => {
             toast.success('Campaign created - Pending Review');
             setShowCreateModal(false);
             setAdData({ title: '', imageUrl: '', budget: '' });
-            
+
             // 🔥 Sync fresh data from server
             await refreshUser();
         } catch (err) {
@@ -157,7 +157,7 @@ const Ads: React.FC = () => {
                             <Megaphone size={40} className="md:w-14 md:h-14" />
                         </div>
                         <div className="max-w-xl space-y-4">
-                            <h3 className="text-2xl md:text-4xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">No Ads Found</h3>
+                            <h3 className="text-2xl md:text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">No Ads Found</h3>
                             <p className="text-base md:text-base text-[var(--ease2event-text-secondary)] font-semibold tracking-tight leading-relaxed opacity-100">Create your first advertising campaign to reach more customers and grow your business.</p>
                         </div>
                         <Button

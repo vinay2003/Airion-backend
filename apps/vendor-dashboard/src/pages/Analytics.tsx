@@ -179,8 +179,8 @@ const Analytics: React.FC = () => {
                         <div className="flex items-center gap-4 sm:gap-6">
                             <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-6 rounded-[2.5rem] border-2 border-[var(--ease2event-border-subtle)] shadow-inner">
                                 <div className="space-y-2">
-                                    <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">Growth Trend</h3>
-                                    <p className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Platform reach and engagement tracking</p>
+                                    <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Growth Trend</h3>
+                                    <p className="text-[11px] font-bold text-[var(--ease2event-text-secondary)] tracking-widest">Platform reach and engagement tracking</p>
                                 </div>
                             </div>
                         </div>
@@ -251,12 +251,12 @@ const Analytics: React.FC = () => {
                             <Zap className="text-[var(--ease2event-brand-primary)] size-6 sm:size-8" />
                         </div>
                         <div>
-                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Listing Performance</h2>
+                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Post Performance</h2>
                             <p className="text-[9px] sm:text-[11px] font-semibold text-[var(--ease2event-text-secondary)] mt-3 sm:mt-4">Highest performing services and listings</p>
                         </div>
                     </div>
-                    <Button 
-                        variant="outline" 
+                    <Button
+                        variant="outline"
                         onClick={handleUpdateReports}
                         className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-semibold tracking-normal w-full xl:w-auto hover:bg-[var(--ease2event-brand-primary)] hover:text-white transition-all"
                     >

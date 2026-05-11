@@ -25,11 +25,11 @@ const Listings: React.FC = () => {
 
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this listing?')) return;
-        
+
         try {
             // Optimistic update
             setListings(prev => prev.filter(l => l.id !== id));
-            
+
             // Background API call
             await api.delete(`/services/${id}`);
         } catch (error: any) {
@@ -38,7 +38,7 @@ const Listings: React.FC = () => {
                 console.warn('Listing was not found on server (mock data), but removed from UI.');
                 return;
             }
-            
+
             console.error('Failed to delete listing:', error);
             alert('Failed to delete listing from server.');
         }
@@ -83,7 +83,7 @@ const Listings: React.FC = () => {
                 <div className="space-y-4">
                     <h1 className="text-3xl font-bold normal-case tracking-normal leading-normal">Event Management</h1>
                     <p className="text-base font-semibold normal-case tracking-normal flex items-center gap-2">
-                        Configure and monitor your active event listings.
+                        Manage and track your event posts easily.
                     </p>
                 </div>
                 <Button
@@ -189,9 +189,9 @@ const Listings: React.FC = () => {
                                         <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Base Price</p>
                                         <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{listing.price}</p>
                                     </div>
-                                    <Button 
-                                        variant="outline" 
-                                        size="md" 
+                                    <Button
+                                        variant="outline"
+                                        size="md"
                                         className="px-8 h-14 rounded-2xl font-bold text-xs uppercase border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all"
                                         leftIcon={<Trash2 size={20} />}
                                         onClick={(e) => {

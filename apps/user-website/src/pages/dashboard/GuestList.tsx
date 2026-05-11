@@ -69,13 +69,13 @@ const GuestList: React.FC = () => {
         const guestName = g.name || '';
         const guestEmail = g.email || '';
         const guestGroup = g.group || 'Other';
-        
-        const matchesSearch = guestName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            guestEmail.toLowerCase().includes(searchTerm.toLowerCase());
-        
-        const matchesGroup = filterGroup === 'All' || 
-                            guestGroup.toLowerCase().trim() === filterGroup.toLowerCase().trim();
-        
+
+        const matchesSearch = guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            guestEmail.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesGroup = filterGroup === 'All' ||
+            guestGroup.toLowerCase().trim() === filterGroup.toLowerCase().trim();
+
         return matchesSearch && matchesGroup;
     });
 
@@ -109,8 +109,8 @@ const GuestList: React.FC = () => {
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
-                            <Input 
-                                placeholder="Search guests..." 
+                            <Input
+                                placeholder="Search guests..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pl-10 bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 rounded-xl"
@@ -125,11 +125,10 @@ const GuestList: React.FC = () => {
                                         e.preventDefault();
                                         setFilterGroup(group);
                                     }}
-                                    className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border shadow-sm ${
-                                        filterGroup === group 
-                                        ? 'bg-red-600 border-red-600 text-white shadow-red-500/20' 
-                                        : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
-                                    }`}
+                                    className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border shadow-sm ${filterGroup === group
+                                            ? 'bg-red-600 border-red-600 text-white shadow-red-500/20'
+                                            : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
+                                        }`}
                                 >
                                     {group}
                                 </button>
@@ -152,7 +151,7 @@ const GuestList: React.FC = () => {
                             <tbody className="divide-y divide-neutral-100 dark:divide-slate-800">
                                 <AnimatePresence>
                                     {filteredGuests.map((guest: any) => (
-                                        <motion.tr 
+                                        <motion.tr
                                             key={guest.id}
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -188,7 +187,7 @@ const GuestList: React.FC = () => {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button 
+                                                    <button
                                                         onClick={() => {
                                                             const nextStatus = guest.rsvpStatus === 'pending' ? 'confirmed' : guest.rsvpStatus === 'confirmed' ? 'declined' : 'pending';
                                                             updateMutation.mutate({ id: guest.id, data: { rsvpStatus: nextStatus } });
@@ -197,7 +196,7 @@ const GuestList: React.FC = () => {
                                                     >
                                                         <Edit size={16} />
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         onClick={() => deleteMutation.mutate(guest.id)}
                                                         className="p-2 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg text-neutral-400 hover:text-red-500 transition-colors"
                                                     >
@@ -223,7 +222,7 @@ const GuestList: React.FC = () => {
                 <div className="space-y-6">
                     <div className="bg-neutral-900 dark:bg-white rounded-3xl p-6 text-white dark:text-neutral-900">
                         <h3 className="text-lg font-black mb-4 flex items-center gap-2">
-                            <Users size={20} /> RSVP Summary
+                            <Users size={20} /> Summary
                         </h3>
                         <div className="space-y-4">
                             <div>
@@ -231,9 +230,9 @@ const GuestList: React.FC = () => {
                                 <div className="text-2xl font-black">{guests.filter((g: any) => g.rsvpStatus === 'confirmed').length}</div>
                             </div>
                             <div className="w-full bg-white/20 dark:bg-neutral-200 h-1 rounded-full overflow-hidden">
-                                <div 
-                                    className="bg-green-500 h-full" 
-                                    style={{ width: `${(guests.filter((g: any) => g.rsvpStatus === 'confirmed').length / (guests.length || 1)) * 100}%` }} 
+                                <div
+                                    className="bg-green-500 h-full"
+                                    style={{ width: `${(guests.filter((g: any) => g.rsvpStatus === 'confirmed').length / (guests.length || 1)) * 100}%` }}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4 pt-2">
@@ -267,22 +266,22 @@ const GuestList: React.FC = () => {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-neutral-500">Name</label>
-                                <Input value={newGuest.name} onChange={e => setNewGuest({...newGuest, name: e.target.value})} className="rounded-xl" />
+                                <Input value={newGuest.name} onChange={e => setNewGuest({ ...newGuest, name: e.target.value })} className="rounded-xl" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-neutral-500">Email</label>
-                                <Input type="email" value={newGuest.email} onChange={e => setNewGuest({...newGuest, email: e.target.value})} className="rounded-xl" />
+                                <Input type="email" value={newGuest.email} onChange={e => setNewGuest({ ...newGuest, email: e.target.value })} className="rounded-xl" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-neutral-500">Phone</label>
-                                <Input type="tel" value={newGuest.phone} onChange={e => setNewGuest({...newGuest, phone: e.target.value})} className="rounded-xl" />
+                                <Input type="tel" value={newGuest.phone} onChange={e => setNewGuest({ ...newGuest, phone: e.target.value })} className="rounded-xl" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-neutral-500">Group</label>
-                                <select 
+                                <select
                                     className="w-full bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl outline-none"
                                     value={newGuest.group}
-                                    onChange={e => setNewGuest({...newGuest, group: e.target.value})}
+                                    onChange={e => setNewGuest({ ...newGuest, group: e.target.value })}
                                 >
                                     {groups.filter(g => g !== 'All').map(g => <option key={g} value={g}>{g}</option>)}
                                 </select>
@@ -290,8 +289,8 @@ const GuestList: React.FC = () => {
                         </div>
                         <div className="flex gap-4 mt-8">
                             <Button onClick={() => setIsAddModalOpen(false)} className="flex-1 rounded-xl bg-neutral-100 text-neutral-900 font-bold hover:bg-neutral-200">Cancel</Button>
-                            <Button 
-                                onClick={() => createMutation.mutate(newGuest)} 
+                            <Button
+                                onClick={() => createMutation.mutate(newGuest)}
                                 disabled={createMutation.isPending || !newGuest.name}
                                 className="flex-1 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700"
                             >

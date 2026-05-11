@@ -100,13 +100,13 @@ const Dashboard = () => {
               // Mock export functionality
               toast.success('Data exported successfully! Check your downloads.');
             }}
-            className="btn-secondary h-12 px-8 rounded-xl text-xs font-bold uppercase tracking-widest"
+            className="btn-secondary h-12 px-8 rounded-xl text-xs font-bold  tracking-widest"
           >
             Export Data
           </Button>
           <Button
             onClick={() => navigate('/events')}
-            className="btn-primary h-12 px-8 rounded-xl text-xs font-bold uppercase tracking-widest"
+            className="btn-primary h-12 px-8 rounded-xl text-xs font-bold  tracking-widest"
           >
             Add Service
           </Button>
@@ -166,11 +166,11 @@ const Dashboard = () => {
                 <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-2xl text-blue-400">
                   <Sparkles size={32} />
                 </div>
-                <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase px-4 py-2 h-auto rounded-full">Boost Active</Badge>
+                <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold not-italic px-4 py-2 h-auto rounded-full">Boost Active</Badge>
               </div>
               <div className="space-y-4">
                 <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Marketing Engine</h3>
-                <p className="text-sm text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed">Boost your visibility and bookings with targeted marketing campaigns.</p>
+                <p className="text-sm text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed">Get more visibility and bookings with smart marketing.</p>
               </div>
               <Button
                 onClick={() => navigate('/ads')}
@@ -190,7 +190,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="z-10 space-y-4">
-                <h3 className="text-2xl font-bold leading-none">Grand Ballroom Event</h3>
+                <h3 className="text-2xl font-bold leading-none">Big Hall Event</h3>
                 <p className="text-sm font-semibold opacity-80">12 tasks pending completion for this service</p>
               </div>
               <button

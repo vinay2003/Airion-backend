@@ -116,7 +116,7 @@ export const Inbox: React.FC = () => {
         setShowMobileChat(true);
     };
 
-    const filteredConversations = conversations.filter((c: any) => 
+    const filteredConversations = conversations.filter((c: any) =>
         c.participantIds.includes(user?.id)
     );
 
@@ -137,22 +137,22 @@ export const Inbox: React.FC = () => {
                 ${showMobileChat ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}
             `}>
                 <div className="p-6 border-b border-neutral-50 dark:border-slate-800">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white mb-4 uppercase tracking-tighter">Inbox</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white mb-4 tracking-tighter">Inbox Chat</h2>
                     <div className="flex items-center gap-3 bg-neutral-100 dark:bg-slate-800 px-4 py-2.5 rounded-2xl border border-neutral-200/30">
                         <Search size={18} className="text-neutral-400" />
-                        <input 
-                            type="text" 
-                            placeholder="Filter conversations..." 
+                        <input
+                            type="text"
+                            placeholder="Filter conversations..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-transparent border-none outline-none text-sm w-full font-medium" 
+                            className="bg-transparent border-none outline-none text-sm w-full font-medium"
                         />
                     </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
                     {filteredConversations.map((chat: any) => (
-                        <div 
+                        <div
                             key={chat.id}
                             onClick={() => selectThread(chat.id)}
                             className={`p-6 flex gap-4 border-b border-neutral-50 dark:border-slate-800/40 cursor-pointer transition-all hover:bg-neutral-50 dark:hover:bg-slate-800/40 relative
@@ -230,15 +230,15 @@ export const Inbox: React.FC = () => {
                             ) : (
                                 <AnimatePresence initial={false}>
                                     {messages.map((m: any) => (
-                                        <motion.div 
-                                            key={m.id} 
+                                        <motion.div
+                                            key={m.id}
                                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             className={`flex ${m.senderId === user?.id ? 'justify-end' : 'justify-start'}`}
                                         >
                                             <div className={`max-w-[80%] md:max-w-md px-5 py-3 rounded-[1.5rem] text-sm shadow-sm relative
-                                                ${m.senderId === user?.id 
-                                                    ? 'bg-red-500 text-white rounded-br-none' 
+                                                ${m.senderId === user?.id
+                                                    ? 'bg-red-500 text-white rounded-br-none'
                                                     : 'bg-white dark:bg-slate-800 text-neutral-800 dark:text-slate-200 border border-neutral-100 dark:border-slate-700 rounded-bl-none'
                                                 }
                                             `}>
@@ -273,12 +273,12 @@ export const Inbox: React.FC = () => {
                                 <button type="button" className="p-3 text-neutral-400 hover:text-red-500 transition-colors rounded-xl shrink-0">
                                     <Paperclip size={20} />
                                 </button>
-                                <input 
-                                    type="text" 
-                                    placeholder="Execute message transmission..." 
+                                <input
+                                    type="text"
+                                    placeholder="Execute message transmission..."
                                     value={messageText}
                                     onChange={handleInputChange}
-                                    className="flex-1 bg-transparent border-none outline-none py-2 text-sm font-bold text-neutral-800 dark:text-white" 
+                                    className="flex-1 bg-transparent border-none outline-none py-2 text-sm font-bold text-neutral-800 dark:text-white"
                                 />
                                 <button type="submit" disabled={!messageText.trim()} className="p-3.5 bg-red-500 text-white rounded-xl hover:scale-105 active:scale-95 shadow-lg shadow-red-500/30 transition-all disabled:opacity-30 disabled:hover:scale-100 shrink-0">
                                     <Send size={18} />

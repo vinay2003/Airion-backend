@@ -554,19 +554,10 @@ const Packages: React.FC = () => {
                     </ul>
 
                     <div className="mt-auto">
-                      <p className="text-sm text-gray-500 dark:text-white/40 mb-4 leading-relaxed line-clamp-2 font-medium">
+                      <p className="text-sm text-gray-500 dark:text-white/40 mb-0 leading-relaxed line-clamp-2 font-medium">
                         <span className="text-[#c5a059]/60 not-italic font-bold mr-1 text-sm">Add-ons:</span>
                         {exp.addons}
                       </p>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <button className="py-2.5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-white/30 text-sm font-bold uppercase tracking-widest transition-all">
-                          View Details
-                        </button>
-                        <button className="py-2.5 bg-[#c5a059] hover:bg-[#b38f4a] text-black text-sm font-bold uppercase tracking-widest transition-all">
-                          Book Now
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </motion.div>

@@ -97,7 +97,7 @@ export const GuestList: React.FC = () => {
                         <tr className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-700">
                             <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Name</th>
                             <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Category</th>
-                            <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">RSVP Status</th>
+                            <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Status</th>
                             <th className="p-4 text-right font-semibold text-gray-600 dark:text-gray-300">Action</th>
                         </tr>
                     </thead>
@@ -235,8 +235,8 @@ export const Support: React.FC = () => {
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] p-4 rounded-[1.5rem] shadow-sm relative transition-all ${msg.sender === 'user'
-                                    ? 'bg-red-500 text-white rounded-tr-none'
-                                    : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none'
+                                ? 'bg-red-500 text-white rounded-tr-none'
+                                : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none'
                                 }`}>
                                 <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                                 <span className={`text-[9px] font-bold uppercase tracking-widest mt-2 block ${msg.sender === 'user' ? 'text-red-100' : 'text-gray-400'}`}>

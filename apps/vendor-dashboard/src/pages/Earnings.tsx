@@ -229,7 +229,10 @@ const Earnings: React.FC = () => {
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map(i => <div key={i} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-bg-surface)] shadow-md" />)}
             </div>
-            <p className="text-[11px] sm:text-[12px] text-[var(--ease2event-text-secondary)] font-bold  tracking-[0.2em] leading-none">Nodes Updated <span className="text-emerald-600">Live Telemetry</span></p>
+            <div className="space-y-1.5">
+              <p className="text-[11px] sm:text-[12px] text-[var(--ease2event-text-secondary)] font-bold tracking-[0.15em] leading-none">Nodes Updated</p>
+              <p className="text-[11px] sm:text-[12px] text-emerald-600 font-semibold tracking-[0.2em] leading-none">Live Telemetry</p>
+            </div>
           </div>
         </motion.div>
 
@@ -346,7 +349,7 @@ const Earnings: React.FC = () => {
         {/* 📋 Sidebar Context */}
         <motion.div variants={itemVariants} className="space-y-10">
           <div className="card-minimal p-10 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.04] to-transparent border-[var(--ease2event-border-base)] shadow-xl relative overflow-hidden group">
-            <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-10 tracking-tight  leading-none">Settlement Status</h3>
+            <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-10 tracking-tight  leading-none">Payment Status</h3>
             <div className="space-y-10 relative z-10">
               {[
                 { label: 'Upcoming Settlement', amount: '₹12,450', date: 'In 2 days', status: 'processing', icon: Clock, color: 'text-indigo-500' },
@@ -380,7 +383,7 @@ const Earnings: React.FC = () => {
               <div className="p-3 sm:p-4 bg-emerald-500/10 text-emerald-600 rounded-2xl border border-emerald-500/10 shadow-sm">
                 <BarChart3 size={24} />
               </div>
-              <h3 className="font-bold text-[var(--ease2event-text-primary)] tracking-tight  text-lg sm:text-xl leading-none">Net Optimization</h3>
+              <h3 className="font-bold text-[var(--ease2event-text-primary)] tracking-tight  text-lg sm:text-xl leading-none">Better Earnings</h3>
             </div>
             <div className="space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0 border-b border-[var(--ease2event-border-subtle)] pb-6 sm:pb-8">
@@ -388,7 +391,7 @@ const Earnings: React.FC = () => {
                   <p className="text-[12px] sm:text-[14px] font-bold text-[var(--ease2event-text-secondary)]   leading-none">Fee deduction (Avg)</p>
                   <p className="font-bold text-4xl sm:text-5xl text-[var(--ease2event-text-primary)] leading-none">3.5%</p>
                 </div>
-                <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-bold  text-[9px] sm:text-[10px] px-4 py-2 rounded-2xl tracking-[0.2em] shadow-sm leading-none shrink-0">GLOBAL_MINIMUM</Badge>
+                <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-bold  text-[9px] sm:text-[10px] px-4 py-2 not-italic rounded-2xl tracking-[0.2em] shadow-sm leading-none shrink-0">GLOBAL_MINIMUM</Badge>
               </div>
               <p className="text-base sm:text-lg text-[var(--ease2event-text-secondary)] leading-relaxed">
                 Platform fee optimized for current volume. Regular settlements processed according to protocol.

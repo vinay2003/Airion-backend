@@ -278,12 +278,12 @@ const Products: React.FC = () => {
                     <div className="space-y-10">
                         {/* Section: Asset Visuals */}
                         <motion.div variants={itemVariants} className="card-minimal !p-8 space-y-8 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.05] to-transparent shadow-xl">
-                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] italic uppercase font-display tracking-tight">Node Visuals</h3>
+                            <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] font-display tracking-tight">Node Visuals</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 {formData.images.map((img, i) => (
                                     <div key={i} className="aspect-square rounded-2xl overflow-hidden relative group border border-[var(--ease2event-border-subtle)]">
                                         <img src={img} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="Node Visual" />
-                                        <button 
+                                        <button
                                             onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
                                             className="absolute top-2 right-2 p-2 bg-rose-500 text-white rounded-xl scale-0 group-hover:scale-100 transition-all shadow-xl"
                                         >
@@ -314,9 +314,8 @@ const Products: React.FC = () => {
                                     <span className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase">Throughput</span>
                                     <span className="text-sm font-bold text-emerald-500">NOMINAL</span>
                                 </div>
-                                <p className="text-[9px] text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-tighter opacity-100 mt-4">
-                                    Synchronizing this node will propagate the registry across the marketplace matrix.
-                                </p>
+                                <p className="text-[12px] text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-tighter opacity-100 mt-4">
+                                    Update this across all platforms.                                </p>
                             </div>
                         </motion.div>
                     </div>
@@ -339,7 +338,7 @@ const Products: React.FC = () => {
                                 <div className="space-y-10 relative z-10">
                                     <div className="flex justify-between items-center">
                                         <span className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">{pkg.name}</span>
-                                        {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full shadow-2xl shadow-[var(--ease2event-brand-primary)]/30">Priority Node</Badge>}
+                                        {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold non-italic px-4 py-1.5 rounded-full shadow-2xl shadow-[var(--ease2event-brand-primary)]/30">Priority Node</Badge>}
                                     </div>
                                     <div className="space-y-3">
                                         <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.3em]">Tier Capture (₹)</label>
@@ -503,8 +502,8 @@ const Products: React.FC = () => {
                                 <Plus size={32} />
                             </div>
                             <div className="text-center space-y-3">
-                                <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] uppercase tracking-widest font-display">Sync New Node</h3>
-                                <p className="text-sm text-[var(--ease2event-text-secondary)] font-black uppercase tracking-[0.4em] opacity-100">Expand Operational Reach</p>
+                                <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] tracking-widest font-display">Add New Product</h3>
+                                <p className="text-sm text-[var(--ease2event-text-secondary)] font-black -[0.25em] opacity-100">Showcase to the World</p>
                             </div>
                         </motion.div>
                     </>

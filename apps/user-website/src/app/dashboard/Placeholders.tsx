@@ -96,7 +96,7 @@ export const GuestList: React.FC = () => {
                         <tr className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-700">
                             <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Name</th>
                             <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Category</th>
-                            <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">RSVP Status</th>
+                            <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Status</th>
                             <th className="p-4 text-right font-semibold text-gray-600 dark:text-gray-300">Action</th>
                         </tr>
                     </thead>

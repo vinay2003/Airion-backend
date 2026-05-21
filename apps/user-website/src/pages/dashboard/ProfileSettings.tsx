@@ -217,7 +217,7 @@ const ProfileSettings: React.FC = () => {
                                 <div className="space-y-1">
                                     <h3 className="font-black text-xl text-neutral-900 dark:text-white tracking-tight">Profile Photo</h3>
                                     <p className="text-sm font-medium text-neutral-500 dark:text-slate-400">Personalize your identity across the platform.</p>
-                                    <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded inline-block">Recommended: 300x300px</p>
+                                    <p className="text-[10px] font-bold text-red-500 tracking-widest bg-red-50 dark:bg-red-500/10 px-2 py-1 rounded inline-block">Recommended: 300x300px</p>
                                 </div>
                             </div>
 

@@ -250,7 +250,7 @@ const GuestList: React.FC = () => {
 
                     <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-3xl p-6">
                         <h4 className="font-bold text-amber-900 dark:text-amber-400 mb-2">Need Help?</h4>
-                        <p className="text-sm text-amber-800/70 dark:text-amber-400/70">Send digital invites to your guests to track RSVPs automatically.</p>
+                        <p className="text-sm text-amber-800/70 dark:text-amber-400/70">Send digital invites to your guests to track easely.</p>
                         <Button className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold">
                             Send Digital Invites
                         </Button>

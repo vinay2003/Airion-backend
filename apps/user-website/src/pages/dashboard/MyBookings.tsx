@@ -132,7 +132,7 @@ const MyBookings: React.FC = () => {
                             >
                                 <div className="sm:w-48 h-40 sm:h-full rounded-2xl overflow-hidden shrink-0 relative">
                                     <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
-                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider backdrop-blur-md border border-white/20 ${style.bg.replace('bg-', 'bg-').split(' ')[0]} ${style.text.split(' ')[0]} bg-opacity-90`}>
+                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black tracking-wider backdrop-blur-md border border-white/20 ${style.bg.replace('bg-', 'bg-').split(' ')[0]} ${style.text.split(' ')[0]} bg-opacity-90`}>
                                         {style.label}
                                     </div>
                                 </div>
@@ -161,7 +161,7 @@ const MyBookings: React.FC = () => {
 
                                     <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800/80">
                                         <div>
-                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Total</p>
+                                            <p className="text-[10px] font-bold text-neutral-400 tracking-widest mb-0.5">Total</p>
                                             <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
                                         <div className="flex gap-2">
@@ -236,25 +236,25 @@ const MyBookings: React.FC = () => {
                             <div className="p-8 space-y-8">
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Booking ID</p>
+                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Booking ID</p>
                                         <p className="font-bold text-neutral-900 dark:text-white">#{selectedBooking.bookingCode}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Event Date</p>
+                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Event Date</p>
                                         <p className="font-bold text-neutral-900 dark:text-white">{new Date(selectedBooking.eventDate).toLocaleDateString()}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Status</p>
+                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Status</p>
                                         <p className={`font-bold capitalize ${getStatusStyles(selectedBooking.status).text}`}>{selectedBooking.status}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Total Amount</p>
+                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Total Amount</p>
                                         <p className="font-black text-red-500 text-lg">₹{parseFloat(selectedBooking.totalAmount).toLocaleString()}</p>
                                     </div>
                                 </div>
 
                                 <div className="p-6 bg-neutral-50 dark:bg-slate-800/50 rounded-3xl border border-neutral-100 dark:border-slate-800">
-                                    <h4 className="font-black text-neutral-900 dark:text-white mb-4 uppercase text-xs tracking-widest">Service Overview</h4>
+                                    <h4 className="font-black text-neutral-900 dark:text-white mb-4 text-xs tracking-widest">Service Overview</h4>
                                     <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">
                                         You have a confirmed reservation with {selectedBooking.vendor?.businessName}.
                                         Our synchronized protocol ensures all logistics are aligned for your event on {new Date(selectedBooking.eventDate).toLocaleDateString()}.
@@ -264,7 +264,7 @@ const MyBookings: React.FC = () => {
                                 <div className="flex gap-4">
                                     <button
                                         onClick={() => window.open(`${import.meta.env.VITE_API_URL}/bookings/${selectedBooking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank')}
-                                        className="flex-1 py-4 bg-neutral-100 dark:bg-slate-800 text-neutral-900 dark:text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neutral-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
+                                        className="flex-1 py-4 bg-neutral-100 dark:bg-slate-800 text-neutral-900 dark:text-white rounded-2xl font-black text-xs tracking-widest hover:bg-neutral-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
                                     >
                                         <FileText size={18} /> Download Invoice
                                     </button>
@@ -273,7 +273,7 @@ const MyBookings: React.FC = () => {
                                             setSelectedBooking(null);
                                             navigate('/dashboard/inbox');
                                         }}
-                                        className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-red-500/20">
+                                        className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-xl shadow-red-500/20">
                                         Contact Vendor
                                     </button>
                                 </div>

@@ -146,7 +146,7 @@ const Hero: React.FC = () => {
                                     </h1>
 
                                     {/* Subtitle */}
-                                    <p className="text-base md:text-xl text-white/95 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed pb-4">
+                                    <p className="text-base md:text-xl text-neutral-100 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed pb-4">
                                         {dynamicContent.description}
                                     </p>
 
@@ -170,17 +170,17 @@ const Hero: React.FC = () => {
                                 <>
                                     {/* ✅ Welcome badge for Slide 0 */}
                                     {isAuthenticated && (
-                                        <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl mb-6">
+                                        <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-neutral-100 text-lg font-normal shadow-2xl mb-6">
                                             <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]"></div>
                                             Welcome back,
-                                            <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                                            <span className="text-xl md:text-2xl text-neutral-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
                                                 {user?.name.split(' ')[0]}
                                             </span>
                                             !
                                         </div>
                                     )}
 
-                                    <div className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
+                                    <div className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-neutral-100 leading-[1.1] drop-shadow-[0_10px_50px_rgba(0,0,0,1)] tracking-tighter">
                                         {isAuthenticated ? (
                                             <h1 className="text-3xl md:text-5xl font-semibold text-neutral-100 tracking-wide leading-tight font-serif">
                                                 Your Event Dashboard <br className="hidden md:block" />
@@ -198,7 +198,7 @@ const Hero: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <p className="text-base md:text-lg text-white/95 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
+                                    <p className="text-base md:text-lg text-neutral-100 max-w-2xl mx-auto font-semibold drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                                         {isAuthenticated
                                             ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
                                             : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events"

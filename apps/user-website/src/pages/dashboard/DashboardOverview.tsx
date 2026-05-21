@@ -73,7 +73,7 @@ const DashboardOverview: React.FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                 >
                     <div className="flex items-center gap-3 mb-4">
-                        <div><span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span> </div>
+                        <div><span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black tracking-widest rounded-full border border-red-500/20">Dashboard v2.0</span> </div>
                     </div>
                     <div className="space-y-1">
                         <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -91,7 +91,7 @@ const DashboardOverview: React.FC = () => {
                         className="inline-flex items-center gap-3 px-6 py-4 bg-red-500 text-white rounded-2xl shadow-2xl shadow-red-500/40 font-black text-sm hover:bg-black transition-all group"
                     >
                         <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-                        INITIATE DISCOVERY
+                        Initiate Discovery
                     </Link>
                 </motion.div>
             </header>
@@ -114,7 +114,7 @@ const DashboardOverview: React.FC = () => {
                             className="p-8 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.title}</p>
+                                <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 tracking-[0.3em] mb-2">{stat.title}</p>
                                 <h3 className="text-4xl font-black text-neutral-900 dark:text-white">{stat.value}</h3>
                             </div>
                             <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all group-hover:rotate-12 ${stat.bg} ${stat.text}`}>
@@ -141,7 +141,7 @@ const DashboardOverview: React.FC = () => {
                             <img src={deals[currentBanner].image} alt={deals[currentBanner].title} className="w-full h-full object-cover grayscale-[0.2] dark:grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/20 to-transparent dark:from-neutral-950 dark:via-neutral-950/40 dark:to-transparent" />
                             <div className="absolute inset-0 p-10 flex flex-col justify-center">
-                                <div className="flex items-center gap-2 text-red-400 text-[10px] font-black uppercase tracking-widest mb-2">
+                                <div className="flex items-center gap-2 text-red-400 text-[10px] font-black tracking-widest mb-2">
                                     <Zap size={14} fill="currentColor" />
                                     {deals[currentBanner].subtitle}
                                 </div>
@@ -166,7 +166,7 @@ const DashboardOverview: React.FC = () => {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Active Registries</h2>
-                        <Link to="/dashboard/bookings" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2 uppercase">
+                        <Link to="/dashboard/bookings" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2">
                             Full Registry <ArrowRight size={16} />
                         </Link>
                     </div>
@@ -184,20 +184,20 @@ const DashboardOverview: React.FC = () => {
                                 <div className="flex-1 flex flex-col justify-between py-2">
                                     <div className="space-y-3">
                                         <div className="flex flex-wrap items-center justify-between gap-4">
-                                            <span className="text-[10px] font-black text-red-500 tracking-[0.2em] uppercase bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/20">{booking.category}</span>
-                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-neutral-100 dark:bg-white/10 text-neutral-900 dark:text-white rounded-full font-black text-[9px] uppercase tracking-widest border border-neutral-200 dark:border-white/10 shadow-sm">
+                                            <span className="text-[10px] font-black text-red-500 tracking-[0.2em] bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/20">{booking.category}</span>
+                                            <div className="flex items-center gap-2 px-4 py-1.5 bg-neutral-100 dark:bg-white/10 text-neutral-900 dark:text-white rounded-full font-black text-[9px] tracking-widest border border-neutral-200 dark:border-white/10 shadow-sm">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 {booking.status}
                                             </div>
                                         </div>
                                         <h3 className="text-3xl font-black text-neutral-900 dark:text-white truncate tracking-tighter">{booking.vendorName}</h3>
-                                        <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 dark:text-slate-500 uppercase">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 dark:text-slate-500">
                                             <MapPin size={16} className="text-red-500" />
                                             <span>{booking.location}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between border-t border-dashed border-neutral-200 dark:border-slate-800 pt-6 mt-6">
-                                        <div className="flex items-center gap-4 text-xs font-black text-neutral-600 dark:text-slate-400 uppercase tracking-tight">
+                                        <div className="flex items-center gap-4 text-xs font-black text-neutral-600 dark:text-slate-400 tracking-tight">
                                             <div className="flex items-center gap-2"><Calendar size={16} className="text-red-500" /> {booking.date}</div>
                                             <div className="w-1 h-1 bg-neutral-300 rounded-full" />
                                             <div className="flex items-center gap-2"><Clock size={16} className="text-red-500" /> {booking.time}</div>
@@ -241,16 +241,16 @@ const DashboardOverview: React.FC = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Utilized</span>
+                                <span className="text-[10px] font-black text-neutral-400 tracking-widest">Utilized</span>
                                 <span className="text-3xl font-black text-neutral-900 dark:text-white">{Math.round((stats.budgetSpent / 500000) * 100)}%</span>
                             </div>
                         </div>
                         <div className="text-center mt-6 space-y-1 z-10">
-                            <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 uppercase tracking-widest">Capital Reserved</p>
+                            <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 tracking-widest">Capital Reserved</p>
                             <h3 className="text-3xl font-black text-neutral-900 dark:text-white">₹{(500000 - stats.budgetSpent).toLocaleString()}</h3>
-                            <p className="text-xs text-neutral-500 font-bold uppercase tracking-tighter">of ₹5,00,000 threshold</p>
+                            <p className="text-xs text-neutral-500 font-bold tracking-tighter">of ₹5,00,000 threshold</p>
                         </div>
-                        <Link to="/dashboard/budget" className="w-full text-center text-xs font-black text-red-500 hover:tracking-[0.2em] transition-all mt-8 pt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 uppercase z-10">
+                        <Link to="/dashboard/budget" className="w-full text-center text-xs font-black text-red-500 hover:tracking-[0.2em] transition-all mt-8 pt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 z-10">
                             Fiscal Analytics <ArrowRight size={16} />
                         </Link>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 -mr-16 -mt-16 rounded-full blur-3xl" />
@@ -262,7 +262,7 @@ const DashboardOverview: React.FC = () => {
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Custom Options 🔥</h2>
-                    <Link to="/marketplace" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2 uppercase">
+                    <Link to="/marketplace" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2">
                         Expand Results <ArrowRight size={16} />
                     </Link>
                 </div>
@@ -276,7 +276,7 @@ const DashboardOverview: React.FC = () => {
                             <div className="relative h-48 overflow-hidden">
                                 <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 blur-[0.5px] group-hover:blur-0" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
-                                <div className="absolute top-5 left-5 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl px-4 py-1.5 rounded-full text-[9px] font-black text-neutral-900 dark:text-white uppercase tracking-widest shadow-xl border border-white/20">
+                                <div className="absolute top-5 left-5 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl px-4 py-1.5 rounded-full text-[9px] font-black text-neutral-900 dark:text-white tracking-widest shadow-xl border border-white/20">
                                     {vendor.category}
                                 </div>
                                 <button
@@ -295,16 +295,16 @@ const DashboardOverview: React.FC = () => {
                                             <span className="text-[10px] font-black">{vendor.rating}</span>
                                         </div>
                                     </div>
-                                    <p className="text-xs font-bold text-neutral-400 dark:text-slate-500 flex items-center gap-2 uppercase">
+                                    <p className="text-xs font-bold text-neutral-400 dark:text-slate-500 flex items-center gap-2">
                                         <MapPin size={14} className="text-red-500" />{vendor.location}
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-between pt-4 border-t border-neutral-200 dark:border-slate-800">
                                     <div className="space-y-0.5">
-                                        <span className="block text-[9px] font-black text-neutral-600 uppercase tracking-widest">Base Rate</span>
+                                        <span className="block text-[9px] font-black text-neutral-600 tracking-widest">Base Rate</span>
                                         <span className="text-xl font-black text-neutral-900 dark:text-white">{vendor.price}</span>
                                     </div>
-                                    <Link to={`/event/${vendor.id}`} className="bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-red-500 hover:text-white text-[10px] font-black px-6 py-3 rounded-xl transition-all shadow-xl uppercase tracking-widest">
+                                    <Link to={`/event/${vendor.id}`} className="bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-red-500 hover:text-white text-[10px] font-black px-6 py-3 rounded-xl transition-all shadow-xl tracking-widest">
                                         Lock Node
                                     </Link>
                                 </div>

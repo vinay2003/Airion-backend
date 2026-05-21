@@ -283,17 +283,23 @@ const UnifiedAuth: React.FC = () => {
                         </span>
                     </motion.div>
 
-                    <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest"
-                    >
-                        {mode === 'login' ? 'Smart login system' : 'Nexus genesis protocol.'}
-                    </motion.h1>
-
-                    <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-sm text-neutral-400 font-medium leading-relaxed"
-                    >
-                        {mode === 'login' ? 'Use your account from anywhere, anytime.' : 'Register and start booking amazing events.'}
-                    </motion.p>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={mode}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-6"
+                        >
+                            <h1 className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest">
+                                {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
+                            </h1>
+                            <p className="text-sm text-neutral-400 font-medium leading-relaxed">
+                                {mode === 'login' ? 'Use your account from anywhere, anytime.' : 'Register and start booking amazing events.'}
+                            </p>
+                        </motion.div>
+                    </AnimatePresence>
                     <div className="flex items-center gap-6 pt-6 border-t border-white/5">
                         <div className="flex -space-x-4">
                             {[1, 2, 3, 4].map(i => (
@@ -345,15 +351,26 @@ const UnifiedAuth: React.FC = () => {
                     </div>
 
                     {/* 🖋️ Header Section */}
-                    <div className="space-y-4 mb-10 text-center sm:text-left">
-                        <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight text-center">
-                            {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Login to continue' : 'Create Your Account')}
-                        </h2>
-                        <p className="text-base md:text-xl text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
-                            {step === 'phone'
-                                ? 'Verify your identity to manage your event ecosystem.'
-                                : `Verification code dispatched via secure line to: ${phone}`}
-                        </p>
+                    <div className="mb-10 min-h-[100px]">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={`${mode}-${step}`}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                transition={{ duration: 0.3 }}
+                                className="space-y-4 text-center sm:text-left"
+                            >
+                                <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-tight">
+                                    {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Login to continue' : 'Create Your Account')}
+                                </h2>
+                                <p className="text-base md:text-xl text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
+                                    {step === 'phone'
+                                        ? 'Verify your identity to manage your event ecosystem.'
+                                        : `Verification code dispatched via secure line to: ${phone}`}
+                                </p>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
                     {/* 👤 Role Selector */}
@@ -420,7 +437,7 @@ const UnifiedAuth: React.FC = () => {
                                         {loading ? (
                                             <Loader className="animate-spin" size={24} />
                                         ) : (
-                                            <>Verify presence <ArrowRight size={22} /></>
+                                            <>Continue <ArrowRight size={22} /></>
                                         )}
                                     </button>
 
@@ -459,7 +476,7 @@ const UnifiedAuth: React.FC = () => {
                                 className="w-full space-y-12 text-center"
                             >
                                 <div className="space-y-8">
-                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Verification cipher</label>
+                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Enter verification code</label>
                                     <div className="flex justify-center scale-110">
                                         <OTPInput length={6} onComplete={handleVerifyOTP} disabled={loading} />
                                     </div>
@@ -487,7 +504,7 @@ const UnifiedAuth: React.FC = () => {
                                             onClick={() => setStep('phone')}
                                             className="text-base font-bold text-neutral-400 hover:text-red-600 transition-colors"
                                         >
-                                            Modify phone link
+                                            Change phone number
                                         </button>
                                     </div>
                                 </div>

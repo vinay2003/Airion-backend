@@ -99,7 +99,7 @@ const Vendors: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Vendors</h1>
-                    <p className="text-sm font-medium text-gray-400 dark:text-slate-500 mt-1">{vendors.length} vendors registered</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">{vendors.length} vendors registered</p>
                 </div>
                 <div className="flex flex-wrap gap-4 w-full md:w-auto">
                     <div className="relative group flex-1 md:flex-none">
@@ -109,7 +109,7 @@ const Vendors: React.FC = () => {
                             placeholder="Search vendors..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium text-sm dark:text-white"
+                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                         />
                     </div>
                 </div>
@@ -151,7 +151,7 @@ const Vendors: React.FC = () => {
                                             </div>
                                             <div className="space-y-1">
                                                 <div className="font-bold text-gray-900 dark:text-white tracking-tight">{vendor.businessName}</div>
-                                                <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
+                                                <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-slate-400">
                                                     <Building2 size={12} />
                                                     {vendor.businessType}
                                                 </div>
@@ -160,11 +160,11 @@ const Vendors: React.FC = () => {
                                     </td>
                                     <td className="px-10 py-8 whitespace-nowrap">
                                         <div className="space-y-3">
-                                            <div className="flex items-center gap-2 text-[11px] font-bold text-gray-600 dark:text-slate-400">
-                                                <MapPin size={14} className="text-gray-400" />
+                                            <div className="flex items-center gap-2 text-[11px] font-bold text-gray-600 dark:text-slate-300">
+                                                <MapPin size={14} className="text-gray-400 dark:text-slate-500" />
                                                 {vendor.city || 'Unknown'}
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
+                                            <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-slate-400">
                                                 <Calendar size={12} />
                                                 {vendor.yearsInBusiness || 0} yrs experience
                                             </div>
@@ -199,11 +199,11 @@ const Vendors: React.FC = () => {
                     {filteredVendors.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
                             <div className="p-10 bg-neutral-50 dark:bg-slate-900 rounded-[50px] border border-neutral-100 dark:border-slate-800">
-                                <Zap size={64} className="text-gray-200 dark:text-slate-800" />
+                                <Zap size={64} className="text-gray-300 dark:text-slate-600" />
                             </div>
                             <div className="space-y-2">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">No vendors found</h3>
-                                <p className="text-sm font-medium text-gray-400 dark:text-slate-500">Try adjusting your search or filters</p>
+                                <p className="text-sm font-medium text-gray-500 dark:text-slate-400">Try adjusting your search or filters</p>
                             </div>
                         </div>
                     )}

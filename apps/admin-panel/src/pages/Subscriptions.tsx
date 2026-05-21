@@ -55,7 +55,7 @@ export default function Subscriptions() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)]">{plan.name}</h3>
-                                <div className="text-2xl font-black mt-1">
+                                <div className="text-2xl font-black mt-1 text-[var(--ease2event-text-primary)]">
                                     ₹{plan.price} <span className="text-sm font-medium text-[var(--ease2event-text-secondary)]">/{plan.billingCycle}</span>
                                 </div>
                             </div>

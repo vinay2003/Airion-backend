@@ -55,18 +55,27 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
                 return {
                     type: 'postgres',
                     url,
-                    ssl: { 
+                    ssl: {
                         rejectUnauthorized: false,
                     },
                     extra: {
+                        // Force IPv4 — NeonDB pooler does not support IPv6
                         family: 4,
+                        // Keep connections alive to prevent ECONNRESET from idle timeout
+                        keepAlive: true,
+                        keepAliveInitialDelayMillis: 10000,
+                        // Pool limits tuned for NeonDB serverless pooler
+                        max: 5,
+                        idleTimeoutMillis: 10000,
+                        connectionTimeoutMillis: 10000,
                     },
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     autoLoadEntities: true,
                     synchronize: !isProd,
                     logging: !isProd ? ['error', 'warn'] : false,
-                    retryAttempts: 10,
+                    retryAttempts: 15,
                     retryDelay: 3000,
+                    connectTimeoutMS: 10000,
                 };
             },
         }),

@@ -377,7 +377,7 @@ const Inbox: React.FC = () => {
                             <Send size={40} className="text-blue-500" />
                         </div>
                         <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
-                        <p className="text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
+                        <p className="text-sm font-bold tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
                     </div>
                 )}
             </div>

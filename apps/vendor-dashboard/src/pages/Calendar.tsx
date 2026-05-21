@@ -163,14 +163,14 @@ const CalendarPage: React.FC = () => {
                 <div className="flex items-center gap-5">
                     <Button
                         variant="secondary"
-                        className="h-14 px-8 rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+                        className="h-14 px-8 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
                         leftIcon={<Filter size={20} />}
                         onClick={() => alert('Filter system coming soon! You will be able to filter by event type, status, and client.')}
                     >
                         Filter Events
                     </Button>
                     <Button
-                        className="h-14 px-10 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all"
+                        className="h-14 px-10 rounded-2xl font-bold text-xs tracking-widest shadow-xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all"
                         leftIcon={<PlusCircle size={20} />}
                         onClick={() => {
                             if (selectedDate) {
@@ -203,7 +203,7 @@ const CalendarPage: React.FC = () => {
                                         <ChevronRight size={18} />
                                     </button>
                                 </div>
-                                <h2 className="text-xl md:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter uppercase truncate min-w-0">
+                                <h2 className="text-xl md:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter truncate min-w-0">
                                     {monthNames[currentDate.getMonth()]}
                                     <span className="text-[var(--ease2event-brand-primary)] font-bold ml-2 md:ml-4 tracking-wide text-lg md:text-2xl">
                                         {currentDate.getFullYear()}
@@ -217,7 +217,7 @@ const CalendarPage: React.FC = () => {
                         <div className="min-w-[800px] flex flex-col">
                             <div className="grid grid-cols-7 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
                                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                                    <div key={day} className="py-4 text-center text-sm font-bold uppercase tracking-widest text-[var(--ease2event-text-secondary)]">{day}</div>
+                                    <div key={day} className="py-4 text-center text-sm font-bold tracking-widest text-[var(--ease2event-text-secondary)]">{day}</div>
                                 ))}
                             </div>
                             <div className="grid grid-cols-7 flex-1">
@@ -236,8 +236,8 @@ const CalendarPage: React.FC = () => {
                     <div className="card-minimal !p-8 rounded-[2.5rem] border-[var(--ease2event-border-base)] shadow-2xl space-y-8 h-fit bg-[var(--ease2event-bg-surface)]">
                         <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-5 rounded-[2rem] border border-[var(--ease2event-border-subtle)] shadow-inner">
                             <div className="space-y-1">
-                                <h3 className="font-bold text-xl text-[var(--ease2event-text-primary)] uppercase tracking-tight">Schedule</h3>
-                                <p className="text-[15px] text-[var(--ease2event-brand-primary)] font-bold uppercase tracking-widest">{selectedDate} {monthNames[currentDate.getMonth()]}</p>
+                                <h2 className="font-bold text-lg text-[var(--ease2event-text-primary)]  tracking-tight">Schedule</h2>
+                                <p className="text-[15px] text-[var(--ease2event-brand-primary)] font-bold  tracking-widest">{selectedDate} {monthNames[currentDate.getMonth()]}</p>
                             </div>
                             <div className="w-12 h-12 bg-[var(--ease2event-brand-primary)]/10 rounded-[1.25rem] flex items-center justify-center border border-[var(--ease2event-brand-primary)]/20 shadow-lg text-[var(--ease2event-brand-primary)]">
                                 <CalendarIcon size={24} />
@@ -249,19 +249,19 @@ const CalendarPage: React.FC = () => {
                                 {selectedEvents.map((ev: any, i: number) => (
                                     <div key={ev.id || i} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-[1.5rem] transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] shadow-sm hover:shadow-xl hover:scale-[1.02]">
                                         <div className="flex justify-between items-start mb-3">
-                                            <h4 className="font-bold text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors uppercase leading-tight">{ev.title}</h4>
+                                            <h4 className="font-bold text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors leading-tight">{ev.title}</h4>
                                             <button className="text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-widest">
+                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-secondary)] font-bold tracking-widest">
                                                 <Clock size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {ev.time}
                                             </div>
-                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-widest">
+                                            <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-secondary)] font-bold tracking-widest">
                                                 <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {ev.client}
                                             </div>
-                                            <Badge className={`px-3 h-7 rounded-lg font-bold text-[8px] uppercase tracking-widest border ${ev.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'}`}>
+                                            <Badge className={`px-3 h-7 rounded-lg font-bold text-[8px] tracking-widest border ${ev.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'}`}>
                                                 {ev.status}
                                             </Badge>
                                         </div>
@@ -275,7 +275,7 @@ const CalendarPage: React.FC = () => {
                                     <Target size={32} className="text-[var(--ease2event-text-muted)] relative z-10 opacity-40" />
                                 </div>
                                 <div className="px-6 space-y-2">
-                                    <p className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">No Events Found</p>
+                                    <p className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest">No Events Found</p>
                                     <button
                                         onClick={() => {
                                             if (selectedDate) {
@@ -283,7 +283,7 @@ const CalendarPage: React.FC = () => {
                                                 blockMutation.mutate(dateStr);
                                             }
                                         }}
-                                        className="text-sm font-bold text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] uppercase tracking-widest transition-all underline decoration-2 underline-offset-8"
+                                        className="text-sm font-bold text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)]  tracking-widest transition-all underline decoration-2 underline-offset-8"
                                     >
                                         BLOCK DATE
                                     </button>
@@ -292,7 +292,7 @@ const CalendarPage: React.FC = () => {
                         )}
 
                         <Button
-                            className="w-full !h-16 text-xs font-bold uppercase tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all"
+                            className="w-full !h-16 text-xs font-bold tracking-widest rounded-[1.5rem] shadow-2xl bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all"
                             onClick={() => {
                                 if (!vendorId) {
                                     alert('Vendor profile not found. Please complete onboarding.');

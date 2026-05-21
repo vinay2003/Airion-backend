@@ -137,7 +137,7 @@ const Analytics: React.FC = () => {
                         <button
                             key={p}
                             onClick={() => setPeriod(p)}
-                            className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-[1.2rem] transition-all ${period === p ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-secondary)] hover:text-indigo-500'}`}
+                            className={`px-5 py-2.5 text-[10px] font-bold tracking-widest rounded-[1.2rem] transition-all ${period === p ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/30' : 'text-[var(--ease2event-text-secondary)] hover:text-indigo-500'}`}
                         >
                             {p}
                         </button>
@@ -160,11 +160,11 @@ const Analytics: React.FC = () => {
                             </div>
                         </div>
                         <div className="relative z-10">
-                            <h3 className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest pl-1">{stat.label}</h3>
+                            <h3 className="text-xs font-bold text-[var(--ease2event-text-secondary)] tracking-widest pl-1">{stat.label}</h3>
                             <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] mt-3 leading-none">{stat.value}</p>
                             <div className="flex items-center gap-3 mt-4">
                                 <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">{stat.change}</span>
-                                <span className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Growth</span>
+                                <span className="text-[10px] font-bold text-[var(--ease2event-text-secondary)] tracking-widest">Growth</span>
                             </div>
                         </div>
                         <stat.icon size={120} className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700" />
@@ -275,7 +275,7 @@ const Analytics: React.FC = () => {
                                 <h3 className="text-lg sm:text-xl font-semibold text-[var(--ease2event-text-primary)] leading-tight">{node.name}</h3>
                                 <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
                                     <div className="flex justify-between items-end">
-                                        <p className="text-[8px] sm:text-[9px] font-semibold text-[var(--ease2event-text-secondary)] leading-none">Usage Intensity</p>
+                                        <p className="text-[12px] sm:text-[12px] font-semibold text-[var(--ease2event-text-secondary)] leading-none">Usage Intensity</p>
                                         <p className="text-base sm:text-lg font-bold text-[var(--ease2event-text-primary)] leading-none">{node.occupancy}%</p>
                                     </div>
                                     <div className="h-1.5 sm:h-2 w-full bg-[var(--ease2event-bg-elevated)] rounded-full overflow-hidden p-0.5">

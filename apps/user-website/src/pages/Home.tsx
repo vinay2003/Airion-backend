@@ -207,7 +207,7 @@ const Home: React.FC = () => {
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                             <div className="space-y-1">
                                 <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Top Booked Venues This Season</h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
                                     Real-time availability — book before someone else does.</p>
                             </div>
                             <Link to="/marketplace" className="text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-400 font-black flex items-center gap-2 group text-md tracking-widest bg-red-50 dark:bg-red-500/5 px-5 py-2.5 rounded-full border border-red-500/10 transition-all">
@@ -238,7 +238,7 @@ const Home: React.FC = () => {
                                         Plan Your Event Without Stress
                                     </h2>
 
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide opacity-80">
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
                                         Real-time status tracking
                                     </p>
                                 </div>
@@ -319,7 +319,7 @@ const Home: React.FC = () => {
                             <div className="text-center mb-20 relative">
                                 {/* Decorative elements matching the image */}
 
-                                <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">The Process</p>
+                                <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">The Process</p>
                                 <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
                                     From Idea to Celebration in 4 Simple Steps
                                 </h2>
@@ -381,7 +381,7 @@ const Home: React.FC = () => {
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-slate-700 to-transparent my-2 opacity-50"></div>
                     <section className="bg-white dark:bg-slate-950 py-24 relative z-10">
                         <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
-                            <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Why Ease2event Wins</p>
+                            <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Why Ease2event Wins</p>
                             <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
                                 How We Stack Up Against Planning on Your Own
                             </h2>
@@ -483,7 +483,7 @@ const Home: React.FC = () => {
 
                         {/* Right Side: Content */}
                         <div>
-                            <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Our Promise To You</p>
+                            <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Our Promise To You</p>
                             <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
                                 5 Reasons 10,000+ Hosts Choose Ease2event
                             </h2>
@@ -550,7 +550,7 @@ const Home: React.FC = () => {
             {/* FAQ Section */}
             <section className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 border-t border-gray-200 dark:border-slate-800">
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
-                    <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Got Questions?</p>
+                    <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Got Questions?</p>
                     <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
                         Everything You Need to Know Before Booking
                     </h2>
@@ -583,7 +583,7 @@ const Home: React.FC = () => {
 
                 <div className="max-w-[1536px] mx-auto text-center relative z-10">
                     <div className="max-w-4xl mx-auto">
-                        <p className="text-xs font-bold text-[#C25844] uppercase tracking-[0.25em] mb-4">Stay in the loop</p>
+                        <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Stay in the loop</p>
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 font-serif tracking-tight">Exclusive Venues.</h2>
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif tracking-tight">Early Access. Every Week.</h2>
                         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12 mt-4">

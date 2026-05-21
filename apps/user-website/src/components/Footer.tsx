@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
 
                     {/* Contact */}
                     <div className="space-y-4">
-                        <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] mb-4">Contact</h4>
+                        <h4 className="text-sm font-black text-gray-700 dark:text-white mb-4">Contact</h4>
                         <ul className="space-y-3 text-[15px] font-bold text-gray-500 dark:text-slate-400">
                             <li className="flex items-center gap-3 hover:text-red-500 transition-colors cursor-pointer">
                                 <Mail size={18} className="text-red-500" />

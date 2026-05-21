@@ -179,24 +179,24 @@ const Products: React.FC = () => {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 py-10 border-b border-[var(--ease2event-border-subtle)]">
                     <motion.div variants={itemVariants}>
-                        <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none uppercase">Inventory Configuration</h1>
+                        <h1 className="text-4xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">Inventory Configuration</h1>
                         <div className="flex items-center gap-3 mt-4">
-                            <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase rounded-full border border-blue-500/20">
+                            <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded-full border border-blue-500/20">
                                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
                                 Product Sync Active
                             </span>
-                            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] uppercase tracking-widest leading-none">Asset Definition • Pricing Matrix</p>
+                            <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] tracking-widest leading-none">Asset Definition • Pricing Matrix</p>
                         </div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="flex items-center gap-4">
-                        <Button onClick={() => { resetForm(); setIsAdding(false); }} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-bold text-xs uppercase tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">
+                        <Button onClick={() => { resetForm(); setIsAdding(false); }} className="px-8 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-bold text-xs tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">
                             Discard
                         </Button>
                         <Button
                             onClick={handleCreateService}
                             disabled={submitting}
-                            className="px-10 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
+                            className="px-10 h-12 bg-[var(--ease2event-brand-primary)] text-white shadow-xl shadow-[var(--ease2event-brand-primary)]/20 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 transition-all active:scale-95"
                         >
                             {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Register Product'}
                         </Button>
@@ -211,12 +211,12 @@ const Products: React.FC = () => {
                                 <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
                                     <Box size={24} />
                                 </div>
-                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">Basic Details</h3>
+                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)]">Basic Details</h3>
                             </div>
 
                             <div className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Product Title</label>
+                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Product Title</label>
                                     <input
                                         type="text"
                                         value={formData.title}
@@ -226,7 +226,7 @@ const Products: React.FC = () => {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Detailed Description</label>
+                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Detailed Description</label>
                                     <textarea
                                         rows={6}
                                         value={formData.description}
@@ -244,12 +244,12 @@ const Products: React.FC = () => {
                                 <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
                                     <Layers size={24} />
                                 </div>
-                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">Capacity Details</h3>
+                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)]">Capacity Details</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Base Price (₹)</label>
+                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Base Price (₹)</label>
                                     <div className="relative">
                                         <DollarSign size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-brand-primary)]" />
                                         <input
@@ -262,7 +262,7 @@ const Products: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Max Guest Capacity</label>
+                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Max Guest Capacity</label>
                                     <input
                                         type="number"
                                         placeholder="E.G. 500"
@@ -294,7 +294,7 @@ const Products: React.FC = () => {
                                 <label className="aspect-square rounded-2xl border-2 border-dashed border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-4 group cursor-pointer hover:bg-[var(--ease2event-bg-elevated)] hover:border-[var(--ease2event-brand-primary)]/30 transition-all">
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
                                     <Plus size={20} className="text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-brand-primary)] group-hover:scale-125 transition-all mb-2" />
-                                    <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.1em]">Sync Link</p>
+                                    <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] tracking-[0.1em]">Sync Link</p>
                                 </label>
                             </div>
                         </motion.div>
@@ -304,17 +304,17 @@ const Products: React.FC = () => {
                             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                                 <ShieldCheck size={120} />
                             </div>
-                            <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] uppercase mb-6 tracking-tight relative z-10">Registry Status</h3>
+                            <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6 tracking-tight relative z-10">Registry Status</h3>
                             <div className="space-y-6 relative z-10">
                                 <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
-                                    <span className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase">Sync Level</span>
+                                    <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Sync Level</span>
                                     <span className="text-sm font-bold text-[var(--ease2event-brand-primary)]">ALPHA_CMD_01</span>
                                 </div>
                                 <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
-                                    <span className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase">Throughput</span>
+                                    <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Throughput</span>
                                     <span className="text-sm font-bold text-emerald-500">NOMINAL</span>
                                 </div>
-                                <p className="text-[12px] text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-tighter opacity-100 mt-4">
+                                <p className="text-[12px] text-[var(--ease2event-text-secondary)] font-bold tracking-tighter opacity-100 mt-4">
                                     Update this across all platforms.                                </p>
                             </div>
                         </motion.div>
@@ -324,8 +324,8 @@ const Products: React.FC = () => {
                 {/* Section: Multi-Tier Architecture */}
                 <motion.div variants={itemVariants} className="space-y-8">
                     <div className="flex items-center justify-between px-2">
-                        <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">Tier Architecture</h3>
-                        <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-bold uppercase text-sm tracking-widest shadow-sm">Autonomous Tiering Active</Badge>
+                        <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Tier Architecture</h3>
+                        <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-bold text-sm tracking-widest shadow-sm">Autonomous Tiering Active</Badge>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -337,21 +337,21 @@ const Products: React.FC = () => {
                             >
                                 <div className="space-y-10 relative z-10">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">{pkg.name}</span>
+                                        <span className="text-xl font-bold text-[var(--ease2event-text-primary)]">{pkg.name}</span>
                                         {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold non-italic px-4 py-1.5 rounded-full shadow-2xl shadow-[var(--ease2event-brand-primary)]/30">Priority Node</Badge>}
                                     </div>
                                     <div className="space-y-3">
-                                        <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.3em]">Tier Capture (₹)</label>
+                                        <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Tier Capture (₹)</label>
                                         <input
                                             type="number"
                                             value={pkg.price}
                                             onChange={(e) => updatePackage(i, 'price', e.target.value)}
                                             placeholder="VAL"
-                                            className="w-full h-12 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-sm font-bold outline-none text-[var(--ease2event-text-primary)] uppercase tracking-widest"
+                                            className="w-full h-12 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-sm font-bold outline-none text-[var(--ease2event-text-primary)] tracking-widest"
                                         />
                                     </div>
                                     <div className="space-y-5">
-                                        <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.3em]">Capability Modules</label>
+                                        <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Capability Modules</label>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['Catering', 'Decor', 'Audio', 'Visuals'].map(feat => (
                                                 <button
@@ -361,7 +361,7 @@ const Products: React.FC = () => {
                                                         const next = current.includes(feat) ? current.filter(c => c !== feat) : [...current, feat];
                                                         updatePackage(i, 'features', next);
                                                     }}
-                                                    className={`flex items-center justify-center gap-2 h-10 rounded-xl text-[9px] font-bold uppercase transition-all border ${pkg.features.includes(feat) ? 'bg-blue-500/10 text-blue-500 border-blue-500/30' : 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)] border-[var(--ease2event-border-subtle)]'}`}
+                                                    className={`flex items-center justify-center gap-2 h-10 rounded-xl text-[9px] font-bold transition-all border ${pkg.features.includes(feat) ? 'bg-blue-500/10 text-blue-500 border-blue-500/30' : 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)] border-[var(--ease2event-border-subtle)]'}`}
                                                 >
                                                     {pkg.features.includes(feat) && <CheckCircle2 size={12} />}
                                                     {feat}
@@ -390,7 +390,7 @@ const Products: React.FC = () => {
                 <motion.div variants={itemVariants}>
                     <h1 className="text-3xl font-bold normal-case tracking-normal leading-normal">Inventory Registry</h1>
                     <div className="flex items-center gap-3 mt-4">
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase rounded-full border border-emerald-500/20">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold rounded-full border border-emerald-500/20">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
                             Registry Active
                         </span>
@@ -400,7 +400,7 @@ const Products: React.FC = () => {
                 <motion.div variants={itemVariants}>
                     <Button
                         onClick={() => setIsAdding(true)}
-                        className="h-14 px-10 bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
+                        className="h-14 px-10 bg-[var(--ease2event-brand-primary)] text-white shadow-2xl shadow-[var(--ease2event-brand-primary)]/30 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 transition-all active:scale-95"
                         leftIcon={<Plus size={18} />}
                     >
                         Register New Node
@@ -415,7 +415,7 @@ const Products: React.FC = () => {
                     <input
                         type="text"
                         placeholder="SEARCH_REGISTRY_NODES..."
-                        className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] uppercase tracking-widest transition-all"
+                        className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] tracking-widest transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -425,7 +425,7 @@ const Products: React.FC = () => {
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`py-4 text-sm font-bold uppercase tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
+                            className={`py-4 text-sm font-bold tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
                         >
                             <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-hover:border-red-500'}`}>
                                 {tab.replace('_', ' ')}
@@ -462,7 +462,7 @@ const Products: React.FC = () => {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
                                         <div className="absolute top-6 left-6">
-                                            <Badge className="bg-[var(--ease2event-brand-primary)]/20 backdrop-blur-xl border border-[var(--ease2event-brand-primary)]/30 text-white font-black uppercase text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
+                                            <Badge className="bg-[var(--ease2event-brand-primary)]/20 backdrop-blur-xl border border-[var(--ease2event-brand-primary)]/30 text-white font-black text-[9px] tracking-[0.2em] px-4 py-2 rounded-2xl shadow-2xl">
                                                 {prod.guestCapacity ? 'Operational Venue' : 'Service Unit'}
                                             </Badge>
                                         </div>
@@ -472,14 +472,14 @@ const Products: React.FC = () => {
                                     </div>
                                     <div className="p-8 flex-1 flex flex-col space-y-6">
                                         <div className="space-y-2">
-                                            <p className="text-[10px] font-bold text-[var(--ease2event-brand-primary)] uppercase tracking-widest">{prod.category?.name || 'Service Category'}</p>
-                                            <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] truncate uppercase tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
+                                            <p className="text-[10px] font-bold text-[var(--ease2event-brand-primary)] tracking-widest">{prod.category?.name || 'Service Category'}</p>
+                                            <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] truncate tracking-tight group-hover:text-[var(--ease2event-brand-primary)] transition-colors">{prod.title}</h3>
                                         </div>
                                         <p className="text-xs text-[var(--ease2event-text-secondary)] font-bold line-clamp-3 leading-relaxed opacity-100 group-hover:opacity-100 transition-opacity">{prod.description}</p>
 
                                         <div className="mt-auto pt-8 flex items-center justify-between border-t border-[var(--ease2event-border-subtle)]">
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-widest">Base Rate</span>
+                                                <span className="text-[10px] text-[var(--ease2event-text-secondary)] font-bold tracking-widest">Base Rate</span>
                                                 <span className="text-2xl font-bold text-[var(--ease2event-text-primary)] mt-1 tracking-tighter group-hover:scale-105 transition-transform origin-left">₹{Number(prod.basePrice).toLocaleString()}</span>
                                             </div>
                                             <div className="flex -space-x-3 group-hover:space-x-1 transition-all">

@@ -132,8 +132,8 @@ const Dashboard = () => {
                 <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)]">Earnings tracking over time</p>
               </div>
               <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-xl border border-[var(--ease2event-border-subtle)]">
-                <button className="px-6 py-2.5 rounded-lg text-xs font-bold bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20 uppercase tracking-widest">Live</button>
-                <button className="px-6 py-2.5 text-xs font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all uppercase tracking-widest">History</button>
+                <button className="px-6 py-2.5 rounded-lg text-xs font-bold bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20  tracking-widest">Live</button>
+                <button className="px-6 py-2.5 text-xs font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all  tracking-widest">History</button>
               </div>
             </div>
 
@@ -174,7 +174,7 @@ const Dashboard = () => {
               </div>
               <Button
                 onClick={() => navigate('/ads')}
-                className="btn-primary w-full !h-14 text-sm font-bold uppercase tracking-widest rounded-2xl"
+                className="btn-primary w-full !h-14 text-sm font-bold tracking-widest rounded-2xl"
               >
                 Start Campaign
               </Button>
@@ -195,7 +195,7 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={() => navigate('/bookings')}
-                className="flex items-center justify-between w-full h-14 bg-white/10 hover:bg-white/20 border border-white/10 rounded-[1.25rem] px-8 text-sm font-bold uppercase tracking-widest transition-all backdrop-blur-md z-10"
+                className="flex items-center justify-between w-full h-14 bg-white/10 hover:bg-white/20 border border-white/10 rounded-[1.25rem] px-8 text-sm font-bold  tracking-widest transition-all backdrop-blur-md z-10"
               >
                 View Details <ChevronRight size={20} />
               </button>
@@ -208,7 +208,7 @@ const Dashboard = () => {
           {/* Recent Signals */}
           <div className="card-minimal !p-8 space-y-10">
             <div className="flex justify-between items-center">
-              <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Recent Enquiries</h2>
+              <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest">Recent Enquiries</h2>
               <span className="chip px-6 text-[10px] font-bold rounded-full border border-blue-500/40 shadow-lg shadow-blue-500/10">4 Active</span>
             </div>
 
@@ -231,7 +231,7 @@ const Dashboard = () => {
 
             <Button
               onClick={() => navigate('/enquiries')}
-              variant="ghost" className="w-full h-16 text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-all mt-8 border rounded-[1.5rem]"
+              variant="ghost" className="w-full h-16 text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-all mt-8 border rounded-[1.5rem]"
             >
               View All Enquiries
             </Button>
@@ -262,7 +262,7 @@ const Dashboard = () => {
 
               <div className="flex justify-between items-center bg-[var(--ease2event-bg-elevated)] p-8 rounded-3xl border border-[var(--ease2event-border-subtle)]">
                 <div className="space-y-2">
-                  <p className="text-sm font-black uppercase tracking-widest opacity-80 leading-none">Growth Delta</p>
+                  <p className="text-sm font-black tracking-widest opacity-80 leading-none">Growth Delta</p>
                   <p className="text-3xl font-bold tracking-tight text-[var(--ease2event-text-primary)] leading-none">+24.8%</p>
                 </div>
                 <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/20">
@@ -276,7 +276,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-4">
               <Target size={24} className="text-amber-500" />
-              <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">Pending Tasks</h2>
+              <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest">Pending Tasks</h2>
             </div>
             <div className="bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] p-8 rounded-3xl space-y-6 group hover:border-blue-500/30 transition-all duration-500">
               <div className="flex justify-between items-start">

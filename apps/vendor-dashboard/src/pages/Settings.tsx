@@ -302,7 +302,7 @@ const Settings: React.FC = () => {
                         </div>
                         <div className="flex justify-between items-end relative z-10">
                             <div>
-                                <p className="text-[9px] font-bold uppercase text-[var(--ease2event-text-muted)] tracking-widest mb-1">Profile Strength</p>
+                                <p className="text-[9px] font-bold text-[var(--ease2event-text-muted)] tracking-widest mb-1">Profile Strength</p>
                                 <p className="text-2xl sm:text-3xl font-bold text-[var(--ease2event-brand-primary)]">{calculateStrength()}%</p>
                             </div>
                             <div className="p-2 sm:p-3 border border-[var(--ease2event-brand-primary)]/20 rounded-xl bg-[var(--ease2event-bg-surface)] shadow-sm">
@@ -342,7 +342,7 @@ const Settings: React.FC = () => {
                                         <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-blue-500/10">
                                             <User size={24} />
                                         </div>
-                                        <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] uppercase">Personal Information</h3>
+                                        <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)]">Personal Information</h3>
                                     </div>
 
                                     <div className="flex flex-col md:flex-row items-center gap-8 sm:gap-12 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] shadow-inner relative">
@@ -382,9 +382,9 @@ const Settings: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                    <div className="grid grid-cols-2 gap-12">
                                         <div className="space-y-3">
-                                            <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-[0.2em]">Participant Name</label>
+                                            <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Participant Name</label>
                                             <div className="relative group">
                                                 <User className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" size={20} />
                                                 <input
@@ -395,14 +395,18 @@ const Settings: React.FC = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="space-y-4">
-                                            <div><label className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Phone Number</label></div>
-                                            <input
-                                                value={personalData.phone}
-                                                onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
-                                                className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all"
-                                                placeholder="+91"
-                                            />
+                                        <div className="space-y-3">
+                                            <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Phone Number</label>
+                                            <div className="relative group">
+                                                <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" size={20} />
+                                                <input
+                                                    type="text"
+                                                    value={personalData.phone}
+                                                    onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
+                                                    className="w-full h-14 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl pl-16 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--ease2event-text-primary)]"
+                                                    placeholder="+91"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -434,15 +438,15 @@ const Settings: React.FC = () => {
                                         <div className="space-y-12">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] ml-1">Marketplace Domain</label>
-                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer">
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] tracking-[0.2em] ml-1">Marketplace Domain</label>
+                                                    <select value={businessData.categoryId} onChange={(e: any) => setBusinessData({ ...businessData, categoryId: e.target.value, subcategoryId: '' })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all appearance-none cursor-pointer">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Core Domain...</option>
                                                         {categories.map((c: any, i: number) => <option key={c._id || c.id || i} value={c._id || c.id} className="bg-[var(--ease2event-bg-surface)]">{c.name}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] uppercase tracking-[0.2em] ml-1">Specialized Logic Node</label>
-                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all uppercase appearance-none cursor-pointer disabled:opacity-30">
+                                                    <label className="text-[11px] sm:text-sm font-black text-[var(--ease2event-text-muted)] tracking-[0.2em] ml-1">Specialized Logic Node</label>
+                                                    <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all appearance-none cursor-pointer disabled:opacity-30">
                                                         <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
                                                         {subcategories.map((s: any, i: number) => <option key={s._id || s.id || i} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
                                                     </select>
@@ -454,11 +458,11 @@ const Settings: React.FC = () => {
                                         <div className="space-y-12">
                                             <div className="space-y-6 sm:space-y-12">
                                                 <div className="space-y-4">
-                                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Business Name</label>
+                                                    <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Business Name</label>
                                                     <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-14 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Business Name" />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-6">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Portfolio Highlights</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Portfolio Highlights</label>
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4 sm:gap-6 bg-[var(--ease2event-bg-elevated)]/20 p-4 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[32px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                                         {businessData.portfolioImages.map((img, i) => (
                                                             <motion.div
@@ -493,12 +497,12 @@ const Settings: React.FC = () => {
                                                                 }}
                                                             />
                                                             <Plus className="size-6 sm:size-8 group-hover:rotate-90 transition-transform duration-500" />
-                                                            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest">ADD IMAGE</span>
+                                                            <span className="text-[8px] sm:text-[9px] font-bold tracking-widest">ADD IMAGE</span>
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Business Description</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Business Description</label>
                                                     <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={6} className="w-full h-auto min-h-[160px] sm:min-h-[200px] bg-[var(--ease2event-bg-elevated)] px-6 sm:px-8 py-6 sm:py-8 rounded-2xl sm:rounded-[32px] border border-[var(--ease2event-border-subtle)] font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Describe your services and business philosophy..." />
                                                 </div>
                                             </div>
@@ -508,11 +512,11 @@ const Settings: React.FC = () => {
                                         <div className="space-y-12">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12">
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">City</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">City</label>
                                                     <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="City" />
                                                 </div>
                                                 <div className="space-y-3 sm:space-y-4">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Average Booking Price (₹)</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Average Booking Price (₹)</label>
                                                     <input type="number" value={businessData.avgBookingPrice} onChange={(e: any) => setBusinessData({ ...businessData, avgBookingPrice: e.target.value })} className="w-full h-12 sm:h-14 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="75,000" />
                                                 </div>
                                             </div>
@@ -544,7 +548,7 @@ const Settings: React.FC = () => {
                                         <div className="space-y-10 bg-[var(--ease2event-bg-elevated)]/20 p-6 sm:p-12 rounded-[2rem] sm:rounded-[40px] border border-[var(--ease2event-border-subtle)] shadow-inner">
                                             <div className="space-y-8">
                                                 <div className="space-y-4 sm:space-y-5">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Current Password</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Current Password</label>
                                                     <input
                                                         type="password"
                                                         value={passwords.oldPassword}
@@ -554,7 +558,7 @@ const Settings: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-5">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">New Password</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">New Password</label>
                                                     <input
                                                         type="password"
                                                         value={passwords.newPassword}
@@ -564,7 +568,7 @@ const Settings: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-4 sm:space-y-5">
-                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ml-1">Confirm New Password</label>
+                                                    <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Confirm New Password</label>
                                                     <input
                                                         type="password"
                                                         value={passwords.confirmPassword}
@@ -577,7 +581,7 @@ const Settings: React.FC = () => {
                                             <Button
                                                 onClick={handleUpdatePassword}
                                                 disabled={submitting}
-                                                className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold uppercase tracking-widest hover:scale-105 transition-all"
+                                                className="h-12 sm:h-14 w-full bg-amber-500 text-white shadow-xl shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold tracking-widest hover:scale-105 transition-all"
                                             >
                                                 {submitting ? <Loader2 className="animate-spin mx-auto" /> : 'UPDATE PASSWORD'}
                                             </Button>
@@ -589,15 +593,15 @@ const Settings: React.FC = () => {
                                                     <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/10">
                                                         <ShieldCheck size={24} />
                                                     </div>
-                                                    <h3 className="text-base font-bold text-[var(--ease2event-text-primary)] uppercase tracking-widest">Security Status</h3>
+                                                    <h3 className="text-base font-bold text-[var(--ease2event-text-primary)] tracking-widest">Security Status</h3>
                                                 </div>
-                                                <p className="text-[11px] text-[var(--ease2event-text-secondary)] font-bold uppercase leading-relaxed">
+                                                <p className="text-[11px] text-[var(--ease2event-text-secondary)] font-bold leading-relaxed">
                                                     Your account is secured with industry-standard encryption. We monitor active sessions for suspicious activity.
                                                 </p>
                                             </div>
                                             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest w-full sm:w-auto text-center">SECURED</Badge>
-                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold text-[9px] px-4 py-2 rounded-xl uppercase tracking-widest w-full sm:w-auto text-center">ENCRYPTED</Badge>
+                                                <Badge className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold text-[9px] px-4 py-2 rounded-xl tracking-widest w-full sm:w-auto text-center">SECURED</Badge>
+                                                <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 font-bold text-[9px] px-4 py-2 rounded-xl tracking-widest w-full sm:w-auto text-center">ENCRYPTED</Badge>
                                             </div>
                                         </div>
                                     </div>
@@ -606,10 +610,10 @@ const Settings: React.FC = () => {
                                     <div className="space-y-10">
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between px-2 gap-4 sm:gap-0">
                                             <div>
-                                                <h3 className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight">Recent Login Activity</h3>
-                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-secondary)] font-bold uppercase mt-1 sm:mt-2 tracking-widest">History of account access</p>
+                                                <h3 className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Recent Login Activity</h3>
+                                                <p className="text-[8px] sm:text-[9px] text-[var(--ease2event-text-secondary)] font-bold mt-1 sm:mt-2 tracking-widest">History of account access</p>
                                             </div>
-                                            <button className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-brand-primary)] uppercase tracking-widest hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
+                                            <button className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-brand-primary)] tracking-widest hover:underline flex items-center gap-2 sm:gap-3 group w-fit">
                                                 <Eye size={12} className="sm:size-[14px] group-hover:scale-125 transition-transform" />
                                                 VIEW ALL ACTIVITY
                                             </button>
@@ -619,10 +623,10 @@ const Settings: React.FC = () => {
                                             <table className="w-full text-left min-w-[600px] sm:min-w-0">
                                                 <thead>
                                                     <tr className="bg-[var(--ease2event-bg-elevated)]/40 border-b border-[var(--ease2event-border-subtle)]">
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Device / Terminal</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Auth Method</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest ">Timestamp</th>
-                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest text-center">Status</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ">Device / Terminal</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ">Auth Method</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ">Timestamp</th>
+                                                        <th className="px-6 sm:px-10 py-5 sm:py-6 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest text-center">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--ease2event-border-subtle)]">
@@ -632,12 +636,12 @@ const Settings: React.FC = () => {
                                                         { node: 'UNKNOWN_TERMINAL', type: 'FAILED_SYNC', time: 'OCT 10, 23:58', status: 'REJECTED' },
                                                     ].map((log, i) => (
                                                         <tr key={i} className="hover:bg-[var(--ease2event-brand-primary)]/[0.03] transition-all duration-500 cursor-pointer group">
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-bold text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight uppercase group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{log.type}</td>
-                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{log.time}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 font-bold text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight group-hover:translate-x-2 transition-transform duration-500">{log.node}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest">{log.type}</td>
+                                                            <td className="px-6 sm:px-10 py-5 sm:py-7 text-[10px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest">{log.time}</td>
                                                             <td className="px-6 sm:px-10 py-5 sm:py-7">
                                                                 <div className="flex justify-center">
-                                                                    <Badge className={` font-bold text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl uppercase tracking-widest border transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
+                                                                    <Badge className={` font-bold text-[8px] sm:text-[9px] px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl tracking-widest border transition-all duration-500 ${log.status === 'AUTHORIZED' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'
                                                                         }`}>
                                                                         {log.status}
                                                                     </Badge>
@@ -660,7 +664,7 @@ const Settings: React.FC = () => {
                                             <Activity className="size-6 sm:size-8" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] uppercase tracking-tight leading-none">Appearance Settings</h2>
+                                            <h2 className="text-xl sm:text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none">Appearance Settings</h2>
                                             <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Customize your dashboard look and feel</p>
                                         </div>
                                     </div>
@@ -671,7 +675,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <div className="relative z-10 space-y-8 sm:space-y-10">
                                             <div className="space-y-3">
-                                                <p className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest mb-6 sm:mb-8">Theme Preferences</p>
+                                                <p className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-secondary)] tracking-widest mb-6 sm:mb-8">Theme Preferences</p>
                                                 <button
                                                     onClick={toggleTheme}
                                                     className="w-full flex items-center justify-between p-4 sm:p-8 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[20px] sm:rounded-[28px] hover:border-[var(--ease2event-brand-primary)]/50 transition-all duration-700 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] group/btn"
@@ -681,8 +685,8 @@ const Settings: React.FC = () => {
                                                             {theme === 'light' ? <Moon className="size-6 sm:size-7" /> : <Sun className="size-6 sm:size-7" />}
                                                         </div>
                                                         <div className="text-left">
-                                                            <p className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] uppercase tracking-widest ">{theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}</p>
-                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase mt-1 sm:mt-2 tracking-tighter opacity-70 leading-tight">Adjust the interface for your environment</p>
+                                                            <p className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-widest ">{theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}</p>
+                                                            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-bold mt-1 sm:mt-2 tracking-tighter opacity-70 leading-tight">Adjust the interface for your environment</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight className="size-5 sm:size-6 text-[var(--ease2event-text-muted)] group-hover/btn:translate-x-2 transition-transform duration-500" />
@@ -690,7 +694,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 bg-[var(--ease2event-bg-elevated)]/50 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)]">
                                                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-secondary)] font-bold uppercase tracking-widest opacity-60">
+                                                <p className="text-xs sm:text-sm text-[var(--ease2event-text-secondary)] font-bold tracking-widest opacity-60">
                                                     Environment calibrated for optimal display performance.
                                                 </p>
                                             </div>

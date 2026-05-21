@@ -60,7 +60,7 @@ const UnifiedAuth: React.FC = () => {
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
         const action = searchParams.get('action');
-        
+
         // If we just logged out, don't auto-redirect anywhere
         if (action === 'logout') {
             if (isAuthenticated) {
@@ -282,13 +282,13 @@ const UnifiedAuth: React.FC = () => {
                     </motion.div>
 
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest uppercase"
+                        className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest"
                     >
                         {mode === 'login' ? 'Smart Login System' : 'Nexus Genesis Protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-sm text-neutral-400 font-bold uppercase tracking-[0.2em] leading-relaxed opacity-60"
+                        className="text-sm text-neutral-400 font-bold tracking-[0.2em] leading-relaxed opacity-60"
                     >
                         {mode === 'login' ? 'Use your account from anywhere easily' : 'Deploy your talent to the next-generation elite registry.'}
                     </motion.p>
@@ -298,7 +298,7 @@ const UnifiedAuth: React.FC = () => {
                                 <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-12 h-12 rounded-xl border-2 border-black shadow-xl" />
                             ))}
                         </div>
-                        <div className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                        <div className="text-[10px] font-black text-white  tracking-[0.2em]">
                             <p className="text-red-500">540,128 NODES ACTIVE</p>
                             <p className="opacity-40 mt-1">Global Marketplace Telemetry</p>
                         </div>
@@ -370,7 +370,7 @@ const UnifiedAuth: React.FC = () => {
                                         }`}
                                 >
                                     <role.icon size={26} className={selectedRole === role.id ? 'scale-110' : 'opacity-60'} />
-                                    <span className="text-xs uppercase font-bold tracking-widest">{role.label}</span>
+                                    <span className="text-xs font-bold tracking-widest">{role.label}</span>
                                 </button>
                             ))}
                         </div>

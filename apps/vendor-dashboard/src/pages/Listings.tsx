@@ -88,7 +88,7 @@ const Listings: React.FC = () => {
                 </div>
                 <Button
                     onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
-                    className="h-14 px-10 rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl"
+                    className="h-14 px-10 rounded-2xl font-bold text-xs tracking-widest shadow-xl"
                     leftIcon={<Plus size={20} />}
                 >
                     Create New Listing
@@ -108,7 +108,7 @@ const Listings: React.FC = () => {
                             <stat.icon size={32} />
                         </div>
                         <div className="space-y-2">
-                            <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">{stat.label}</p>
+                            <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] tracking-widest leading-none">{stat.label}</p>
                             <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{stat.value}</p>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ const Listings: React.FC = () => {
                     />
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
-                    <Button variant="secondary" className="h-16 px-10 rounded-[1.5rem] border-[var(--ease2event-border-subtle)] font-bold text-xs uppercase tracking-widest bg-[var(--ease2event-bg-surface)]" leftIcon={<Filter size={20} />}>
+                    <Button variant="secondary" className="h-16 px-10 rounded-[1.5rem] border-[var(--ease2event-border-subtle)] font-bold text-xs tracking-widest bg-[var(--ease2event-bg-surface)]" leftIcon={<Filter size={20} />}>
                         More Filters
                     </Button>
                 </div>
@@ -158,7 +158,7 @@ const Listings: React.FC = () => {
                                 />
                                 <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[var(--ease2event-bg-base)] via-transparent to-transparent opacity-90"></div>
                                 <div className="absolute top-8 right-8 z-10">
-                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : 'pending'} className="shadow-2xl backdrop-blur-xl px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-full">
+                                    <Badge variant={listing.status === 'Active' ? 'confirmed' : 'pending'} className="shadow-2xl backdrop-blur-xl px-6 py-2.5 text-xs font-bold  tracking-widest rounded-full">
                                         {listing.status || 'Active'}
                                     </Badge>
                                 </div>
@@ -186,13 +186,13 @@ const Listings: React.FC = () => {
 
                                 <div className="mt-auto pt-10 border-t border-[var(--ease2event-border-subtle)] flex items-center justify-between">
                                     <div className="space-y-2">
-                                        <p className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest leading-none">Base Price</p>
+                                        <p className="text-xs font-bold text-[var(--ease2event-text-secondary)]  tracking-widest leading-none">Base Price</p>
                                         <p className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{listing.price}</p>
                                     </div>
                                     <Button
                                         variant="outline"
                                         size="md"
-                                        className="px-8 h-14 rounded-2xl font-bold text-xs uppercase border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                                        className="px-8 h-14 rounded-2xl font-bold text-xs border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all"
                                         leftIcon={<Trash2 size={20} />}
                                         onClick={(e) => {
                                             e.stopPropagation();

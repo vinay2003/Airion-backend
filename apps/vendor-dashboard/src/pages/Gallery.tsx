@@ -42,7 +42,7 @@ const Gallery: React.FC = () => {
 
         setUploading(true);
         const files = Array.from(e.target.files);
-        
+
         // --- INSTANT PREVIEW PROTOCOL ---
         const localPreviews = files.map(file => ({
             id: `temp-${Math.random()}`,
@@ -51,7 +51,7 @@ const Gallery: React.FC = () => {
             createdAt: new Date(),
             isUploading: true
         }));
-        
+
         setOptimisticImages(prev => [...prev, ...localPreviews]);
 
         try {
@@ -108,7 +108,7 @@ const Gallery: React.FC = () => {
 
     const handlePurgeAll = async () => {
         if (!confirm('CRITICAL ACTION: Purge entire gallery registry? This cannot be undone.')) return;
-        
+
         setOptimisticDeletedIds(gallery.map(i => i.id));
 
         try {
@@ -138,8 +138,7 @@ const Gallery: React.FC = () => {
                         className="h-16 px-10 rounded-[2rem] font-bold text-xs uppercase tracking-widest bg-rose-600/10 text-rose-600 border-2 border-rose-600/20 hover:bg-rose-600 hover:text-white transition-all flex items-center gap-4"
                     >
                         <Trash2 size={20} />
-                        Purge Gallery
-                    </button>
+                        Clear Gallery                    </button>
 
                     <input
                         type="file"
@@ -187,11 +186,10 @@ const Gallery: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05, duration: 0.8 }}
                             onClick={() => !item.isUploading && setSelectedImage(item)}
-                            className={`relative group cursor-pointer break-inside-avoid rounded-[3rem] overflow-hidden border-2 shadow-2xl transition-all duration-700 bg-[var(--ease2event-bg-surface)] ${
-                                item.isUploading 
-                                ? 'border-blue-500/30 opacity-80 cursor-wait' 
+                            className={`relative group cursor-pointer break-inside-avoid rounded-[3rem] overflow-hidden border-2 shadow-2xl transition-all duration-700 bg-[var(--ease2event-bg-surface)] ${item.isUploading
+                                ? 'border-blue-500/30 opacity-80 cursor-wait'
                                 : 'border-[var(--ease2event-border-subtle)] hover:border-blue-500/50 hover:shadow-[0_40px_80px_rgba(0,0,0,0.3)] hover:scale-[1.02]'
-                            }`}
+                                }`}
                         >
                             <img
                                 src={item.imageUrl}
@@ -205,17 +203,17 @@ const Gallery: React.FC = () => {
                             {item.isUploading ? (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-blue-900/10 backdrop-blur-[2px]">
                                     <Loader2 className="animate-spin text-white mb-4" size={48} />
-                                    <span className="text-white font-black text-xs tracking-[0.3em] uppercase drop-shadow-md">Synchronizing...</span>
+                                    <span className="text-white font-black text-xs tracking-[0.3em] drop-shadow-md">Synchronizing...</span>
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--ease2event-bg-surface)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
                                     <div className="space-y-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-700">
                                         <div className="flex items-center gap-3">
                                             <ShieldCheck size={18} className="text-blue-500" />
-                                            <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">VERIFIED ASSET</span>
+                                            <span className="text-[10px] text-blue-500 font-bold tracking-widest">VERIFIED ASSET</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[var(--ease2event-text-primary)] text-sm font-bold uppercase tracking-widest truncate pr-6">
+                                            <span className="text-[var(--ease2event-text-primary)] text-sm font-bold tracking-widest truncate pr-6">
                                                 {item.title || 'GALLERY_ITEM'}
                                             </span>
                                             <div className="flex gap-4">
@@ -260,7 +258,7 @@ const Gallery: React.FC = () => {
                             <div className="flex items-center justify-end">
                                 <button
                                     onClick={() => setSelectedImage(null)}
-                                    className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs uppercase tracking-[0.3em] hover:scale-105"
+                                    className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs tracking-[0.3em] hover:scale-105"
                                 >
                                     Close <X size={38} className="p-2 bg-rose-600 text-white rounded-2xl shadow-2xl shadow-rose-600/30" />
                                 </button>
@@ -285,7 +283,7 @@ const Gallery: React.FC = () => {
                                     <div className="w-3 h-3 bg-blue-500 rounded-full" />
                                     <p className="text-[var(--ease2event-text-primary)] font-bold text-lg tracking-tight">{selectedImage.title}</p>
                                     <div className="h-5 w-0.5 bg-[var(--ease2event-border-subtle)] mx-1" />
-                                    <span className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest">{new Date(selectedImage.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-xs font-bold text-[var(--ease2event-text-secondary)] tracking-widest">{new Date(selectedImage.createdAt).toLocaleDateString()}</span>
                                 </motion.div>
                             )}
                         </motion.div>

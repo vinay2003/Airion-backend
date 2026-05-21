@@ -30,11 +30,11 @@ const AdminLogin: React.FC = () => {
                     <Shield className="text-white" size={40} />
                 </div>
                 <div className="space-y-4">
-                    <h2 className="text-3xl font-black text-white tracking-tight uppercase tracking-widest">Admin Access</h2>
-                    <p className="text-slate-400 font-bold max-w-sm mx-auto text-lg italic">Redirecting to Unified Auth System...</p>
+                    <h2 className="text-3xl font-black text-white tracking-tight">Admin login</h2>
+                    <p className="text-slate-400 font-medium max-w-sm mx-auto text-lg">Redirecting you to login...</p>
                 </div>
                 <div className="w-12 h-12 border-t-4 border-b-4 border-red-500 rounded-full mx-auto animate-spin"></div>
-                <p className="text-xs text-slate-500 font-black uppercase tracking-[0.2em]">Restricted Access Only</p>
+                <p className="text-xs text-slate-500 font-medium tracking-widest">Admin only</p>
             </div>
         </div>
     );

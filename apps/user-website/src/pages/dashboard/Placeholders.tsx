@@ -1,14 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-hot-toast';
 import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { askSupportAI } from '@/lib/api';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 export const Payments: React.FC = () => {
+    const { openCheckout, loading } = useRazorpay();
     const transactions = [
-        { id: 'TXN-001', date: '2026-03-10', amount: '₹1,50,000', status: 'Completed', vendor: 'Grand Palace Banquet' },
-        { id: 'TXN-002', date: '2026-03-15', amount: '₹25,000', status: 'Pending', vendor: 'Candid Moments Photography' },
+        { id: 'TXN-001', date: '2026-03-10', amount: '₹1,50,000', status: 'Completed', vendor: 'Grand Palace Banquet', numericAmount: 150000 },
+        { id: 'TXN-002', date: '2026-03-15', amount: '₹25,000', status: 'Pending', vendor: 'Candid Moments Photography', numericAmount: 25000 },
     ];
+
+    const handlePayNow = (txn: any) => {
+        openCheckout(txn.numericAmount, {
+            description: `Payment for ${txn.vendor}`,
+            receiptId: txn.id,
+            onSuccess: () => {
+                // In a real app, we would refresh the list
+                toast.success('Your booking is now confirmed!');
+            }
+        });
+    };
 
     return (
         <div className="space-y-6">
@@ -45,9 +59,20 @@ export const Payments: React.FC = () => {
                                         </span>
                                     </td>
                                     <td className="p-4">
-                                        <button className="text-red-500 hover:text-red-600 flex items-center gap-2 text-sm font-medium">
-                                            <Download size={16} /> Print
-                                        </button>
+                                        {txn.status === 'Pending' ? (
+                                            <Button 
+                                                size="sm" 
+                                                onClick={() => handlePayNow(txn)}
+                                                disabled={loading}
+                                                className="bg-red-500 hover:bg-red-600 text-white rounded-lg h-8 px-4"
+                                            >
+                                                Pay Now
+                                            </Button>
+                                        ) : (
+                                            <button className="text-red-500 hover:text-red-600 flex items-center gap-2 text-sm font-medium">
+                                                <Download size={16} /> Print
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
@@ -191,8 +216,8 @@ export const Support: React.FC = () => {
         setIsTyping(true);
 
         try {
-            const result = await askSupportAI(userMsg);
-            const aiResponse = result?.response || "I'm sorry, I encountered a brief neural glitch. Could you repeat that?";
+            const result = await askSupportAI(userMsg) as any;
+            const aiResponse = result?.response || result?.data?.response || "I'm sorry, I encountered a brief neural glitch. Could you repeat that?";
 
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,

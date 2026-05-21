@@ -186,7 +186,7 @@ const Login: React.FC = () => {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative bg-white dark:bg-slate-950">
                 <Link to="/" className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center gap-2 text-neutral-500 hover:text-red-500 font-bold transition-colors group z-20">
                     <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                    Back to Home
+                    Back to home
                 </Link>
 
                 <div className="w-full max-w-md mt-16 lg:mt-0 relative z-10">
@@ -195,7 +195,7 @@ const Login: React.FC = () => {
                         <span className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight font-cursive">Ease2event</span>
                     </div>
 
-                    <h2 className="text-3xl font-black text-neutral-900 dark:text-white mb-2">Welcome Back</h2>
+                    <h2 className="text-3xl font-black text-neutral-900 dark:text-white mb-2">Welcome back</h2>
                     <p className="text-neutral-500 dark:text-slate-400 font-medium mb-8">
                         {authMode === 'otp' ? 'Login seamlessly with your phone number.' : 'Login with your email and password.'}
                     </p>
@@ -212,7 +212,7 @@ const Login: React.FC = () => {
                             className="space-y-5"
                         >
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Email Address</label>
+                                <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Email address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                                     <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
@@ -224,7 +224,7 @@ const Login: React.FC = () => {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Password</label>
-                                    <Link to="/forgot-password" className="text-xs font-bold text-red-500 hover:text-red-600">Forgot Password?</Link>
+                                    <Link to="/forgot-password" className="text-xs font-bold text-red-500 hover:text-red-600">Forgot password?</Link>
                                 </div>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
@@ -246,7 +246,7 @@ const Login: React.FC = () => {
                             {step === 'phone' ? (
                                 <form onSubmit={handleSendOTP} className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Phone Number</label>
+                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300">Phone number</label>
                                         <div className="relative">
                                             <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
                                             <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
@@ -262,7 +262,7 @@ const Login: React.FC = () => {
                             ) : (
                                 <div className="space-y-6">
                                     <div className="space-y-4 text-center">
-                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 block">Verification Code</label>
+                                        <label className="text-sm font-bold text-neutral-700 dark:text-slate-300 block">Verification code</label>
                                         <p className="text-xs text-neutral-500 font-medium">We've sent a 6-digit code to <span className="font-bold text-neutral-900 dark:text-white">{phone}</span></p>
 
                                         <OTPInput
@@ -278,7 +278,7 @@ const Login: React.FC = () => {
                                         disabled={loading || otp.length < 6}
                                         className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {loading ? <Loader className="animate-spin" /> : 'Confirm & Sign In'}
+                                        {loading ? <Loader className="animate-spin" /> : 'Confirm & sign in'}
                                     </button>
 
                                     <div className="flex flex-col gap-4 text-center">
@@ -320,7 +320,7 @@ const Login: React.FC = () => {
                     <div className="flex flex-col gap-4">
                         <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); }}
                             className="w-full bg-white dark:bg-slate-900 border-2 border-neutral-200 dark:border-slate-800 hover:border-neutral-900 dark:hover:border-white text-neutral-900 dark:text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
-                            {authMode === 'otp' ? <><Mail size={18} /> Login with Email Address</> : <><Phone size={18} /> Login via Mobile OTP</>}
+                            {authMode === 'otp' ? <><Mail size={18} /> Login with email address</> : <><Phone size={18} /> Login via mobile OTP</>}
                         </button>
                     </div>
 

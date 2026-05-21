@@ -119,10 +119,10 @@ const Home: React.FC = () => {
                             title=""
                             items={
                                 marketplaceTab === 'Trending'
-                                    ? weddingVenues.slice(0, 4)
+                                    ? weddingVenues
                                     : marketplaceTab === 'New'
-                                        ? events.slice(0, 4)
-                                        : events.slice(0, 4)
+                                        ? events
+                                        : events
                             }
                         />
                     </section>
@@ -136,7 +136,7 @@ const Home: React.FC = () => {
                             </Link>
                         </div>
 
-                        <CategorySection title="" items={weddingVenues.slice(0, 4)} />
+                        <CategorySection title="" items={weddingVenues} />
                     </section>
                 </>
             ) : (

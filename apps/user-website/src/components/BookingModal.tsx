@@ -44,19 +44,19 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
 
     const handlePayment = async (order: any, bookingId: string) => {
         const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_xxxx',
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_SoVyCbeWSJWBW1',
             amount: order.amount,
             currency: "INR",
             name: "Ease2event Event Booking",
             description: `Payment for ${eventName}`,
-            order_id: order.orderId,
+            order_id: order.order_id,
             handler: async (response: any) => {
                 setLoading(true);
                 try {
                     await verifyPayment({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature
+                        razorpayOrderId: response.razorpay_order_id,
+                        razorpayPaymentId: response.razorpay_payment_id,
+                        razorpaySignature: response.razorpay_signature
                     }, bookingId);
 
                     navigate('/booking-confirmation', { state: { ...formData, eventName, total: dynamicPrice } });
@@ -94,7 +94,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
             }
         } catch (error) {
             console.error(error);
-            alert('Failed to initiate booking');
+            alert('Failed to initiate booking: ' + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
         }

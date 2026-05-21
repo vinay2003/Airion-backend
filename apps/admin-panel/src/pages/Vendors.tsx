@@ -66,7 +66,7 @@ const Vendors: React.FC = () => {
         try {
             await api.patch(`/vendors/${id}/status`, { status: targetStatus });
             setVendors(prev => (prev || []).map(v => v.id === id ? { ...v, verificationStatus: targetStatus } : v));
-            toast.success(`Vendor ${action === 'approve' ? 'Authorized' : 'Registry Restricted'}`);
+            toast.success(`Vendor ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
         } catch (error: any) {
             toast.error('Action failed: ' + error.message);
         }
@@ -98,18 +98,18 @@ const Vendors: React.FC = () => {
         <div className="space-y-10 animate-in fade-in duration-700">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                 <div>
-                    <h1 className="text-5xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter font-display">Vendor Matrix</h1>
-                    <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.4em] italic mt-2">Registry Orchestration • {vendors.length} BUSINESS NODES ACTIVE</p>
+                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Vendors</h1>
+                    <p className="text-sm font-medium text-gray-400 dark:text-slate-500 mt-1">{vendors.length} vendors registered</p>
                 </div>
                 <div className="flex flex-wrap gap-4 w-full md:w-auto">
                     <div className="relative group flex-1 md:flex-none">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors" size={20} />
                         <input
                             type="text"
-                            placeholder="SEARCH_BUSINESS_TAG"
+                            placeholder="Search vendors..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-black text-xs uppercase italic tracking-widest dark:text-white"
+                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium text-sm dark:text-white"
                         />
                     </div>
                 </div>
@@ -120,12 +120,12 @@ const Vendors: React.FC = () => {
                     <button
                         key={status}
                         onClick={() => setFilter(status as any)}
-                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic ${filter === status
+                        className={`px-6 py-3 rounded-xl text-sm font-semibold capitalize transition-all ${filter === status
                             ? 'bg-white dark:bg-slate-800 text-red-600 shadow-xl border border-neutral-100 dark:border-slate-700'
                             : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                     >
-                        {status}_QUEUE
+                        {status}
                     </button>
                 ))}
             </div>
@@ -135,10 +135,10 @@ const Vendors: React.FC = () => {
                     <table className="w-full">
                         <thead>
                             <tr className="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Business Entity</th>
-                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Genesis Info</th>
-                                <th className="px-10 py-6 text-left text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Registry Status</th>
-                                <th className="px-10 py-6 text-right text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">Handshake Controls</th>
+                                <th className="px-10 py-6 text-left text-xs font-semibold text-gray-400 dark:text-slate-500">Business</th>
+                                <th className="px-10 py-6 text-left text-xs font-semibold text-gray-400 dark:text-slate-500">Details</th>
+                                <th className="px-10 py-6 text-left text-xs font-semibold text-gray-400 dark:text-slate-500">Status</th>
+                                <th className="px-10 py-6 text-right text-xs font-semibold text-gray-400 dark:text-slate-500">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
@@ -150,8 +150,8 @@ const Vendors: React.FC = () => {
                                                 {vendor.businessName?.[0] || 'V'}
                                             </div>
                                             <div className="space-y-1">
-                                                <div className="font-black text-gray-900 dark:text-white uppercase italic tracking-tight">{vendor.businessName}</div>
-                                                <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest italic opacity-60">
+                                                <div className="font-bold text-gray-900 dark:text-white tracking-tight">{vendor.businessName}</div>
+                                                <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
                                                     <Building2 size={12} />
                                                     {vendor.businessType}
                                                 </div>
@@ -162,16 +162,16 @@ const Vendors: React.FC = () => {
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-2 text-[11px] font-bold text-gray-600 dark:text-slate-400">
                                                 <MapPin size={14} className="text-gray-400" />
-                                                {vendor.city || 'GLOBAL_ZONE'}
+                                                {vendor.city || 'Unknown'}
                                             </div>
-                                            <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest italic opacity-60">
+                                            <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
                                                 <Calendar size={12} />
-                                                {vendor.yearsInBusiness || 0} YRS_EXP
+                                                {vendor.yearsInBusiness || 0} yrs experience
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-10 py-8 whitespace-nowrap">
-                                        <span className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] italic border ${getStatusStyles(vendor.verificationStatus)}`}>
+                                        <span className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize border ${getStatusStyles(vendor.verificationStatus)}`}>
                                             {vendor.verificationStatus}
                                         </span>
                                     </td>
@@ -202,8 +202,8 @@ const Vendors: React.FC = () => {
                                 <Zap size={64} className="text-gray-200 dark:text-slate-800" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">No Business Nodes</h3>
-                                <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest italic">Modify filters to sync registry data</p>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">No vendors found</h3>
+                                <p className="text-sm font-medium text-gray-400 dark:text-slate-500">Try adjusting your search or filters</p>
                             </div>
                         </div>
                     )}

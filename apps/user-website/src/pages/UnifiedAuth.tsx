@@ -60,7 +60,7 @@ const UnifiedAuth: React.FC = () => {
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
         const action = searchParams.get('action');
-
+        
         // If we just logged out, don't auto-redirect anywhere
         if (action === 'logout') {
             if (isAuthenticated) {
@@ -112,14 +112,14 @@ const UnifiedAuth: React.FC = () => {
         try {
             const digitsOnly = phone.replace(/\D/g, '');
             if (digitsOnly.length !== 10) {
-                toast.error('Registry requires a valid 10-digit identification sequence.');
+                toast.error('Please enter a valid 10-digit phone number.');
                 setLoading(false);
                 return;
             }
 
             // 🚫 Zero-Trust Check: Admin Restriction
             if (selectedRole === UserRole.ADMIN && digitsOnly !== '1000000000') {
-                toast.error('Identity Conflict: Administrative access restricted to authorized nodes only.');
+                toast.error('Admin access is not allowed from this number.');
                 setLoading(false);
                 return;
             }
@@ -133,18 +133,18 @@ const UnifiedAuth: React.FC = () => {
 
             const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
             if (import.meta.env.DEV && devCode) {
-                toast(`Dev-Code Received: ${devCode}`, { icon: '🔑', duration: 8000 });
+                toast(`Dev code: ${devCode}`, { icon: '🔑', duration: 8000 });
             }
 
-            toast.success('Verification cipher dispatched.');
+            toast.success('Verification code sent.');
             setStep('otp');
             setResendTimer(60);
         } catch (err: any) {
             if (err.response?.status === 409) {
-                toast.error('Identity collision: Account already synchronized. Switching to Login.');
+                toast.error('This account already exists. Switching to login.');
                 setMode('login');
             } else {
-                toast.error(err.response?.data?.message || 'Cipher dispatch failed.');
+                toast.error(err.response?.data?.message || 'Failed to send code. Please try again.');
             }
         } finally {
             setLoading(false);
@@ -154,7 +154,7 @@ const UnifiedAuth: React.FC = () => {
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;
         if (!otpValue || otpValue.length !== 6) {
-            toast.error('Invalid 6-digit verification cipher.');
+            toast.error('Please enter a valid 6-digit code.');
             return;
         }
 
@@ -176,12 +176,12 @@ const UnifiedAuth: React.FC = () => {
 
                 if (mode === 'signup') {
                     if (selectedRole === UserRole.USER) {
-                        toast.success('Identification successful. Initializing profile registry.');
+                        toast.success('Verified! Please complete your profile.');
                         setStep('details');
                         setLoading(false);
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
-                        toast.success('Establishing Vendor Node. Redirecting to Registry Form.');
+                        toast.success('Account created. Redirecting to vendor setup.');
                         const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
                         const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
                         setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
@@ -193,7 +193,7 @@ const UnifiedAuth: React.FC = () => {
                 const tokenPayload = decodeToken(response.access_token);
                 const role = tokenPayload?.role || response?.user?.role || 'user';
 
-                toast.success('Synchronization complete. Welcome back.');
+                toast.success('Welcome back!');
 
                 setTimeout(() => {
                     const tokenParam = `?token=${response.access_token}`;
@@ -223,7 +223,7 @@ const UnifiedAuth: React.FC = () => {
 
             // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
             if (errorMsg.includes('User not found') || err.response?.status === 401) {
-                toast.error('Account not found in our registry. Redirecting to registration...');
+                toast.error('Account not found. Redirecting to sign up...');
                 setTimeout(() => {
                     setMode('signup');
                     setStep('phone');
@@ -232,7 +232,7 @@ const UnifiedAuth: React.FC = () => {
                 return;
             }
 
-            toast.error(errorMsg || 'Verification failure. Node access denied.');
+            toast.error(errorMsg || 'Invalid code. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -241,17 +241,17 @@ const UnifiedAuth: React.FC = () => {
     const handleCompleteProfile = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!fullName || !email) {
-            toast.error('Critical identification parameters missing.');
+            toast.error('Please fill in all required fields.');
             return;
         }
 
         setLoading(true);
         try {
             // Simulate profile write
-            toast.success('Registry updated. Deploying interface.');
+            toast.success('Profile saved! Taking you to your dashboard.');
             setTimeout(() => navigate('/dashboard'), 800);
         } catch (err) {
-            toast.error('Write failure. Deploying default interface.');
+            toast.error('Something went wrong. Taking you to dashboard.');
             setTimeout(() => navigate('/dashboard'), 1500);
         } finally {
             setLoading(false);
@@ -273,9 +273,11 @@ const UnifiedAuth: React.FC = () => {
 
                 <div className="relative z-10 max-w-xl space-y-6">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/30 rotate-3 group">
-                            <Sparkles className="text-white group-hover:rotate-12 transition-transform" size={24} />
-                        </div>
+                        <img 
+                            src="/logo.svg" 
+                            alt="Ease2Event Logo" 
+                            className="w-12 h-12 object-contain drop-shadow-lg" 
+                        />
                         <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
                             Ease2event
                         </span>
@@ -284,13 +286,13 @@ const UnifiedAuth: React.FC = () => {
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                         className="text-2xl lg:text-3xl font-black text-white leading-tight tracking-widest"
                     >
-                        {mode === 'login' ? 'Smart Login System' : 'Nexus Genesis Protocol.'}
+                        {mode === 'login' ? 'Smart login system' : 'Nexus genesis protocol.'}
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                        className="text-sm text-neutral-400 font-bold tracking-[0.2em] leading-relaxed opacity-60"
+                        className="text-sm text-neutral-400 font-medium leading-relaxed"
                     >
-                        {mode === 'login' ? 'Use your account from anywhere easily' : 'Deploy your talent to the next-generation elite registry.'}
+                        {mode === 'login' ? 'Use your account from anywhere, anytime.' : 'Register and start booking amazing events.'}
                     </motion.p>
                     <div className="flex items-center gap-6 pt-6 border-t border-white/5">
                         <div className="flex -space-x-4">
@@ -298,9 +300,9 @@ const UnifiedAuth: React.FC = () => {
                                 <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Node" className="w-12 h-12 rounded-xl border-2 border-black shadow-xl" />
                             ))}
                         </div>
-                        <div className="text-[10px] font-black text-white  tracking-[0.2em]">
-                            <p className="text-red-500">540,128 NODES ACTIVE</p>
-                            <p className="opacity-40 mt-1">Global Marketplace Telemetry</p>
+                        <div className="text-[10px] font-bold text-white tracking-wider">
+                            <p className="text-red-500">10,000+ happy users</p>
+                            <p className="opacity-40 mt-1">Events planned worldwide</p>
                         </div>
                     </div>
                 </div>
@@ -332,13 +334,13 @@ const UnifiedAuth: React.FC = () => {
                             onClick={() => { setMode('login'); setStep('phone'); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
-                            Log In
+                            Log in
                         </button>
                         <button
                             onClick={() => { setMode('signup'); setStep('phone'); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
-                            Sign Up
+                            Sign up
                         </button>
                     </div>
 
@@ -370,7 +372,7 @@ const UnifiedAuth: React.FC = () => {
                                         }`}
                                 >
                                     <role.icon size={26} className={selectedRole === role.id ? 'scale-110' : 'opacity-60'} />
-                                    <span className="text-xs font-bold tracking-widest">{role.label}</span>
+                                    <span className="text-xs uppercase font-bold tracking-widest">{role.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -385,7 +387,7 @@ const UnifiedAuth: React.FC = () => {
                             >
                                 <div className="space-y-5">
                                     <div>
-                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone Number</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone number</label>
 
                                     </div>
                                     <div className="relative group">
@@ -418,7 +420,7 @@ const UnifiedAuth: React.FC = () => {
                                         {loading ? (
                                             <Loader className="animate-spin" size={24} />
                                         ) : (
-                                            <>Verify Presence <ArrowRight size={22} /></>
+                                            <>Verify presence <ArrowRight size={22} /></>
                                         )}
                                     </button>
 
@@ -457,7 +459,7 @@ const UnifiedAuth: React.FC = () => {
                                 className="w-full space-y-12 text-center"
                             >
                                 <div className="space-y-8">
-                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Verification Cipher</label>
+                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Verification cipher</label>
                                     <div className="flex justify-center scale-110">
                                         <OTPInput length={6} onComplete={handleVerifyOTP} disabled={loading} />
                                     </div>
@@ -470,7 +472,7 @@ const UnifiedAuth: React.FC = () => {
                                         disabled={loading || otp.length < 6}
                                         className="w-full h-16 bg-neutral-900 dark:bg-white dark:text-neutral-950 text-white rounded-2xl font-bold text-base tracking-widest transition-all shadow-2xl active:scale-[0.98] disabled:opacity-30"
                                     >
-                                        Verify Code
+                                        Verify code
                                     </button>
                                     <div className="flex flex-col items-center gap-4 pt-4">
                                         <button
@@ -499,7 +501,7 @@ const UnifiedAuth: React.FC = () => {
                             >
                                 <div className="space-y-5">
                                     <div className="space-y-5">
-                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Full Name</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Full name</label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
                                                 <User size={22} />
@@ -515,7 +517,7 @@ const UnifiedAuth: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-5">
-                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Email Address</label>
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Email address</label>
                                         <div className="relative group">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
                                                 <Mail size={22} />
@@ -532,7 +534,7 @@ const UnifiedAuth: React.FC = () => {
                                     </div>
                                 </div>
                                 <button type="submit" disabled={loading} className="w-full h-16 bg-red-600 text-white rounded-2xl font-bold text-base tracking-widest shadow-xl shadow-red-600/30 hover:bg-neutral-900 active:scale-[0.98] transition-all flex items-center justify-center gap-4">
-                                    Finalize Synchronization <ArrowRight size={24} />
+                                    Finalize synchronization <ArrowRight size={24} />
                                 </button>
                             </motion.form>
                         )}

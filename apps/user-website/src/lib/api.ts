@@ -43,7 +43,7 @@ api.interceptors.response.use(
         if (response.data && response.data.success === true && response.data.data !== undefined) {
             return response.data.data;
         }
-        return response;
+        return response.data;
     },
     (error) => {
         if (error.response?.status === 401) {
@@ -101,7 +101,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
     return results.map(s => ({
         ...s,
         images: (s as any).images || [],
-        vendorId: 'v-mock',
+        vendorId: '550e8400-e29b-41d4-a716-446655440000',
         reviews: s.reviews || 0,
         capacity: (s as any).capacity || 'Contact Vendor' // ✅ Added missing property
     })) as Event[];
@@ -112,43 +112,124 @@ export const fetchEventById = async (id: string): Promise<Event | undefined> => 
     return all.find(e => e.id === id);
 };
 
-export const createBooking = async (data: any) => (await api.post('/bookings', data)).data;
-export const fetchMyBookings = async () => {
-    try { return (await api.get('/bookings/mine')).data; }
-    catch { return [{ id: 'b1', eventDate: new Date().toISOString(), status: 'confirmed', listingName: 'Royal Palace' }]; }
+// --- Mock Persistence Helpers ---
+const getMockBookings = () => {
+    try {
+        const stored = localStorage.getItem('ease2event_mock_bookings');
+        return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
 };
-export const createPaymentOrder = async (amount: number, bId: string) => (await api.post('/payments/create-order', { amount, bookingId: bId })).data;
-export const verifyPayment = async (v: any, bId: string) => (await api.post('/payments/verify', { ...v, bookingId: bId })).data;
-export const toggleWishlist = async (vId: string) => (await api.post(`/wishlists/toggle/${vId}`)).data;
-export const fetchMyWishlist = async () => (await api.get('/wishlists/mine')).data;
-export const fetchBudget = async () => (await api.get('/budget')).data;
-export const updateBudget = async (d: any) => (await api.patch('/budget/update', d)).data;
-export const fetchGuests = async () => (await api.get('/guests')).data;
-export const createGuest = async (d: any) => (await api.post('/guests', d)).data;
-export const updateGuest = async (id: string, d: any) => (await api.patch(`/guests/${id}`, d)).data;
-export const deleteGuest = async (id: string) => (await api.delete(`/guests/${id}`)).data;
-export const fetchConversations = async () => (await api.get('/chat/conversations')).data;
-export const fetchMessages = async (id: string) => (await api.get(`/chat/messages/${id}`)).data;
-export const startConversation = async (vId: string) => (await api.post('/chat/start', { vendorId: vId })).data;
-export const updateProfile = async (d: any) => (await api.patch('/auth/profile', d)).data;
-export const changePassword = async (d: any) => (await api.post('/auth/change-password', d)).data;
+
+const saveMockBooking = (booking: any) => {
+    try {
+        const current = getMockBookings();
+        const updated = [booking, ...current];
+        localStorage.setItem('ease2event_mock_bookings', JSON.stringify(updated));
+    } catch (e) { console.error('Failed to save mock booking', e); }
+};
+
+export const createBooking = async (data: any) => {
+    try {
+        const res = await api.post('/bookings', data);
+        return res;
+    } catch (error) {
+        const isMockId = data.vendorId === '550e8400-e29b-41d4-a716-446655440000' || 
+                         !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(data.vendorId);
+        if (isMockId) {
+            console.warn('Mock/Invalid Vendor Booking: Using fallback response');
+            const mockBooking = { 
+                id: 'mock-' + Date.now(), 
+                bookingCode: 'E2E-' + Math.floor(Math.random() * 900000 + 100000),
+                eventDate: data.eventDate || new Date().toISOString(),
+                status: 'pending', // Initially pending until payment verified
+                totalAmount: data.totalAmount,
+                vendorId: data.vendorId,
+                vendor: { 
+                    businessName: 'The Royal Grand Palace', 
+                    city: 'Patna', 
+                    portfolioImages: ['https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80'] 
+                }
+            };
+            saveMockBooking(mockBooking);
+            return { success: true, booking: mockBooking };
+        }
+        throw error;
+    }
+};
+
+export const fetchMyBookings = async () => {
+    try { 
+        const res = await api.get('/bookings/mine'); 
+        const mockData = getMockBookings();
+        // Return both real and mock data (mock first for visibility)
+        return Array.isArray(res) ? [...mockData, ...res] : mockData;
+    }
+    catch { 
+        return getMockBookings(); 
+    }
+};
+
+export const createPaymentOrder = async (amount: number, bookingId: string) => {
+    try {
+        return await api.post('/payments/create-order', { amount, bookingId });
+    } catch (error) {
+        if (bookingId.startsWith('mock-') || bookingId.length < 10) {
+            return { amount: amount * 100, currency: 'INR', order_id: 'order_mock_' + Date.now() };
+        }
+        throw error;
+    }
+};
+export const verifyPayment = async (data: any, bookingId: string) => {
+    try {
+        return await api.post('/payments/verify', { ...data, bookingId });
+    } catch (error) {
+        if (bookingId.startsWith('mock-')) {
+            // Update the status in localStorage to 'confirmed'
+            try {
+                const bookings = getMockBookings();
+                const bookingIndex = bookings.findIndex((b: any) => b.id === bookingId);
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = 'confirmed';
+                    localStorage.setItem('ease2event_mock_bookings', JSON.stringify(bookings));
+                }
+            } catch (e) { console.error('Failed to update mock status', e); }
+            
+            return { success: true, message: 'Mock payment verified' };
+        }
+        throw error;
+    }
+};
+export const toggleWishlist = async (vId: string) => await api.post(`/wishlists/toggle/${vId}`);
+export const fetchMyWishlist = async () => await api.get('/wishlists/mine');
+export const fetchBudget = async () => await api.get('/budget');
+export const updateBudget = async (d: any) => await api.patch('/budget/update', d);
+export const fetchGuests = async () => await api.get('/guests');
+export const createGuest = async (d: any) => await api.post('/guests', d);
+export const updateGuest = async (id: string, d: any) => await api.patch(`/guests/${id}`, d);
+export const deleteGuest = async (id: string) => await api.delete(`/guests/${id}`);
+export const fetchConversations = async () => await api.get('/chat/conversations');
+export const fetchMessages = async (id: string) => await api.get(`/chat/messages/${id}`);
+export const startConversation = async (vId: string) => await api.post('/chat/start', { vendorId: vId });
+export const updateProfile = async (d: any) => await api.patch('/auth/profile', d);
+export const changePassword = async (d: any) => await api.post('/auth/change-password', d);
 // --- VENDOR DASHBOARD & ANALYTICS (Step 6 Coordination) ---
-export const fetchWalletOverview = async () => (await api.get('/wallet/overview')).data;
-export const requestWithdrawal = async (amount: number, bankDetails?: any) => (await api.post('/wallet/withdraw', { amount, bankDetails })).data;
-export const fetchVendorPerformance = async (vId: string, days: number = 7) => (await api.get(`/analytics/vendor/${vId}/performance`, { params: { days } })).data;
-export const fetchVendorSchedule = async (vId: string) => (await api.get(`/availability/vendor/${vId}`)).data;
-export const blockDate = async (date: string, reason?: string) => (await api.post('/availability/block', { date, reason })).data;
-export const unblockDate = async (date: string) => (await api.delete(`/availability/block/${date}`)).data;
-export const generateEasyReply = async (inquiry: string, voice?: string) => (await api.post('/ai/easy-reply', { inquiry, voice })).data;
-export const checkAvailability = async (vId: string, date: string) => (await api.get('/availability/check', { params: { vendorId: vId, date } })).data;
+export const fetchWalletOverview = async () => await api.get('/wallet/overview');
+export const requestWithdrawal = async (amount: number, bankDetails?: any) => await api.post('/wallet/withdraw', { amount, bankDetails });
+export const fetchVendorPerformance = async (vId: string, days: number = 7) => await api.get(`/analytics/vendor/${vId}/performance`, { params: { days } });
+export const fetchVendorPerformanceDirect = async (vId: string, days: number = 7) => (await api.get(`/analytics/vendor/${vId}/performance`, { params: { days } }));
+export const fetchVendorSchedule = async (vId: string) => await api.get(`/availability/vendor/${vId}`);
+export const blockDate = async (date: string, reason?: string) => await api.post('/availability/block', { date, reason });
+export const unblockDate = async (date: string) => await api.delete(`/availability/block/${date}`);
+export const generateEasyReply = async (inquiry: string, voice?: string) => await api.post('/ai/easy-reply', { inquiry, voice });
+export const checkAvailability = async (vId: string, date: string) => await api.get('/availability/check', { params: { vendorId: vId, date } });
 
 export const uploadImage = async (file: File) => {
     const fd = new FormData(); fd.append('file', file);
     const res = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-    return res.data || res;
+    return res;
 };
 
 export const askSupportAI = async (message: string) => {
     const res = await api.post('/ai/support', { message });
-    return res.data || res;
+    return res;
 };

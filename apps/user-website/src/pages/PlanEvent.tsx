@@ -6,6 +6,7 @@ import {
     ChevronRight, ChevronLeft, Check
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 interface EventPlanningData {
     eventType: string;
@@ -18,6 +19,7 @@ interface EventPlanningData {
 }
 
 const PlanEvent: React.FC = () => {
+    const { openCheckout, loading } = useRazorpay();
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState<EventPlanningData>({
@@ -117,17 +119,23 @@ const PlanEvent: React.FC = () => {
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
-            // Submit and redirect to booking confirmation with state
-            navigate('/booking-confirmation', {
-                state: {
-                    eventName: 'Custom Requested Package',
-                    date: formData.eventDate || 'TBD',
-                    time: '10:00 AM', // Default
-                    guests: formData.guestCount.toString(),
-                    package: 'Custom',
-                    occasion: formData.eventType,
-                    addons: formData.additionalServices,
-                    total: parseInt(formData.budget.replace(/\D/g, '')) || 0,
+            // Submit and open Razorpay
+            const baseAmount = 15000; // Fixed token for custom requests
+            openCheckout(baseAmount, {
+                description: `Event Planning Request: ${formData.eventType}`,
+                onSuccess: () => {
+                    navigate('/booking-confirmation', {
+                        state: {
+                            eventName: 'Custom Requested Package',
+                            date: formData.eventDate || 'TBD',
+                            time: '10:00 AM', // Default
+                            guests: formData.guestCount.toString(),
+                            package: 'Custom',
+                            occasion: formData.eventType,
+                            addons: formData.additionalServices,
+                            total: baseAmount,
+                        }
+                    });
                 }
             });
         }
@@ -421,9 +429,10 @@ const PlanEvent: React.FC = () => {
                                 )}
                                 <button
                                     onClick={handleNext}
-                                    className="px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-500/20"
+                                    disabled={loading}
+                                    className="px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-500/20 disabled:opacity-50"
                                 >
-                                    {currentStep === steps.length - 1 ? 'Submit Request' : 'Next'}
+                                    {currentStep === steps.length - 1 ? (loading ? 'Opening Razorpay...' : 'Confirm & Pay Now ✨') : 'Next'}
                                     <ChevronRight size={20} />
                                 </button>
                             </div>

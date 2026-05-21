@@ -195,13 +195,13 @@ const Header: React.FC = () => {
             </nav>
 
             {/* Desktop Actions */}
-            {/* <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
                 <Link
                     to="/plan-event"
                     className="text-sm font-medium text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-slate-800 px-4 py-2.5 rounded-full transition-all"
                 >
                     Plan Your Event
-                </Link> */}
+                </Link>
                 {isAuthenticated ? (
                     <UserProfileMenu
                         user={user}

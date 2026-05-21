@@ -4,6 +4,8 @@ import { Check, X, Star, ChevronRight, Crown, Gem, Sparkles, Calendar, Users, Ar
 import SEO from '../components/SEO';
 import FallingPetals from '../components/FallingPetals';
 import { useNavigate } from 'react-router-dom';
+import { useRazorpay } from '../hooks/useRazorpay';
+import { toast } from 'react-hot-toast';
 
 const packages = [
   {
@@ -275,10 +277,42 @@ const BookingModal: React.FC<{ pkg: typeof packages[0]; onClose: () => void }> =
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<BookingFormData>({ name: '', email: '', phone: '', date: '', guests: '', city: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const { openCheckout, loading: checkoutLoading } = useRazorpay();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    
+    // Calculate a token amount (e.g., 5% of the lower range)
+    // For demo, using a fixed amount or derived from pkg.price
+    const priceStr = pkg.price.replace(/[^\d]/g, '');
+    const basePrice = parseInt(priceStr.substring(0, 1) + '00000') || 10000;
+    const tokenAmount = Math.max(basePrice * 0.05, 5000); // 5% or 5000 min
+
+    openCheckout(tokenAmount, {
+      description: `Token for ${pkg.name}`,
+      userName: form.name,
+      userEmail: form.email,
+      userPhone: form.phone,
+      onSuccess: () => {
+        setSubmitted(true);
+        toast.success('Payment verified! Redirecting...');
+        setTimeout(() => {
+          navigate('/booking-confirmation', {
+            state: {
+              eventName: pkg.name,
+              date: form.date,
+              time: '10:00 AM',
+              guests: form.guests,
+              package: pkg.tier,
+              occasion: 'Wedding',
+              addons: [],
+              total: tokenAmount,
+            }
+          });
+        }, 2000);
+      }
+    });
   };
 
   return (
@@ -385,9 +419,9 @@ const BookingModal: React.FC<{ pkg: typeof packages[0]; onClose: () => void }> =
                     className="flex-1 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 py-3 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                     Back
                   </button>
-                  <button type="submit"
-                    className="flex-2 flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold transition-colors">
-                    Submit Request ✨
+                  <button type="submit" disabled={checkoutLoading}
+                    className="flex-2 flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold transition-colors disabled:opacity-50">
+                    {checkoutLoading ? 'Processing...' : 'Confirm & Pay Now ✨'}
                   </button>
                 </div>
               </div>
@@ -432,7 +466,7 @@ const Packages: React.FC = () => {
           <div className="flex items-center gap-4 mb-8">
             <div className="h-[1px] w-12 bg-[#c5a059]/50" />
             <span className="text-sm md:text-base font-bold text-[#c5a059] uppercase tracking-[0.4em]">
-              Patna · Bihar · India
+              India
             </span>
             <div className="h-[1px] w-12 bg-[#c5a059]/50" />
           </div>

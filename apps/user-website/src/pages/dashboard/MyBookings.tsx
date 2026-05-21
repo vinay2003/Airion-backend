@@ -76,6 +76,89 @@ const MyBookings: React.FC = () => {
         }
     };
 
+    const handleDownloadInvoice = (booking: any) => {
+        const invoiceHtml = `
+            <html>
+                <head>
+                    <title>Invoice - ${booking.bookingCode}</title>
+                    <style>
+                        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 40px; color: #1a1a1a; }
+                        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #f3f4f6; padding-bottom: 20px; margin-bottom: 40px; }
+                        .logo { font-size: 24px; font-weight: 900; color: #ef4444; text-transform: uppercase; }
+                        .invoice-info { text-align: right; }
+                        .details { display: grid; grid-template-cols: 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+                        .section-title { font-size: 10px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+                        th { text-align: left; background: #f9fafb; padding: 12px; font-size: 12px; font-weight: 700; color: #4b5563; }
+                        td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+                        .total-section { display: flex; justify-content: flex-end; }
+                        .total-box { width: 250px; background: #1a1a1a; color: white; padding: 20px; border-radius: 12px; }
+                        .footer { margin-top: 60px; text-align: center; color: #9ca3af; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">AAYOJAN</div>
+                        <div class="invoice-info">
+                            <h1 style="margin: 0; font-size: 28px; font-weight: 900;">INVOICE</h1>
+                            <p style="margin: 5px 0; color: #6b7280;">#${booking.bookingCode}</p>
+                        </div>
+                    </div>
+                    <div class="details">
+                        <div>
+                            <div class="section-title">Billed To</div>
+                            <div style="font-weight: 700;">${localStorage.getItem('ease2event_user_name') || 'Valued Customer'}</div>
+                            <div style="color: #6b7280;">User Dashboard Access</div>
+                        </div>
+                        <div>
+                            <div class="section-title">Vendor</div>
+                            <div style="font-weight: 700;">${booking.vendor?.businessName}</div>
+                            <div style="color: #6b7280;">${booking.vendor?.city}, India</div>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Event Date</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Reservation for ${booking.vendor?.businessName}</td>
+                                <td>${new Date(booking.eventDate).toLocaleDateString()}</td>
+                                <td style="text-transform: capitalize;">${booking.status}</td>
+                                <td style="text-align: right; font-weight: 700;">₹${parseFloat(booking.totalAmount).toLocaleString()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="total-section">
+                        <div class="total-box">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-size: 12px; opacity: 0.7;">Subtotal</span>
+                                <span>₹${parseFloat(booking.totalAmount).toLocaleString()}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: 900; font-size: 20px; border-top: 1px solid rgba(255,255,255,0.1); pt: 10px;">
+                                <span>Total</span>
+                                <span>₹${parseFloat(booking.totalAmount).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <p>Thank you for choosing Aayojan for your special event.</p>
+                        <p>This is a computer-generated invoice. No signature required.</p>
+                    </div>
+                    <script>window.onload = () => { window.print(); }</script>
+                </body>
+            </html>
+        `;
+        const win = window.open('', '_blank');
+        win?.document.write(invoiceHtml);
+        win?.document.close();
+    };
+
     const filteredBookings = bookings.filter(b => {
         if (activeTab === 'All') return true;
         if (activeTab === 'Upcoming') return b.status === 'confirmed';
@@ -132,7 +215,7 @@ const MyBookings: React.FC = () => {
                             >
                                 <div className="sm:w-48 h-40 sm:h-full rounded-2xl overflow-hidden shrink-0 relative">
                                     <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
-                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black tracking-wider backdrop-blur-md border border-white/20 ${style.bg.replace('bg-', 'bg-').split(' ')[0]} ${style.text.split(' ')[0]} bg-opacity-90`}>
+                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider backdrop-blur-md border border-white/20 ${style.bg.replace('bg-', 'bg-').split(' ')[0]} ${style.text.split(' ')[0]} bg-opacity-90`}>
                                         {style.label}
                                     </div>
                                 </div>
@@ -161,14 +244,14 @@ const MyBookings: React.FC = () => {
 
                                     <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800/80">
                                         <div>
-                                            <p className="text-[10px] font-bold text-neutral-400 tracking-widest mb-0.5">Total</p>
+                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Total</p>
                                             <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    window.open(`${import.meta.env.VITE_API_URL}/bookings/${booking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank');
+                                                    handleDownloadInvoice(booking);
                                                 }}
                                                 className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip"
                                                 title="Download Invoice"
@@ -236,25 +319,25 @@ const MyBookings: React.FC = () => {
                             <div className="p-8 space-y-8">
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Booking ID</p>
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Booking ID</p>
                                         <p className="font-bold text-neutral-900 dark:text-white">#{selectedBooking.bookingCode}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Event Date</p>
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Event Date</p>
                                         <p className="font-bold text-neutral-900 dark:text-white">{new Date(selectedBooking.eventDate).toLocaleDateString()}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Status</p>
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Status</p>
                                         <p className={`font-bold capitalize ${getStatusStyles(selectedBooking.status).text}`}>{selectedBooking.status}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-neutral-400 tracking-widest">Total Amount</p>
+                                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Total Amount</p>
                                         <p className="font-black text-red-500 text-lg">₹{parseFloat(selectedBooking.totalAmount).toLocaleString()}</p>
                                     </div>
                                 </div>
 
                                 <div className="p-6 bg-neutral-50 dark:bg-slate-800/50 rounded-3xl border border-neutral-100 dark:border-slate-800">
-                                    <h4 className="font-black text-neutral-900 dark:text-white mb-4 text-xs tracking-widest">Service Overview</h4>
+                                    <h4 className="font-black text-neutral-900 dark:text-white mb-4 uppercase text-xs tracking-widest">Service Overview</h4>
                                     <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">
                                         You have a confirmed reservation with {selectedBooking.vendor?.businessName}.
                                         Our synchronized protocol ensures all logistics are aligned for your event on {new Date(selectedBooking.eventDate).toLocaleDateString()}.
@@ -263,8 +346,8 @@ const MyBookings: React.FC = () => {
 
                                 <div className="flex gap-4">
                                     <button
-                                        onClick={() => window.open(`${import.meta.env.VITE_API_URL}/bookings/${selectedBooking.id}/invoice?token=${localStorage.getItem('ease2event_token')}`, '_blank')}
-                                        className="flex-1 py-4 bg-neutral-100 dark:bg-slate-800 text-neutral-900 dark:text-white rounded-2xl font-black text-xs tracking-widest hover:bg-neutral-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
+                                        onClick={() => handleDownloadInvoice(selectedBooking)}
+                                        className="flex-1 py-4 bg-neutral-100 dark:bg-slate-800 text-neutral-900 dark:text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neutral-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
                                     >
                                         <FileText size={18} /> Download Invoice
                                     </button>
@@ -273,7 +356,7 @@ const MyBookings: React.FC = () => {
                                             setSelectedBooking(null);
                                             navigate('/dashboard/inbox');
                                         }}
-                                        className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-xl shadow-red-500/20">
+                                        className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-red-500/20">
                                         Contact Vendor
                                     </button>
                                 </div>

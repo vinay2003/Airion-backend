@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardBody, CardFooter } from '@/components/ui/card';
+import { Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import api from '../../lib/apiClient';
 
 const AdminLogin: React.FC = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
     const { user } = useAuth();
 
     React.useEffect(() => {

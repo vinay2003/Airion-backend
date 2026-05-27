@@ -7,11 +7,50 @@ import { useAuth } from '@shared/auth'; // ✅ added
 
 const HERO_IMAGES = [
     "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=2400&auto=format&fit=crop&q=95",
-    "https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=600&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=2400&auto=format&fit=crop&q=100",
     "https://images.unsplash.com/photo-1616431629879-af0e95bf9f88?w=2400&auto=format&fit=crop&q=100",
     "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=2400&auto=format&fit=crop&q=100",
-    "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=600&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=2400&auto=format&fit=crop&q=95",
+    "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=2400&auto=format&fit=crop&q=100",
+    "https://media.istockphoto.com/id/1443775278/photo/beautiful-indian-wedding-setup-with-stage-decorations-and-flowers.jpg?s=612x612&w=0&k=20&c=6XwAjR5pQjHN0VQHYZShdgMw5z-Q_tKTo40pRadWPnk=",
+];
+
+const HERO_CONTENT = [
+    {
+        title: <>Turn Your Dream <br className="hidden md:block" /> <span className="font-medium">Event Into Reality</span></>,
+        description: "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues and vendors.",
+        authTitle: <>Your Event Dashboard <br className="hidden md:block" /> <span className="font-medium">is Waiting for You</span></>,
+        authDescription: "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
+    },
+    {
+        title: <>Discover Elite <br className="hidden md:block" /> <span className="font-medium">Wedding Venues</span></>,
+        description: "Find the perfect backdrop for your special day with our curated selection of premium wedding destinations.",
+        authTitle: <>Manage Your Wedding <br className="hidden md:block" /> <span className="font-medium">Planning Portfolio</span></>,
+        authDescription: "Review venue availability and manage your wedding timeline effortlessly."
+    },
+    {
+        title: <>Corporate Excellence <br className="hidden md:block" /> <span className="font-medium">Redefined</span></>,
+        description: "Elevate your business gatherings with professional settings and world-class hospitality services.",
+        authTitle: <>Track Your Corporate <br className="hidden md:block" /> <span className="font-medium">Event Logistics</span></>,
+        authDescription: "Real-time updates on your corporate bookings and vendor communications."
+    },
+    {
+        title: <>Celebrations Made <br className="hidden md:block" /> <span className="font-medium">Effortless</span></>,
+        description: "We handle the complexity so you can focus on making memories with your loved ones.",
+        authTitle: <>Your Upcoming <br className="hidden md:block" /> <span className="font-medium">Celebration Milestones</span></>,
+        authDescription: "Ensure every detail of your party is synchronized and ready for the big day."
+    },
+    {
+        title: <>Elite Vendor <br className="hidden md:block" /> <span className="font-medium">Partnerships</span></>,
+        description: "Direct access to top-tier catering, decor, and entertainment professionals across India.",
+        authTitle: <>Direct Communication <br className="hidden md:block" /> <span className="font-medium">with Elite Vendors</span></>,
+        authDescription: "Message your service providers directly through our integrated chat system."
+    },
+    {
+        title: <>Experience Premium <br className="hidden md:block" /> <span className="font-medium">Event Management</span></>,
+        description: "Join 10,000+ satisfied clients who trust Airion for their most important occasions.",
+        authTitle: <>Unlock Your Full <br className="hidden md:block" /> <span className="font-medium">Planning Potential</span></>,
+        authDescription: "Access exclusive tools and premium features designed for serious event planners."
+    }
 ];
 
 const SEARCH_TABS = ["All", "Venues", "Services", "Experiences"];
@@ -110,34 +149,45 @@ const Hero: React.FC = () => {
 
                         {/* ✅ Dynamic Heading — MOBILE FIX: Responsive scale */}
                         <div className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] tracking-tighter">
-                            {isAuthenticated ? (
-                                <>
-                                    <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
-                                        Your Event Dashboard <br className="hidden md:block" />
-                                        <span className="font-medium">
-                                            is Waiting for You
-                                        </span>
-                                    </h1>
-                                </>
-                            ) : (
-                                <>
-                                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
-                                        Turn Your Dream <br className="hidden md:block" />
-                                        <span className="font-medium">
-                                            Event Into Reality
-                                        </span>
-                                    </h1>
-                                </>
-                            )}
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentImageIndex}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    {isAuthenticated ? (
+                                        <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
+                                            {HERO_CONTENT[currentImageIndex].authTitle}
+                                        </h1>
+                                    ) : (
+                                        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+                                            {HERO_CONTENT[currentImageIndex].title}
+                                        </h1>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
 
                         {/* ✅ Dynamic Description */}
-                        <p className="text-base md:text-lg text-white max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
-                            {isAuthenticated
-                                ? "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
-                                : "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues, vendors, and planners. 10,000+ events"
-                            }
-                        </p>
+                        <div className="min-h-[3rem]">
+                            <AnimatePresence mode="wait">
+                                <motion.p
+                                    key={currentImageIndex}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="text-base md:text-lg text-white max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed"
+                                >
+                                    {isAuthenticated
+                                        ? HERO_CONTENT[currentImageIndex].authDescription
+                                        : HERO_CONTENT[currentImageIndex].description
+                                    }
+                                </motion.p>
+                            </AnimatePresence>
+                        </div>
 
                         {/* ✅ Trust Badges */}
                         {!isAuthenticated && (

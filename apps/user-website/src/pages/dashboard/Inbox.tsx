@@ -15,7 +15,7 @@ export const Inbox: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [showMobileChat, setShowMobileChat] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [typingUser, setTypingUser] = useState<string | null>(null);
 
     // Fetch Conversations

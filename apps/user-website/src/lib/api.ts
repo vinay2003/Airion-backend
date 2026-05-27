@@ -207,8 +207,8 @@ export const fetchGuests = async () => await api.get('/guests');
 export const createGuest = async (d: any) => await api.post('/guests', d);
 export const updateGuest = async (id: string, d: any) => await api.patch(`/guests/${id}`, d);
 export const deleteGuest = async (id: string) => await api.delete(`/guests/${id}`);
-export const fetchConversations = async () => await api.get('/chat/conversations');
-export const fetchMessages = async (id: string) => await api.get(`/chat/messages/${id}`);
+export const fetchConversations = async () => (await api.get('/chat/conversations')) as any[];
+export const fetchMessages = async (id: string) => (await api.get(`/chat/messages/${id}`)) as any[];
 export const startConversation = async (vId: string) => await api.post('/chat/start', { vendorId: vId });
 export const updateProfile = async (d: any) => await api.patch('/auth/profile', d);
 export const changePassword = async (d: any) => await api.post('/auth/change-password', d);
@@ -221,15 +221,13 @@ export const fetchVendorSchedule = async (vId: string) => await api.get(`/availa
 export const blockDate = async (date: string, reason?: string) => await api.post('/availability/block', { date, reason });
 export const unblockDate = async (date: string) => await api.delete(`/availability/block/${date}`);
 export const generateEasyReply = async (inquiry: string, voice?: string) => await api.post('/ai/easy-reply', { inquiry, voice });
-export const checkAvailability = async (vId: string, date: string) => await api.get('/availability/check', { params: { vendorId: vId, date } });
+export const checkAvailability = async (vId: string, date: string) => (await api.get('/availability/check', { params: { vendorId: vId, date } })) as any;
 
 export const uploadImage = async (file: File) => {
     const fd = new FormData(); fd.append('file', file);
-    const res = await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-    return res;
+    return (await api.post('/uploads/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })) as any;
 };
 
 export const askSupportAI = async (message: string) => {
-    const res = await api.post('/ai/support', { message });
-    return res;
+    return (await api.post('/ai/support', { message })) as any;
 };

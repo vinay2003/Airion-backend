@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Patch, UseGuards, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { SubscriptionsService } from './subscriptions.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -54,6 +54,20 @@ export class SubscriptionsController {
     @Put('admin/plans/:id')
     updatePlan(@Param('id') id: string, @Body() planData: any) {
         return this.subscriptionsService.updatePlan(id, planData);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    @Patch('admin/plans/:id/toggle')
+    togglePlanStatus(@Param('id') id: string) {
+        return this.subscriptionsService.togglePlanStatus(id);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    @Delete('admin/plans/:id')
+    deletePlan(@Param('id') id: string) {
+        return this.subscriptionsService.deletePlan(id);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)

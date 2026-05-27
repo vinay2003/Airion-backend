@@ -74,9 +74,22 @@ export class SubscriptionsService {
     async updatePlan(id: string, data: Partial<SubscriptionPlan>) {
         const plan = await this.planRepository.findOne({ where: { id } });
         if (!plan) throw new NotFoundException('Plan not found');
-
         Object.assign(plan, data);
         return this.planRepository.save(plan);
+    }
+
+    async togglePlanStatus(id: string) {
+        const plan = await this.planRepository.findOne({ where: { id } });
+        if (!plan) throw new NotFoundException('Plan not found');
+        plan.isActive = !plan.isActive;
+        return this.planRepository.save(plan);
+    }
+
+    async deletePlan(id: string) {
+        const plan = await this.planRepository.findOne({ where: { id } });
+        if (!plan) throw new NotFoundException('Plan not found');
+        await this.planRepository.remove(plan);
+        return { success: true, message: 'Plan deleted' };
     }
 
     async getAllSubscribers() {

@@ -207,7 +207,6 @@ const Hero: React.FC = () => {
                                     key={tab}
                                     type="button"
                                     onClick={() => {
-                                        let finalId = tabId;
                                         // Simple navigation back to home with category
                                         const target = tabId === 'all' ? '/' : `/?category=${tabId}`;
                                         navigate(target);

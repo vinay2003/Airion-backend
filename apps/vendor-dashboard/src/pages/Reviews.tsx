@@ -108,14 +108,15 @@ const Reviews: React.FC = () => {
                                         ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-lg'
                                         : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                                 >
-                                    const labels: {[key: string]: string } = {
-                                        all: 'All Reviews',
-                                    positive: 'Positive',
-                                    negative: 'Critical',
-                                    no_reply: 'Pending Reply'
-                                    };
-                                    return labels[t] || t;
-                                })()}
+                                    {(() => {
+                                        const labels: { [key: string]: string } = {
+                                            all: 'All Reviews',
+                                            positive: 'Positive',
+                                            negative: 'Critical',
+                                            no_reply: 'Pending Reply'
+                                        };
+                                        return labels[t] || t;
+                                    })()}
                                 </button>
                             ))}
                         </div>

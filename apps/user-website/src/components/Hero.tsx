@@ -12,7 +12,7 @@ const HERO_IMAGES = [
     "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=1600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=1600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1601482441062-b9f13131f33a?w=1600&auto=format&fit=crop&q=80",
-];
+    ō];
 
 // Append clone of first slide → enables seamless infinite forward loop
 const LOOP_IMAGES = [...HERO_IMAGES, HERO_IMAGES[0]];
@@ -241,9 +241,8 @@ const Hero: React.FC = () => {
                             onClick={() => goToSlide(idx)}
                             className="group p-2"
                         >
-                            <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                                idx === displayIndex ? 'w-10 bg-white' : 'w-2 bg-white/30 group-hover:bg-white/50'
-                            }`} />
+                            <div className={`h-1.5 rounded-full transition-all duration-500 ${idx === displayIndex ? 'w-10 bg-white' : 'w-2 bg-white/30 group-hover:bg-white/50'
+                                }`} />
                         </button>
                     ))}
                 </div>

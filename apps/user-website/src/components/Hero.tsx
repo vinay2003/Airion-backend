@@ -6,50 +6,59 @@ import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
 
 const HERO_IMAGES = [
-    "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=2400&auto=format&fit=crop&q=95",
-    "https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=2400&auto=format&fit=crop&q=100",
-    "https://images.unsplash.com/photo-1616431629879-af0e95bf9f88?w=2400&auto=format&fit=crop&q=100",
-    "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=2400&auto=format&fit=crop&q=100",
-    "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=2400&auto=format&fit=crop&q=100",
-    "https://media.istockphoto.com/id/1443775278/photo/beautiful-indian-wedding-setup-with-stage-decorations-and-flowers.jpg?s=612x612&w=0&k=20&c=6XwAjR5pQjHN0VQHYZShdgMw5z-Q_tKTo40pRadWPnk=",
+    "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1616431629879-af0e95bf9f88?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1631857455684-a54a2f03665f?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1688437310162-8eef29fa74b4?w=1600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1601482441062-b9f13131f33a?w=1600&auto=format&fit=crop&q=80",
 ];
+
+// Append clone of first slide → enables seamless infinite forward loop
+const LOOP_IMAGES = [...HERO_IMAGES, HERO_IMAGES[0]];
 
 const HERO_CONTENT = [
     {
         title: <>Turn Your Dream <br className="hidden md:block" /> <span className="font-medium">Event Into Reality</span></>,
         description: "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues and vendors.",
         authTitle: <>Your Event Dashboard <br className="hidden md:block" /> <span className="font-medium">is Waiting for You</span></>,
-        authDescription: "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes."
+        authDescription: "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes.",
+        badge: { icon: "★", text: "4.9/5 · 8,200+ reviews", color: "text-yellow-400" }
     },
     {
         title: <>Discover Elite <br className="hidden md:block" /> <span className="font-medium">Wedding Venues</span></>,
         description: "Find the perfect backdrop for your special day with our curated selection of premium wedding destinations.",
         authTitle: <>Manage Your Wedding <br className="hidden md:block" /> <span className="font-medium">Planning Portfolio</span></>,
-        authDescription: "Review venue availability and manage your wedding timeline effortlessly."
+        authDescription: "Review venue availability and manage your wedding timeline effortlessly.",
+        badge: { icon: "⚡", text: "Response within 2 hours", color: "text-yellow-300" }
     },
     {
         title: <>Corporate Excellence <br className="hidden md:block" /> <span className="font-medium">Redefined</span></>,
         description: "Elevate your business gatherings with professional settings and world-class hospitality services.",
         authTitle: <>Track Your Corporate <br className="hidden md:block" /> <span className="font-medium">Event Logistics</span></>,
-        authDescription: "Real-time updates on your corporate bookings and vendor communications."
+        authDescription: "Real-time updates on your corporate bookings and vendor communications.",
+        badge: { icon: "🔒", text: "100% Secure Booking", color: "text-blue-400" }
     },
     {
         title: <>Celebrations Made <br className="hidden md:block" /> <span className="font-medium">Effortless</span></>,
         description: "We handle the complexity so you can focus on making memories with your loved ones.",
         authTitle: <>Your Upcoming <br className="hidden md:block" /> <span className="font-medium">Celebration Milestones</span></>,
-        authDescription: "Ensure every detail of your party is synchronized and ready for the big day."
+        authDescription: "Ensure every detail of your party is synchronized and ready for the big day.",
+        badge: { icon: "✓", text: "Verified Vendors Only", color: "text-green-400" }
     },
     {
         title: <>Elite Vendor <br className="hidden md:block" /> <span className="font-medium">Partnerships</span></>,
         description: "Direct access to top-tier catering, decor, and entertainment professionals across India.",
         authTitle: <>Direct Communication <br className="hidden md:block" /> <span className="font-medium">with Elite Vendors</span></>,
-        authDescription: "Message your service providers directly through our integrated chat system."
+        authDescription: "Message your service providers directly through our integrated chat system.",
+        badge: { icon: "🔥", text: "Trending Creative Platform", color: "text-orange-500" }
     },
     {
         title: <>Experience Premium <br className="hidden md:block" /> <span className="font-medium">Event Management</span></>,
         description: "Join 10,000+ satisfied clients who trust Airion for their most important occasions.",
         authTitle: <>Unlock Your Full <br className="hidden md:block" /> <span className="font-medium">Planning Potential</span></>,
-        authDescription: "Access exclusive tools and premium features designed for serious event planners."
+        authDescription: "Access exclusive tools and premium features designed for serious event planners.",
+        badge: { icon: "🤝", text: "Connect with Industry Experts", color: "text-blue-400" }
     }
 ];
 
@@ -63,21 +72,43 @@ const Hero: React.FC = () => {
     const searchParams = new URLSearchParams(location.search);
     const activeCategory = searchParams.get('category') || 'all';
 
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [stripIndex, setStripIndex] = useState(0);
+    const [disableTransition, setDisableTransition] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
+    // Real index for content & dots — wraps clone (index 6) back to 0
+    const displayIndex = stripIndex % HERO_IMAGES.length;
+
+    // Auto-advance every 6s
     useEffect(() => {
-        HERO_IMAGES.forEach((src) => {
-            const img = new Image();
-            img.src = src;
-        });
-
         const interval = setInterval(() => {
-            setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-        }, 5000);
-
+            setStripIndex(prev => prev + 1);
+        }, 6000);
         return () => clearInterval(interval);
     }, []);
+
+    // When we land on the clone, snap silently back to real index 0
+    useEffect(() => {
+        if (stripIndex === LOOP_IMAGES.length - 1) {
+            const timer = setTimeout(() => {
+                setDisableTransition(true);
+                setStripIndex(0);
+            }, 1250); // just after 1.2s CSS transition finishes
+            return () => clearTimeout(timer);
+        }
+    }, [stripIndex]);
+
+    // Re-enable transition after the instant snap has rendered
+    useEffect(() => {
+        if (disableTransition) {
+            const raf = requestAnimationFrame(() =>
+                requestAnimationFrame(() => setDisableTransition(false))
+            );
+            return () => cancelAnimationFrame(raf);
+        }
+    }, [disableTransition]);
+
+    const goToSlide = (idx: number) => setStripIndex(idx);
 
     return (
         <div className="relative w-full">
@@ -103,137 +134,120 @@ const Hero: React.FC = () => {
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
             <div className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
 
-                {/* Carousel */}
-                <AnimatePresence>
-                    <motion.div
-                        key={currentImageIndex}
-                        className="absolute inset-0 z-0"
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1.5 }}
-                    >
-                        <img
-                            src={HERO_IMAGES[currentImageIndex]}
-                            className="w-full h-full object-cover"
-                            alt="event"
-                            fetchPriority="high"
-                            decoding="async"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/90" />
-                    </motion.div>
-                </AnimatePresence>
-
-                {/* Content */}
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
-                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                        transition={{ duration: 1, delay: 0.2 }}
-                        className="relative z-10 space-y-6 max-w-4xl"
-                    >
-
-                        {/* ✅ Welcome badge */}
-                        {isAuthenticated && (
-                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl">
-                                <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]"></div>
-
-                                Welcome back,
-                                <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                                    {user?.name.split(' ')[0]}
-                                </span>
-                                !
-                            </div>
-                        )}
-
-                        {/* ✅ Dynamic Heading — MOBILE FIX: Responsive scale */}
-                        <div className="text-[2.25rem] xs:text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] tracking-tighter">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentImageIndex}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    {isAuthenticated ? (
-                                        <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
-                                            {HERO_CONTENT[currentImageIndex].authTitle}
-                                        </h1>
-                                    ) : (
-                                        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
-                                            {HERO_CONTENT[currentImageIndex].title}
-                                        </h1>
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
+                {/* ── FILMSTRIP (with clone at end for seamless infinite loop) ── */}
+                <div
+                    className="absolute inset-0 flex"
+                    style={{
+                        width: `${LOOP_IMAGES.length * 100}%`,
+                        transform: `translateX(-${stripIndex * (100 / LOOP_IMAGES.length)}%)`,
+                        transition: disableTransition ? 'none' : 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)',
+                        willChange: 'transform',
+                    }}
+                >
+                    {LOOP_IMAGES.map((src, idx) => (
+                        <div
+                            key={idx}
+                            className="relative flex-shrink-0"
+                            style={{ width: `${100 / LOOP_IMAGES.length}%` }}
+                        >
+                            <img
+                                src={src}
+                                className="w-full h-full object-cover"
+                                alt={`slide-${idx}`}
+                                loading={idx === 0 ? 'eager' : 'lazy'}
+                                decoding={idx === 0 ? 'sync' : 'async'}
+                                fetchPriority={idx === 0 ? 'high' : 'low'}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
                         </div>
-
-                        {/* ✅ Dynamic Description */}
-                        <div className="min-h-[3rem]">
-                            <AnimatePresence mode="wait">
-                                <motion.p
-                                    key={currentImageIndex}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="text-base md:text-lg text-white max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed"
-                                >
-                                    {isAuthenticated
-                                        ? HERO_CONTENT[currentImageIndex].authDescription
-                                        : HERO_CONTENT[currentImageIndex].description
-                                    }
-                                </motion.p>
-                            </AnimatePresence>
-                        </div>
-
-                        {/* ✅ Trust Badges */}
-                        {!isAuthenticated && (
-                            <div className="flex flex-wrap justify-center items-center gap-5 md:gap-8 mt-6 bg-black/30 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/20 shadow-2xl">
-                                <span className="flex items-center gap-2 text-white text-sm md:text-base font-semibold drop-shadow-md">
-                                    <span className="text-yellow-400 text-lg">★</span> 4.9/5 · 8,200+ reviews
-                                </span>
-                                <span className="flex items-center gap-2 text-white text-sm md:text-base font-semibold drop-shadow-md">
-                                    <span className="text-yellow-300 text-lg">⚡</span> Response within 2 hours
-                                </span>
-                                <span className="flex items-center gap-2 text-white text-sm md:text-base font-semibold drop-shadow-md">
-                                    <span className="text-lg">🔒</span> 100% Secure Booking
-                                </span>
-                                <span className="flex items-center gap-2 text-white text-sm md:text-base font-semibold drop-shadow-md">
-                                    <span className="text-green-400 text-lg">✓</span> Verified Vendors Only
-                                </span>
-                            </div>
-                        )}
-                        {/* ✅ CTA Button */}
-                        {isAuthenticated && (
-                            <Link
-                                to="/dashboard"
-                                className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition"
-                            >
-                                Go to Dashboard
-                                <ArrowRight size={18} />
-                            </Link>
-                        )}
-
-                    </motion.div>
+                    ))}
                 </div>
 
-                {/* Indicators */}
-                <div className="absolute bottom-8 left-0 right-0 hidden md:flex justify-center gap-3">
+                {/* ── TEXT OVERLAY: fades between slides using displayIndex ── */}
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={displayIndex}
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -14 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            className="space-y-8 max-w-4xl w-full"
+                        >
+                            {/* Welcome badge (authenticated) */}
+                            {isAuthenticated && (
+                                <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl mx-auto">
+                                    <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]" />
+                                    Welcome back,
+                                    <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                                        {user?.name.split(' ')[0]}
+                                    </span>
+                                    !
+                                </div>
+                            )}
+
+                            {/* Heading */}
+                            {isAuthenticated ? (
+                                <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
+                                    {HERO_CONTENT[displayIndex].authTitle}
+                                </h1>
+                            ) : (
+                                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+                                    {HERO_CONTENT[displayIndex].title}
+                                </h1>
+                            )}
+
+                            {/* Description */}
+                            <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
+                                {isAuthenticated
+                                    ? HERO_CONTENT[displayIndex].authDescription
+                                    : HERO_CONTENT[displayIndex].description}
+                            </p>
+
+                            {/* Trust Badge */}
+                            {!isAuthenticated && HERO_CONTENT[displayIndex].badge && (
+                                <div className="flex justify-center">
+                                    <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-4 hover:bg-black/50 transition-colors">
+                                        <span className={`text-2xl ${HERO_CONTENT[displayIndex].badge.color}`}>
+                                            {HERO_CONTENT[displayIndex].badge.icon}
+                                        </span>
+                                        <span className="text-white text-sm md:text-lg font-bold tracking-wide">
+                                            {HERO_CONTENT[displayIndex].badge.text}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* CTA Button (authenticated) */}
+                            {isAuthenticated && (
+                                <Link
+                                    to="/dashboard"
+                                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform hover:scale-105 active:scale-95"
+                                >
+                                    Go to Dashboard
+                                    <ArrowRight size={18} />
+                                </Link>
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                {/* Indicators — keyed to displayIndex */}
+                <div className="absolute bottom-10 left-0 right-0 z-20 flex justify-center gap-4">
                     {HERO_IMAGES.map((_, idx) => (
                         <button
                             key={idx}
                             type="button"
-                            onClick={() => setCurrentImageIndex(idx)}
-                            className={`h-1.5 rounded-full ${idx === currentImageIndex
-                                ? "w-8 bg-white"
-                                : "w-2 bg-white/40"
-                                }`}
-                        />
+                            onClick={() => goToSlide(idx)}
+                            className="group p-2"
+                        >
+                            <div className={`h-1.5 rounded-full transition-all duration-500 ${
+                                idx === displayIndex ? 'w-10 bg-white' : 'w-2 bg-white/30 group-hover:bg-white/50'
+                            }`} />
+                        </button>
                     ))}
                 </div>
+
             </div>
 
             {/* Search Section */}

@@ -8,8 +8,12 @@ import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } fro
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 type AuthMode = 'login' | 'signup';
+
+const isFirebaseEnabled = !!import.meta.env.VITE_FIREBASE_API_KEY;
 
 /**
  * 🔐 Unified Authentication Gateway: Ease2event Core
@@ -40,6 +44,7 @@ const UnifiedAuth: React.FC = () => {
     const [fullName, setFullName] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
     // Identity Configuration & Validation
     useEffect(() => {
@@ -127,24 +132,45 @@ const UnifiedAuth: React.FC = () => {
             const finalPhone = `+91${digitsOnly}`;
             setNormalizedPhone(finalPhone);
 
-            const response = mode === 'signup'
-                ? await otpAuth.sendSignupOTP({ phone: finalPhone })
-                : await otpAuth.sendLoginOTP({ phone: finalPhone });
+            if (isFirebaseEnabled) {
+                // Initialize Recaptcha Verifier
+                let appVerifier = (window as any).recaptchaVerifier;
+                if (!appVerifier) {
+                    appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                        size: 'invisible',
+                        callback: () => {}
+                    });
+                    (window as any).recaptchaVerifier = appVerifier;
+                }
 
-            const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
-            if (import.meta.env.DEV && devCode) {
-                toast(`Dev code: ${devCode}`, { icon: '🔑', duration: 8000 });
+                // Trigger Firebase SMS Sending
+                const result = await signInWithPhoneNumber(auth, finalPhone, appVerifier);
+                setConfirmationResult(result);
+                toast.success('Verification code sent successfully!');
+                setStep('otp');
+                setResendTimer(60);
+            } else {
+                // Graceful fallback to existing dev mock OTP flow
+                const response = mode === 'signup'
+                    ? await otpAuth.sendSignupOTP({ phone: finalPhone })
+                    : await otpAuth.sendLoginOTP({ phone: finalPhone });
+
+                const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
+                if (import.meta.env.DEV && devCode) {
+                    toast(`Dev code: ${devCode}`, { icon: '🔑', duration: 8000 });
+                }
+
+                toast.success('Verification code sent.');
+                setStep('otp');
+                setResendTimer(60);
             }
-
-            toast.success('Verification code sent.');
-            setStep('otp');
-            setResendTimer(60);
         } catch (err: any) {
+            console.error('Send OTP Error:', err);
             if (err.response?.status === 409) {
                 toast.error('This account already exists. Switching to login.');
                 setMode('login');
             } else {
-                toast.error(err.response?.data?.message || 'Failed to send code. Please try again.');
+                toast.error(err.response?.data?.message || err.message || 'Failed to send code. Please try again.');
             }
         } finally {
             setLoading(false);
@@ -160,66 +186,124 @@ const UnifiedAuth: React.FC = () => {
 
         setLoading(true);
         try {
-            const response = mode === 'signup'
-                ? await otpAuth.verifySignupOTP({
-                    phone: normalizedPhone,
-                    otp: otpValue.trim(),
-                    role: selectedRole
-                })
-                : await otpAuth.verifyLoginOTP({
-                    phone: normalizedPhone,
-                    otp: otpValue.trim()
-                });
+            if (isFirebaseEnabled && confirmationResult) {
+                // 1. Confirm code with Firebase Auth
+                const result = await confirmationResult.confirm(otpValue.trim());
+                const firebaseUser = result.user;
 
-            if (response.access_token) {
-                await loginWithToken(response.access_token);
+                // 2. Fetch Firebase ID Token
+                const idToken = await firebaseUser.getIdToken();
 
-                if (mode === 'signup') {
-                    if (selectedRole === UserRole.USER) {
-                        toast.success('Verified! Please complete your profile.');
-                        setStep('details');
-                        setLoading(false);
-                        return;
-                    } else if (selectedRole === UserRole.VENDOR) {
-                        toast.success('Account created. Redirecting to vendor setup.');
-                        const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
-                        const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
-                        setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
-                        return;
+                // 3. Post Token to Custom NestJS backend to register/login and issue local JWTs
+                const response = await otpAuth.verifyFirebaseToken(idToken, selectedRole);
+
+                if (response.access_token) {
+                    await loginWithToken(response.access_token);
+
+                    if (mode === 'signup') {
+                        if (selectedRole === UserRole.USER) {
+                            toast.success('Verified! Please complete your profile.');
+                            setStep('details');
+                            setLoading(false);
+                            return;
+                        } else if (selectedRole === UserRole.VENDOR) {
+                            toast.success('Account created. Redirecting to vendor setup.');
+                            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+                            const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
+                            setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
+                            return;
+                        }
                     }
+
+                    toast.success('Welcome back!');
+
+                    setTimeout(() => {
+                        const tokenParam = `?token=${response.access_token}`;
+                        const role = response?.user?.role || 'user';
+
+                        if (role === 'vendor') {
+                            if (isLocal) {
+                                window.location.href = `http://localhost:5174/${tokenParam}`;
+                            } else {
+                                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
+                                window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
+                            }
+                        } else if (role === 'admin') {
+                            if (isLocal) {
+                                window.location.href = `http://localhost:5175/${tokenParam}`;
+                            } else {
+                                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
+                                window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
+                            }
+                        } else {
+                            navigate('/dashboard');
+                        }
+                    }, 800);
                 }
+            } else {
+                // Fallback to custom backend database verification
+                const response = mode === 'signup'
+                    ? await otpAuth.verifySignupOTP({
+                        phone: normalizedPhone,
+                        otp: otpValue.trim(),
+                        role: selectedRole
+                    })
+                    : await otpAuth.verifyLoginOTP({
+                        phone: normalizedPhone,
+                        otp: otpValue.trim()
+                    });
 
-                // 🌐 Strategic Redirection based on Decoded Identity
-                const tokenPayload = decodeToken(response.access_token);
-                const role = tokenPayload?.role || response?.user?.role || 'user';
+                if (response.access_token) {
+                    await loginWithToken(response.access_token);
 
-                toast.success('Welcome back!');
-
-                setTimeout(() => {
-                    const tokenParam = `?token=${response.access_token}`;
-
-                    if (role === 'vendor') {
-                        if (isLocal) {
-                            window.location.href = `http://localhost:5174/${tokenParam}`;
-                        } else {
-                            const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
-                            window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
+                    if (mode === 'signup') {
+                        if (selectedRole === UserRole.USER) {
+                            toast.success('Verified! Please complete your profile.');
+                            setStep('details');
+                            setLoading(false);
+                            return;
+                        } else if (selectedRole === UserRole.VENDOR) {
+                            toast.success('Account created. Redirecting to vendor setup.');
+                            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+                            const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
+                            setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
+                            return;
                         }
-                    } else if (role === 'admin') {
-                        if (isLocal) {
-                            window.location.href = `http://localhost:5175/${tokenParam}`;
-                        } else {
-                            const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
-                            window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
-                        }
-                    } else {
-                        navigate('/dashboard');
                     }
-                }, 800);
+
+                    // 🌐 Strategic Redirection based on Decoded Identity
+                    const tokenPayload = decodeToken(response.access_token);
+                    const role = tokenPayload?.role || response?.user?.role || 'user';
+
+                    toast.success('Welcome back!');
+
+                    setTimeout(() => {
+                        const tokenParam = `?token=${response.access_token}`;
+
+                        if (role === 'vendor') {
+                            if (isLocal) {
+                                window.location.href = `http://localhost:5174/${tokenParam}`;
+                            } else {
+                                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
+                                window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
+                            }
+                        } else if (role === 'admin') {
+                            if (isLocal) {
+                                window.location.href = `http://localhost:5175/${tokenParam}`;
+                            } else {
+                                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
+                                window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
+                            }
+                        } else {
+                            navigate('/dashboard');
+                        }
+                    }, 800);
+                }
             }
         } catch (err: any) {
+            console.error('OTP Verification Error:', err);
             const apiError = err.response?.data;
-            const errorMsg = apiError?.error || apiError?.message || '';
+            const errorMsg = apiError?.error || apiError?.message || err.message || '';
 
             // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
             if (errorMsg.includes('User not found') || err.response?.status === 401) {
@@ -260,6 +344,7 @@ const UnifiedAuth: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col lg:flex-row items-start font-sans relative">
+            <div id="recaptcha-container"></div>
             {/* 🎨 Visual Narrative Engine */}
             <div className="hidden lg:flex w-1/2 h-screen sticky top-0 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
                 <div className="absolute inset-0">

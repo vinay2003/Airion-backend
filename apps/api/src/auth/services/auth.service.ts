@@ -12,6 +12,7 @@ import { SignupDto } from '../dto/signup.dto';
 import { SessionService } from './session.service';
 import { CryptoUtil } from '../../common/utils/crypto.util';
 import { RefreshToken } from '../entities/refresh-token.entity';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,39 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private sessionService: SessionService,
-    ) { }
+    ) {
+        this.initializeFirebase();
+    }
+
+    // Initialize Firebase Admin SDK using Environment Variables
+    private initializeFirebase() {
+        if (admin.apps.length === 0) {
+            const projectId = this.configService.get<string>('FIREBASE_PROJECT_ID');
+            const clientEmail = this.configService.get<string>('FIREBASE_CLIENT_EMAIL');
+            const privateKey = this.configService.get<string>('FIREBASE_PRIVATE_KEY');
+
+            if (!projectId || !clientEmail || !privateKey) {
+                this.logger.warn('⚠️ Firebase Admin environment variables are not fully configured. Phone OTP via Firebase will be unavailable until set.');
+                return;
+            }
+
+            try {
+                // Ensure newlines in private key are correctly unescaped
+                const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+
+                admin.initializeApp({
+                    credential: admin.credential.cert({
+                        projectId,
+                        clientEmail,
+                        privateKey: formattedPrivateKey,
+                    }),
+                });
+                this.logger.log('🔥 Firebase Admin SDK initialized successfully!');
+            } catch (error: any) {
+                this.logger.error(`❌ Failed to initialize Firebase Admin SDK: ${error.message}`);
+            }
+        }
+    }
 
     // Generate 6-digit secure OTP
     private generateOTP(): string {
@@ -710,5 +743,101 @@ export class AuthService {
             order: { createdAt: 'DESC' },
             select: ['id', 'name', 'email', 'phoneNumber', 'createdAt', 'role', 'lastLoginAt']
         });
+    }
+
+    // Verify Firebase ID Token and return local JWTs
+    async verifyFirebaseToken(idToken: string, requestedRole: UserRole): Promise<{ access_token: string; refresh_token: string; user: Partial<User>; isProfileComplete?: boolean }> {
+        this.initializeFirebase();
+
+        if (admin.apps.length === 0) {
+            throw new BadRequestException('Firebase authentication is not configured on this server.');
+        }
+
+        try {
+            // 1. Verify token with Firebase Admin
+            const decodedToken = await admin.auth().verifyIdToken(idToken);
+            let phoneNumber = decodedToken.phone_number;
+
+            if (!phoneNumber) {
+                throw new UnauthorizedException('Authentication token did not contain a valid phone number.');
+            }
+
+            phoneNumber = phoneNumber.trim();
+
+            // 2. Query our local DB for the user using flexible matching
+            const whereConditions: any[] = [
+                { phoneNumber }
+            ];
+            if (phoneNumber.startsWith('+91')) {
+                whereConditions.push({ phoneNumber: phoneNumber.substring(3) });
+            } else if (phoneNumber.length === 10) {
+                whereConditions.push({ phoneNumber: `+91${phoneNumber}` });
+            }
+
+            let user = await this.userRepository.findOne({
+                where: whereConditions,
+                relations: ['vendor', 'vendor.category', 'vendor.subcategory', 'vendor.gallery', 'vendor.ads'],
+            });
+
+            // 3. Auto-Register if user does not exist (Genesis Flow)
+            if (!user) {
+                if (requestedRole === UserRole.ADMIN) {
+                    throw new ForbiddenException('Admin accounts cannot be created via social/phone auth.');
+                }
+                
+                const name = `User ${phoneNumber}`;
+                const userData = {
+                    name,
+                    phoneNumber,
+                    password: 'firebase-auth-user', // Placeholder
+                    role: requestedRole || UserRole.USER,
+                    emailVerified: false,
+                };
+                user = this.userRepository.create(userData as any) as unknown as User;
+                await this.userRepository.save(user);
+            }
+
+            // Update last login
+            user.lastLoginAt = new Date();
+            await this.userRepository.save(user);
+
+            // Get vendor attributes if vendor
+            const isProfileComplete = user.role === UserRole.VENDOR ? ((user as any).vendor?.isProfileComplete ?? false) : undefined;
+            const vendorId = (user as any).vendor?.id;
+
+            // 4. Generate local application JWTs
+            const payload = {
+                sub: user.id,
+                email: user.email,
+                role: user.role,
+                isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
+                vendorId,
+            };
+            const access_token = this.jwtService.sign(payload);
+
+            // Return user without password
+            const { password, ...userWithoutPassword } = user;
+
+            // Generate secure refresh token
+            const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
+            const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
+
+            const refreshToken = this.refreshTokenRepository.create({
+                userId: user.id,
+                tokenHash,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 Day TTL
+            });
+            await this.refreshTokenRepository.save(refreshToken);
+
+            return {
+                access_token,
+                refresh_token: refreshTokenPlain,
+                user: userWithoutPassword as Partial<User>,
+                isProfileComplete: user.role === UserRole.VENDOR ? isProfileComplete : undefined,
+            };
+        } catch (error: any) {
+            this.logger.error(`❌ Firebase token verification failed: ${error.message}`, error.stack);
+            throw new UnauthorizedException(error.message || 'Invalid Firebase token or verification error');
+        }
     }
 }

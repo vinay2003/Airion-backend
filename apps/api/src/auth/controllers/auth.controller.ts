@@ -44,6 +44,13 @@ export class AuthController {
         return this.authService.verifyLoginOTP(dto);
     }
 
+    // Verify Firebase Token and login/register
+    @Post('firebase/verify-token')
+    @HttpCode(HttpStatus.OK)
+    async verifyFirebaseToken(@Body() dto: { idToken: string; role: UserRole }) {
+        return this.authService.verifyFirebaseToken(dto.idToken, dto.role);
+    }
+
     // Admin Flow: Send OTP
     @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 per hour
     @Post('admin/send-otp')

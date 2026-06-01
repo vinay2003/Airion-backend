@@ -59,6 +59,9 @@ export const AUTH_ENDPOINTS = {
     // Social Auth
     GOOGLE_AUTH: '/auth/google',
     GITHUB_AUTH: '/auth/github',
+
+    // Firebase Auth
+    FIREBASE_VERIFY_TOKEN: '/auth/firebase/verify-token',
 } as const;
 
 // User Roles

@@ -178,6 +178,14 @@ export const otpAuth = {
         const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.VENDOR_SIGNUP_VERIFY_OTP, verification);
         return response.data;
     },
+
+    /**
+     * Verify Firebase phone token on backend
+     */
+    verifyFirebaseToken: async (idToken: string, role: string): Promise<AuthResponse> => {
+        const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.FIREBASE_VERIFY_TOKEN, { idToken, role });
+        return response.data;
+    },
 };
 
 /**

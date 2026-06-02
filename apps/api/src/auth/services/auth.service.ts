@@ -749,20 +749,43 @@ export class AuthService {
     async verifyFirebaseToken(idToken: string, requestedRole: UserRole): Promise<{ access_token: string; refresh_token: string; user: Partial<User>; isProfileComplete?: boolean }> {
         this.initializeFirebase();
 
-        if (admin.apps.length === 0) {
-            throw new BadRequestException('Firebase authentication is not configured on this server.');
+        try {
+            let phoneNumber: string | undefined;
+
+        // If Firebase Admin SDK is not configured, use a safe development mode fallback
+        const isNotConfigured = admin.apps.length === 0 || 
+                                !this.configService.get<string>('FIREBASE_PRIVATE_KEY') || 
+                                this.configService.get<string>('FIREBASE_PRIVATE_KEY')?.includes('xxxxx');
+
+        if (isNotConfigured) {
+            if (this.configService.get<string>('NODE_ENV') === 'development') {
+                try {
+                    this.logger.warn('⚠️ [Firebase Auth] Service is not configured. Falling back to local token decoding in development.');
+                    const payloadBase64 = idToken.split('.')[1];
+                    const decodedPayload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
+                    phoneNumber = decodedPayload.phone_number;
+                } catch (decodeErr) {
+                    throw new BadRequestException('Failed to decode Firebase token using development fallback.');
+                }
+            } else {
+                throw new BadRequestException('Firebase authentication is not configured on this server.');
+            }
+        } else {
+            try {
+                // 1. Verify token with Firebase Admin
+                const decodedToken = await admin.auth().verifyIdToken(idToken);
+                phoneNumber = decodedToken.phone_number;
+            } catch (err: any) {
+                this.logger.error('Firebase token verification failed:', err);
+                throw new UnauthorizedException('Invalid Firebase authentication token.');
+            }
         }
 
-        try {
-            // 1. Verify token with Firebase Admin
-            const decodedToken = await admin.auth().verifyIdToken(idToken);
-            let phoneNumber = decodedToken.phone_number;
+        if (!phoneNumber) {
+            throw new UnauthorizedException('Authentication token did not contain a valid phone number.');
+        }
 
-            if (!phoneNumber) {
-                throw new UnauthorizedException('Authentication token did not contain a valid phone number.');
-            }
-
-            phoneNumber = phoneNumber.trim();
+        phoneNumber = phoneNumber.trim();
 
             // 2. Query our local DB for the user using flexible matching
             const whereConditions: any[] = [

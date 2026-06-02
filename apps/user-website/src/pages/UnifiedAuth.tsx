@@ -133,7 +133,7 @@ const UnifiedAuth: React.FC = () => {
             setNormalizedPhone(finalPhone);
 
             if (isFirebaseEnabled) {
-                // Initialize Recaptcha Verifier
+                // Initialize Recaptcha Verifier once and reuse it from the static index.html container
                 let appVerifier = (window as any).recaptchaVerifier;
                 if (!appVerifier) {
                     appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -344,7 +344,6 @@ const UnifiedAuth: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col lg:flex-row items-start font-sans relative">
-            <div id="recaptcha-container"></div>
             {/* 🎨 Visual Narrative Engine */}
             <div className="hidden lg:flex w-1/2 h-screen sticky top-0 relative flex-col justify-end p-20 overflow-hidden bg-neutral-900 border-r border-neutral-100 dark:border-slate-800">
                 <div className="absolute inset-0">

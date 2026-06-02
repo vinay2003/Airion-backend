@@ -1,6 +1,48 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
+// 🛡️ Clean Console Interceptor: Suppress noisy internal Google/Firebase reCAPTCHA Enterprise fallback logs
+if (typeof window !== 'undefined') {
+  const originalWarn = console.warn;
+  const originalError = console.error;
+  const originalInfo = console.info;
+  const originalLog = console.log;
+
+  const isNoisyLog = (message: any) => {
+    if (typeof message === 'string') {
+      const lower = message.toLowerCase();
+      return (
+        lower.includes('recaptcha enterprise') ||
+        lower.includes('recaptcha v2') ||
+        lower.includes('identitytoolkit.googleapis.com') ||
+        lower.includes('recaptchaconfig') ||
+        lower.includes('recaptchaparams')
+      );
+    }
+    return false;
+  };
+
+  console.warn = (...args: any[]) => {
+    if (isNoisyLog(args[0])) return;
+    originalWarn(...args);
+  };
+
+  console.error = (...args: any[]) => {
+    if (isNoisyLog(args[0])) return;
+    originalError(...args);
+  };
+
+  console.info = (...args: any[]) => {
+    if (isNoisyLog(args[0])) return;
+    originalInfo(...args);
+  };
+
+  console.log = (...args: any[]) => {
+    if (isNoisyLog(args[0])) return;
+    originalLog(...args);
+  };
+}
+
 // Vite environments retrieve config properties via import.meta.env.VITE_ prefix
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

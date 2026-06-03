@@ -80,190 +80,75 @@ const Hero: React.FC = () => {
         return saved === null ? true : saved === 'true';
     });
 
-    // ── Audio refs — these NEVER go stale inside closures ──
-    const audioCtxRef       = useRef<AudioContext | null>(null);
-    const audioBufferRef    = useRef<AudioBuffer | null>(null);
+    // ── Audio refs ──
+    const audioRef          = useRef<HTMLAudioElement | null>(null);
     const isSoundEnabledRef = useRef(isSoundEnabled); // always-current mirror
     const isHeroVisibleRef  = useRef(true);           // false when user scrolls away
     const heroRef           = useRef<HTMLDivElement>(null);
 
-    // Keep ref in sync + persist preference whenever state changes
+    // Persist preference
     useEffect(() => {
         isSoundEnabledRef.current = isSoundEnabled;
         localStorage.setItem('hero_sound_enabled', String(isSoundEnabled));
         updateMusicPlayback();
     }, [isSoundEnabled]);
 
-    // Get-or-create a RUNNING AudioContext (safe to call from anywhere)
-    const getCtx = (): AudioContext | null => {
-        try {
-            if (!audioCtxRef.current) {
-                audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-            }
-            if (audioCtxRef.current.state === 'suspended') {
-                audioCtxRef.current.resume();
-            }
-            return audioCtxRef.current;
-        } catch (_) { return null; }
-    };
-
-    // Track hero visibility — no sound when scrolled away
+    // Track hero visibility
     useEffect(() => {
         const el = heroRef.current;
         if (!el) return;
         const obs = new IntersectionObserver(
             ([entry]) => { 
                 isHeroVisibleRef.current = entry.isIntersecting; 
-                updateMusicPlayback();
+                updateMusicPlayback(); 
             },
-            { threshold: 0.1 }   // Resume music as soon as 10% of hero is visible
+            { threshold: 0.01 }
         );
         obs.observe(el);
         return () => obs.disconnect();
     }, []);
 
-    // ── Synthesized cinematic whoosh (quiet, smooth, 3-layer) ──
-    const playSynthWhoosh = (ctx: AudioContext) => {
-        const now = ctx.currentTime;
-        const dur = 1.1;
-        const mkNoise = (len: number) => {
-            const b = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * len), ctx.sampleRate);
-            const ch = b.getChannelData(0);
-            for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
-            const s = ctx.createBufferSource(); s.buffer = b; return s;
-        };
+    // ── Synthesized fallback (not used now but kept for consistency) ──
+    const playSynthWhoosh = () => {};
 
-        // Layer 1 — airy highpass sweep (very soft)
-        const s1 = mkNoise(dur);
-        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.Q.value = 0.2;
-        hp.frequency.setValueAtTime(4000, now);
-        hp.frequency.exponentialRampToValueAtTime(600, now + dur);
-        const g1 = ctx.createGain();
-        g1.gain.setValueAtTime(0, now);
-        g1.gain.linearRampToValueAtTime(0.12, now + 0.25);  // quiet & slow rise
-        g1.gain.exponentialRampToValueAtTime(0.001, now + dur);
-        s1.connect(hp); hp.connect(g1); g1.connect(ctx.destination);
-        s1.start(now); s1.stop(now + dur);
-
-        // Layer 2 — warm bandpass body (gentle swell)
-        const s2 = mkNoise(dur);
-        const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.9;
-        bp.frequency.setValueAtTime(1000, now + 0.08);
-        bp.frequency.exponentialRampToValueAtTime(120, now + dur * 0.85);
-        const g2 = ctx.createGain();
-        g2.gain.setValueAtTime(0, now);
-        g2.gain.linearRampToValueAtTime(0.15, now + 0.22);  // soft swell
-        g2.gain.exponentialRampToValueAtTime(0.001, now + dur * 0.9);
-        s2.connect(bp); bp.connect(g2); g2.connect(ctx.destination);
-        s2.start(now); s2.stop(now + dur);
-
-        // Layer 3 — barely-there sine tail
-        const osc = ctx.createOscillator(); osc.type = 'sine';
-        osc.frequency.setValueAtTime(80, now + 0.65);
-        osc.frequency.exponentialRampToValueAtTime(28, now + dur);
-        const og = ctx.createGain();
-        og.gain.setValueAtTime(0, now + 0.65);
-        og.gain.linearRampToValueAtTime(0.08, now + 0.78);  // very subtle rumble
-        og.gain.exponentialRampToValueAtTime(0.001, now + dur);
-        osc.connect(og); og.connect(ctx.destination);
-        osc.start(now + 0.65); osc.stop(now + dur + 0.01);
-    };
-
-    // ── Central music playback control ──
-    const musicSourceRef = useRef<AudioBufferSourceNode | null>(null);
-    const musicGainRef   = useRef<GainNode | null>(null);
-
-    const updateMusicPlayback = async () => {
-        const ctx = getCtx();
-        if (!ctx) return;
+    const updateMusicPlayback = () => {
+        const audio = audioRef.current;
+        if (!audio) return;
 
         const shouldPlay = isSoundEnabledRef.current && isHeroVisibleRef.current;
 
         if (shouldPlay) {
-            // Start playing if not already playing
-            if (!musicSourceRef.current && audioBufferRef.current) {
-                const source = ctx.createBufferSource();
-                source.buffer = audioBufferRef.current;
-                source.loop = true;
-
-                const gain = ctx.createGain();
-                // Start at 0 and fade in for smoothness
-                gain.gain.setValueAtTime(0, ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 1.5);
-                
-                source.connect(gain);
-                gain.connect(ctx.destination);
-                
-                source.start(0);
-                musicSourceRef.current = source;
-                musicGainRef.current = gain;
-            } else if (ctx.state === 'suspended') {
-                ctx.resume();
-            }
+            // Browsers need a user interaction to play
+            audio.play().catch(e => console.log('Autoplay blocked, waiting for interaction...'));
         } else {
-            // Stop/Fade out if playing
-            if (musicSourceRef.current) {
-                const source = musicSourceRef.current;
-                const gain = musicGainRef.current;
-                
-                if (gain) {
-                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-                    setTimeout(() => {
-                        try {
-                            source.stop();
-                        } catch (e) {}
-                        if (musicSourceRef.current === source) {
-                            musicSourceRef.current = null;
-                            musicGainRef.current = null;
-                        }
-                    }, 600);
-                } else {
-                    source.stop();
-                    musicSourceRef.current = null;
-                }
-            }
+            audio.pause();
         }
     };
 
-    // Central slide sound (deprecated - loop takes over)
-    const playSlideSound = (forcePlay = false) => {
-        if (forcePlay) updateMusicPlayback();
-    };
-
-    // ── Unlock AudioContext + preload MP3 on FIRST any user gesture ──
+    // Preload audio and handle initial interaction
     useEffect(() => {
-        let done = false;
-        const unlock = async () => {
-            if (done) return;
-            const ctx = getCtx();
-            if (!ctx) return;
-            
-            done = true;
-            try {
-                // Fetch the soft wedding piano track
-                const res = await fetch('https://archive.org/download/jamendo-611137/01-2270703-michael%20lerm-Soft%20Wedding%20Piano.mp3');
-                if (res.ok) {
-                    const buf = await res.arrayBuffer();
-                    audioBufferRef.current = await ctx.decodeAudioData(buf);
-                    // Start playback if conditions are met
-                    updateMusicPlayback();
-                }
-            } catch (e) { 
-                console.error('[Music Load Error]', e);
-            }
+        const unlock = () => {
+            updateMusicPlayback();
+            // Remove listeners once unlocked
+            document.removeEventListener('click', unlock);
+            document.removeEventListener('scroll', unlock);
+            document.removeEventListener('touchstart', unlock);
         };
-        const opts = { once: true } as const;
-        document.addEventListener('click',      unlock, opts);
-        document.addEventListener('keydown',    unlock, opts);
-        document.addEventListener('mousedown',  unlock, opts);
-        document.addEventListener('touchstart', unlock, opts);
+        document.addEventListener('click', unlock);
+        document.addEventListener('scroll', unlock);
+        document.addEventListener('touchstart', unlock);
         return () => {
-            document.removeEventListener('click',      unlock);
-            document.removeEventListener('keydown',    unlock);
-            document.removeEventListener('mousedown',  unlock);
+            document.removeEventListener('click', unlock);
+            document.removeEventListener('scroll', unlock);
             document.removeEventListener('touchstart', unlock);
         };
     }, []);
+
+    // Central slide sound (deprecated)
+    const playSlideSound = () => {};
+
+    // Removed AudioContext effect hook
+
 
     // Real index for content & dots — wraps clone (index 6) back to 0
     const displayIndex = stripIndex % HERO_IMAGES.length;
@@ -324,6 +209,18 @@ const Hero: React.FC = () => {
                     </motion.div>
                 </div>
             )}
+
+            <audio
+                ref={audioRef}
+                src="https://cdn.pixabay.com/audio/2026/05/04/audio_5d1473f51a.mp3"
+                loop
+                preload="auto"
+                playsInline
+                onEnded={(e) => {
+                    e.currentTarget.currentTime = 0;
+                    e.currentTarget.play();
+                }}
+            />
 
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
             <div ref={heroRef} className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
@@ -432,8 +329,8 @@ const Hero: React.FC = () => {
                         const next = !isSoundEnabled;
                         setIsSoundEnabled(next);
                         if (next) {
-                            // Immediately play a sound as feedback so user knows it works
-                            playSlideSound(true);
+                            // Immediately check playback to start music
+                            updateMusicPlayback();
                         }
                     }}
                     className="absolute top-20 right-4 z-30 flex items-center gap-2 bg-black/40 hover:bg-black/60 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 transition-all group shadow-lg"

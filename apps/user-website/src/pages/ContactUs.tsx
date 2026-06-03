@@ -65,7 +65,7 @@ const ContactUs: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Visit Us</h3>
-                                    <p className="text-gray-400">Patna, Bihar 800001</p>
+                                    <p className="text-gray-400">India</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
@@ -112,40 +112,40 @@ const ContactUs: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">First Name</label>
-                                <input 
+                                <input
                                     name="firstName"
-                                    type="text" 
+                                    type="text"
                                     required
                                     value={formData.firstName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all" 
-                                    placeholder="John" 
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="John"
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Last Name</label>
-                                <input 
+                                <input
                                     name="lastName"
-                                    type="text" 
+                                    type="text"
                                     required
                                     value={formData.lastName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all" 
-                                    placeholder="Doe" 
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Doe"
                                 />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Email Address</label>
-                            <input 
+                            <input
                                 name="email"
-                                type="email" 
+                                type="email"
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all" 
-                                placeholder="john@example.com" 
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
+                                placeholder="john@example.com"
                             />
                         </div>
 
@@ -153,7 +153,7 @@ const ContactUs: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Subject</label>
                             <div className="relative">
                                 <ChevronDown size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                                <select 
+                                <select
                                     name="subject"
                                     value={formData.subject}
                                     onChange={handleChange}
@@ -169,20 +169,20 @@ const ContactUs: React.FC = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Message</label>
-                            <textarea 
+                            <textarea
                                 name="message"
-                                rows={4} 
+                                rows={4}
                                 required
                                 minLength={10}
                                 value={formData.message}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all" 
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
                                 placeholder="How can we help you?"
                             ></textarea>
                         </div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={isSubmitting}
                             className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
                         >

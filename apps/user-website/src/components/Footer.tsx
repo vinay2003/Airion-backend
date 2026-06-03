@@ -10,10 +10,10 @@ const Footer: React.FC = () => {
                     {/* Brand */}
                     <div className="space-y-4">
                         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 hover:scale-105 transition-transform inline-flex">
-                            <img 
-                                src="/logo.svg" 
-                                alt="Ease2Event Logo" 
-                                className="h-12 w-auto object-contain flex-shrink-0 drop-shadow-md" 
+                            <img
+                                src="/logo.svg"
+                                alt="Ease2Event Logo"
+                                className="h-12 w-auto object-contain flex-shrink-0 drop-shadow-md"
                             />
                             <span className="text-3xl font-black text-red-500 tracking-tighter">Ease<span className="text-gray-900 dark:text-white">2</span>event</span>
                         </Link>
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
                             </li>
                             <li className="flex items-start gap-3">
                                 <MapPin size={18} className="text-red-500 mt-0.5 flex-shrink-0" />
-                                <span>Patna, Bihar 800001</span>
+                                <span>India</span>
                             </li>
                         </ul>
                     </div>

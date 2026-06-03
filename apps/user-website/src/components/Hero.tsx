@@ -91,6 +91,7 @@ const Hero: React.FC = () => {
     useEffect(() => {
         isSoundEnabledRef.current = isSoundEnabled;
         localStorage.setItem('hero_sound_enabled', String(isSoundEnabled));
+        updateMusicPlayback();
     }, [isSoundEnabled]);
 
     // Get-or-create a RUNNING AudioContext (safe to call from anywhere)
@@ -111,8 +112,11 @@ const Hero: React.FC = () => {
         const el = heroRef.current;
         if (!el) return;
         const obs = new IntersectionObserver(
-            ([entry]) => { isHeroVisibleRef.current = entry.isIntersecting; },
-            { threshold: 0.2 }   // at least 20% of hero must be visible
+            ([entry]) => { 
+                isHeroVisibleRef.current = entry.isIntersecting; 
+                updateMusicPlayback();
+            },
+            { threshold: 0.1 }   // Resume music as soon as 10% of hero is visible
         );
         obs.observe(el);
         return () => obs.disconnect();
@@ -165,25 +169,65 @@ const Hero: React.FC = () => {
         osc.start(now + 0.65); osc.stop(now + dur + 0.01);
     };
 
-    // ── Central play fn — reads REFs so it's NEVER stale ──
-    const playSlideSound = (forcePlay = false) => {
-        if (!isSoundEnabledRef.current && !forcePlay) return;
-        if (!isHeroVisibleRef.current && !forcePlay) return;  // silent when scrolled away
+    // ── Central music playback control ──
+    const musicSourceRef = useRef<AudioBufferSourceNode | null>(null);
+    const musicGainRef   = useRef<GainNode | null>(null);
+
+    const updateMusicPlayback = async () => {
         const ctx = getCtx();
         if (!ctx) return;
-        try {
-            if (audioBufferRef.current) {
-                // Real MP3 file
-                const src = ctx.createBufferSource();
-                src.buffer = audioBufferRef.current;
-                const g = ctx.createGain(); g.gain.value = 0.4; // quiet & clean
-                src.connect(g); g.connect(ctx.destination);
-                src.start(ctx.currentTime);
-            } else {
-                // Synthesized fallback — always works, no file needed
-                playSynthWhoosh(ctx);
+
+        const shouldPlay = isSoundEnabledRef.current && isHeroVisibleRef.current;
+
+        if (shouldPlay) {
+            // Start playing if not already playing
+            if (!musicSourceRef.current && audioBufferRef.current) {
+                const source = ctx.createBufferSource();
+                source.buffer = audioBufferRef.current;
+                source.loop = true;
+
+                const gain = ctx.createGain();
+                // Start at 0 and fade in for smoothness
+                gain.gain.setValueAtTime(0, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 1.5);
+                
+                source.connect(gain);
+                gain.connect(ctx.destination);
+                
+                source.start(0);
+                musicSourceRef.current = source;
+                musicGainRef.current = gain;
+            } else if (ctx.state === 'suspended') {
+                ctx.resume();
             }
-        } catch (e) { console.error('[Sound]', e); }
+        } else {
+            // Stop/Fade out if playing
+            if (musicSourceRef.current) {
+                const source = musicSourceRef.current;
+                const gain = musicGainRef.current;
+                
+                if (gain) {
+                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+                    setTimeout(() => {
+                        try {
+                            source.stop();
+                        } catch (e) {}
+                        if (musicSourceRef.current === source) {
+                            musicSourceRef.current = null;
+                            musicGainRef.current = null;
+                        }
+                    }, 600);
+                } else {
+                    source.stop();
+                    musicSourceRef.current = null;
+                }
+            }
+        }
+    };
+
+    // Central slide sound (deprecated - loop takes over)
+    const playSlideSound = (forcePlay = false) => {
+        if (forcePlay) updateMusicPlayback();
     };
 
     // ── Unlock AudioContext + preload MP3 on FIRST any user gesture ──
@@ -191,16 +235,22 @@ const Hero: React.FC = () => {
         let done = false;
         const unlock = async () => {
             if (done) return;
-            done = true;
             const ctx = getCtx();
             if (!ctx) return;
+            
+            done = true;
             try {
-                const res = await fetch('/sounds/slide.mp3');
+                // Fetch the soft wedding piano track
+                const res = await fetch('https://archive.org/download/jamendo-611137/01-2270703-michael%20lerm-Soft%20Wedding%20Piano.mp3');
                 if (res.ok) {
                     const buf = await res.arrayBuffer();
                     audioBufferRef.current = await ctx.decodeAudioData(buf);
+                    // Start playback if conditions are met
+                    updateMusicPlayback();
                 }
-            } catch (_) { /* no file — synth fallback will be used */ }
+            } catch (e) { 
+                console.error('[Music Load Error]', e);
+            }
         };
         const opts = { once: true } as const;
         document.addEventListener('click',      unlock, opts);

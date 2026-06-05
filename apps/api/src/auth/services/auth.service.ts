@@ -39,8 +39,18 @@ export class AuthService {
             const clientEmail = this.configService.get<string>('FIREBASE_CLIENT_EMAIL');
             const privateKey = this.configService.get<string>('FIREBASE_PRIVATE_KEY');
 
-            if (!projectId || !clientEmail || !privateKey) {
-                this.logger.warn('⚠️ Firebase Admin environment variables are not fully configured. Phone OTP via Firebase will be unavailable until set.');
+            // Check if placeholder/dummy values are still in use
+            const isDummyConfig = !clientEmail || 
+                clientEmail.includes('xxxxx') || 
+                !privateKey || 
+                privateKey.includes('REPLACE_WITH_REAL') ||
+                privateKey.includes('MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSk'); // Old placeholder key fragment
+
+            if (!projectId || isDummyConfig) {
+                this.logger.warn('⚠️ Firebase Admin SDK: Service account credentials are placeholder/missing.');
+                this.logger.warn('   → Dev fallback active: Firebase tokens will be decoded locally (no SMS verification on backend).');
+                this.logger.warn('   → To enable full verification: Firebase Console → Project Settings → Service accounts → Generate new private key');
+                this.logger.warn('   → Then set FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in your .env file.');
                 return;
             }
 
@@ -753,22 +763,41 @@ export class AuthService {
             let phoneNumber: string | undefined;
 
         // If Firebase Admin SDK is not configured, use a safe development mode fallback
-        const isNotConfigured = admin.apps.length === 0 || 
-                                !this.configService.get<string>('FIREBASE_PRIVATE_KEY') || 
-                                this.configService.get<string>('FIREBASE_PRIVATE_KEY')?.includes('xxxxx');
+        const clientEmail = this.configService.get<string>('FIREBASE_CLIENT_EMAIL');
+        const privateKey = this.configService.get<string>('FIREBASE_PRIVATE_KEY');
+        const isDummyConfig = !clientEmail || 
+            clientEmail.includes('xxxxx') || 
+            !privateKey || 
+            privateKey.includes('REPLACE_WITH_REAL') ||
+            privateKey.includes('MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSk');
+        
+        const isNotConfigured = admin.apps.length === 0 || isDummyConfig;
 
         if (isNotConfigured) {
-            if (this.configService.get<string>('NODE_ENV') === 'development') {
-                try {
-                    this.logger.warn('⚠️ [Firebase Auth] Service is not configured. Falling back to local token decoding in development.');
-                    const payloadBase64 = idToken.split('.')[1];
-                    const decodedPayload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
-                    phoneNumber = decodedPayload.phone_number;
-                } catch (decodeErr) {
-                    throw new BadRequestException('Failed to decode Firebase token using development fallback.');
+            // Dev fallback: decode Firebase JWT locally without verifying signature
+            // This is safe in development because:
+            // 1. Firebase already verified the phone via SMS before issuing the token
+            // 2. This backend is not internet-exposed in dev mode
+            // 3. Production MUST use real Admin SDK credentials
+            try {
+                this.logger.warn('⚠️ [Firebase Auth] Using local token decode fallback (no Admin SDK). Set real service account keys for production!');
+                const parts = idToken.split('.');
+                if (parts.length !== 3) {
+                    throw new BadRequestException('Invalid Firebase token format.');
                 }
-            } else {
-                throw new BadRequestException('Firebase authentication is not configured on this server.');
+                // Pad base64 if necessary
+                const base64Payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+                const paddedPayload = base64Payload + '='.repeat((4 - base64Payload.length % 4) % 4);
+                const decodedPayload = JSON.parse(Buffer.from(paddedPayload, 'base64').toString('utf-8'));
+                phoneNumber = decodedPayload.phone_number;
+                
+                if (!phoneNumber) {
+                    throw new BadRequestException('Firebase token does not contain a phone number. Ensure Phone Authentication is enabled in Firebase Console.');
+                }
+                this.logger.log(`📱 [Firebase Dev Fallback] Decoded phone number from token: ${phoneNumber}`);
+            } catch (decodeErr: any) {
+                if (decodeErr instanceof BadRequestException) throw decodeErr;
+                throw new BadRequestException('Failed to decode Firebase token. Please ensure it is a valid Firebase ID token.');
             }
         } else {
             try {

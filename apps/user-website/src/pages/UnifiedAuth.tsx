@@ -109,6 +109,17 @@ const UnifiedAuth: React.FC = () => {
         }
     }, [resendTimer]);
 
+    // Helper: Clean up and reset the reCAPTCHA verifier
+    const resetRecaptcha = useCallback(() => {
+        const existing = (window as any).recaptchaVerifier;
+        if (existing) {
+            try {
+                existing.clear();
+            } catch (_) {}
+            (window as any).recaptchaVerifier = null;
+        }
+    }, []);
+
     const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (resendTimer > 0) return;
@@ -133,15 +144,13 @@ const UnifiedAuth: React.FC = () => {
             setNormalizedPhone(finalPhone);
 
             if (isFirebaseEnabled) {
-                // Initialize Recaptcha Verifier once and reuse it from the static index.html container
-                let appVerifier = (window as any).recaptchaVerifier;
-                if (!appVerifier) {
-                    appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                        size: 'invisible',
-                        callback: () => {}
-                    });
-                    (window as any).recaptchaVerifier = appVerifier;
-                }
+                // Initialize Recaptcha Verifier — always create fresh on each send
+                resetRecaptcha();
+                const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible',
+                    callback: () => {}
+                });
+                (window as any).recaptchaVerifier = appVerifier;
 
                 // Trigger Firebase SMS Sending
                 const result = await signInWithPhoneNumber(auth, finalPhone, appVerifier);
@@ -166,7 +175,16 @@ const UnifiedAuth: React.FC = () => {
             }
         } catch (err: any) {
             console.error('Send OTP Error:', err);
-            if (err.response?.status === 409) {
+            // Reset reCAPTCHA on any Firebase error so it can be retried
+            resetRecaptcha();
+            const code = err?.code || '';
+            if (code === 'auth/too-many-requests') {
+                toast.error('Too many SMS requests. Firebase has temporarily blocked this number. Try again in a few minutes.');
+            } else if (code === 'auth/invalid-phone-number') {
+                toast.error('Invalid phone number format. Please enter a valid 10-digit Indian number.');
+            } else if (code === 'auth/captcha-check-failed') {
+                toast.error('reCAPTCHA verification failed. Please refresh the page and try again.');
+            } else if (err.response?.status === 409) {
                 toast.error('This account already exists. Switching to login.');
                 setMode('login');
             } else {
@@ -175,7 +193,7 @@ const UnifiedAuth: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [phone, mode, resendTimer, selectedRole]);
+    }, [phone, mode, resendTimer, selectedRole, resetRecaptcha]);
 
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;

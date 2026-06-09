@@ -1,12 +1,21 @@
 #!/bin/bash
+echo "Installing root dependencies..."
+npm install
+
 echo "Installing dependencies for User Website..."
-cd user-website && npm install
-cd ..
+cd apps/user-website && npm install
+cd ../..
 
 echo "Installing dependencies for Vendor Dashboard..."
-cd vendor-dashboard && npm install
-cd ..
+cd apps/vendor-dashboard && npm install
+cd ../..
 
 echo "Installing dependencies for Admin Panel..."
-cd admin-panel && npm install
-cd ..
+cd apps/admin-panel && npm install
+cd ../..
+
+echo "Installing dependencies for API..."
+cd apps/api && npm install
+cd ../..
+
+echo "Setup COMPLETE!"

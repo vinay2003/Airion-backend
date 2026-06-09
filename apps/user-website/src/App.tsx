@@ -6,7 +6,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { ToastProvider } from './context/ToastContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider, ProtectedRoute } from '@shared';
+import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
 
 // Dashboard Components
 import DashboardLayout from './pages/dashboard/DashboardLayout';

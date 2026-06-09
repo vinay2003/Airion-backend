@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
         <div className="animate-in fade-in duration-500 pb-12">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Dashboard</h1>
-                <div className="text-xs font-medium text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">All systems normal</div>
+                <div className="text-xs font-medium text-[var(--ease2event-text-secondary)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">All systems normal</div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -165,14 +165,14 @@ const Dashboard: React.FC = () => {
                             { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
                             { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
                         ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-white border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                            <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-all">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
                                         {vendor.name[0]}
                                     </div>
                                     <div>
                                         <p className="font-bold text-[var(--ease2event-text-primary)]">{vendor.name}</p>
-                                        <p className="text-xs text-[var(--ease2event-text-muted)] font-medium">{vendor.type} • {vendor.city}</p>
+                                        <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium">{vendor.type} • {vendor.city}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -194,13 +194,13 @@ const Dashboard: React.FC = () => {
                             <div key={i} className="flex gap-4">
                                 <div className="flex flex-col items-center">
                                     <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full ring-4 ring-indigo-50"></div>
-                                    {i < 2 && <div className="w-0.5 h-full bg-slate-100 my-1"></div>}
+                                    {i < 2 && <div className="w-0.5 h-full bg-[var(--ease2event-border-subtle)] my-1"></div>}
                                 </div>
                                 <div>
                                     <p className="text-sm text-[var(--ease2event-text-secondary)]">
                                         <span className="font-bold text-[var(--ease2event-text-primary)]">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-indigo-600 font-bold">{activity.target}</span>
                                     </p>
-                                    <p className="text-[10px] font-medium text-[var(--ease2event-text-muted)] mt-1">{activity.time}</p>
+                                    <p className="text-[10px] font-medium text-[var(--ease2event-text-secondary)] mt-1">{activity.time}</p>
                                 </div>
                             </div>
                         ))}

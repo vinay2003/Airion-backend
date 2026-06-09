@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@shared': path.resolve(__dirname, '../../packages/shared'),
+      '@ease2event/shared': path.resolve(__dirname, '../../packages/shared'),
       '@ease2event/ui': path.resolve(__dirname, '../../packages/ui'),
     },
   },
@@ -22,7 +23,7 @@ export default defineConfig({
       port: Number(process.env.VITE_ADMIN_PORT) || 5175,
     },
     fs: {
-      allow: ['..'],
+      allow: ['../..'],
     },
   },
 })

@@ -43,29 +43,66 @@ const CalendarPage: React.FC = () => {
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+    const getStatusColorClass = (status: string) => {
+        const s = status?.toLowerCase();
+        if (s === 'confirmed' || s === 'completed') {
+            return 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20';
+        }
+        if (s === 'canceled' || s === 'cancelled') {
+            return 'bg-rose-500/5 text-rose-500 border-rose-500/20';
+        }
+        if (s === 'blocked') {
+            return 'bg-slate-500/5 text-slate-500 border-slate-500/20';
+        }
+        return 'bg-amber-500/5 text-amber-500 border-amber-500/20'; // pending
+    };
+
+    const getSidebarBadgeClass = (status: string) => {
+        const s = status?.toLowerCase();
+        if (s === 'confirmed' || s === 'completed') {
+            return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+        }
+        if (s === 'canceled' || s === 'cancelled') {
+            return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
+        }
+        if (s === 'blocked') {
+            return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
+        }
+        return 'bg-amber-500/10 text-amber-500 border-amber-500/20'; // pending
+    };
+
     const bookingsOnDays = useMemo(() => {
         const map: { [key: number]: any[] } = {};
 
         if (bookings && Array.isArray(bookings)) {
             bookings.forEach(b => {
-                // Parse date string carefully. Support both YYYY-MM-DD and ISO formats.
+                if (!b.eventDate) return;
+                // Parse date string carefully. Support both YYYY-MM-DD, ISO formats, and Date objects.
                 let date: Date;
-                if (b.eventDate.includes('T')) {
-                    date = new Date(b.eventDate);
+                if (b.eventDate instanceof Date) {
+                    date = b.eventDate;
+                } else if (typeof b.eventDate === 'string') {
+                    if (b.eventDate.includes('T')) {
+                        date = new Date(b.eventDate);
+                    } else {
+                        const [y, m, d] = b.eventDate.split('-').map(Number);
+                        date = new Date(y, m - 1, d);
+                    }
                 } else {
-                    const [y, m, d] = b.eventDate.split('-').map(Number);
-                    date = new Date(y, m - 1, d);
+                    date = new Date(b.eventDate);
                 }
+
+                if (isNaN(date.getTime())) return;
 
                 if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
                     const day = date.getDate();
                     if (!map[day]) map[day] = [];
                     map[day].push({
                         id: b.id,
-                        title: b.listingName || 'Service Booking',
+                        title: b.service?.title || b.listingName || 'Service Booking',
                         time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-                        client: b.userName || 'Customer',
-                        status: b.status.charAt(0).toUpperCase() + b.status.slice(1),
+                        client: b.user?.name || b.userName || 'Customer',
+                        status: b.status ? (b.status.charAt(0).toUpperCase() + b.status.slice(1)) : 'Pending',
                         type: 'booking'
                     });
                 }
@@ -74,9 +111,12 @@ const CalendarPage: React.FC = () => {
 
         if (availabilityBlocks && Array.isArray(availabilityBlocks)) {
             availabilityBlocks.forEach((ab: any) => {
+                if (!ab.date || typeof ab.date !== 'string') return;
                 // Parse date string carefully to avoid timezone shifts (YYYY-MM-DD -> Local)
                 const [year, month, day] = ab.date.split('-').map(Number);
                 const date = new Date(year, month - 1, day);
+
+                if (isNaN(date.getTime())) return;
 
                 if (date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
                     const dayNum = date.getDate();
@@ -132,9 +172,7 @@ const CalendarPage: React.FC = () => {
 
                     <div className="mt-4 space-y-2">
                         {hasBooking?.slice(0, 2).map((b: any, bIdx: number) => (
-                            <div key={b.id || bIdx} className={`px-4 py-1 rounded-lg text-sm font-bold truncate border transition-all ${b.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' :
-                                'bg-amber-500/5 text-amber-500 border-amber-500/20'
-                                }`}>
+                            <div key={b.id || bIdx} className={`px-4 py-1 rounded-lg text-sm font-bold truncate border transition-all ${getStatusColorClass(b.status)}`}>
                                 {b.time} - {b.title}
                             </div>
                         ))}
@@ -261,7 +299,7 @@ const CalendarPage: React.FC = () => {
                                                 <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
                                                 {ev.client}
                                             </div>
-                                            <Badge className={`px-3 h-7 rounded-lg font-bold text-[8px] tracking-widest border ${ev.status.toLowerCase() === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'}`}>
+                                            <Badge className={`px-3 h-7 rounded-lg font-bold text-[8px] tracking-widest border ${getSidebarBadgeClass(ev.status)}`}>
                                                 {ev.status}
                                             </Badge>
                                         </div>

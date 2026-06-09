@@ -115,8 +115,14 @@ const UnifiedAuth: React.FC = () => {
         if (existing) {
             try {
                 existing.clear();
-            } catch (_) {}
+            } catch (_) {
+                // Ignore error during cleanup
+            }
             (window as any).recaptchaVerifier = null;
+        }
+        const container = document.getElementById('recaptcha-container');
+        if (container) {
+            container.innerHTML = '';
         }
     }, []);
 
@@ -428,6 +434,7 @@ const UnifiedAuth: React.FC = () => {
                 </Link>
 
                 <div className="w-full max-w-lg relative z-10 flex flex-col">
+                    <div id="recaptcha-container"></div>
                     {/* 📱 Mobile Branding */}
                     <div className="mb-12 lg:hidden flex items-center gap-4 self-center">
                         <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">

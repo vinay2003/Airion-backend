@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/apiClient';
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [backendAvailable, setBackendAvailable] = useState(false);
     const navigate = useNavigate();
 
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
         console.log('[User AuthContext] Starting checkAuth...');
         try {
             // Check backend health
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log('[User AuthContext] Setting loading to false');
             setLoading(false);
         }
-    };
+    }, []);
 
     const login = (token: string) => {
         localStorage.setItem('token', token);
@@ -87,8 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         checkAuth();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [checkAuth]);
 
     return (
         <AuthContext.Provider value={{ user, loading, backendAvailable, login, logout, checkAuth }}>

@@ -86,6 +86,20 @@ const Hero: React.FC = () => {
     const isHeroVisibleRef  = useRef(true);           // false when user scrolls away
     const heroRef           = useRef<HTMLDivElement>(null);
 
+    const updateMusicPlayback = () => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const shouldPlay = isSoundEnabledRef.current && isHeroVisibleRef.current;
+
+        if (shouldPlay) {
+            // Browsers need a user interaction to play
+            audio.play().catch(e => console.log('Autoplay blocked, waiting for interaction...'));
+        } else {
+            audio.pause();
+        }
+    };
+
     // Persist preference
     useEffect(() => {
         isSoundEnabledRef.current = isSoundEnabled;
@@ -110,20 +124,6 @@ const Hero: React.FC = () => {
 
     // ── Synthesized fallback (not used now but kept for consistency) ──
     const playSynthWhoosh = () => {};
-
-    const updateMusicPlayback = () => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const shouldPlay = isSoundEnabledRef.current && isHeroVisibleRef.current;
-
-        if (shouldPlay) {
-            // Browsers need a user interaction to play
-            audio.play().catch(e => console.log('Autoplay blocked, waiting for interaction...'));
-        } else {
-            audio.pause();
-        }
-    };
 
     // Preload audio and handle initial interaction
     useEffect(() => {

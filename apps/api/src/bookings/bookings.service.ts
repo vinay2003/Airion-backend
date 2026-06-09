@@ -223,7 +223,7 @@ export class BookingsService {
     async findAllByVendorUserId(userId: string): Promise<Booking[]> {
         return this.bookingsRepository.find({
             where: { vendor: { userId } },
-            relations: ['user', 'vendor'],
+            relations: ['user', 'vendor', 'service'],
             order: { createdAt: 'DESC' },
         });
     }

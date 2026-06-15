@@ -13,6 +13,7 @@ import { SessionService } from './session.service';
 import { CryptoUtil } from '../../common/utils/crypto.util';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import * as admin from 'firebase-admin';
+import { EmailService } from '../../common/services/email.service';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
         private jwtService: JwtService,
         private configService: ConfigService,
         private sessionService: SessionService,
+        private emailService: EmailService,
     ) {
         this.initializeFirebase();
     }
@@ -113,11 +115,14 @@ export class AuthService {
         await this.otpRepository.save(otp);
 
         this.logger.log(`🔑 [OTP_DEBUG] Signup OTP for ${identifier}: ${otpCode}`);
-        const isProduction = this.configService.get('NODE_ENV') === 'production';
+
+        // Send OTP via email
+        if (dto.email) {
+            await this.emailService.sendOtpEmail(dto.email, otpCode, 'signup');
+        }
 
         return {
             message: 'OTP sent successfully',
-            _dev_otp: otpCode,
         };
     }
 
@@ -246,11 +251,14 @@ export class AuthService {
         await this.otpRepository.save(otp);
 
         this.logger.log(`🔑 [OTP_DEBUG] Login OTP for ${identifier}: ${otpCode}`);
-        const isProduction = this.configService.get('NODE_ENV') === 'production';
+
+        // Send OTP via email
+        if (dto.email) {
+            await this.emailService.sendOtpEmail(dto.email, otpCode, 'login');
+        }
 
         return {
             message: 'OTP sent successfully',
-            _dev_otp: otpCode,
         };
     }
 

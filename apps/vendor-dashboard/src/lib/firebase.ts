@@ -1,66 +1,46 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-// 🛡️ Clean Console Interceptor: Suppress noisy internal Google/Firebase reCAPTCHA Enterprise fallback logs
-if (typeof window !== 'undefined') {
-  const originalWarn = console.warn;
-  const originalError = console.error;
-  const originalInfo = console.info;
-  const originalLog = console.log;
 
-  const isNoisyLog = (message: any) => {
-    if (typeof message === 'string') {
-      const lower = message.toLowerCase();
-      return (
-        lower.includes('recaptcha enterprise') ||
-        lower.includes('recaptcha v2') ||
-        lower.includes('identitytoolkit.googleapis.com') ||
-        lower.includes('recaptchaconfig') ||
-        lower.includes('recaptchaparams')
-      );
-    }
-    return false;
-  };
-
-  console.warn = (...args: any[]) => {
-    if (isNoisyLog(args[0])) return;
-    originalWarn(...args);
-  };
-
-  console.error = (...args: any[]) => {
-    if (isNoisyLog(args[0])) return;
-    originalError(...args);
-  };
-
-  console.info = (...args: any[]) => {
-    if (isNoisyLog(args[0])) return;
-    originalInfo(...args);
-  };
-
-  console.log = (...args: any[]) => {
-    if (isNoisyLog(args[0])) return;
-    originalLog(...args);
-  };
-}
+// Helper to clean environment variables (stripping surrounding quotes if loaded literally)
+const cleanEnvVar = (val: string | undefined): string => {
+  if (!val) return '';
+  let clean = val.trim();
+  if (clean.startsWith('"') && clean.endsWith('"')) {
+    clean = clean.substring(1, clean.length - 1);
+  }
+  if (clean.startsWith("'") && clean.endsWith("'")) {
+    clean = clean.substring(1, clean.length - 1);
+  }
+  return clean;
+};
 
 // Vite environments retrieve config properties via import.meta.env.VITE_ prefix
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: cleanEnvVar(import.meta.env.VITE_FIREBASE_API_KEY),
+  authDomain: cleanEnvVar(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
+  projectId: cleanEnvVar(import.meta.env.VITE_FIREBASE_PROJECT_ID),
+  storageBucket: cleanEnvVar(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET),
+  messagingSenderId: cleanEnvVar(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID),
+  appId: cleanEnvVar(import.meta.env.VITE_FIREBASE_APP_ID)
 };
 
 // Graceful check for config presence to avoid runtime load crashes
 const isConfigured = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
 
-if (!isConfigured && import.meta.env.DEV) {
-  console.warn(
-    '⚠️ [Airion Vendor] Firebase client-side credentials are not fully configured in your .env file.\n' +
-    'Please set VITE_FIREBASE_API_KEY, VITE_FIREBASE_PROJECT_ID, etc. in .env.development to enable live SMS OTP.'
-  );
+if (import.meta.env.DEV) {
+  if (isConfigured) {
+    console.log('🔥 [Firebase Vendor Client] Credentials configured successfully:', {
+      projectId: firebaseConfig.projectId,
+      apiKeyMasked: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 6)}...` : 'none',
+      authDomain: firebaseConfig.authDomain
+    });
+  } else {
+    console.warn(
+      '⚠️ [Airion Vendor] Firebase client-side credentials are not fully configured in your .env file.\n' +
+      'Please set VITE_FIREBASE_API_KEY, VITE_FIREBASE_PROJECT_ID, etc. in .env.development to enable live SMS OTP.'
+    );
+  }
 }
 
 // Initialize Firebase App instance
@@ -78,4 +58,15 @@ const app = initializeApp(
 );
 
 export const auth = getAuth(app);
+
+// Enable reCAPTCHA verification bypass for local testing in development mode if configured
+if (import.meta.env.DEV && import.meta.env.VITE_FIREBASE_BYPASS_RECAPTCHA === 'true') {
+  auth.settings.appVerificationDisabledForTesting = true;
+  console.log('🔒 [Firebase Vendor Client] Bypassing reCAPTCHA verification for local development (Test Numbers only).');
+} else if (import.meta.env.DEV) {
+  console.log('📱 [Firebase Vendor Client] Live reCAPTCHA verification active (Real Phone Numbers).');
+}
+
+
 export const isFirebaseConfigured = isConfigured;
+

@@ -8,24 +8,20 @@ import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } fro
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { auth } from '../lib/firebase';
 
 type AuthMode = 'login' | 'signup';
 
-const isFirebaseEnabled = !!import.meta.env.VITE_FIREBASE_API_KEY;
-
 /**
  * 🔐 Unified Authentication Gateway: Ease2event Core
+ * Email OTP-based authentication. No Firebase Phone Auth / reCAPTCHA dependency.
  * Reconciles Identity Registry for Users, Vendors, and Administrative Entities.
- * Implements Zero-Trust Protocols for Administrative Access (1000000000 restricted).
  */
 
 const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
 const UnifiedAuth: React.FC = () => {
     const navigate = useNavigate();
-    const { loginWithToken, user, isAuthenticated, isLoading: authLoading } = useAuth();
+    const { loginWithResponse, user, isAuthenticated, isLoading: authLoading } = useAuth();
     const [searchParams] = useSearchParams();
     const location = useLocation();
 
@@ -33,18 +29,15 @@ const UnifiedAuth: React.FC = () => {
     const [mode, setMode] = useState<AuthMode>(() => {
         return location.pathname.includes('signup') ? 'signup' : 'login';
     });
-    const [step, setStep] = useState<'phone' | 'otp' | 'details'>('phone');
+    const [step, setStep] = useState<'email' | 'otp' | 'details'>('email');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.USER);
 
     // Form Data
-    const [phone, setPhone] = useState('');
-    const [normalizedPhone, setNormalizedPhone] = useState('');
-    const [otp, setOtp] = useState('');
     const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
+    const [otp, setOtp] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
     // Identity Configuration & Validation
     useEffect(() => {
@@ -57,7 +50,6 @@ const UnifiedAuth: React.FC = () => {
         } else if (portal === 'vendor') {
             setSelectedRole(UserRole.VENDOR);
         } else {
-            // Default to USER for all other paths including plain /login
             setSelectedRole(UserRole.USER);
         }
     }, [location.pathname, searchParams]);
@@ -65,15 +57,8 @@ const UnifiedAuth: React.FC = () => {
     // 🚀 Auto-Redirection: Open Dashboard for Synchronized Nodes
     useEffect(() => {
         const action = searchParams.get('action');
-        
-        // If we just logged out, don't auto-redirect anywhere
-        if (action === 'logout') {
-            if (isAuthenticated) {
-                // This shouldn't happen as tokens are cleared, but safety first
-                return;
-            }
-            return;
-        }
+
+        if (action === 'logout') return;
 
         if (isAuthenticated && user && !authLoading) {
             const token = tokenService.getAccessToken();
@@ -81,7 +66,6 @@ const UnifiedAuth: React.FC = () => {
 
             if (user.role === UserRole.VENDOR) {
                 if (isLocal) {
-                    // In dev, vendor app runs at localhost:5174 with basename=/
                     window.location.href = `http://localhost:5174/${tokenParam}`;
                 } else {
                     const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
@@ -89,7 +73,6 @@ const UnifiedAuth: React.FC = () => {
                 }
             } else if (user.role === UserRole.ADMIN) {
                 if (isLocal) {
-                    // In dev, admin app runs at localhost:5175 with basename=/
                     window.location.href = `http://localhost:5175/${tokenParam}`;
                 } else {
                     const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
@@ -109,98 +92,66 @@ const UnifiedAuth: React.FC = () => {
         }
     }, [resendTimer]);
 
-    // Helper: Clean up and reset the reCAPTCHA verifier
-    const resetRecaptcha = useCallback(() => {
-        const existing = (window as any).recaptchaVerifier;
-        if (existing) {
-            try {
-                existing.clear();
-            } catch (_) {
-                // Ignore error during cleanup
-            }
-            (window as any).recaptchaVerifier = null;
-        }
-        const container = document.getElementById('recaptcha-container');
-        if (container) {
-            container.innerHTML = '';
-        }
-    }, []);
-
+    // ─── Send OTP via Email ────────────────────────────────────────────────────
     const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (resendTimer > 0) return;
 
+        const trimmedEmail = email.trim().toLowerCase();
+        if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+            toast.error('Please enter a valid email address.');
+            return;
+        }
+
+        if (selectedRole === UserRole.ADMIN) {
+            toast.error('Admin login uses a different channel. Contact your administrator.');
+            return;
+        }
+
         setLoading(true);
         try {
-            const digitsOnly = phone.replace(/\D/g, '');
-            if (digitsOnly.length !== 10) {
-                toast.error('Please enter a valid 10-digit phone number.');
-                setLoading(false);
-                return;
-            }
+            console.log('[Email OTP] 📧 Sending OTP to:', trimmedEmail, '| Mode:', mode);
 
-            // 🚫 Zero-Trust Check: Admin Restriction
-            if (selectedRole === UserRole.ADMIN && digitsOnly !== '1000000000') {
-                toast.error('Admin access is not allowed from this number.');
-                setLoading(false);
-                return;
-            }
-
-            const finalPhone = `+91${digitsOnly}`;
-            setNormalizedPhone(finalPhone);
-
-            if (isFirebaseEnabled) {
-                // Initialize Recaptcha Verifier — always create fresh on each send
-                resetRecaptcha();
-                const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    size: 'invisible',
-                    callback: () => {}
-                });
-                (window as any).recaptchaVerifier = appVerifier;
-
-                // Trigger Firebase SMS Sending
-                const result = await signInWithPhoneNumber(auth, finalPhone, appVerifier);
-                setConfirmationResult(result);
-                toast.success('Verification code sent successfully!');
-                setStep('otp');
-                setResendTimer(60);
+            if (mode === 'signup') {
+                await otpAuth.sendSignupOTP({ email: trimmedEmail });
             } else {
-                // Graceful fallback to existing dev mock OTP flow
-                const response = mode === 'signup'
-                    ? await otpAuth.sendSignupOTP({ phone: finalPhone })
-                    : await otpAuth.sendLoginOTP({ phone: finalPhone });
-
-                const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
-                if (import.meta.env.DEV && devCode) {
-                    toast(`Dev code: ${devCode}`, { icon: '🔑', duration: 8000 });
-                }
-
-                toast.success('Verification code sent.');
-                setStep('otp');
-                setResendTimer(60);
+                await otpAuth.sendLoginOTP({ email: trimmedEmail });
             }
+
+            console.log('[Email OTP] ✅ OTP sent successfully');
+            toast.success(`Verification code sent to ${trimmedEmail}`);
+            setStep('otp');
+            setResendTimer(60);
         } catch (err: any) {
-            console.error('Send OTP Error:', err);
-            // Reset reCAPTCHA on any Firebase error so it can be retried
-            resetRecaptcha();
-            const code = err?.code || '';
-            if (code === 'auth/too-many-requests') {
-                toast.error('Too many SMS requests. Firebase has temporarily blocked this number. Try again in a few minutes.');
-            } else if (code === 'auth/invalid-phone-number') {
-                toast.error('Invalid phone number format. Please enter a valid 10-digit Indian number.');
-            } else if (code === 'auth/captcha-check-failed') {
-                toast.error('reCAPTCHA verification failed. Please refresh the page and try again.');
-            } else if (err.response?.status === 409) {
-                toast.error('This account already exists. Switching to login.');
-                setMode('login');
-            } else {
-                toast.error(err.response?.data?.message || err.message || 'Failed to send code. Please try again.');
+            console.error('[Email OTP] ❌ Error:', err?.response?.data || err?.message);
+            const apiMsg = err?.response?.data?.error || err?.response?.data?.message || err?.message || '';
+            const status = err?.response?.status;
+
+            // ── Network error (backend not ready / offline) ──
+            if (!status) {
+                toast.error('Cannot reach server. Please wait a moment and try again.', { duration: 4000 });
+                return;
             }
+
+            // ── Signup: Email already registered ──
+            if (status === 409 && mode === 'signup') {
+                toast.error('This email is already registered. Please use the Log in tab.', { duration: 5000 });
+                return;
+            }
+
+            // ── Login: No account found with this email ──
+            if ((status === 404 || apiMsg.toLowerCase().includes('not found') || apiMsg.toLowerCase().includes('user not found')) && mode === 'login') {
+                toast.error('No account found with this email. Please Sign up first.', { duration: 5000 });
+                return;
+            }
+
+            toast.error(apiMsg || 'Failed to send verification code. Please try again.');
         } finally {
             setLoading(false);
         }
-    }, [phone, mode, resendTimer, selectedRole, resetRecaptcha]);
+    }, [email, mode, resendTimer, selectedRole]);
 
+    // ─── Verify OTP ───────────────────────────────────────────────────────────
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;
         if (!otpValue || otpValue.length !== 6) {
@@ -210,152 +161,87 @@ const UnifiedAuth: React.FC = () => {
 
         setLoading(true);
         try {
-            if (isFirebaseEnabled && confirmationResult) {
-                // 1. Confirm code with Firebase Auth
-                const result = await confirmationResult.confirm(otpValue.trim());
-                const firebaseUser = result.user;
+            const trimmedEmail = email.trim().toLowerCase();
+            console.log('[Email OTP] 🔍 Verifying OTP for:', trimmedEmail);
 
-                // 2. Fetch Firebase ID Token
-                const idToken = await firebaseUser.getIdToken();
-
-                // 3. Post Token to Custom NestJS backend to register/login and issue local JWTs
-                const response = await otpAuth.verifyFirebaseToken(idToken, selectedRole);
-
-                if (response.access_token) {
-                    await loginWithToken(response.access_token);
-
-                    if (mode === 'signup') {
-                        if (selectedRole === UserRole.USER) {
-                            toast.success('Verified! Please complete your profile.');
-                            setStep('details');
-                            setLoading(false);
-                            return;
-                        } else if (selectedRole === UserRole.VENDOR) {
-                            toast.success('Account created. Redirecting to vendor setup.');
-                            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
-                            const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
-                            setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
-                            return;
-                        }
-                    }
-
-                    toast.success('Welcome back!');
-
-                    setTimeout(() => {
-                        const tokenParam = `?token=${response.access_token}`;
-                        const role = response?.user?.role || 'user';
-
-                        if (role === 'vendor') {
-                            if (isLocal) {
-                                window.location.href = `http://localhost:5174/${tokenParam}`;
-                            } else {
-                                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
-                                window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
-                            }
-                        } else if (role === 'admin') {
-                            if (isLocal) {
-                                window.location.href = `http://localhost:5175/${tokenParam}`;
-                            } else {
-                                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
-                                window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
-                            }
-                        } else {
-                            navigate('/dashboard');
-                        }
-                    }, 800);
-                }
+            let response: any;
+            if (mode === 'signup') {
+                response = await otpAuth.verifySignupOTP({
+                    email: trimmedEmail,
+                    otp: otpValue.trim(),
+                    role: selectedRole,
+                    name: fullName || undefined,
+                });
             } else {
-                // Fallback to custom backend database verification
-                const response = mode === 'signup'
-                    ? await otpAuth.verifySignupOTP({
-                        phone: normalizedPhone,
-                        otp: otpValue.trim(),
-                        role: selectedRole
-                    })
-                    : await otpAuth.verifyLoginOTP({
-                        phone: normalizedPhone,
-                        otp: otpValue.trim()
-                    });
+                response = await otpAuth.verifyLoginOTP({
+                    email: trimmedEmail,
+                    otp: otpValue.trim(),
+                });
+            }
 
-                if (response.access_token) {
-                    await loginWithToken(response.access_token);
+            if (response.access_token) {
+                loginWithResponse(response);
+                console.log('[Email OTP] ✅ Verified. User role:', response?.user?.role);
 
-                    if (mode === 'signup') {
-                        if (selectedRole === UserRole.USER) {
-                            toast.success('Verified! Please complete your profile.');
-                            setStep('details');
-                            setLoading(false);
-                            return;
-                        } else if (selectedRole === UserRole.VENDOR) {
-                            toast.success('Account created. Redirecting to vendor setup.');
-                            const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
-                            const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
-                            setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
-                            return;
-                        }
+                if (mode === 'signup') {
+                    if (selectedRole === UserRole.USER) {
+                        toast.success('Email verified! Please complete your profile.');
+                        setStep('details');
+                        setLoading(false);
+                        return;
+                    } else if (selectedRole === UserRole.VENDOR) {
+                        toast.success('Account created! Redirecting to vendor setup...');
+                        const VENDOR_URL = isLocal ? (import.meta.env.VITE_VENDOR_URL || 'http://localhost:5174') : '';
+                        const target = `${VENDOR_URL}/vendor/signup-form`.replace('//vendor', '/vendor');
+                        setTimeout(() => window.location.href = `${target}?token=${response.access_token}`, 800);
+                        return;
                     }
-
-                    // 🌐 Strategic Redirection based on Decoded Identity
-                    const tokenPayload = decodeToken(response.access_token);
-                    const role = tokenPayload?.role || response?.user?.role || 'user';
-
-                    toast.success('Welcome back!');
-
-                    setTimeout(() => {
-                        const tokenParam = `?token=${response.access_token}`;
-
-                        if (role === 'vendor') {
-                            if (isLocal) {
-                                window.location.href = `http://localhost:5174/${tokenParam}`;
-                            } else {
-                                const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
-                                window.location.href = VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`;
-                            }
-                        } else if (role === 'admin') {
-                            if (isLocal) {
-                                window.location.href = `http://localhost:5175/${tokenParam}`;
-                            } else {
-                                const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
-                                window.location.href = ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`;
-                            }
-                        } else {
-                            navigate('/dashboard');
-                        }
-                    }, 800);
                 }
+
+                const tokenPayload = decodeToken(response.access_token);
+                const role = tokenPayload?.role || response?.user?.role || 'user';
+                toast.success('Welcome back!');
+                setTimeout(() => {
+                    const tokenParam = `?token=${response.access_token}`;
+                    if (role === 'vendor') {
+                        const VENDOR_URL = import.meta.env.VITE_VENDOR_URL;
+                        window.location.href = isLocal ? `http://localhost:5174/${tokenParam}` : (VENDOR_URL ? `${VENDOR_URL}/${tokenParam}` : `/vendor${tokenParam}`);
+                    } else if (role === 'admin') {
+                        const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
+                        window.location.href = isLocal ? `http://localhost:5175/${tokenParam}` : (ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`);
+                    } else {
+                        navigate('/dashboard');
+                    }
+                }, 800);
             }
         } catch (err: any) {
-            console.error('OTP Verification Error:', err);
-            const apiError = err.response?.data;
-            const errorMsg = apiError?.error || apiError?.message || err.message || '';
+            console.error('[Email OTP] ❌ Verify error:', err?.response?.data || err?.message);
+            const errorMsg = err?.response?.data?.error || err?.response?.data?.message || err?.message || '';
 
-            // 🔄 Auto-Reconciliation: If Node doesn't exist, switch to Genesis Initiation
-            if (errorMsg.includes('User not found') || err.response?.status === 401) {
+            if (errorMsg.toLowerCase().includes('user not found') || err?.response?.status === 401) {
                 toast.error('Account not found. Redirecting to sign up...');
-                setTimeout(() => {
-                    setMode('signup');
-                    setStep('phone');
-                    setLoading(false);
-                }, 1500);
+                setTimeout(() => { setMode('signup'); setStep('email'); setLoading(false); }, 1500);
                 return;
+            } else if (errorMsg.toLowerCase().includes('expired')) {
+                toast.error('Code expired. Please request a new one.');
+                setStep('email');
+            } else {
+                toast.error(errorMsg || 'Invalid code. Please try again.');
             }
-
-            toast.error(errorMsg || 'Invalid code. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
+    // ─── Complete Profile (Signup Step 3) ─────────────────────────────────────
     const handleCompleteProfile = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!fullName || !email) {
-            toast.error('Please fill in all required fields.');
+        if (!fullName) {
+            toast.error('Please enter your full name.');
             return;
         }
-
         setLoading(true);
         try {
-            // Simulate profile write
             toast.success('Profile saved! Taking you to your dashboard.');
             setTimeout(() => navigate('/dashboard'), 800);
         } catch (err) {
@@ -381,10 +267,10 @@ const UnifiedAuth: React.FC = () => {
 
                 <div className="relative z-10 max-w-xl space-y-6">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
-                        <img 
-                            src="/logo.svg" 
-                            alt="Ease2Event Logo" 
-                            className="w-12 h-12 object-contain drop-shadow-lg" 
+                        <img
+                            src="/logo.svg"
+                            alt="Ease2Event Logo"
+                            className="w-12 h-12 object-contain drop-shadow-lg"
                         />
                         <span className="text-4xl font-black tracking-tight font-sans bg-gradient-to-r from-red-500 via-red-400 to-orange-400 bg-clip-text text-transparent">
                             Ease2event
@@ -434,7 +320,6 @@ const UnifiedAuth: React.FC = () => {
                 </Link>
 
                 <div className="w-full max-w-lg relative z-10 flex flex-col">
-                    <div id="recaptcha-container"></div>
                     {/* 📱 Mobile Branding */}
                     <div className="mb-12 lg:hidden flex items-center gap-4 self-center">
                         <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
@@ -446,13 +331,13 @@ const UnifiedAuth: React.FC = () => {
                     {/* 🔄 Mode Toggle Tabs */}
                     <div className="flex p-1.5 bg-neutral-100 dark:bg-slate-900/80 rounded-2xl mb-10 w-full border border-neutral-200/50 dark:border-slate-800/50">
                         <button
-                            onClick={() => { setMode('login'); setStep('phone'); }}
+                            onClick={() => { setMode('login'); setStep('email'); setOtp(''); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'login' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
                             Log in
                         </button>
                         <button
-                            onClick={() => { setMode('signup'); setStep('phone'); }}
+                            onClick={() => { setMode('signup'); setStep('email'); setOtp(''); }}
                             className={`flex-1 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${mode === 'signup' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'}`}
                         >
                             Sign up
@@ -474,16 +359,16 @@ const UnifiedAuth: React.FC = () => {
                                     {selectedRole === UserRole.ADMIN ? 'Administrator Access' : (mode === 'login' ? 'Login to continue' : 'Create Your Account')}
                                 </h2>
                                 <p className="text-base md:text-xl text-neutral-500 dark:text-slate-400 leading-relaxed font-medium">
-                                    {step === 'phone'
-                                        ? 'Verify your identity to manage your event ecosystem.'
-                                        : `Verification code dispatched via secure line to: ${phone}`}
+                                    {step === 'email'
+                                        ? 'Enter your email to receive a verification code.'
+                                        : `Verification code sent to ${email}`}
                                 </p>
                             </motion.div>
                         </AnimatePresence>
                     </div>
 
                     {/* 👤 Role Selector */}
-                    {step === 'phone' && (
+                    {step === 'email' && (
                         <div className={`w-full grid grid-cols-2 gap-3.5 mb-10 bg-neutral-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-neutral-100 dark:border-slate-800/50`}>
                             {[
                                 { id: UserRole.USER, label: 'User', icon: User, path: `${mode === 'signup' ? '/signup' : '/login'}?portal=user` },
@@ -506,34 +391,37 @@ const UnifiedAuth: React.FC = () => {
 
                     {/* 🛡️ Secure Forms */}
                     <AnimatePresence mode="wait">
-                        {step === 'phone' && (
-                            <motion.form key="phone"
+
+                        {/* ── Step 1: Email Input ── */}
+                        {step === 'email' && (
+                            <motion.form key="email"
                                 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
                                 onSubmit={handleSendOTP} className="w-full space-y-8"
                             >
                                 <div className="space-y-5">
                                     <div>
-                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Phone number</label>
-
+                                        <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">
+                                            Email address
+                                        </label>
                                     </div>
                                     <div className="relative group">
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
-                                            <Phone size={22} />
+                                            <Mail size={22} />
                                         </div>
                                         <input
-                                            type="tel"
-                                            inputMode="numeric"
+                                            type="email"
+                                            inputMode="email"
+                                            autoComplete="email"
                                             required
-                                            value={phone}
-                                            onChange={e => {
-                                                const val = e.target.value.replace(/\D/g, '');
-                                                if (val.length <= 10) setPhone(val);
-                                            }}
-                                            className="w-full pl-12 pr-12 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-xl tracking-[0.2em] placeholder:text-neutral-400/50"
-                                            placeholder="000 - 000 - 0000"
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                            className="w-full pl-12 pr-12 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-xl placeholder:text-neutral-400/50"
+                                            placeholder="you@example.com"
                                         />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center">
-                                            {phone.length === 10 && <CheckCircle2 size={24} className="text-emerald-500 animate-in zoom-in duration-300" />}
+                                            {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
+                                                <CheckCircle2 size={24} className="text-emerald-500 animate-in zoom-in duration-300" />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -546,7 +434,7 @@ const UnifiedAuth: React.FC = () => {
                                         {loading ? (
                                             <Loader className="animate-spin" size={24} />
                                         ) : (
-                                            <>Continue <ArrowRight size={22} /></>
+                                            <>Send Code <ArrowRight size={22} /></>
                                         )}
                                     </button>
 
@@ -556,7 +444,7 @@ const UnifiedAuth: React.FC = () => {
                                                 <>
                                                     Don't have an account?{" "}
                                                     <span
-                                                        onClick={() => setMode('signup')}
+                                                        onClick={() => { setMode('signup'); setStep('email'); }}
                                                         className="text-red-500 hover:text-red-600 underline underline-offset-4 cursor-pointer transition-colors"
                                                     >
                                                         Sign up
@@ -566,7 +454,7 @@ const UnifiedAuth: React.FC = () => {
                                                 <>
                                                     Already have an account?{" "}
                                                     <span
-                                                        onClick={() => setMode('login')}
+                                                        onClick={() => { setMode('login'); setStep('email'); }}
                                                         className="text-red-500 hover:text-red-600 underline underline-offset-4 cursor-pointer transition-colors"
                                                     >
                                                         Log in
@@ -579,15 +467,18 @@ const UnifiedAuth: React.FC = () => {
                             </motion.form>
                         )}
 
+                        {/* ── Step 2: OTP Verification ── */}
                         {step === 'otp' && (
                             <motion.div key="otp"
                                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                                 className="w-full space-y-12 text-center"
                             >
                                 <div className="space-y-8">
-                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">Enter verification code</label>
+                                    <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 block">
+                                        Enter verification code
+                                    </label>
                                     <div className="flex justify-center scale-110">
-                                        <OTPInput length={6} onComplete={handleVerifyOTP} disabled={loading} />
+                                        <OTPInput length={6} onComplete={handleVerifyOTP} onChange={setOtp} disabled={loading} />
                                     </div>
                                 </div>
 
@@ -598,7 +489,7 @@ const UnifiedAuth: React.FC = () => {
                                         disabled={loading || otp.length < 6}
                                         className="w-full h-16 bg-neutral-900 dark:bg-white dark:text-neutral-950 text-white rounded-2xl font-bold text-base tracking-widest transition-all shadow-2xl active:scale-[0.98] disabled:opacity-30"
                                     >
-                                        Verify code
+                                        {loading ? <Loader className="animate-spin mx-auto" size={24} /> : 'Verify code'}
                                     </button>
                                     <div className="flex flex-col items-center gap-4 pt-4">
                                         <button
@@ -610,16 +501,17 @@ const UnifiedAuth: React.FC = () => {
                                             {resendTimer > 0 ? <><Clock size={22} /> Resend in {resendTimer}s</> : "Didn't receive code? Resend"}
                                         </button>
                                         <button
-                                            onClick={() => setStep('phone')}
+                                            onClick={() => setStep('email')}
                                             className="text-base font-bold text-neutral-400 hover:text-red-600 transition-colors"
                                         >
-                                            Change phone number
+                                            Change email address
                                         </button>
                                     </div>
                                 </div>
                             </motion.div>
                         )}
 
+                        {/* ── Step 3: Complete Profile (Signup → User only) ── */}
                         {step === 'details' && (
                             <motion.form key="details"
                                 initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -25 }}
@@ -645,25 +537,24 @@ const UnifiedAuth: React.FC = () => {
                                     <div className="space-y-5">
                                         <label className="text-xl font-bold text-neutral-700 dark:text-slate-300 ml-1">Email address</label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-red-500 transition-colors pointer-events-none">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 pointer-events-none">
                                                 <Mail size={22} />
                                             </div>
                                             <input
                                                 type="email"
-                                                required
                                                 value={email}
-                                                onChange={e => setEmail(e.target.value)}
-                                                placeholder="alexander@ease2event.com"
-                                                className="w-full pl-12 pr-6 h-16 bg-white dark:bg-slate-900 border-2 border-neutral-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-neutral-900 dark:text-white text-lg"
+                                                readOnly
+                                                className="w-full pl-12 pr-6 h-16 bg-neutral-50 dark:bg-slate-800 border-2 border-neutral-100 dark:border-slate-700 rounded-2xl outline-none font-bold text-neutral-500 dark:text-slate-400 text-lg cursor-not-allowed"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <button type="submit" disabled={loading} className="w-full h-16 bg-red-600 text-white rounded-2xl font-bold text-base tracking-widest shadow-xl shadow-red-600/30 hover:bg-neutral-900 active:scale-[0.98] transition-all flex items-center justify-center gap-4">
-                                    Finalize synchronization <ArrowRight size={24} />
+                                    {loading ? <Loader className="animate-spin" size={24} /> : <>Finalize synchronization <ArrowRight size={24} /></>}
                                 </button>
                             </motion.form>
                         )}
+
                     </AnimatePresence>
 
                     {/* 📜 Legal Footprint */}

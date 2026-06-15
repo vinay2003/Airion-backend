@@ -15,6 +15,7 @@ import { AuthController } from './controllers/auth.controller';
 import { UsersController } from './controllers/users.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { Vendor } from '../vendors/entities/vendor.entity';
+import { EmailService } from '../common/services/email.service';
 
 @Module({
     imports: [
@@ -30,7 +31,7 @@ import { Vendor } from '../vendors/entities/vendor.entity';
         }),
     ],
     controllers: [AuthController, UsersController],
-    providers: [AuthService, SessionService, AuditService, JwtStrategy],
-    exports: [AuthService, SessionService, AuditService, JwtModule],
+    providers: [AuthService, SessionService, AuditService, JwtStrategy, EmailService],
+    exports: [AuthService, SessionService, AuditService, JwtModule, EmailService],
 })
 export class AuthModule { }

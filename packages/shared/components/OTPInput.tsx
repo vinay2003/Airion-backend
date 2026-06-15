@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 interface OTPInputProps {
     length?: number;
     onComplete: (otp: string) => void;
+    onChange?: (otp: string) => void;
     disabled?: boolean;
     error?: boolean;
 }
@@ -10,6 +11,7 @@ interface OTPInputProps {
 const OTPInput: React.FC<OTPInputProps> = ({ 
     length = 6, 
     onComplete, 
+    onChange,
     disabled = false,
     error = false 
 }) => {
@@ -37,8 +39,11 @@ const OTPInput: React.FC<OTPInputProps> = ({
             inputRefs.current[index + 1]?.focus();
         }
 
-        // Trigger completion
+        // Trigger change callback and completion
         const fullOtp = newOtp.join('');
+        if (onChange) {
+            onChange(fullOtp);
+        }
         if (fullOtp.length === length) {
             onComplete(fullOtp);
         }
@@ -66,8 +71,12 @@ const OTPInput: React.FC<OTPInputProps> = ({
         const nextIdx = Math.min(data.length, length - 1);
         inputRefs.current[nextIdx]?.focus();
 
-        if (data.length === length) {
-            onComplete(data);
+        const fullOtp = newOtp.join('');
+        if (onChange) {
+            onChange(fullOtp);
+        }
+        if (fullOtp.length === length) {
+            onComplete(fullOtp);
         }
     };
 

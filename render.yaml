@@ -4,7 +4,7 @@ services:
     name: ease2event-backend
     env: node
     region: oregon
-    plan: free
+    plan: standard
     rootDirectory: .
     buildCommand: npm install --include=dev && npm run build:api
     startCommand: cd apps/api && node dist/main.js

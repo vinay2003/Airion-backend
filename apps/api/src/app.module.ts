@@ -49,33 +49,61 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => {
-                const url = configService.get<string>('DATABASE_URL');
+                const rawUrl = configService.get<string>('DATABASE_URL') ?? '';
                 const isProd = configService.get<string>('NODE_ENV') === 'production';
-                
+
+                // Parse DATABASE_URL manually so we never pass sslmode/query-params
+                // through pg-connection-string. Mixing URL-level ssl params with
+                // TypeORM's ssl:{} object causes double SSL negotiation → ECONNRESET.
+                let host = configService.get<string>('DATABASE_HOST') ?? 'localhost';
+                let port = parseInt(configService.get<string>('DATABASE_PORT') ?? '5432', 10);
+                let username = configService.get<string>('DATABASE_USER') ?? 'postgres';
+                let password = configService.get<string>('DATABASE_PASSWORD') ?? '';
+                let database = configService.get<string>('DATABASE_NAME') ?? 'postgres';
+
+                if (rawUrl) {
+                    try {
+                        const parsed = new URL(rawUrl);
+                        host     = parsed.hostname;
+                        port     = parseInt(parsed.port || '5432', 10);
+                        username = decodeURIComponent(parsed.username);
+                        password = decodeURIComponent(parsed.password);
+                        database = parsed.pathname.replace(/^\//, '');
+                    } catch {
+                        // fallback to individual env vars above
+                    }
+                }
+
                 return {
                     type: 'postgres',
-                    url,
-                    ssl: {
-                        rejectUnauthorized: false,
-                    },
+                    host,
+                    port,
+                    username,
+                    password,
+                    database,
+                    // Sole SSL config — NeonDB requires SSL. rejectUnauthorized:false
+                    // skips cert validation (safe for dev; set true + CA cert in prod).
+                    ssl: { rejectUnauthorized: false },
                     extra: {
                         // Force IPv4 — NeonDB pooler does not support IPv6
                         family: 4,
-                        // Keep connections alive to prevent ECONNRESET from idle timeout
+                        // Keep connections alive to prevent idle-timeout resets
                         keepAlive: true,
                         keepAliveInitialDelayMillis: 10000,
-                        // Pool limits tuned for NeonDB serverless pooler
+                        // NeonDB free tier cold starts can take up to 30s
                         max: 5,
-                        idleTimeoutMillis: 10000,
-                        connectionTimeoutMillis: 10000,
+                        idleTimeoutMillis: 30000,
+                        connectionTimeoutMillis: 30000,
+                        // Pool-level SSL must mirror top-level ssl config
+                        ssl: { rejectUnauthorized: false },
                     },
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     autoLoadEntities: true,
                     synchronize: !isProd,
                     logging: !isProd ? ['error', 'warn'] : false,
-                    retryAttempts: 15,
-                    retryDelay: 3000,
-                    connectTimeoutMS: 10000,
+                    retryAttempts: 20,
+                    retryDelay: 5000,
+                    connectTimeoutMS: 30000,
                 };
             },
         }),

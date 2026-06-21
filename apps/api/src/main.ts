@@ -51,7 +51,7 @@ async function bootstrap() {
                 process.env.ADMIN_URL,
             ].filter(Boolean) as string[];
 
-            const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
+            const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.startsWith('http://192.168.');
             const isVercel = origin && origin.endsWith('.vercel.app');
 
             if (isLocal || isVercel || allowedOrigins.includes(origin as string)) {

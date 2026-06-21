@@ -43,7 +43,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
         }),
         ThrottlerModule.forRoot([{
             ttl: 60000,
-            limit: 10,
+            limit: 100, // Increased for 50k users expected load
         }]),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
@@ -91,7 +91,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
                         keepAlive: true,
                         keepAliveInitialDelayMillis: 10000,
                         // NeonDB free tier cold starts can take up to 30s
-                        max: 5,
+                        max: isProd ? 100 : 5, // Increased for prod to handle 50k users
                         idleTimeoutMillis: 30000,
                         connectionTimeoutMillis: 30000,
                         // Pool-level SSL must mirror top-level ssl config

@@ -45,14 +45,15 @@ export interface SignupData {
 }
 
 export interface OTPRequest {
-    phone: string;
+    phone?: string;
+    email?: string;
 }
 
 export interface OTPVerification {
-    phone: string;
+    phone?: string;
+    email?: string;
     otp: string;
     name?: string;
-    email?: string;
     role?: UserRole;
 }
 

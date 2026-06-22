@@ -35,12 +35,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // Check authentication
             try {
                 console.log('[User AuthContext] Checking authentication...');
-                const response = await api.get('/auth/me');
-                setUser(response.data);
-                if (response.data?.id) {
-                    initiateSocketConnection(response.data.id);
+                const userData = await api.get<User>('/auth/me');
+                setUser(userData);
+                if (userData?.id) {
+                    initiateSocketConnection(userData.id);
                 }
-                console.log('[User AuthContext] User authenticated:', response.data);
+                console.log('[User AuthContext] User authenticated:', userData);
             } catch (authError: any) {
                 if (authError.response?.status === 401) {
                     console.log('[User AuthContext] User not authenticated (401)');

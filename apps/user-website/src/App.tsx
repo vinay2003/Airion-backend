@@ -7,6 +7,7 @@ import { ToastProvider } from './context/ToastContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
+import { getPortalUrl } from '@ease2event/shared/auth/utils';
 
 // Dashboard Components
 import DashboardLayout from './pages/dashboard/DashboardLayout';
@@ -44,6 +45,25 @@ const PageLoader = () => (
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
   </div>
 );
+
+// 🔀 Portal Redirect: Hard-redirects to vendor/admin portals
+// Acts as a safety net when the user website's index.html is served for /vendor or /admin paths
+const PortalRedirect: React.FC<{ to: 'vendor' | 'admin' }> = ({ to }) => {
+  React.useEffect(() => {
+    const targetUrl = getPortalUrl(to);
+    // Preserve any query params (e.g. ?token=...)
+    const search = window.location.search;
+    window.location.replace(`${targetUrl}${search}`);
+  }, [to]);
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="text-center animate-pulse space-y-4">
+        <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p className="text-slate-400 font-medium">Redirecting to {to} portal...</p>
+      </div>
+    </div>
+  );
+};
 
 const HardRedirect: React.FC<{ to: string }> = ({ to }) => {
   React.useEffect(() => {
@@ -108,6 +128,12 @@ const App: React.FC = () => {
                   <InterestSelection />
                 </Suspense>
               } />
+
+              {/* 🔀 Portal Redirects: Safety net if user-website index.html is served for vendor/admin paths */}
+              <Route path="/vendor" element={<PortalRedirect to="vendor" />} />
+              <Route path="/vendor/*" element={<PortalRedirect to="vendor" />} />
+              <Route path="/admin" element={<PortalRedirect to="admin" />} />
+              <Route path="/admin/*" element={<PortalRedirect to="admin" />} />
 
               {/* Dashboard Routes */}
               <Route path="/dashboard" element={

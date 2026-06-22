@@ -45,9 +45,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
     const currentPath = window.location.pathname;
 
     // 🛑 Loop Guard: If we are already on the target portal/path, don't redirect again
+    const cleanTargetUrl = targetUrl.replace(/\/+$/, '');
+    const cleanCurrentHref = window.location.href.split('?')[0].replace(/\/+$/, '');
+    const cleanCurrentPath = currentPath.replace(/\/+$/, '');
+    
     const isAlreadyOnTarget = targetUrl.startsWith('http') 
-      ? window.location.href.startsWith(targetUrl)
-      : currentPath.startsWith(targetUrl) || (targetUrl === '/dashboard' && currentPath.includes('/dashboard'));
+      ? cleanCurrentHref.startsWith(cleanTargetUrl)
+      : cleanCurrentPath.startsWith(cleanTargetUrl) || (targetUrl === '/dashboard' && currentPath.includes('/dashboard'));
 
     if (isAlreadyOnTarget) {
       console.warn(`[ProtectedRoute] User role ${user.role} is already on target ${targetUrl}. Avoiding redirect loop.`);

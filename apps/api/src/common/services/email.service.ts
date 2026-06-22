@@ -1,23 +1,31 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EmailService {
     private readonly logger = new Logger(EmailService.name);
     private transporter: nodemailer.Transporter | null = null;
+    private resendClient: Resend | null = null;
 
     constructor(private configService: ConfigService) {
-        this.initTransporter();
+        this.initClients();
     }
 
-    private initTransporter() {
+    private initClients() {
+        const resendKey = this.configService.get<string>('RESEND_API_KEY');
+        if (resendKey) {
+            this.resendClient = new Resend(resendKey);
+            this.logger.log('📧 [Email] Resend API client initialized.');
+            return;
+        }
+
         const user = this.configService.get<string>('SMTP_USER');
         const pass = this.configService.get<string>('SMTP_PASS');
 
         if (!user || !pass) {
-            this.logger.warn('⚠️ [Email] SMTP credentials not configured. Emails will be logged to console only.');
-            this.logger.warn('   → Set SMTP_USER and SMTP_PASS in .env.development to enable real emails.');
+            this.logger.warn('⚠️ [Email] No SMTP or Resend credentials configured. Emails will be logged to console only.');
             return;
         }
 
@@ -48,24 +56,38 @@ export class EmailService {
             this.logger.log(`🔑 [EMAIL OTP] To: ${to} | Code: ${otp} | Purpose: ${purpose}`);
         }
 
-        if (!this.transporter) {
-            this.logger.warn(`📭 [Email] No SMTP configured — OTP logged above only. Set SMTP_USER + SMTP_PASS to send real emails.`);
+        if (!this.resendClient && !this.transporter) {
+            this.logger.warn(`📭 [Email] No email client configured — OTP logged above only.`);
             return;
         }
 
         try {
-            const from = this.configService.get<string>('SMTP_FROM') || this.configService.get<string>('SMTP_USER');
-            await this.transporter.sendMail({
-                from: `"Ease2event" <${from}>`,
-                to,
-                subject,
-                html,
-            });
-            this.logger.log(`✅ [Email] OTP email sent to: ${to}`);
+            if (this.resendClient) {
+                // Using Resend API (HTTP based, bypasses Render SMTP block)
+                const from = this.configService.get<string>('SMTP_FROM') || 'onboarding@resend.dev';
+                const { error } = await this.resendClient.emails.send({
+                    from: `"Ease2event" <${from}>`,
+                    to: [to],
+                    subject,
+                    html,
+                });
+                
+                if (error) throw new Error(error.message);
+                this.logger.log(`✅ [Email] OTP email sent via Resend to: ${to}`);
+            } else if (this.transporter) {
+                const from = this.configService.get<string>('SMTP_FROM') || this.configService.get<string>('SMTP_USER');
+                await this.transporter.sendMail({
+                    from: `"Ease2event" <${from}>`,
+                    to,
+                    subject,
+                    html,
+                });
+                this.logger.log(`✅ [Email] OTP email sent via SMTP to: ${to}`);
+            }
         } catch (error: any) {
             this.logger.error(`❌ [Email] Failed to send OTP email to ${to}: ${error.message}`);
             // Throw the error so the API returns a 500 failure instead of succeeding silently
-            throw new Error(`SMTP_ERROR: ${error.message}`);
+            throw new Error(`EMAIL_ERROR: ${error.message}`);
         }
     }
 

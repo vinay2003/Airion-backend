@@ -2,8 +2,17 @@ import { io, Socket } from 'socket.io-client';
 import { tokenService } from './tokenService';
 
 const getBaseUrl = () => {
-    const url = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    return url.replace('/api', '');
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (envUrl) {
+        return envUrl.replace('/api', '');
+    }
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+            return 'https://airion-backend-1.onrender.com';
+        }
+    }
+    return 'http://localhost:3000';
 };
 
 let socket: Socket | null = null;

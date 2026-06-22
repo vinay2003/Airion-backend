@@ -18,8 +18,14 @@ export class ApiClient {
   private instance: AxiosInstance;
 
   constructor(baseURL?: string) {
+    const defaultBaseURL = typeof window !== 'undefined' && 
+      window.location.hostname !== 'localhost' && 
+      window.location.hostname !== '127.0.0.1' 
+        ? '/api' 
+        : 'http://localhost:3000/api';
+
     this.instance = axios.create({
-      baseURL: baseURL || (import.meta.env?.VITE_API_URL as string) || 'http://localhost:3000/api',
+      baseURL: baseURL || (import.meta.env?.VITE_API_URL as string) || defaultBaseURL,
       headers: {
         'Content-Type': 'application/json',
       },

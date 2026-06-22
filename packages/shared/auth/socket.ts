@@ -9,7 +9,7 @@ const getBaseUrl = () => {
     if (typeof window !== 'undefined') {
         const hostname = window.location.hostname;
         if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-            return 'https://airion-backend-1.onrender.com';
+            return 'https://airion-backend-m3tb.onrender.com';
         }
     }
     return 'http://localhost:3000';

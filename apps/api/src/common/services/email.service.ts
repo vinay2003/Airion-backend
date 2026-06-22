@@ -64,7 +64,7 @@ export class EmailService {
         try {
             if (this.resendClient) {
                 // Using Resend API (HTTP based, bypasses Render SMTP block)
-                const from = this.configService.get<string>('SMTP_FROM') || 'onboarding@resend.dev';
+                const from = 'onboarding@resend.dev'; // MUST be this until domain is verified
                 const { error } = await this.resendClient.emails.send({
                     from: `"Ease2event" <${from}>`,
                     to: [to],

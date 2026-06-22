@@ -22,8 +22,14 @@ export class EmailService {
         }
 
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            requireTLS: true,
             auth: { user, pass },
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
         });
 
         this.logger.log('📧 [Email] Gmail SMTP transporter initialized.');

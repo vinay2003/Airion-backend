@@ -79,8 +79,8 @@ const CalendarPage: React.FC = () => {
                 if (!b.eventDate) return;
                 // Parse date string carefully. Support both YYYY-MM-DD, ISO formats, and Date objects.
                 let date: Date;
-                if (b.eventDate instanceof Date) {
-                    date = b.eventDate;
+                if ((b.eventDate as any) instanceof Date) {
+                    date = (b.eventDate as any);
                 } else if (typeof b.eventDate === 'string') {
                     if (b.eventDate.includes('T')) {
                         date = new Date(b.eventDate);
@@ -99,9 +99,9 @@ const CalendarPage: React.FC = () => {
                     if (!map[day]) map[day] = [];
                     map[day].push({
                         id: b.id,
-                        title: b.service?.title || b.listingName || 'Service Booking',
+                        title: (b as any).service?.title || b.listingName || 'Service Booking',
                         time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-                        client: b.user?.name || b.userName || 'Customer',
+                        client: (b as any).user?.name || b.userName || 'Customer',
                         status: b.status ? (b.status.charAt(0).toUpperCase() + b.status.slice(1)) : 'Pending',
                         type: 'booking'
                     });

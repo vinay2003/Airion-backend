@@ -4,7 +4,7 @@ import {
     Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader,
     Sparkles, Clock, CheckCircle2, User, Building, ShieldCheck
 } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService } from '@ease2event/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService, getPortalUrl } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
@@ -65,11 +65,9 @@ const UnifiedAuth: React.FC = () => {
             const tokenParam = token ? `?token=${token}` : '';
 
             if (user.role === UserRole.VENDOR) {
-                if (isLocal) {
-                    window.location.href = `http://localhost:5174/${tokenParam}`;
-                } else {
-                    window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor${tokenParam}`;
-                }
+                const targetUrl = getPortalUrl('vendor');
+                const baseUrl = targetUrl.endsWith('/') ? targetUrl : `${targetUrl}/`;
+                window.location.href = token ? `${baseUrl}${tokenParam}` : baseUrl;
             } else if (user.role === UserRole.ADMIN) {
                 if (isLocal) {
                     window.location.href = `http://localhost:5175/${tokenParam}`;
@@ -190,11 +188,9 @@ const UnifiedAuth: React.FC = () => {
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
                         toast.success('Account created! Redirecting to vendor setup...');
-                        if (isLocal) {
-                            setTimeout(() => window.location.href = `http://localhost:5174/vendor/signup-form?token=${response.access_token}`, 800);
-                        } else {
-                            setTimeout(() => window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/signup-form?token=${response.access_token}`, 800);
-                        }
+                        const targetUrl = getPortalUrl('vendor');
+                        const baseUrl = targetUrl.endsWith('/') ? targetUrl : `${targetUrl}/`;
+                        setTimeout(() => window.location.href = `${baseUrl}signup-form?token=${response.access_token}`, 800);
                         return;
                     }
                 }
@@ -205,11 +201,9 @@ const UnifiedAuth: React.FC = () => {
                 setTimeout(() => {
                     const tokenParam = `?token=${response.access_token}`;
                     if (role === 'vendor') {
-                        if (isLocal) {
-                            window.location.href = `http://localhost:5174/${tokenParam}`;
-                        } else {
-                            window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor${tokenParam}`;
-                        }
+                        const targetUrl = getPortalUrl('vendor');
+                        const baseUrl = targetUrl.endsWith('/') ? targetUrl : `${targetUrl}/`;
+                        window.location.href = `${baseUrl}${tokenParam}`;
                     } else if (role === 'admin') {
                         const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
                         window.location.href = isLocal ? `http://localhost:5175/${tokenParam}` : (ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`);

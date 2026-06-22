@@ -76,7 +76,7 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
             // Handle 401 Unauthorized
             if (error.response?.status === 401) {
                 // Prevent infinite loop
-                if (originalRequest._retry) {
+                if (originalRequest._retry || originalRequest.url?.includes(AUTH_ENDPOINTS.REFRESH_TOKEN)) {
                     tokenService.clearTokens();
                     // Let the consumer handle redirects
                     return Promise.reject(error);

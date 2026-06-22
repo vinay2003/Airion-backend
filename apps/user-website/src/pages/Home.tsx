@@ -88,7 +88,7 @@ const Home: React.FC = () => {
             } else if (user.role === 'vendor') {
                 window.location.href = getPortalUrl('vendor');
             } else if (user.role === 'user') {
-                navigate(getPortalUrl('user'));
+                navigate('/dashboard');
             }
         }
     }, [isAuthenticated, user, navigate]);

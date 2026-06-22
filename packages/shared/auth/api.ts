@@ -23,8 +23,19 @@ import { isTokenExpired } from './utils';
  * Create axios instance with base configuration
  */
 export const createAuthApi = (baseURL?: string): AxiosInstance => {
+    let resolvedBaseURL = baseURL || import.meta.env.VITE_API_URL || '/api';
+
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+            if (resolvedBaseURL.includes('localhost') || resolvedBaseURL.includes('127.0.0.1')) {
+                resolvedBaseURL = '/api';
+            }
+        }
+    }
+
     const api = axios.create({
-        baseURL: baseURL || import.meta.env.VITE_API_URL || '/api',
+        baseURL: resolvedBaseURL,
         headers: {
             'Content-Type': 'application/json',
         },

@@ -68,7 +68,7 @@ const UnifiedAuth: React.FC = () => {
                 if (isLocal) {
                     window.location.href = `http://localhost:5174/${tokenParam}`;
                 } else {
-                    window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                    window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor${tokenParam}`;
                 }
             } else if (user.role === UserRole.ADMIN) {
                 if (isLocal) {
@@ -208,7 +208,7 @@ const UnifiedAuth: React.FC = () => {
                         if (isLocal) {
                             window.location.href = `http://localhost:5174/${tokenParam}`;
                         } else {
-                            window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                            window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor${tokenParam}`;
                         }
                     } else if (role === 'admin') {
                         const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;

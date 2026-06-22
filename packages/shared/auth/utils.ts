@@ -263,16 +263,18 @@ export const getPortalUrl = (role: 'user' | 'vendor' | 'admin'): string => {
 
     const env = (import.meta as any).env || {};
     
-    if (role === 'admin') {
-        const adminUrl = env.VITE_ADMIN_URL;
-        if (adminUrl) return adminUrl;
-        return isLocal ? `http://${window.location.hostname}:5175/admin/` : '/admin/';
-    }
-    
     if (role === 'vendor') {
         const vendorUrl = env.VITE_VENDOR_URL;
         if (vendorUrl) return vendorUrl;
-        return isLocal ? `http://${window.location.hostname}:5174/vendor/` : '/vendor/';
+        // In local dev, vendor app runs at root (/) on port 5174, NOT at /vendor/
+        // In production (Vercel), no trailing slash to match vercel.json rewrite rule exactly
+        return isLocal ? `http://${window.location.hostname}:5174/` : '/vendor';
+    }
+    
+    if (role === 'admin') {
+        const adminUrl = env.VITE_ADMIN_URL;
+        if (adminUrl) return adminUrl;
+        return isLocal ? `http://${window.location.hostname}:5175/` : '/admin';
     }
     
     if (role === 'user') {
@@ -283,3 +285,4 @@ export const getPortalUrl = (role: 'user' | 'vendor' | 'admin'): string => {
     
     return '/';
 };
+

@@ -50,16 +50,47 @@ const PageLoader = () => (
 // Acts as a safety net when the user website's index.html is served for /vendor or /admin paths
 const PortalRedirect: React.FC<{ to: 'vendor' | 'admin' }> = ({ to }) => {
   React.useEffect(() => {
+    // 🔥 Prevent Infinite Redirect Loop!
+    if (window.location.pathname.startsWith(`/${to}`)) {
+      console.error(`[PortalRedirect] Infinite loop detected for /${to}. Vercel is serving user-website instead of ${to}-panel!`);
+      return;
+    }
+
     const targetUrl = getPortalUrl(to);
     // Preserve any query params (e.g. ?token=...)
     const search = window.location.search;
     window.location.replace(`${targetUrl}${search}`);
   }, [to]);
+
+  if (window.location.pathname.startsWith(`/${to}`)) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-slate-900 p-8">
+        <div className="text-center max-w-md bg-white p-8 rounded-2xl shadow-xl">
+          <div className="text-red-500 mb-4 text-5xl">⚠️</div>
+          <h1 className="text-xl font-bold text-slate-900 mb-2">Portal Configuration Error</h1>
+          <p className="text-gray-600 mb-4">
+            The <b>{to}</b> portal is not properly deployed or accessible at this URL.
+          </p>
+          <div className="bg-orange-50 text-orange-800 p-4 rounded-xl text-sm text-left font-mono">
+            <strong>Fix for Vercel:</strong><br />
+            Ensure <code>vercel.json</code> rewrites are active, OR set the environment variable <code>VITE_{to.toUpperCase()}_URL</code> to the deployed URL of the {to} portal.
+          </div>
+          <button 
+            onClick={() => window.location.href = '/'} 
+            className="mt-6 w-full py-3 bg-[#C25844] text-white rounded-xl font-bold hover:bg-[#a94a38] transition-colors"
+          >
+            Go back Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950">
-      <div className="text-center animate-pulse space-y-4">
-        <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <p className="text-slate-400 font-medium">Redirecting to {to} portal...</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C25844] mx-auto mb-4"></div>
+        <p className="text-gray-600 dark:text-gray-300 font-medium">Redirecting to {to} portal...</p>
       </div>
     </div>
   );

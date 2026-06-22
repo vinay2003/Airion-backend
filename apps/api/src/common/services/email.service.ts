@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { Resend } from 'resend';
@@ -86,8 +86,8 @@ export class EmailService {
             }
         } catch (error: any) {
             this.logger.error(`❌ [Email] Failed to send OTP email to ${to}: ${error.message}`);
-            // Throw the error so the API returns a 500 failure instead of succeeding silently
-            throw new Error(`EMAIL_ERROR: ${error.message}`);
+            // Throw an HttpException so the exact error isn't masked by NestJS in production
+            throw new InternalServerErrorException(`EMAIL_ERROR: ${error.message}`);
         }
     }
 

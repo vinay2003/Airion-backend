@@ -64,7 +64,8 @@ export class EmailService {
             this.logger.log(`✅ [Email] OTP email sent to: ${to}`);
         } catch (error: any) {
             this.logger.error(`❌ [Email] Failed to send OTP email to ${to}: ${error.message}`);
-            // Don't throw — let auth flow continue. OTP is still in DB and logged above.
+            // Throw the error so the API returns a 500 failure instead of succeeding silently
+            throw new Error(`SMTP_ERROR: ${error.message}`);
         }
     }
 

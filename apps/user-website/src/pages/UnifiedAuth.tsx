@@ -65,7 +65,11 @@ const UnifiedAuth: React.FC = () => {
             const tokenParam = token ? `?token=${token}` : '';
 
             if (user.role === UserRole.VENDOR) {
-                window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                if (isLocal) {
+                    window.location.href = `http://localhost:5174/${tokenParam}`;
+                } else {
+                    window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                }
             } else if (user.role === UserRole.ADMIN) {
                 if (isLocal) {
                     window.location.href = `http://localhost:5175/${tokenParam}`;
@@ -186,7 +190,11 @@ const UnifiedAuth: React.FC = () => {
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
                         toast.success('Account created! Redirecting to vendor setup...');
-                        setTimeout(() => window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/signup-form?token=${response.access_token}`, 800);
+                        if (isLocal) {
+                            setTimeout(() => window.location.href = `http://localhost:5174/vendor/signup-form?token=${response.access_token}`, 800);
+                        } else {
+                            setTimeout(() => window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/signup-form?token=${response.access_token}`, 800);
+                        }
                         return;
                     }
                 }
@@ -197,7 +205,11 @@ const UnifiedAuth: React.FC = () => {
                 setTimeout(() => {
                     const tokenParam = `?token=${response.access_token}`;
                     if (role === 'vendor') {
-                        window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                        if (isLocal) {
+                            window.location.href = `http://localhost:5174/${tokenParam}`;
+                        } else {
+                            window.location.href = `https://airion-backend-admin-panel-psi.vercel.app/vendor/${tokenParam}`;
+                        }
                     } else if (role === 'admin') {
                         const ADMIN_URL = import.meta.env.VITE_ADMIN_URL;
                         window.location.href = isLocal ? `http://localhost:5175/${tokenParam}` : (ADMIN_URL ? `${ADMIN_URL}/${tokenParam}` : `/admin${tokenParam}`);

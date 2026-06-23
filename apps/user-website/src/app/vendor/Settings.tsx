@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, Bell, Lock, CreditCard, Globe, Moon, Sun, Save, ShieldCheck, Upload, CheckCircle } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -7,10 +7,39 @@ const Settings: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Split name for display
     const displayName = user?.name || user?.email?.split('@')[0] || user?.phoneNumber || 'User';
     const initials = (user?.name?.substring(0, 2) || displayName.substring(0, 2)).toUpperCase();
+
+    const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const { uploadImage, updateProfile } = await import('../../lib/api');
+            const { toast } = await import('react-hot-toast');
+            const response = await uploadImage(file);
+            const url = response?.url || response?.data?.url || (typeof response === 'string' ? response : null);
+
+            if (!url || typeof url !== 'string') {
+                throw new Error('Invalid response format');
+            }
+
+            await updateProfile({ avatar: url });
+            // Since there is no refreshUser in AuthContext exposed here, we might just reload
+            window.location.reload();
+        } catch (error) {
+            console.error('Upload error:', error);
+            const { toast } = await import('react-hot-toast');
+            toast.error('Upload failed. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const tabs = [
         { id: 'profile', label: 'Profile', icon: User },
@@ -55,13 +84,33 @@ const Settings: React.FC = () => {
                             <div className="space-y-6">
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
                                 <div className="flex items-center gap-6">
-                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-2xl font-bold">
-                                        {initials}
+                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-2xl font-bold overflow-hidden relative cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+                                        {uploading ? (
+                                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center backdrop-blur-sm">
+                                                <Upload className="animate-spin text-white" size={20} />
+                                            </div>
+                                        ) : user?.avatar ? (
+                                            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                                        ) : (
+                                            initials
+                                        )}
+                                        {!uploading && (
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <Upload className="text-white" size={24} />
+                                            </div>
+                                        )}
                                     </div>
                                     <div>
-                                        <button className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors">
-                                            Change Photo
+                                        <button onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors">
+                                            {uploading ? 'Uploading...' : 'Change Photo'}
                                         </button>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={handlePhotoUpload}
+                                        />
                                         <p className="text-xs text-gray-500 dark:text-slate-400 mt-2">JPG, GIF or PNG. Max size of 2MB</p>
                                     </div>
                                 </div>

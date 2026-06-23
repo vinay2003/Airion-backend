@@ -110,9 +110,9 @@ const UnifiedAuth: React.FC = () => {
             console.log('[Email OTP] 📧 Sending OTP to:', trimmedEmail, '| Mode:', mode);
 
             if (mode === 'signup') {
-                await otpAuth.sendSignupOTP({ email: trimmedEmail });
+                await otpAuth.sendSignupOTP({ email: trimmedEmail, role: selectedRole });
             } else {
-                await otpAuth.sendLoginOTP({ email: trimmedEmail });
+                await otpAuth.sendLoginOTP({ email: trimmedEmail, role: selectedRole });
             }
 
             console.log('[Email OTP] ✅ OTP sent successfully');

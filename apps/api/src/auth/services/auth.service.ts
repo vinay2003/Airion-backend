@@ -234,6 +234,12 @@ export class AuthService {
         // User lookup
         const user = await this.userRepository.findOne({ where: whereConditions });
 
+        // Enforce role check if role is provided
+        if (user && dto.role && user.role !== dto.role) {
+            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${dto.role}`);
+            throw new UnauthorizedException(`Account found, but registered as ${user.role}. Please login to the correct portal.`);
+        }
+
         // Parallelize user check and OTP cleanup
         await this.otpRepository.delete({ identifier, type: 'login' });
 
@@ -385,6 +391,12 @@ export class AuthService {
 
         if (!loggedInUser) {
             throw new UnauthorizedException('User session could not be established');
+        }
+
+        // Enforce role check if role is provided
+        if (dto.role && loggedInUser.role !== dto.role) {
+            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${loggedInUser.role}) tried to verify as ${dto.role}`);
+            throw new UnauthorizedException(`Account found, but registered as ${loggedInUser.role}. Please login to the correct portal.`);
         }
 
         // Update last login

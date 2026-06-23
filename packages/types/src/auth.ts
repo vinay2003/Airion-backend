@@ -4,6 +4,7 @@ import { UserRole } from './user';
 export const SendOtpSchema = z.object({
   phone: z.string().optional().nullable(),
   email: z.string().email().optional().nullable(),
+  role: z.nativeEnum(UserRole).optional(),
 }).refine(data => data.phone || data.email, {
   message: "Either phone or email must be provided",
   path: ["phone", "email"],

@@ -47,6 +47,7 @@ export interface SignupData {
 export interface OTPRequest {
     phone?: string;
     email?: string;
+    role?: UserRole;
 }
 
 export interface OTPVerification {

@@ -12,6 +12,14 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      workbox: {
+        // 🚫 CRITICAL: Do NOT let Service Worker intercept /vendor or /admin
+        // These are separate apps served by Vercel from dist/vendor/ and dist/admin/
+        navigateFallbackDenylist: [/^\/vendor/, /^\/admin/, /^\/api/],
+        // Only precache user-website assets (not vendor/admin)
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,woff,woff2}'],
+        globIgnores: ['vendor/**', 'admin/**'],
+      },
       manifest: {
         name: 'Ease2event | Premium Event Planning',
         short_name: 'Ease2event',

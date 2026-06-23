@@ -53,8 +53,9 @@ async function bootstrap() {
 
             const isLocal = !origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.startsWith('http://192.168.');
             const isVercel = origin && origin.endsWith('.vercel.app');
+            const isCustomDomain = origin && (origin === 'https://ease2event.com' || origin === 'https://www.ease2event.com');
 
-            if (isLocal || isVercel || allowedOrigins.includes(origin as string)) {
+            if (isLocal || isVercel || isCustomDomain || allowedOrigins.includes(origin as string)) {
                 callback(null, true);
             } else {
                 console.warn(`🔒 CORS Blocked for origin: ${origin}`);

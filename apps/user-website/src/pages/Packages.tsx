@@ -485,10 +485,10 @@ const Packages: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button className="px-10 py-4 bg-[#c5a059] hover:bg-[#b38f4a] text-black font-bold text-sm uppercase tracking-widest transition-all duration-300">
+            <button className="px-10 py-4 bg-[#c5a059] hover:bg-[#b38f4a] text-black font-bold text-sm tracking-widest transition-all duration-300">
               Explore Packages
             </button>
-            <button className="px-10 py-4 border border-[#c5a059] hover:bg-[#c5a059]/10 text-white font-bold text-sm uppercase tracking-widest transition-all duration-300">
+            <button className="px-10 py-4 border border-[#c5a059] hover:bg-[#c5a059]/10 text-white font-bold text-sm tracking-widest transition-all duration-300">
               Free Consultation
             </button>
           </div>
@@ -521,16 +521,22 @@ const Packages: React.FC = () => {
 
           {/* Filter Bar */}
           <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-            {['ALL EVENTS', 'WEDDING', 'PARTIES', 'COUPLE', 'FAMILY'].map((filter) => (
+            {[
+              { label: 'All Events', value: 'ALL EVENTS' },
+              { label: 'Wedding', value: 'WEDDING' },
+              { label: 'Parties', value: 'PARTIES' },
+              { label: 'Couple', value: 'COUPLE' },
+              { label: 'Family', value: 'FAMILY' }
+            ].map((filter) => (
               <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-8 py-3.5 text-sm font-bold uppercase tracking-widest transition-all duration-500 border ${activeFilter === filter
+                key={filter.value}
+                onClick={() => setActiveFilter(filter.value)}
+                className={`px-8 py-3.5 text-sm font-bold tracking-widest transition-all duration-500 border ${activeFilter === filter.value
                   ? 'bg-[#c5a059] border-[#c5a059] text-black shadow-lg shadow-[#c5a059]/20'
                   : 'bg-transparent border-gray-200 dark:border-white/10 text-gray-400 dark:text-white/40 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-white/30'
                   }`}
               >
-                {filter}
+                {filter.label}
               </button>
             ))}
           </div>
@@ -690,7 +696,7 @@ const Packages: React.FC = () => {
                     <div className="mt-auto pt-2">
                       <button
                         onClick={() => setSelectedPkg(pkg)}
-                        className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-widest uppercase transition-all duration-300 ${pkg.popular
+                        className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-widest transition-all duration-300 ${pkg.popular
                           ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-xl shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-[1.02]'
                           : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white hover:scale-[1.02]'
                           }`}

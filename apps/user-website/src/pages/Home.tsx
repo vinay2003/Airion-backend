@@ -254,7 +254,7 @@ const Home: React.FC = () => {
                                                 : 'text-gray-500 font-semibold'
                                                 }`}
                                         >
-                                            <span className="text-xs md:text-sm uppercase tracking-[0.2em] whitespace-nowrap">
+                                            <span className="text-xs md:text-sm tracking-[0.2em] whitespace-nowrap">
                                                 {tab}
                                             </span>
                                             {marketplaceTab === tab && (

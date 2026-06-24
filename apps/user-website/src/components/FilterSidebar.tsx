@@ -240,7 +240,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                     />
                 </div>
                 {dateError && (
-                    <p className="mt-2 text-[10px] font-black uppercase tracking-wider text-red-500 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <p className="mt-2 text-[10px] font-black tracking-wider text-red-500 flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-200">
                         <span className="w-1 h-1 rounded-full bg-red-500" />
                         {dateError}
                     </p>
@@ -341,7 +341,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                     type="button"
                     onClick={handleApply}
                     disabled={isApplying}
-                    className={`w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${isApplying ? 'opacity-70 cursor-not-allowed scale-95' : ''}`}
+                    className={`w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black text-sm tracking-widest rounded-2xl shadow-xl shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${isApplying ? 'opacity-70 cursor-not-allowed scale-95' : ''}`}
                 >
                     {isApplying ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -352,7 +352,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                 </button>
                 <button
                     onClick={handleClearAll}
-                    className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-200 dark:hover:border-slate-700 font-bold text-xs uppercase tracking-widest rounded-2xl transition-all"
+                    className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-200 dark:hover:border-slate-700 font-bold text-xs tracking-widest rounded-2xl transition-all"
                 >
                     Clear All Filters
                 </button>

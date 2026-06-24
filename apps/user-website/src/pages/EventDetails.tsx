@@ -357,7 +357,7 @@ const EventDetails: React.FC = () => {
                                             </div>
                                         )}
                                         <div className="mb-4">
-                                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 uppercase tracking-tight">{pkg.title}</h3>
+                                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 tracking-tight">{pkg.title}</h3>
                                             <div className="flex items-baseline gap-1">
                                                 <span className="text-2xl font-black text-red-500">{pkg.price}</span>
                                                 <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
@@ -381,9 +381,9 @@ const EventDetails: React.FC = () => {
 
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all"
+                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group-hover:border-red-600 group-hover:text-white transition-all"
                                         >
-                                            Initialize {pkg.title} Protocol
+                                            {pkg.title}
                                         </button>
                                     </div>
                                 ))}
@@ -533,9 +533,9 @@ const EventDetails: React.FC = () => {
                                 <button
                                     onClick={() => handleBookingClick()}
                                     disabled={isAvailable === false || checkingAvailability}
-                                    className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
+                                    className={`w-full py-5 rounded-2xl font-black text-xs tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
                                 >
-                                    {isAvailable === false ? 'Slot Unavailable' : 'Initiate Booking Sequence'}
+                                    {isAvailable === false ? 'Slot Unavailable' : 'Booking'}
                                 </button>
 
                                 <p className="text-center text-xs text-gray-500 mt-4">You won't be charged yet</p>
@@ -576,9 +576,9 @@ const EventDetails: React.FC = () => {
                 </div>
                 <button
                     onClick={() => handleBookingClick()}
-                    className="bg-red-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-red-500/30 italic"
+                    className="bg-red-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] tracking-[0.2em] shadow-xl shadow-red-500/30 italic"
                 >
-                    Initialize Reserve
+                    Booking
                 </button>
             </div>
 

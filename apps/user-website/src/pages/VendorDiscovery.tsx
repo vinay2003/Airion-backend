@@ -242,9 +242,9 @@ const VendorDiscovery: React.FC = () => {
                         <h1 className="text-xl md:text-4xl font-black text-neutral-900 dark:text-white mb-4 tracking-tight leading-tight">
                             Everything for Your Event
                         </h1>
-                        <p className="text-neutral-500 dark:text-slate-400 font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
+                        <p className="text-neutral-500 dark:text-slate-400 font-black text-xs tracking-[0.2em] flex items-center gap-2">
                             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                            {sortedVendors.length}+ VERIFIED NODES ACTIVE
+                            {sortedVendors.length}+ Verified Nodes Active
                         </p>
                     </div>
 
@@ -269,7 +269,7 @@ const VendorDiscovery: React.FC = () => {
                                 className={`group relative flex items-center gap-2 py-2 px-1 transition-all duration-300 hover:scale-110 hover:brightness-150 ${showSortDropdown ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}`}
                             >
                                 <ArrowUpDown size={15} className={showSortDropdown ? 'text-red-500' : 'text-neutral-400'} />
-                                <span className="text-xs font-black uppercase tracking-[0.2em]">
+                                <span className="text-xs font-black tracking-[0.2em]">
                                     {currentSortLabel}
                                 </span>
                                 <ChevronDown size={14} className={`text-neutral-400 transition-transform duration-300 ${showSortDropdown ? 'rotate-180 text-red-500' : ''}`} />
@@ -306,7 +306,7 @@ const VendorDiscovery: React.FC = () => {
                                 onClick={() => setIsMapView(false)}
                                 className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${!isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
-                                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
                                     <List size={16} className={!isMapView ? 'text-red-500' : ''} />
                                     List
                                 </div>
@@ -321,7 +321,7 @@ const VendorDiscovery: React.FC = () => {
                                 onClick={() => setIsMapView(true)}
                                 className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
-                                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
                                     <Map size={16} className={isMapView ? 'text-red-500' : ''} />
                                     Map
                                 </div>
@@ -421,8 +421,8 @@ const VendorDiscovery: React.FC = () => {
 
                         {!loading && sortedVendors.length > 0 && (
                             <div className="mt-20 flex justify-center">
-                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs uppercase tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
-                                    Expand Network Results
+                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
+                                    Expand network results
                                 </button>
                             </div>
                         )}

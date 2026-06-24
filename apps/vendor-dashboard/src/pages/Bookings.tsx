@@ -202,7 +202,7 @@ const Bookings: React.FC = () => {
 
             {/* Filters & Navigation */}
             <div className="flex flex-col xl:flex-row gap-8 justify-between items-start xl:items-center py-6">
-                <motion.div variants={itemVariants} className="flex flex-wrap bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner w-full xl:w-auto overflow-x-auto scrollbar-hide">
+                <motion.div variants={itemVariants} className="flex flex-wrap gap-2 bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] shadow-inner w-full xl:w-auto">
                     {tabsData.map(tab => (
                         <button
                             key={tab.id}

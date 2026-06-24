@@ -265,7 +265,10 @@ export class VendorsService {
                 vendor: vendor
             });
 
-            return await this.adRepository.save(ad);
+            const savedAd = await this.adRepository.save(ad);
+            // @ts-ignore: Prevent circular JSON errors when serializing
+            delete savedAd.vendor;
+            return savedAd;
         } catch (error: any) {
             console.error('[VendorsService.createAd] Critical Failure:', error.message, error.stack);
             throw new BadRequestException(`Failed to create advertising campaign: ${error.message}`);

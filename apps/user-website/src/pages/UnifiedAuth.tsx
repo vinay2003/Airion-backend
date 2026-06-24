@@ -101,8 +101,10 @@ const UnifiedAuth: React.FC = () => {
         }
 
         if (selectedRole === UserRole.ADMIN) {
-            toast.error('Admin login uses a different channel. Contact your administrator.');
-            return;
+            if (trimmedEmail !== 'abhishekkumar518@gmail.com') {
+                toast.error('Unauthorized admin email. Access Denied.');
+                return;
+            }
         }
 
         setLoading(true);

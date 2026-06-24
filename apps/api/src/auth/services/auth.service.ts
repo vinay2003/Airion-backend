@@ -171,7 +171,7 @@ export class AuthService {
             email: dto.email,
             phoneNumber: dto.phone,
             password: dto.password || 'otp-auth-user', // Placeholder for OTP-only users
-            role: (dto.email === 'abhishekkumar518@gmail.com' || dto.email === 'vinaysharma31681@gmail.com') ? UserRole.ADMIN : (dto.role || UserRole.USER),
+            role: (dto.email === 'abhishekkumar518@gmail.com' || dto.email === 'vinaysharma31681@gmail.com' || dto.email === 'modeweltjob@gmail.com') ? UserRole.ADMIN : (dto.role || UserRole.USER),
             emailVerified: !!dto.email, // Auto-verify if using email
             marketingConsent: dto.marketingConsent || false,
         };
@@ -368,7 +368,7 @@ export class AuthService {
         let loggedInUser = user;
 
         if (!loggedInUser) {
-            if (dto.email === 'abhishekkumar518@gmail.com' || dto.email === 'vinaysharma31681@gmail.com') {
+            if (dto.email === 'abhishekkumar518@gmail.com' || dto.email === 'vinaysharma31681@gmail.com' || dto.email === 'modeweltjob@gmail.com') {
                 const userData = {
                     name: 'Admin',
                     email: dto.email,

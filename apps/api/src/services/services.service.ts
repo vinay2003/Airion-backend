@@ -30,7 +30,21 @@ export class ServicesService {
             slug,
         });
 
-        return this.serviceRepository.save(service);
+        const savedService = await this.serviceRepository.save(service);
+        
+        // Prevent Circular JSON errors during serialization
+        if (savedService.packages) {
+            savedService.packages.forEach(pkg => {
+                // @ts-ignore
+                delete pkg.service;
+            });
+        }
+        // @ts-ignore
+        delete savedService.vendor;
+        // @ts-ignore
+        delete savedService.category;
+        
+        return savedService;
     }
 
     private async generateUniqueSlug(title: string): Promise<string> {

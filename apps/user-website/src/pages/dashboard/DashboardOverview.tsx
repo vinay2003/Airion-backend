@@ -114,7 +114,7 @@ const DashboardOverview: React.FC = () => {
                             className="p-8 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
                         >
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black text-neutral-600 dark:text-slate-500 tracking-[0.3em] mb-2">{stat.title}</p>
+                                <p className="text-sm font-medium text-neutral-600 dark:text-slate-500 mb-2">{stat.title}</p>
                                 <h3 className="text-4xl font-black text-neutral-900 dark:text-white">{stat.value}</h3>
                             </div>
                             <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all group-hover:rotate-12 ${stat.bg} ${stat.text}`}>

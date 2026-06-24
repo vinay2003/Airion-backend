@@ -420,7 +420,7 @@ const Products: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex gap-8 items-center px-4">
+                <div className="flex flex-wrap gap-8 items-center px-4">
                     {['ALL_NODES', 'ACTIVE_SYNC', 'ARCHIVE_CMD'].map(tab => (
                         <button
                             key={tab}

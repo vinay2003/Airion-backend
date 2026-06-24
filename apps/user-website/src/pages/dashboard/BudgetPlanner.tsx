@@ -74,7 +74,7 @@ const BudgetPlanner: React.FC = () => {
                     <h1 className="text-3xl font-extrabold text-neutral-900 dark:text-neutral-50 tracking-tight">Budget Planner</h1>
                     <p className="text-neutral-500 dark:text-slate-400 mt-1">Track allocations, spent costs, and auto vendor-cost sync.</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                     <button
                         onClick={handleExportPDF}
                         className="flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-slate-800 rounded-xl font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-slate-800 transition"
@@ -175,7 +175,7 @@ const BudgetPlanner: React.FC = () => {
                     <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Expense Manager</h3>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px] whitespace-nowrap">
                         <thead>
                             <tr className="bg-neutral-50 dark:bg-slate-800/50 border-b border-neutral-100 dark:border-slate-800">
                                 <th className="p-4 font-semibold text-sm text-neutral-600 dark:text-slate-300">Category</th>

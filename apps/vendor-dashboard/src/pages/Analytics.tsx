@@ -132,7 +132,7 @@ const Analytics: React.FC = () => {
                     </p>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="flex bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
+                <motion.div variants={itemVariants} className="flex flex-wrap bg-[var(--ease2event-bg-elevated)]/50 p-1.5 rounded-[24px] border border-[var(--ease2event-border-subtle)] relative z-10">
                     {(['7D', '30D', '90D', 'YTD'] as const).map(p => (
                         <button
                             key={p}

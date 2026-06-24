@@ -183,7 +183,7 @@ const MyBookings: React.FC = () => {
             </div>
 
             {/* Custom Segmented Tabs */}
-            <div className="flex overflow-x-auto scrollbar-hide gap-2 mb-8 p-1 border-b border-neutral-200 dark:border-slate-800 pb-4">
+            <div className="flex flex-wrap gap-2 mb-8 p-1 border-b border-neutral-200 dark:border-slate-800 pb-4">
                 {tabs.map(tab => (
                     <button
                         key={tab}

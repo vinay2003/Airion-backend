@@ -119,7 +119,7 @@ const GuestList: React.FC = () => {
                                 className="pl-10 bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 rounded-xl"
                             />
                         </div>
-                        <div className="flex overflow-x-auto gap-2 scrollbar-hide py-1">
+                        <div className="flex flex-wrap gap-2 py-1">
                             {groups.map(group => (
                                 <button
                                     key={group}
@@ -144,11 +144,11 @@ const GuestList: React.FC = () => {
                         <table className="w-full text-left min-w-[800px]">
                             <thead className="bg-neutral-50 dark:bg-slate-800/50">
                                 <tr>
-                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider">Guest</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider">Contact</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider">Group</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 tracking-wider">Guest</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 tracking-wider">Contact</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 tracking-wider">Group</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 tracking-wider">Status</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-neutral-500 tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-neutral-100 dark:divide-slate-800">
@@ -178,7 +178,7 @@ const GuestList: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="px-3 py-1 rounded-full bg-neutral-100 dark:bg-slate-800 text-[10px] font-black uppercase text-neutral-600 dark:text-slate-400">
+                                                <span className="px-3 py-1 rounded-full bg-neutral-100 dark:bg-slate-800 text-[10px] font-black text-neutral-600 dark:text-slate-400">
                                                     {guest.group}
                                                 </span>
                                             </td>

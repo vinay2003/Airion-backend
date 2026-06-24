@@ -91,7 +91,7 @@ const DashboardOverview: React.FC = () => {
                         className="inline-flex items-center gap-3 px-6 py-4 bg-red-500 text-white rounded-2xl shadow-2xl shadow-red-500/40 font-black text-sm hover:bg-black transition-all group"
                     >
                         <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-                        Initiate Discovery
+                        Explore more
                     </Link>
                 </motion.div>
             </header>

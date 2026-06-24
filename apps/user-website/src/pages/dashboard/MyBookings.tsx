@@ -222,9 +222,9 @@ const MyBookings: React.FC = () => {
 
                                 <div className="flex-1 py-1 flex flex-col justify-between">
                                     <div>
-                                        <div className="flex justify-between items-start mb-1">
-                                            <p className="text-xs font-bold text-neutral-400 tracking-wider">#{booking.bookingCode}</p>
-                                            <button className="text-neutral-400 hover:text-red-500 transition-colors">
+                                        <div className="flex justify-between items-start mb-1 gap-2">
+                                            <p className="text-xs font-bold text-neutral-400 tracking-wider break-all">#{booking.bookingCode}</p>
+                                            <button className="text-neutral-400 hover:text-red-500 transition-colors shrink-0">
                                                 <ChevronRight size={20} />
                                             </button>
                                         </div>
@@ -242,12 +242,12 @@ const MyBookings: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800/80">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-neutral-100 dark:border-slate-800/80">
                                         <div>
                                             <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Total</p>
                                             <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 w-full sm:w-auto">
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -263,7 +263,7 @@ const MyBookings: React.FC = () => {
                                                     e.stopPropagation();
                                                     setSelectedBooking(booking);
                                                 }}
-                                                className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
+                                                className="flex-1 sm:flex-none px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
                                                 Details
                                             </button>
                                         </div>

@@ -125,7 +125,7 @@ const GuestList: React.FC = () => {
                                         e.preventDefault();
                                         setFilterGroup(group);
                                     }}
-                                    className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border shadow-sm ${filterGroup === group
+                                    className={`px-5 py-2.5 rounded-2xl text-sm font-bold tracking-wide transition-all duration-300 border shadow-sm whitespace-nowrap ${filterGroup === group
                                         ? 'bg-red-600 border-red-600 text-white shadow-red-500/20'
                                         : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
                                         }`}
@@ -137,8 +137,8 @@ const GuestList: React.FC = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                        <table className="w-full text-left">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200 dark:border-slate-800 overflow-x-auto shadow-sm">
+                        <table className="w-full text-left min-w-[800px]">
                             <thead className="bg-neutral-50 dark:bg-slate-800/50">
                                 <tr>
                                     <th className="px-6 py-4 text-xs font-bold text-neutral-500 uppercase tracking-wider">Guest</th>
@@ -220,7 +220,7 @@ const GuestList: React.FC = () => {
 
                 {/* Stats Sidebar */}
                 <div className="space-y-6">
-                    <div className="bg-neutral-900 dark:bg-white rounded-3xl p-6 text-white dark:text-neutral-900">
+                    <div className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-3xl p-6 text-neutral-900 dark:text-white shadow-sm">
                         <h3 className="text-lg font-black mb-4 flex items-center gap-2">
                             <Users size={20} /> Summary
                         </h3>
@@ -229,7 +229,7 @@ const GuestList: React.FC = () => {
                                 <div className="flex justify-between text-xs font-bold uppercase mb-1 opacity-60">Confirmed</div>
                                 <div className="text-2xl font-black">{guests.filter((g: any) => g.rsvpStatus === 'confirmed').length}</div>
                             </div>
-                            <div className="w-full bg-white/20 dark:bg-neutral-200 h-1 rounded-full overflow-hidden">
+                            <div className="w-full bg-neutral-200 dark:bg-slate-800 h-1 rounded-full overflow-hidden">
                                 <div
                                     className="bg-green-500 h-full"
                                     style={{ width: `${(guests.filter((g: any) => g.rsvpStatus === 'confirmed').length / (guests.length || 1)) * 100}%` }}

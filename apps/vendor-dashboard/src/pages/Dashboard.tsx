@@ -59,6 +59,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const vendorId = user?.vendor?.id || 'mock-id';
+  const [chartView, setChartView] = React.useState<'live' | 'history'>('live');
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['vendor-stats', vendorId],
@@ -132,8 +133,18 @@ const Dashboard = () => {
                 <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)]">Earnings tracking over time</p>
               </div>
               <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-xl border border-[var(--ease2event-border-subtle)]">
-                <button className="px-6 py-2.5 rounded-lg text-xs font-bold bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20  tracking-widest">Live</button>
-                <button className="px-6 py-2.5 text-xs font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all  tracking-widest">History</button>
+                <button 
+                  onClick={() => setChartView('live')}
+                  className={`px-6 py-2.5 rounded-lg text-xs font-bold tracking-widest transition-all ${chartView === 'live' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+                >
+                  Live
+                </button>
+                <button 
+                  onClick={() => setChartView('history')}
+                  className={`px-6 py-2.5 rounded-lg text-xs font-bold tracking-widest transition-all ${chartView === 'history' ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-lg shadow-blue-500/20' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+                >
+                  History
+                </button>
               </div>
             </div>
 

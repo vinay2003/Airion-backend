@@ -31,10 +31,13 @@ const GuestList: React.FC = () => {
         { id: 'g5', name: 'Siddharth Jain', email: 'sid@example.com', phone: '+91 54321 09876', group: 'Family', rsvpStatus: 'pending' },
     ];
 
-    const { data: guestsData = [], isLoading } = useQuery({
+    const { data: rawGuestsData = [], isLoading } = useQuery({
         queryKey: ['guests'],
         queryFn: fetchGuests,
     });
+
+    // Safely ensure it's an array to fix TS and runtime spread issues
+    const guestsData: any[] = Array.isArray(rawGuestsData) ? rawGuestsData : (rawGuestsData as any).data || [];
 
     // Merge real guests with mocks to keep the UI populated during testing
     const guests = [...guestsData, ...mockGuests.filter(mg => !guestsData.find((g: any) => g.email === mg.email))];

@@ -1,34 +1,64 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query } from '@nestjs/common';
 import { AdsService } from './ads.service';
 import { CreateAdDto } from './dto/create-ad.dto';
 import { UpdateAdDto } from './dto/update-ad.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/guards/roles.decorator';
+import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('ads')
 export class AdsController {
   constructor(private readonly adsService: AdsService) {}
 
+  // ─── Vendor Endpoints ───────────────────────────────────────────────
+  
   @Post()
-  create(@Body() createAdDto: CreateAdDto) {
-    return this.adsService.create(createAdDto);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.VENDOR)
+  create(@Body() createAdDto: CreateAdDto, @Req() req: any) {
+    return this.adsService.create(req.user.userId, createAdDto);
   }
 
+  @Get('vendor/me')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.VENDOR)
+  findMyAds(@Req() req: any) {
+    return this.adsService.findByVendor(req.user.userId);
+  }
+
+  // ─── Admin Endpoints ────────────────────────────────────────────────
+  
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   findAll() {
     return this.adsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adsService.findOne(+id);
+  @Patch(':id/status')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  updateStatus(@Param('id') id: string, @Body() updateAdDto: UpdateAdDto) {
+    return this.adsService.update(id, updateAdDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdDto: UpdateAdDto) {
-    return this.adsService.update(+id, updateAdDto);
+  // ─── Public Endpoints (User Website) ────────────────────────────────
+
+  @Get('active')
+  findActive(@Query('city') city?: string) {
+    return this.adsService.findActiveAds({ city });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adsService.remove(+id);
+  @Post(':id/click')
+  async recordClick(@Param('id') id: string) {
+    await this.adsService.incrementClick(id);
+    return { success: true };
+  }
+
+  @Post(':id/impression')
+  async recordImpression(@Param('id') id: string) {
+    await this.adsService.incrementImpression(id);
+    return { success: true };
   }
 }

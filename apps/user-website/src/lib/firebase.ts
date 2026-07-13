@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 
 
 // Helper to clean environment variables (stripping surrounding quotes if loaded literally)
@@ -69,4 +69,5 @@ if (import.meta.env.DEV && import.meta.env.VITE_FIREBASE_BYPASS_RECAPTCHA === 't
 
 
 export const isFirebaseConfigured = isConfigured;
+export { GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber };
 

@@ -13,6 +13,7 @@ import FallingPetals from '../components/FallingPetals';
 import FallingLeaves from '../components/FallingLeaves';
 
 import { fetchEvents } from '../lib/api';
+import api from '../lib/api';
 import type { Event } from '../types';
 const faqs = [
     {
@@ -77,6 +78,7 @@ const Home: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [marketplaceTab, setMarketplaceTab] = useState('All');
     const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
+    const [activeAds, setActiveAds] = useState<any[]>([]);
 
     const [subscribeEmail, setSubscribeEmail] = useState('');
     const [subscribeError, setSubscribeError] = useState('');
@@ -104,6 +106,13 @@ const Home: React.FC = () => {
             .finally(() => {
                 setLoading(false);
             });
+            
+        api.get('/ads/active').then((res: any) => {
+            const data = Array.isArray(res) ? res : res.data;
+            if (Array.isArray(data)) {
+                setActiveAds(data.filter((ad: any) => ad.adType === 'banner' || ad.adType === 'featured'));
+            }
+        }).catch(err => console.error('Failed to load ads', err));
     }, []);
 
     const filteredEvents = useMemo(() => {
@@ -154,6 +163,29 @@ const Home: React.FC = () => {
 
 
             <CategorySlider />
+
+            {activeAds.length > 0 && (
+                <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-8">
+                    <div className="relative overflow-hidden rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20">
+                        <div className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+                            {activeAds.map(ad => (
+                                <div key={ad.id} className="min-w-full flex-shrink-0 snap-center p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6" onClick={() => api.post(`/ads/${ad.id}/click`).catch()}>
+                                    <div className="space-y-4">
+                                        <div className="inline-block px-3 py-1 bg-red-500 text-white text-[10px] font-bold tracking-widest uppercase rounded-full">
+                                            Sponsored
+                                        </div>
+                                        <h3 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white leading-tight">{ad.campaignName}</h3>
+                                        <p className="text-gray-600 dark:text-gray-300 font-medium">Discover premium exclusive offers tailored just for you.</p>
+                                    </div>
+                                    <Link to={`/marketplace?vendorId=${ad.vendorId}`} className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors shadow-lg whitespace-nowrap">
+                                        View Details
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
 
             {activeCategory === 'all' ? (

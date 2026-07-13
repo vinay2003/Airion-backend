@@ -18,4 +18,10 @@ export class AnalyticsController {
     ) {
         return this.analyticsService.getVendorPerformance(id, days);
     }
+
+    @Get('admin/global-stats')
+    @Roles(UserRole.ADMIN)
+    async getGlobalStats() {
+        return this.analyticsService.getAdminGlobalStats();
+    }
 }

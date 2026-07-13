@@ -7,133 +7,133 @@ import { useTheme } from '../context/ThemeContext';
 
 
 interface TopbarProps {
-    title: string;
-    onMenuClick: () => void;
+ title: string;
+ onMenuClick: () => void;
 }
 
 const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
-    const { user, logout } = useAuth();
-    const { theme, toggleTheme } = useTheme();
-    const navigate = useNavigate();
-    const [isNotifOpen, setIsNotifOpen] = React.useState(false);
-    const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+ const { user, logout } = useAuth();
+ const { theme, toggleTheme } = useTheme();
+ const navigate = useNavigate();
+ const [isNotifOpen, setIsNotifOpen] = React.useState(false);
+ const [isProfileOpen, setIsProfileOpen] = React.useState(false);
 
-    // Close menus when clicking outside
-    const navRef = React.useRef<HTMLDivElement>(null);
-    React.useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (navRef.current && !navRef.current.contains(e.target as Node)) {
-                setIsNotifOpen(false);
-                setIsProfileOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+ // Close menus when clicking outside
+ const navRef = React.useRef<HTMLDivElement>(null);
+ React.useEffect(() => {
+ const handleClickOutside = (e: MouseEvent) => {
+ if (navRef.current && !navRef.current.contains(e.target as Node)) {
+ setIsNotifOpen(false);
+ setIsProfileOpen(false);
+ }
+ };
+ document.addEventListener('mousedown', handleClickOutside);
+ return () => document.removeEventListener('mousedown', handleClickOutside);
+ }, []);
 
-    return (
-        <header className="glass-panel h-[75px] flex items-center justify-between px-7 sticky top-0 z-50 transition-colors duration-300 border-x-0 border-t-0">
-            <div className="flex items-center gap-3 md:gap-4 flex-1">
-                <button
-                    onClick={onMenuClick}
-                    className="md:hidden p-2 -ml-2 text-[var(--ease2event-text-secondary)] hover:bg-[rgba(108,99,255,0.05)] rounded-lg shrink-0"
-                >
-                    <Menu size={20} />
-                </button>
-            </div>
+ return (
+ <header className="glass-panel h-[75px] flex items-center justify-between px-7 sticky top-0 z-50 transition-colors border-x-0 border-t-0">
+ <div className="flex items-center gap-3 md:gap-4 flex-1">
+ <button
+ onClick={onMenuClick}
+ className="md:hidden p-2 -ml-2 text-[var(--ease2event-text-secondary)] hover:bg-[rgba(108,99,255,0.05)] rounded-lg shrink-0"
+ >
+ <Menu size={20} />
+ </button>
+ </div>
 
-            <div className="hidden lg:flex flex-1 justify-center px-8">
-                <div className="flex items-center gap-4 max-w-lg w-full bg-[var(--ease2event-bg-elevated)] px-5 py-2.5 rounded-xl border border-[var(--ease2event-border-subtle)] focus-within:border-[var(--ease2event-brand-primary)] transition-all shadow-sm">
-                    <Search className="text-[var(--ease2event-text-muted)]" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search for anything..."
-                        className="w-full outline-none bg-transparent text-sm font-bold text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)] tracking-wide"
-                    />
-                </div>
-            </div>
+ <div className="hidden lg:flex flex-1 justify-center px-8">
+ <div className="flex items-center gap-4 max-w-lg w-full bg-[var(--ease2event-bg-elevated)] px-5 py-2.5 rounded-xl border border-[var(--ease2event-border-subtle)] focus-within:border-[var(--ease2event-brand-primary)] transition-all shadow-sm">
+ <Search className="text-[var(--ease2event-text-muted)]" size={18} />
+ <input
+ type="text"
+ placeholder="Search for anything..."
+ className="w-full outline-none bg-transparent text-sm font-bold text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)] tracking-wide"
+ />
+ </div>
+ </div>
 
-            <div ref={navRef} className="flex items-center justify-end gap-3 md:gap-6 flex-1 relative">
-                <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10">
-                    {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
+ <div ref={navRef} className="flex items-center justify-end gap-3 md:gap-6 flex-1 relative">
+ <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10">
+ {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+ </button>
 
-                <div className="relative">
-                    <button
-                        onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); }}
-                        className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10 ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
-                    >
-                        <Bell size={20} />
-                        <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--ease2event-bg-surface)] z-10 animate-pulse"></span>
-                    </button>
+ <div className="relative">
+ <button
+ onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); }}
+ className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10 ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
+ >
+ <Bell size={20} />
+ <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--ease2event-bg-surface)] z-10 animate-pulse"></span>
+ </button>
 
-                    {isNotifOpen && (
-                        <div className="fixed inset-x-4 md:absolute md:right-0 md:left-auto mt-3 md:w-80 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] origin-top md:origin-top-right animate-in fade-in slide-in-from-top-2 duration-200 z-50 top-[75px] md:top-auto">
-                            <div className="p-4 border-b border-[var(--ease2event-border-subtle)]">
-                                <h3 className="font-bold text-[var(--ease2event-text-primary)]">Notifications</h3>
-                            </div>
-                            <div className="max-h-[300px] overflow-y-auto">
-                                {[
-                                    { title: 'New Booking Request', time: '5m ago', desc: 'Riya sent a request for your venue.', unread: true },
-                                    { title: 'Payment Received', time: '2h ago', desc: 'You received ₹50,000 for the Corporate Event.', unread: false },
-                                    { title: 'Listing Approved', time: '1d ago', desc: 'Your new listing is now live!', unread: false },
-                                ].map((notif, i) => (
-                                    <div key={i} className={`p-4 border-b border-[var(--ease2event-border-subtle)] last:border-0 hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer ${notif.unread ? 'bg-[var(--ease2event-brand-primary)]/5' : ''}`}>
-                                        <div className="flex justify-between items-start mb-1">
-                                            <h4 className={`text-sm font-bold ${notif.unread ? 'text-[var(--ease2event-text-primary)]' : 'text-[var(--ease2event-text-secondary)]'}`}>{notif.title}</h4>
-                                            <span className="text-xs font-bold text-[var(--ease2event-text-muted)]">{notif.time}</span>
-                                        </div>
-                                        <p className="text-sm text-[var(--ease2event-text-muted)] font-semibold">{notif.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="p-3 border-t border-[var(--ease2event-border-subtle)] text-center cursor-pointer hover:text-[var(--ease2event-brand-primary)]">
-                                <span className="text-xs font-bold text-[var(--ease2event-text-secondary)]">Mark all as read</span>
-                            </div>
-                        </div>
-                    )}
-                </div>
+ {isNotifOpen && (
+ <div className="fixed inset-x-4 md:absolute md:right-0 md:left-auto mt-3 md:w-80 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] origin-top md:origin-top-right z-50 top-[75px] md:top-auto">
+ <div className="p-4 border-b border-[var(--ease2event-border-subtle)]">
+ <h3 className="font-bold text-[var(--ease2event-text-primary)]">Notifications</h3>
+ </div>
+ <div className="max-h-[300px] overflow-y-auto">
+ {[
+ { title: 'New Booking Request', time: '5m ago', desc: 'Riya sent a request for your venue.', unread: true },
+ { title: 'Payment Received', time: '2h ago', desc: 'You received ₹50,000 for the Corporate Event.', unread: false },
+ { title: 'Listing Approved', time: '1d ago', desc: 'Your new listing is now live!', unread: false },
+ ].map((notif, i) => (
+ <div key={i} className={`p-4 border-b border-[var(--ease2event-border-subtle)] last:border-0 hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer ${notif.unread ? 'bg-[var(--ease2event-brand-primary)]/5' : ''}`}>
+ <div className="flex justify-between items-start mb-1">
+ <h4 className={`text-sm font-bold ${notif.unread ? 'text-[var(--ease2event-text-primary)]' : 'text-[var(--ease2event-text-secondary)]'}`}>{notif.title}</h4>
+ <span className="text-xs font-bold text-[var(--ease2event-text-muted)]">{notif.time}</span>
+ </div>
+ <p className="text-sm text-[var(--ease2event-text-muted)] font-semibold">{notif.desc}</p>
+ </div>
+ ))}
+ </div>
+ <div className="p-3 border-t border-[var(--ease2event-border-subtle)] text-center cursor-pointer hover:text-[var(--ease2event-brand-primary)]">
+ <span className="text-xs font-bold text-[var(--ease2event-text-secondary)]">Mark all as read</span>
+ </div>
+ </div>
+ )}
+ </div>
 
-                <div className="relative border-l border-[var(--ease2event-border-subtle)] pl-2 md:pl-5">
-                    <div
-                        onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); }}
-                        className={`flex items-center gap-2 md:gap-4 cursor-pointer hover:bg-[rgba(108,99,255,0.05)] p-1.5 md:pr-3 rounded-xl transition-all ${isProfileOpen ? 'bg-[rgba(108,99,255,0.05)]' : ''}`}
-                    >
-                        <Avatar
-                            src={user?.vendor?.logo}
-                            name={user?.name || user?.email || 'Vendor'}
-                            size="sm"
-                        />
-                        <div className="hidden md:block">
-                            <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || 'Vendor Profile'}</p>
-                            <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight capitalize font-bold tracking-widest opacity-60 uppercase">{user?.role || 'Vendor'}</p>
-                        </div>
-                        <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
-                    </div>
+ <div className="relative border-l border-[var(--ease2event-border-subtle)] pl-2 md:pl-5">
+ <div
+ onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); }}
+ className={`flex items-center gap-2 md:gap-4 cursor-pointer hover:bg-[rgba(108,99,255,0.05)] p-1.5 md:pr-3 rounded-xl transition-all ${isProfileOpen ? 'bg-[rgba(108,99,255,0.05)]' : ''}`}
+ >
+ <Avatar
+ src={user?.vendor?.logo}
+ name={user?.name || user?.email || 'Vendor'}
+ size="sm"
+ />
+ <div className="hidden md:block">
+ <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || 'Vendor Profile'}</p>
+ <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight capitalize font-bold tracking-widest opacity-60 uppercase">{user?.role || 'Vendor'}</p>
+ </div>
+ <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+ </div>
 
-                    {isProfileOpen && (
-                        <div className="fixed inset-x-4 md:absolute md:right-0 md:left-auto mt-3 md:w-56 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] origin-top md:origin-top-right animate-in fade-in slide-in-from-top-2 duration-200 z-50 overflow-hidden top-[75px] md:top-auto">
-                            <div className="p-4 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
-                                <p className="font-bold text-[var(--ease2event-text-primary)] text-sm truncate">{user?.name || 'Hello, Vendor'}</p>
-                                <p className="text-xs text-[var(--ease2event-text-muted)] truncate">{user?.email || 'vendor@ease2event.in'}</p>
-                            </div>
-                            <div className="p-2 space-y-1">
-                                <button onClick={() => { setIsProfileOpen(false); navigate('/settings'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
-                                    Account Settings
-                                </button>
-                                <button onClick={() => { setIsProfileOpen(false); navigate('/'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
-                                    Dashboard
-                                </button>
-                                <button onClick={logout} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-colors">
-                                    Logout
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </header>
-    );
+ {isProfileOpen && (
+ <div className="fixed inset-x-4 md:absolute md:right-0 md:left-auto mt-3 md:w-56 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] origin-top md:origin-top-right z-50 overflow-hidden top-[75px] md:top-auto">
+ <div className="p-4 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
+ <p className="font-bold text-[var(--ease2event-text-primary)] text-sm truncate">{user?.name || 'Hello, Vendor'}</p>
+ <p className="text-xs text-[var(--ease2event-text-muted)] truncate">{user?.email || 'vendor@ease2event.in'}</p>
+ </div>
+ <div className="p-2 space-y-1">
+ <button onClick={() => { setIsProfileOpen(false); navigate('/settings'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+ Account Settings
+ </button>
+ <button onClick={() => { setIsProfileOpen(false); navigate('/'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+ Dashboard
+ </button>
+ <button onClick={logout} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-colors">
+ Logout
+ </button>
+ </div>
+ </div>
+ )}
+ </div>
+ </div>
+ </header>
+ );
 };
 
 export default Topbar;

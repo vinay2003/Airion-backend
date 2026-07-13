@@ -5,41 +5,22 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Skeleton, SkeletonText } from '@ease2event/ui';
 
 const Dashboard: React.FC = () => {
-    const { data: stats, isLoading: statsLoading } = useQuery<any[]>({
+    const { data, isLoading: statsLoading } = useQuery<any>({
         queryKey: ['admin-stats'],
-        queryFn: () => Promise.resolve([
-            { label: 'Total Revenue', value: '₹45.2L', change: '+12%', icon: DollarSign, color: 'emerald' },
-            { label: 'Active Vendors', value: '1,240', change: '+8%', icon: Store, color: 'blue' },
-            { label: 'Total Users', value: '85.4k', change: '+24%', icon: Users, color: 'purple' },
-            { label: 'Growth Rate', value: '18.2%', change: '+2%', icon: TrendingUp, color: 'rose' },
-        ]).then(d => new Promise(resolve => setTimeout(() => resolve(d), 1000))) // Mock delay
+        queryFn: async () => {
+            const token = localStorage.getItem('ease2event_admin_token');
+            const res = await fetch('http://localhost:3000/api/analytics/admin/global-stats', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch stats');
+            return res.json();
+        }
     });
 
-    const growthData = [
-        { name: 'Jan', users: 4000, vendors: 240 },
-        { name: 'Feb', users: 3000, vendors: 139 },
-        { name: 'Mar', users: 2000, vendors: 980 },
-        { name: 'Apr', users: 2780, vendors: 390 },
-        { name: 'May', users: 1890, vendors: 480 },
-        { name: 'Jun', users: 2390, vendors: 380 },
-        { name: 'Jul', users: 3490, vendors: 430 },
-    ];
-
-    const categoryData = [
-        { name: 'Venues', value: 400 },
-        { name: 'Catering', value: 300 },
-        { name: 'Decor', value: 300 },
-        { name: 'Photo', value: 200 },
-    ];
-
-    const revenueData = [
-        { name: 'Jan', revenue: 1200000, commission: 120000 },
-        { name: 'Feb', revenue: 1500000, commission: 150000 },
-        { name: 'Mar', revenue: 2000000, commission: 200000 },
-        { name: 'Apr', revenue: 2200000, commission: 220000 },
-        { name: 'May', revenue: 1800000, commission: 180000 },
-        { name: 'Jun', revenue: 2800000, commission: 280000 },
-    ];
+    const stats = data?.stats || [];
+    const growthData = data?.growthData || [];
+    const categoryData = data?.categoryData || [];
+    const revenueData = data?.revenueData || [];
 
     const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -58,7 +39,7 @@ const Dashboard: React.FC = () => {
                             <SkeletonText lines={2} />
                         </div>
                     ))
-                ) : stats?.map((stat, idx) => (
+                ) : stats?.map((stat: any, idx: number) => (
                     <div key={idx} className="card-premium">
                         <div className="flex justify-between items-start mb-4">
                             <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600 border border-${stat.color}-100`}>
@@ -107,7 +88,7 @@ const Dashboard: React.FC = () => {
                                     paddingAngle={8}
                                     dataKey="value"
                                 >
-                                    {categoryData.map((_, index) => (
+                                    {categoryData.map((_: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
                                     ))}
                                 </Pie>
@@ -115,7 +96,7 @@ const Dashboard: React.FC = () => {
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="grid grid-cols-2 gap-4 mt-4">
-                            {categoryData.map((entry, index) => (
+                            {categoryData.map((entry: any, index: number) => (
                                 <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--ease2event-text-secondary)]">
                                     <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                                     {entry.name}

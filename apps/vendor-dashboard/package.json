@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ease2event/types": "*",
     "@ease2event/shared": "*",
+    "@ease2event/types": "*",
     "@ease2event/ui": "*",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-checkbox": "^1.3.3",

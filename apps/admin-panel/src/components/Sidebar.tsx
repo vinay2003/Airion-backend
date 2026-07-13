@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star } from 'lucide-react';
+import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@ease2event/shared';
 
@@ -19,6 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { icon: Users, label: 'Users', path: '/users' },
         { icon: Calendar, label: 'Bookings', path: '/bookings' },
         { icon: Star, label: 'Subscriptions', path: '/subscriptions' },
+        { icon: Megaphone, label: 'Advertisements', path: '/advertisements' },
         { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 

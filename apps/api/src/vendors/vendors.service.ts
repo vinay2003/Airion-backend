@@ -276,13 +276,22 @@ export class VendorsService {
     }
 
     async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {
-        const ad = await this.adRepository.findOne({ where: { id: adId } });
+        const vendor = await this.findByUserId(userId);
+        const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
         if (!ad) throw new NotFoundException('Ad not found');
 
         Object.assign(ad, updateData);
         return this.adRepository.save(ad);
     }
 
+    async deleteAd(userId: string, adId: string): Promise<void> {
+        const vendor = await this.findByUserId(userId);
+        const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
+        if (!ad) throw new NotFoundException('Ad not found');
+        await this.adRepository.remove(ad);
+    }
+
+    // --- GALLERY METHODS --- 
     async addToGallery(userId: string, item: any): Promise<VendorGallery> {
         try {
             let vendor = await this.findByUserId(userId);

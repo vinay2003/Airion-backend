@@ -7,9 +7,12 @@ import {
     Users, Tag, ChevronRight, MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../lib/api';
+import api, { toggleWishlist, checkIsWishlisted } from '../lib/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import toast from 'react-hot-toast';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 
 const VendorProfile: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,18 +20,25 @@ const VendorProfile: React.FC = () => {
     const [services, setServices] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const [wishlistLoading, setWishlistLoading] = useState(false);
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const [vendorRes, servicesRes, reviewsRes] = await Promise.all([
+                const [vendorRes, servicesRes, reviewsRes, wishlistRes] = await Promise.all([
                     api.get(`/vendors/${id}`),
                     api.get(`/services?vendorId=${id}`),
-                    api.get(`/reviews?vendorId=${id}`).catch(() => ({ data: [] }))
+                    api.get(`/reviews?vendorId=${id}`).catch(() => ({ data: [] })),
+                    checkIsWishlisted(id).catch(() => ({ isSaved: false }))
                 ]);
                 setVendor(vendorRes.data);
                 setServices(servicesRes.data);
                 setReviews(reviewsRes.data);
+                if (wishlistRes && typeof wishlistRes === 'object' && 'isSaved' in wishlistRes) {
+                    setIsWishlisted(wishlistRes.isSaved);
+                }
             } catch (err) {
                 console.error('Failed to load vendor profile');
             } finally {
@@ -37,6 +47,20 @@ const VendorProfile: React.FC = () => {
         };
         if (id) fetchProfile();
     }, [id]);
+
+    const handleToggleWishlist = async () => {
+        if (!id || wishlistLoading) return;
+        setWishlistLoading(true);
+        try {
+            await toggleWishlist(id);
+            setIsWishlisted(!isWishlisted);
+            toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist!');
+        } catch (error) {
+            toast.error('Failed to update wishlist');
+        } finally {
+            setWishlistLoading(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -63,8 +87,14 @@ const VendorProfile: React.FC = () => {
                 <div className="absolute bottom-6 left-0 w-full px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto flex justify-between items-end">
                         <div className="flex gap-4 items-center mb-2">
-                            <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
-                                <Heart size={18} />
+                            <Button 
+                                onClick={handleToggleWishlist}
+                                disabled={wishlistLoading}
+                                size="sm" 
+                                variant="secondary" 
+                                className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all hover:scale-105 ${isWishlisted ? 'text-red-500 fill-red-500' : ''}`}
+                            >
+                                <Heart size={18} className={isWishlisted ? 'fill-red-500 text-red-500' : ''} />
                             </Button>
                             <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
                                 <Share2 size={18} />
@@ -270,16 +300,30 @@ const VendorProfile: React.FC = () => {
                     <div className="lg:col-span-1">
                         <div className="sticky top-10 space-y-8">
 
-                            {/* Booking CTA Card */}
+                            {/* Visual Availability Calendar */}
                             <div className="card-premium space-y-6 flex flex-col items-center text-center">
                                 <div className="space-y-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Availability Lock</p>
-                                    <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic">Secure Your Event</h3>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Availability Calendar</p>
+                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter italic">Select Your Date</h3>
+                                </div>
+                                
+                                <div className="w-full flex justify-center bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                                    <DayPicker
+                                        mode="single"
+                                        selected={selectedDate}
+                                        onSelect={setSelectedDate}
+                                        disabled={[{ before: new Date() }]}
+                                        className="!m-0 text-sm"
+                                        modifiersClassNames={{
+                                            selected: 'bg-primary text-white font-bold rounded-full',
+                                            today: 'text-primary font-bold'
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="space-y-4 w-full">
                                     <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-soft">
-                                        Check Calendar
+                                        {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a Date'}
                                     </Button>
                                     <Button variant="outline" className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft">
                                         Chat with Vendor

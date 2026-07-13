@@ -201,6 +201,8 @@ export const verifyPayment = async (data: any, bookingId: string) => {
 };
 export const toggleWishlist = async (vId: string) => await api.post(`/wishlists/toggle/${vId}`);
 export const fetchMyWishlist = async () => await api.get('/wishlists/mine');
+export const checkIsWishlisted = async (vId: string) => (await api.get(`/wishlists/check/${vId}`)) as any;
+export const submitReview = async (data: { bookingId: string, rating: number, reviewText?: string }) => await api.post('/reviews', data);
 export const fetchBudget = async () => await api.get('/budget');
 export const updateBudget = async (d: any) => await api.patch('/budget/update', d);
 export const fetchGuests = async () => await api.get('/guests');

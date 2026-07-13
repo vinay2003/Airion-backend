@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Clock, Search, Filter, ChevronRight, FileText } from 'lucide-react';
+import { Calendar, MapPin, Clock, Search, Filter, ChevronRight, FileText, Star } from 'lucide-react';
 
 import { fetchMyBookings } from '../../lib/api';
+import ReviewModal from '../../components/ReviewModal';
 
 const MyBookings: React.FC = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('All');
     const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+    const [reviewModalBooking, setReviewModalBooking] = useState<any | null>(null);
     const navigate = useNavigate();
 
     const tabs = ['All', 'Upcoming', 'Pending', 'Completed', 'Cancelled'];
@@ -266,6 +268,18 @@ const MyBookings: React.FC = () => {
                                                 className="flex-1 sm:flex-none px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
                                                 Details
                                             </button>
+                                            {booking.status === 'completed' && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setReviewModalBooking(booking);
+                                                    }}
+                                                    className="p-2.5 rounded-xl border border-amber-400 bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors tooltip"
+                                                    title="Leave a Review"
+                                                >
+                                                    <Star size={18} className="fill-amber-400 text-amber-400" />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -365,6 +379,19 @@ const MyBookings: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
+            
+            {reviewModalBooking && (
+                <ReviewModal
+                    isOpen={!!reviewModalBooking}
+                    bookingId={reviewModalBooking.id}
+                    vendorName={reviewModalBooking.vendor?.businessName || 'this vendor'}
+                    onClose={() => setReviewModalBooking(null)}
+                    onSuccess={() => {
+                        // Optionally refresh bookings or mark as reviewed locally
+                        setReviewModalBooking(null);
+                    }}
+                />
+            )}
         </div>
     );
 };

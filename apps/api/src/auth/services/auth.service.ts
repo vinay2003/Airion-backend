@@ -14,6 +14,7 @@ import { CryptoUtil } from '../../common/utils/crypto.util';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import * as admin from 'firebase-admin';
 import { EmailService } from '../../common/services/email.service';
+import { SmsService } from '../../common/services/sms.service';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,7 @@ export class AuthService {
         private configService: ConfigService,
         private sessionService: SessionService,
         private emailService: EmailService,
+        private smsService: SmsService,
     ) {
         this.initializeFirebase();
     }
@@ -53,6 +55,9 @@ export class AuthService {
                 this.logger.warn('   → Dev fallback active: Firebase tokens will be decoded locally (no SMS verification on backend).');
                 this.logger.warn('   → To enable full verification: Firebase Console → Project Settings → Service accounts → Generate new private key');
                 this.logger.warn('   → Then set FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in your .env file.');
+                if (this.configService.get('NODE_ENV') === 'production') {
+                    this.logger.error('FATAL: Production mode requires valid Firebase credentials. Insecure fallback will fail incoming requests.');
+                }
                 return;
             }
 
@@ -116,9 +121,11 @@ export class AuthService {
 
         this.logger.log(`🔑 [OTP_DEBUG] Signup OTP for ${identifier}: ${otpCode}`);
 
-        // Send OTP via email
+        // Send OTP via email or SMS
         if (dto.email) {
             await this.emailService.sendOtpEmail(dto.email, otpCode, 'signup');
+        } else if (dto.phone) {
+            await this.smsService.sendOtpSms(dto.phone, otpCode, 'signup');
         }
 
         return {
@@ -256,9 +263,11 @@ export class AuthService {
 
         this.logger.log(`🔑 [OTP_DEBUG] Login OTP for ${identifier}: ${otpCode}`);
 
-        // Send OTP via email
+        // Send OTP via email or SMS
         if (dto.email) {
             await this.emailService.sendOtpEmail(dto.email, otpCode, 'login');
+        } else if (dto.phone) {
+            await this.smsService.sendOtpSms(dto.phone, otpCode, 'login');
         }
 
         return {
@@ -301,10 +310,12 @@ export class AuthService {
 
         await this.otpRepository.save(otp);
 
-        // Production: Send SMS via provider
+        // Send SMS via provider
         this.logger.log(`🔑 [OTP_DEBUG] Admin OTP for ${identifier}: ${otpCode}`);
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
         const isProduction = this.configService.get('NODE_ENV') === 'production';
+        
+        await this.smsService.sendOtpSms(identifier, otpCode, 'admin_login');
 
         return {
             message: 'OTP sent successfully to admin number',
@@ -514,6 +525,17 @@ export class AuthService {
         // Prevent circular reference issues during serialization
         if (userWithoutPassword.vendor) {
             delete (userWithoutPassword.vendor as any).user;
+            
+            if (userWithoutPassword.vendor.gallery) {
+                userWithoutPassword.vendor.gallery.forEach(item => {
+                    delete (item as any).vendor;
+                });
+            }
+            if (userWithoutPassword.vendor.ads) {
+                userWithoutPassword.vendor.ads.forEach(item => {
+                    delete (item as any).vendor;
+                });
+            }
         }
 
         return userWithoutPassword;
@@ -776,6 +798,8 @@ export class AuthService {
 
         try {
             let phoneNumber: string | undefined;
+            let email: string | undefined;
+            let name: string | undefined;
 
         // If Firebase Admin SDK is not configured, use a safe development mode fallback
         const clientEmail = this.configService.get<string>('FIREBASE_CLIENT_EMAIL');
@@ -789,27 +813,27 @@ export class AuthService {
         const isNotConfigured = admin.apps.length === 0 || isDummyConfig;
 
         if (isNotConfigured) {
+            if (this.configService.get('NODE_ENV') === 'production') {
+                throw new UnauthorizedException('Insecure token verification is disabled in production. Valid Firebase credentials are required on the server.');
+            }
             // Dev fallback: decode Firebase JWT locally without verifying signature
-            // This is safe in development because:
-            // 1. Firebase already verified the phone via SMS before issuing the token
-            // 2. This backend is not internet-exposed in dev mode
-            // 3. Production MUST use real Admin SDK credentials
             try {
                 this.logger.warn('⚠️ [Firebase Auth] Using local token decode fallback (no Admin SDK). Set real service account keys for production!');
                 const parts = idToken.split('.');
                 if (parts.length !== 3) {
                     throw new BadRequestException('Invalid Firebase token format.');
                 }
-                // Pad base64 if necessary
                 const base64Payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
                 const paddedPayload = base64Payload + '='.repeat((4 - base64Payload.length % 4) % 4);
                 const decodedPayload = JSON.parse(Buffer.from(paddedPayload, 'base64').toString('utf-8'));
                 phoneNumber = decodedPayload.phone_number;
+                email = decodedPayload.email;
+                name = decodedPayload.name;
                 
-                if (!phoneNumber) {
-                    throw new BadRequestException('Firebase token does not contain a phone number. Ensure Phone Authentication is enabled in Firebase Console.');
+                if (!phoneNumber && !email) {
+                    throw new BadRequestException('Firebase token does not contain a phone number or email.');
                 }
-                this.logger.log(`📱 [Firebase Dev Fallback] Decoded phone number from token: ${phoneNumber}`);
+                this.logger.log(`📱 [Firebase Dev Fallback] Decoded from token - Phone: ${phoneNumber || 'N/A'}, Email: ${email || 'N/A'}`);
             } catch (decodeErr: any) {
                 if (decodeErr instanceof BadRequestException) throw decodeErr;
                 throw new BadRequestException('Failed to decode Firebase token. Please ensure it is a valid Firebase ID token.');
@@ -819,26 +843,33 @@ export class AuthService {
                 // 1. Verify token with Firebase Admin
                 const decodedToken = await admin.auth().verifyIdToken(idToken);
                 phoneNumber = decodedToken.phone_number;
+                email = decodedToken.email;
+                name = decodedToken.name;
             } catch (err: any) {
                 this.logger.error('Firebase token verification failed:', err);
                 throw new UnauthorizedException('Invalid Firebase authentication token.');
             }
         }
 
-        if (!phoneNumber) {
-            throw new UnauthorizedException('Authentication token did not contain a valid phone number.');
+        if (!phoneNumber && !email) {
+            throw new UnauthorizedException('Authentication token did not contain a valid phone number or email.');
         }
 
-        phoneNumber = phoneNumber.trim();
+        if (phoneNumber) phoneNumber = phoneNumber.trim();
+        if (email) email = email.trim().toLowerCase();
 
             // 2. Query our local DB for the user using flexible matching
-            const whereConditions: any[] = [
-                { phoneNumber }
-            ];
-            if (phoneNumber.startsWith('+91')) {
-                whereConditions.push({ phoneNumber: phoneNumber.substring(3) });
-            } else if (phoneNumber.length === 10) {
-                whereConditions.push({ phoneNumber: `+91${phoneNumber}` });
+            const whereConditions: any[] = [];
+            if (phoneNumber) {
+                whereConditions.push({ phoneNumber });
+                if (phoneNumber.startsWith('+91')) {
+                    whereConditions.push({ phoneNumber: phoneNumber.substring(3) });
+                } else if (phoneNumber.length === 10) {
+                    whereConditions.push({ phoneNumber: `+91${phoneNumber}` });
+                }
+            }
+            if (email) {
+                whereConditions.push({ email });
             }
 
             let user = await this.userRepository.findOne({
@@ -852,23 +883,47 @@ export class AuthService {
                     throw new ForbiddenException('Admin accounts cannot be created via social/phone auth.');
                 }
                 
-                const name = `User ${phoneNumber}`;
+                const generatedName = name || (phoneNumber ? `User ${phoneNumber}` : `User ${email}`);
                 const userData = {
-                    name,
-                    phoneNumber,
+                    name: generatedName,
+                    phoneNumber: phoneNumber || null,
+                    email: email || null,
                     password: 'firebase-auth-user', // Placeholder
                     role: requestedRole || UserRole.USER,
-                    emailVerified: false,
+                    emailVerified: !!email,
                 };
                 user = this.userRepository.create(userData as any) as unknown as User;
                 await this.userRepository.save(user);
+            } else {
+            // Update existing user with new info if missing
+            let updated = false;
+            if (email && !user.email) { user.email = email; user.emailVerified = true; updated = true; }
+            if (name && user.name.startsWith('User +')) { user.name = name; updated = true; }
+            if (phoneNumber && !user.phoneNumber) { user.phoneNumber = phoneNumber; updated = true; }
+            
+            // Auto-upgrade to Admin if email matches admin list
+            if (email && user.role !== UserRole.ADMIN) {
+                const adminEmails = [
+                    'abhishekkumar518@gmail.com',
+                    'vinaysharma31681@gmail.com',
+                    'modeweltjob@gmail.com',
+                    'admin@ease2event.com'
+                ];
+                if (adminEmails.includes(email)) {
+                    user.role = UserRole.ADMIN;
+                    updated = true;
+                    this.logger.log(`🛡️ Auto-upgraded user ${email} to ADMIN role via Firebase Login`);
+                }
             }
+            
+            if (updated) await this.userRepository.save(user);
+        }
 
-            // Update last login
-            user.lastLoginAt = new Date();
-            await this.userRepository.save(user);
+        // Update last login
+        user.lastLoginAt = new Date();
+        await this.userRepository.save(user);
 
-            // Get vendor attributes if vendor
+        // Get vendor attributes if vendor
             const isProfileComplete = user.role === UserRole.VENDOR ? ((user as any).vendor?.isProfileComplete ?? false) : undefined;
             const vendorId = (user as any).vendor?.id;
 

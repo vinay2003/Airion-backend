@@ -141,6 +141,13 @@ export class VendorsController {
         return this.vendorsService.updateAd(userId, adId, updateData);
     }
 
+    @Delete('ads/:adId')
+    @UseGuards(JwtAuthGuard)
+    async deleteAd(@Request() req: any, @Param('adId') adId: string) {
+        const userId = req.user.userId || req.user.sub;
+        return this.vendorsService.deleteAd(userId, adId);
+    }
+
     // --- GALLERY ENDPOINTS ---
 
     @Post('gallery')

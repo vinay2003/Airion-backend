@@ -44,7 +44,7 @@ const UnifiedAuth: React.FC = () => {
         const portal = searchParams.get('portal');
         const isAdminPath = location.pathname.includes('/admin/login');
 
-        if (isAdminPath) {
+        if (isAdminPath || portal === 'admin') {
             setSelectedRole(UserRole.ADMIN);
             setMode('login');
         } else if (portal === 'vendor') {

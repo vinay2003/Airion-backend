@@ -101,7 +101,13 @@ const UnifiedAuth: React.FC = () => {
         }
 
         if (selectedRole === UserRole.ADMIN) {
-            if (trimmedEmail !== 'abhishekkumar518@gmail.com') {
+            const adminEmails = [
+                'abhishekkumar518@gmail.com',
+                'vinaysharma31681@gmail.com',
+                'modeweltjob@gmail.com',
+                'admin@ease2event.com'
+            ];
+            if (!adminEmails.includes(trimmedEmail)) {
                 toast.error('Unauthorized admin email. Access Denied.');
                 return;
             }

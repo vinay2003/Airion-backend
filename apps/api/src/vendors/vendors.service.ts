@@ -277,6 +277,7 @@ export class VendorsService {
 
     async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {
         const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
         const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
         if (!ad) throw new NotFoundException('Ad not found');
 
@@ -286,6 +287,7 @@ export class VendorsService {
 
     async deleteAd(userId: string, adId: string): Promise<void> {
         const vendor = await this.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
         const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
         if (!ad) throw new NotFoundException('Ad not found');
         await this.adRepository.remove(ad);

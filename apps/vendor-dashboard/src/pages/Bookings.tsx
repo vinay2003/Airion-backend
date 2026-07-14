@@ -250,7 +250,7 @@ const Bookings: React.FC = () => {
  filteredBookings.map((booking: Booking) => (
  <div
  key={booking.id}
- className="card-minimal !p-0 overflow-hidden hover:border-[var(--ease2event-brand-primary)]/40 transition-all group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] "
+ className="card-minimal !p-0 overflow-hidden  transition-all group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] "
  >
  <div className="flex flex-col xl:flex-row xl:items-stretch">
  {/* Left Side: Branding */}
@@ -329,7 +329,7 @@ const Bookings: React.FC = () => {
  {booking.status === 'Pending' && (
  <Button
  onClick={() => handleApprove(booking.id)}
- className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white /20 rounded-2xl text-[11px] font-bold tracking-widest hover:scale-105 transition-all"
+ className="flex-1 h-12 bg-[var(--ease2event-brand-primary)] text-white /20 rounded-2xl text-[11px] font-bold tracking-widest  transition-all"
  >
  Approve
  </Button>

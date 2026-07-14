@@ -213,7 +213,7 @@ const Inbox: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={handleSendMessage}
-                                    className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 hover:scale-105 transform"
+                                    className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all shadow-md shadow-red-500/20  hover:shadow-red-500/30  transform"
                                 >
                                     <Send size={18} />
                                 </button>

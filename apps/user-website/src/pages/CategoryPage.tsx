@@ -157,7 +157,7 @@ const CategoryPage: React.FC = () => {
                                 Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEvents.length}</span> properties
                             </p>
                             <div className="relative">
-                                <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2 hover:border-red-500 dark:hover:border-red-500 transition-colors shadow-sm">
+                                <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2  dark: transition-colors shadow-sm">
                                     Sort by: Popularity
                                     <ChevronDown size={16} />
                                 </button>

@@ -137,7 +137,7 @@ const Listings: React.FC = () => {
                 ) : view === 'grid' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredListings.map((listing) => (
-                            <Card key={listing.id} padding="none" className="group overflow-hidden relative border-none shadow-sm hover:shadow-2xl">
+                            <Card key={listing.id} padding="none" className="group overflow-hidden relative border-none shadow-sm ">
                                 <div className="relative h-56 overflow-hidden">
                                     <img src={listing.images?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'} alt={listing.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className={`absolute top-4 right-4 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter shadow-lg backdrop-blur-md ${getStatusColor(listing.status)}`}>

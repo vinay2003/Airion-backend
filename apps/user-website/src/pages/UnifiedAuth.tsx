@@ -436,7 +436,7 @@ const UnifiedAuth: React.FC = () => {
                                     onClick={() => navigate(role.path)}
                                     className={`flex flex-col items-center justify-center gap-3 py-4 rounded-xl transition-all duration-300 border ${selectedRole === role.id
                                         ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20 font-bold'
-                                        : 'text-neutral-400 bg-transparent border-transparent font-medium hover:bg-white dark:hover:bg-slate-800 hover:border-neutral-200/50 dark:hover:border-slate-700'
+                                        : 'text-neutral-400 bg-transparent border-transparent font-medium hover:bg-white dark:hover:bg-slate-800  dark:'
                                         }`}
                                 >
                                     <role.icon size={26} className={selectedRole === role.id ? 'scale-110' : 'opacity-60'} />

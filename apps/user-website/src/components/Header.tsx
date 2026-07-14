@@ -29,7 +29,7 @@ const UserProfileMenu = ({
     <div className="relative" ref={userMenuRef}>
         <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+            className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent  dark:"
         >
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-sm">
                 {user?.name?.[0] || <UserIcon size={20} />}
@@ -180,7 +180,7 @@ const Header: React.FC = () => {
             {/* ── Logo ── */}
             <Link
                 to="/"
-                className="z-50 hover:scale-105 transition-transform flex items-center gap-3 flex-shrink-0"
+                className="z-50  transition-transform flex items-center gap-3 flex-shrink-0"
             >
                 <img 
                     src="/logo.svg" 
@@ -363,7 +363,7 @@ const Header: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={toggleMenu}
-                                    className="p-3 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white hover:border-red-500 transition-all active:scale-90"
+                                    className="p-3 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white  transition-all active:scale-90"
                                 >
                                     <X size={20} />
                                 </button>
@@ -401,7 +401,7 @@ const Header: React.FC = () => {
                                                     onClick={toggleMenu}
                                                     className={`flex items-center justify-between group py-4 px-5 rounded-2xl transition-all ${isActive(item.path)
                                                         ? 'bg-red-500 text-white shadow-xl shadow-red-500/30'
-                                                        : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100 hover:border-red-500 shadow-sm'
+                                                        : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-gray-900 dark:text-slate-100  shadow-sm'
                                                         }`}
                                                 >
                                                     <span className="text-lg font-black tracking-tight">{item.name}</span>
@@ -476,7 +476,7 @@ const Header: React.FC = () => {
                                         <Link
                                             to="/login"
                                             onClick={toggleMenu}
-                                            className="w-full bg-red-600 hover:bg-black text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest text-center shadow-xl shadow-red-500/30"
+                                            className="w-full bg-red-600 hover:bg-black text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-center shadow-xl shadow-red-500/30"
                                         >
                                             LOGIN / SIGNUP
                                         </Link>

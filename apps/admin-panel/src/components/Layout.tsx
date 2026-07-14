@@ -7,7 +7,7 @@ const Layout: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="flex min-h-screen bg-gray-100 dark:bg-slate-950 font-sans transition-colors duration-300">
+        <div className="flex min-h-screen bg-gray-100 dark:bg-slate-950 font-sans  ">
             <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
                 <div className="md:hidden p-4 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-30">
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="p-2 -ml-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg"
+                        className="p-2 -ml-2 text-gray-600 dark:text-slate-400  dark: rounded-lg"
                     >
                         <Menu size={24} />
                     </button>
@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
                     <div className="w-8" /> {/* Spacer for centering */}
                 </div>
 
-                <div className="flex-1 p-4 md:p-8 overflow-y-auto animate-fade-in">
+                <div className="flex-1 p-4 md:p-8 overflow-y-auto ">
                     <Outlet />
                 </div>
             </main>

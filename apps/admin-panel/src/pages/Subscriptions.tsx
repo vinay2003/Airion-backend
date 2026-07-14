@@ -32,7 +32,7 @@ const EMPTY_FORM: Omit<Plan, 'id'> = {
 };
 
 const inputCls =
-    'w-full bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] rounded-xl px-4 py-3 text-sm text-[var(--ease2event-text-primary)] placeholder:text-[var(--ease2event-text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all';
+    'w-full bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] rounded-xl px-4 py-3 text-sm text-[var(--ease2event-text-primary)] placeholder:text-[var(--ease2event-text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 ';
 
 const labelCls = 'block text-xs font-semibold text-[var(--ease2event-text-secondary)] uppercase tracking-wider mb-2';
 
@@ -160,12 +160,12 @@ export default function Subscriptions() {
     // ── Plan card accent config ───────────────────────────────────────────
     const accent = (plan: Plan) =>
         plan.type === 'vendor'
-            ? { pill: 'bg-purple-500/10 text-purple-400 border border-purple-500/20', icon: 'bg-purple-500/10 text-purple-400', ring: 'group-hover:border-purple-500/30' }
-            : { pill: 'bg-sky-500/10 text-sky-400 border border-sky-500/20', icon: 'bg-sky-500/10 text-sky-400', ring: 'group-hover:border-sky-500/30' };
+            ? { pill: 'bg-purple-500/10 text-purple-400 border border-purple-500/20', icon: 'bg-purple-500/10 text-purple-400', ring: '/30' }
+            : { pill: 'bg-sky-500/10 text-sky-400 border border-sky-500/20', icon: 'bg-sky-500/10 text-sky-400', ring: '/30' };
 
     if (loading) return (
         <div className="flex items-center justify-center h-[60vh]">
-            <Loader2 className="animate-spin text-blue-500" size={36} />
+            <Loader2 className=" text-blue-500" size={36} />
         </div>
     );
 
@@ -182,7 +182,7 @@ export default function Subscriptions() {
                 </div>
                 <button
                     onClick={openCreate}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30"
+                    className="flex items-center gap-2 bg-blue-600  text-white px-5 py-2.5 rounded-xl font-semibold text-sm  shadow-lg shadow-blue-500/20 /30"
                 >
                     <Plus size={16} />
                     Create Plan
@@ -216,7 +216,7 @@ export default function Subscriptions() {
                         <Zap size={48} className="text-[var(--ease2event-text-muted)]" />
                     </div>
                     <p className="text-[var(--ease2event-text-secondary)] font-medium">No plans yet. Create your first plan.</p>
-                    <button onClick={openCreate} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all">
+                    <button onClick={openCreate} className="flex items-center gap-2 bg-blue-600  text-white px-5 py-2.5 rounded-xl font-semibold text-sm ">
                         <Plus size={16} /> Create Plan
                     </button>
                 </div>
@@ -230,9 +230,9 @@ export default function Subscriptions() {
                                     key={plan.id}
                                     layout
                                     initial={{ opacity: 0, y: 12 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className={`group relative bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] ${a.ring} rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 ${!plan.isActive ? 'opacity-60' : ''}`}
+                                    ={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, : 0.95 }}
+                                    className={`group relative bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] ${a.ring} rounded-2xl p-6 flex flex-col gap-4   ${!plan.isActive ? 'opacity-60' : ''}`}
                                 >
                                     {/* Type pill + action buttons */}
                                     <div className="flex items-center justify-between">
@@ -246,10 +246,10 @@ export default function Subscriptions() {
                                                 onClick={() => handleToggle(plan)}
                                                 disabled={!!toggling}
                                                 title={plan.isActive ? 'Deactivate' : 'Activate'}
-                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors"
+                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] -[var(--ease2event-text-primary)] -[var(--ease2event-bg-elevated)] "
                                             >
                                                 {toggling === plan.id
-                                                    ? <Loader2 size={16} className="animate-spin" />
+                                                    ? <Loader2 size={16} className="" />
                                                     : plan.isActive ? <ToggleRight size={18} className="text-green-400" /> : <ToggleLeft size={18} />
                                                 }
                                             </button>
@@ -257,7 +257,7 @@ export default function Subscriptions() {
                                             <button
                                                 onClick={() => openEdit(plan)}
                                                 title="Edit plan"
-                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] hover:text-blue-400 hover:bg-[var(--ease2event-bg-elevated)] transition-colors"
+                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)]  -[var(--ease2event-bg-elevated)] "
                                             >
                                                 <Edit2 size={15} />
                                             </button>
@@ -265,9 +265,9 @@ export default function Subscriptions() {
                                             <button
                                                 onClick={() => setConfirmDelete(plan)}
                                                 title="Delete plan"
-                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                                className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)]  /10 "
                                             >
-                                                {deleting === plan.id ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                                                {deleting === plan.id ? <Loader2 size={15} className="" /> : <Trash2 size={15} />}
                                             </button>
                                         </div>
                                     </div>
@@ -331,12 +331,12 @@ export default function Subscriptions() {
             <AnimatePresence>
                 {isModalOpen && (
                     <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        initial={{ opacity: 0 }} ={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
                         onClick={e => e.target === e.currentTarget && closeModal()}
                     >
                         <motion.div
-                            initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 16 }}
+                            initial={{ : 0.95, y: 16 }} ={{ : 1, y: 0 }} exit={{ : 0.95, y: 16 }}
                             className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-lg border border-[var(--ease2event-border-base)] overflow-hidden"
                         >
                             {/* Modal header */}
@@ -344,7 +344,7 @@ export default function Subscriptions() {
                                 <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)]">
                                     {editingPlan ? 'Edit plan' : 'Create new plan'}
                                 </h2>
-                                <button onClick={closeModal} className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+                                <button onClick={closeModal} className="p-1.5 rounded-lg text-[var(--ease2event-text-muted)] -[var(--ease2event-text-primary)] -[var(--ease2event-bg-elevated)] ">
                                     <X size={18} />
                                 </button>
                             </div>
@@ -439,7 +439,7 @@ export default function Subscriptions() {
                                         />
                                         <button
                                             onClick={addFeature}
-                                            className="flex-shrink-0 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors"
+                                            className="flex-shrink-0 px-4 py-2.5 bg-blue-600  text-white rounded-xl text-sm font-semibold "
                                         >
                                             Add
                                         </button>
@@ -450,7 +450,7 @@ export default function Subscriptions() {
                                                 <span key={i} className="inline-flex items-center gap-1.5 bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-primary)] text-xs font-medium px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">
                                                     <Check size={11} className="text-green-400" />
                                                     {f}
-                                                    <button onClick={() => removeFeature(i)} className="text-[var(--ease2event-text-muted)] hover:text-red-400 transition-colors ml-0.5">
+                                                    <button onClick={() => removeFeature(i)} className="text-[var(--ease2event-text-muted)]   ml-0.5">
                                                         <X size={11} />
                                                     </button>
                                                 </span>
@@ -467,7 +467,7 @@ export default function Subscriptions() {
                                     </div>
                                     <button
                                         onClick={() => setForm(f => ({ ...f, isActive: !f.isActive }))}
-                                        className="transition-colors"
+                                        className=""
                                     >
                                         {form.isActive
                                             ? <ToggleRight size={28} className="text-green-400" />
@@ -481,16 +481,16 @@ export default function Subscriptions() {
                             <div className="px-6 py-4 border-t border-[var(--ease2event-border-subtle)] flex justify-end gap-3">
                                 <button
                                     onClick={closeModal}
-                                    className="px-4 py-2.5 text-sm font-semibold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] rounded-xl transition-colors"
+                                    className="px-4 py-2.5 text-sm font-semibold text-[var(--ease2event-text-secondary)] -[var(--ease2event-text-primary)] -[var(--ease2event-bg-elevated)] rounded-xl "
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold text-sm rounded-xl transition-all shadow-md shadow-blue-500/20"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600  disabled:opacity-60 text-white font-semibold text-sm rounded-xl  shadow-md shadow-blue-500/20"
                                 >
-                                    {saving && <Loader2 size={14} className="animate-spin" />}
+                                    {saving && <Loader2 size={14} className="" />}
                                     {saving ? 'Saving…' : editingPlan ? 'Save changes' : 'Create plan'}
                                 </button>
                             </div>
@@ -503,11 +503,11 @@ export default function Subscriptions() {
             <AnimatePresence>
                 {confirmDelete && (
                     <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        initial={{ opacity: 0 }} ={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
                     >
                         <motion.div
-                            initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
+                            initial={{ : 0.95 }} ={{ : 1 }} exit={{ : 0.95 }}
                             className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-[var(--ease2event-border-base)] text-center"
                         >
                             <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -518,16 +518,16 @@ export default function Subscriptions() {
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setConfirmDelete(null)}
-                                    className="flex-1 px-4 py-2.5 text-sm font-semibold text-[var(--ease2event-text-secondary)] hover:bg-[var(--ease2event-bg-elevated)] rounded-xl transition-colors border border-[var(--ease2event-border-subtle)]"
+                                    className="flex-1 px-4 py-2.5 text-sm font-semibold text-[var(--ease2event-text-secondary)] -[var(--ease2event-bg-elevated)] rounded-xl  border border-[var(--ease2event-border-subtle)]"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={() => handleDelete(confirmDelete)}
                                     disabled={!!deleting}
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 disabled:opacity-60 text-white font-semibold text-sm rounded-xl transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600  disabled:opacity-60 text-white font-semibold text-sm rounded-xl "
                                 >
-                                    {deleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                                    {deleting ? <Loader2 size={14} className="" /> : <Trash2 size={14} />}
                                     Delete
                                 </button>
                             </div>

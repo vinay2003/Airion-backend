@@ -56,7 +56,7 @@ const TypewriterEffect = ({ words }: { words: string[] }) => {
 
     return (
         <span className="flex items-center">
-            {`Search "${words[index].substring(0, subIndex)}"`}
+            {`What type of event are you searching for? "${words[index].substring(0, subIndex)}"`}
             <span className={`ml-0.5 w-[2px] h-4 bg-red-500 ${blink ? 'opacity-100' : 'opacity-0'}`}></span>
         </span>
     );
@@ -101,7 +101,7 @@ const SearchBar = () => {
                                     {location ? (
                                         POPULAR_LOCATIONS.find((loc) => loc.value === location)?.label || location
                                     ) : (
-                                        <TypewriterEffect words={["Mumbai", "Goa", "Delhi", "Bangalore", "Jaipur", "Udaipur"]} />
+                                        <TypewriterEffect words={["Wedding", "Corporate Event", "Birthday Party", "Conference", "Anniversary"]} />
                                     )}
                                 </div>
                             </div>
@@ -309,7 +309,7 @@ const SearchBar = () => {
             <div className="p-2 md:p-2 pt-0 md:pt-2">
                 <button
                     onClick={handleSearch}
-                    className="w-full md:w-[60px] h-14 md:h-[60px] bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all hover:scale-105 active:scale-95 group/btn"
+                    className="w-full md:w-[60px] h-14 md:h-[60px] bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all  active:scale-95 group/btn"
                 >
                     <Search className="h-6 w-6 group-hover/btn:scale-110 transition-transform" />
                     <span className="md:hidden ml-2 font-bold text-lg">Search</span>

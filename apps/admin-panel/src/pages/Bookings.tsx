@@ -114,7 +114,7 @@ const Bookings: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {filteredBookings.map((booking, i) => (
-                                <tr key={i} className="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
+                                <tr key={i} className=" dark:/30 ">
                                     <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">#{booking.id}</td>
                                     <td className="px-6 py-4 text-sm text-gray-700 dark:text-slate-300 font-medium">{booking.userName}</td>
                                     <td className="px-6 py-4 text-sm text-gray-700 dark:text-slate-300 font-medium">{booking.vendorName}</td>
@@ -127,15 +127,15 @@ const Bookings: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex gap-2">
-                                            <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors" title="View Details">
+                                            <button className="p-1.5  dark: rounded-lg text-gray-500  dark: " title="View Details">
                                                 <Eye size={18} />
                                             </button>
                                             {booking.status === 'Pending' && (
                                                 <>
-                                                    <button className="p-1.5 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg text-gray-400 hover:text-green-600 transition-colors" title="Approve">
+                                                    <button className="p-1.5  dark:/20 rounded-lg text-gray-400  " title="Approve">
                                                         <CheckCircle size={18} />
                                                     </button>
-                                                    <button className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-gray-400 hover:text-red-600 transition-colors" title="Cancel">
+                                                    <button className="p-1.5  dark:/20 rounded-lg text-gray-400  " title="Cancel">
                                                         <XCircle size={18} />
                                                     </button>
                                                 </>

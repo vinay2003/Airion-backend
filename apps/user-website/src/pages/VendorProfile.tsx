@@ -92,11 +92,11 @@ const VendorProfile: React.FC = () => {
                                 disabled={wishlistLoading}
                                 size="sm" 
                                 variant="secondary" 
-                                className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all hover:scale-105 ${isWishlisted ? 'text-red-500 fill-red-500' : ''}`}
+                                className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all  ${isWishlisted ? 'text-red-500 fill-red-500' : ''}`}
                             >
                                 <Heart size={18} className={isWishlisted ? 'fill-red-500 text-red-500' : ''} />
                             </Button>
-                            <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform hover:scale-105">
+                            <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform ">
                                 <Share2 size={18} />
                             </Button>
                         </div>
@@ -133,7 +133,7 @@ const VendorProfile: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white hover:scale-105 transition-soft shadow-xl shadow-primary/20">
+                                    <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white  transition-soft shadow-xl shadow-primary/20">
                                         Book Consultation
                                     </Button>
                                 </div>
@@ -180,7 +180,7 @@ const VendorProfile: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                                 {vendor.portfolioImages?.map((img: string, i: number) => (
-                                    <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border border-gray-100 group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500">
+                                    <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border border-gray-100 group cursor-pointer shadow-sm  transition-all duration-500">
                                         <img
                                             src={img}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -222,7 +222,7 @@ const VendorProfile: React.FC = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <Button variant={pkg.isPopular ? 'default' : 'outline'} className={`h-10 w-full rounded-lg text-xs font-black uppercase tracking-widest transition-soft ${pkg.isPopular ? 'bg-primary text-white shadow-md' : 'border-gray-100 text-slate-400 hover:text-primary hover:border-primary'}`}>
+                                        <Button variant={pkg.isPopular ? 'default' : 'outline'} className={`h-10 w-full rounded-lg text-xs font-black uppercase tracking-widest transition-soft ${pkg.isPopular ? 'bg-primary text-white shadow-md' : 'border-gray-100 text-slate-400 hover:text-primary '}`}>
                                             BOOK {pkg.name}
                                         </Button>
                                     </div>
@@ -236,7 +236,7 @@ const VendorProfile: React.FC = () => {
                                 <h2 className="text-xl font-bold text-gray-900">Services Index</h2>
                                 <div className="space-y-3">
                                     {services.map((item: any) => (
-                                        <div key={item.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-gray-100 rounded-xl shadow-sm hover:border-primary/30 transition-all group">
+                                        <div key={item.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-gray-100 rounded-xl shadow-sm  transition-all group">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
                                                     <Tag size={20} />
@@ -322,7 +322,7 @@ const VendorProfile: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4 w-full">
-                                    <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-soft">
+                                    <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20  transition-soft">
                                         {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a Date'}
                                     </Button>
                                     <Button variant="outline" className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft">

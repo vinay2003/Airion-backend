@@ -25,7 +25,7 @@ const Dashboard: React.FC = () => {
     const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
     return (
-        <div className="animate-in fade-in duration-500 pb-12">
+        <div className=" fade-in  pb-12">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Dashboard</h1>
                 <div className="text-xs font-medium text-[var(--ease2event-text-secondary)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">All systems normal</div>
@@ -146,7 +146,7 @@ const Dashboard: React.FC = () => {
                             { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
                             { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
                         ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm hover:shadow-md transition-all">
+                            <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm  ">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
                                         {vendor.name[0]}
@@ -157,7 +157,7 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors">Review</button>
+                                    <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold  ">Review</button>
                                 </div>
                             </div>
                         ))}

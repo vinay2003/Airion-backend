@@ -102,7 +102,7 @@ const Inspiration: React.FC = () => {
                                 onClick={() => setActiveFilter(filter)}
                                 className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm ${activeFilter === filter
                                         ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900'
-                                        : 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:border-neutral-900 dark:hover:border-white'
+                                        : 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300  dark:'
                                     }`}
                             >
                                 {filter}
@@ -135,7 +135,7 @@ const Inspiration: React.FC = () => {
                                         <div className="flex gap-2">
                                             <button 
                                                 onClick={(e) => handleLike(item.id, e)}
-                                                className={`p-2.5 backdrop-blur-md rounded-full transition-all cursor-pointer border ${likedIds.includes(item.id) ? 'bg-red-500 border-transparent text-white' : 'bg-white/20 text-white hover:bg-red-500 hover:border-transparent border-white/30'}`}
+                                                className={`p-2.5 backdrop-blur-md rounded-full transition-all cursor-pointer border ${likedIds.includes(item.id) ? 'bg-red-500 border-transparent text-white' : 'bg-white/20 text-white hover:bg-red-500  border-white/30'}`}
                                             >
                                                 <Heart size={16} className={likedIds.includes(item.id) ? 'fill-current' : ''} />
                                             </button>

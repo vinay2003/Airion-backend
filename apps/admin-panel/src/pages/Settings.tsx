@@ -29,9 +29,9 @@ const Settings: React.FC = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl  ${activeTab === tab.id
                                         ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
-                                        : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                        : 'text-gray-600 dark:text-slate-400  dark:'
                                     }`}
                             >
                                 <tab.icon size={20} />
@@ -55,7 +55,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <button
                                             onClick={toggleTheme}
-                                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors"
+                                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg  dark: "
                                         >
                                             {theme === 'light' ? <Moon size={20} className="text-gray-600 dark:text-slate-300" /> : <Sun size={20} className="text-gray-600 dark:text-slate-300" />}
                                             <span className="text-sm font-medium text-gray-700 dark:text-slate-300">
@@ -68,7 +68,7 @@ const Settings: React.FC = () => {
                                         <input
                                             type="text"
                                             defaultValue="Ease2event"
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
+                                            className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 "
                                         />
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
@@ -76,11 +76,11 @@ const Settings: React.FC = () => {
                                         <input
                                             type="email"
                                             defaultValue="support@ease2event.com"
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
+                                            className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 "
                                         />
                                     </div>
                                 </div>
-                                <button className="flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-md shadow-red-500/20">
+                                <button className="flex items-center gap-2 px-6 py-3 bg-red-500  text-white rounded-xl font-medium  shadow-md shadow-red-500/20">
                                     <Save size={20} />
                                     Save Changes
                                 </button>
@@ -102,13 +102,13 @@ const Settings: React.FC = () => {
                                                     <p className="text-sm text-gray-500 dark:text-slate-400">admin{i}@ease2event.com</p>
                                                 </div>
                                             </div>
-                                            <button className="px-4 py-2 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-500/30 transition-colors text-sm font-medium">
+                                            <button className="px-4 py-2 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg  dark:/30  text-sm font-medium">
                                                 Remove
                                             </button>
                                         </div>
                                     ))}
                                 </div>
-                                <button className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-md shadow-red-500/20">
+                                <button className="px-6 py-3 bg-red-500  text-white rounded-xl font-medium  shadow-md shadow-red-500/20">
                                     Add Admin User
                                 </button>
                             </div>
@@ -131,7 +131,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <label className="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" defaultChecked={idx < 3} className="sr-only peer" />
-                                                <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                                <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after: peer-checked:bg-red-500"></div>
                                             </label>
                                         </div>
                                     ))}
@@ -146,14 +146,14 @@ const Settings: React.FC = () => {
                                     <div className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
                                         <h3 className="font-medium text-gray-900 dark:text-white mb-2">Two-Factor Authentication</h3>
                                         <p className="text-sm text-gray-500 dark:text-slate-400 mb-4">Add an extra layer of security to your account</p>
-                                        <button className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors">
+                                        <button className="px-4 py-2 bg-red-500  text-white rounded-lg text-sm font-medium ">
                                             Enable 2FA
                                         </button>
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
                                         <h3 className="font-medium text-gray-900 dark:text-white mb-2">Session Timeout</h3>
                                         <p className="text-sm text-gray-500 dark:text-slate-400 mb-4">Automatically log out after period of inactivity</p>
-                                        <select className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all">
+                                        <select className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 ">
                                             <option>15 minutes</option>
                                             <option>30 minutes</option>
                                             <option>1 hour</option>
@@ -173,7 +173,7 @@ const Settings: React.FC = () => {
                                         <p className="text-sm text-gray-500 dark:text-slate-400 mb-4">Require manual approval for new vendor registrations</p>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" defaultChecked className="sr-only peer" />
-                                            <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                            <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after: peer-checked:bg-red-500"></div>
                                         </label>
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
@@ -185,13 +185,13 @@ const Settings: React.FC = () => {
                                                 defaultValue="10"
                                                 min="0"
                                                 max="100"
-                                                className="w-24 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 transition-all"
+                                                className="w-24 px-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 text-gray-900 dark:text-slate-200 "
                                             />
                                             <span className="text-gray-600 dark:text-slate-400">%</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button className="flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-md shadow-red-500/20">
+                                <button className="flex items-center gap-2 px-6 py-3 bg-red-500  text-white rounded-xl font-medium  shadow-md shadow-red-500/20">
                                     <Save size={20} />
                                     Save Configuration
                                 </button>

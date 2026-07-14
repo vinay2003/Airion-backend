@@ -54,14 +54,14 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  </div>
 
  <div ref={navRef} className="flex items-center justify-end gap-3 md:gap-6 flex-1 relative">
- <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10">
+ <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent ">
  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
  </button>
 
  <div className="relative">
  <button
  onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); }}
- className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent hover:border-[var(--ease2event-brand-primary)]/10 ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
+ className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent  ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
  >
  <Bell size={20} />
  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--ease2event-bg-surface)] z-10 animate-pulse"></span>

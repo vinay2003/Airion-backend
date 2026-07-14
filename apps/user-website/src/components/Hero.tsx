@@ -313,7 +313,7 @@ const Hero: React.FC = () => {
                             {isAuthenticated && (
                                 <Link
                                     to="/dashboard"
-                                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform hover:scale-105 active:scale-95"
+                                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform  active:scale-95"
                                 >
                                     Go to Dashboard
                                     <ArrowRight size={18} />

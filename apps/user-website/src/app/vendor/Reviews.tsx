@@ -118,7 +118,7 @@ const Reviews: React.FC = () => {
 
                     <div className="space-y-4">
                         {REVIEWS_DATA.map((rev) => (
-                            <div key={rev.id} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+                            <div key={rev.id} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm  transition-all group relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 dark:bg-white/5 rounded-bl-full translate-x-8 -translate-y-8"></div>
                                 
                                 <div className="flex justify-between items-start mb-4">

@@ -219,7 +219,7 @@ const Home: React.FC = () => {
                                 { title: 'Bridal Makeup', label: 'BEAUTY & STYLE', image: 'https://plus.unsplash.com/premium_photo-1677526496597-aa0f49053ce2?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwcHJvZHVjdHN8ZW58MHx8MHx8fDA%3D', link: '/marketplace?category=makeup', class: 'col-span-1 h-64' },
                                 { title: 'Full Planning', label: 'STRESS-FREE', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=planning', class: 'col-span-1 h-64' },
                             ].map((cat, idx) => (
-                                <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
+                                <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm  transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
                                     <img src={cat.image} alt={cat.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
@@ -525,7 +525,7 @@ const Home: React.FC = () => {
 
                             <div className="space-y-8">
                                 <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
                                         <CheckCircle2 size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
@@ -537,7 +537,7 @@ const Home: React.FC = () => {
                                 </div>
 
                                 <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
                                         <DollarSign size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
@@ -551,7 +551,7 @@ const Home: React.FC = () => {
                                 <div className="flex gap-5 group relative">
                                     {/* Decorative dot from image */}
 
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
                                         <Phone size={22} strokeWidth={1.5} />
                                     </div>
                                     <div className="lg:pr-12">
@@ -563,7 +563,7 @@ const Home: React.FC = () => {
                                 </div>
 
                                 <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105">
+                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
                                         <Shield size={22} strokeWidth={1.5} />
                                     </div>
                                     <div>
@@ -616,8 +616,18 @@ const Home: React.FC = () => {
                 <div className="max-w-[1536px] mx-auto text-center relative z-10">
                     <div className="max-w-4xl mx-auto">
                         <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Stay in the loop</p>
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 font-serif tracking-tight">Exclusive Venues.</h2>
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif tracking-tight">Early Access. Every Week.</h2>
+                        <div className="overflow-hidden whitespace-nowrap mb-6 w-full flex">
+                            <div className="animate-marquee inline-flex flex-shrink-0">
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                            </div>
+                            <div className="animate-marquee inline-flex flex-shrink-0" aria-hidden="true">
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white font-serif tracking-tight mx-8">Exclusive Venues. Early Access. Every Week.</h2>
+                            </div>
+                        </div>
                         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12 mt-4">
                             <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> New venue alerts</span>
                             <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Subscriber-only discounts</span>

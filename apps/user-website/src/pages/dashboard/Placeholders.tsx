@@ -167,7 +167,7 @@ export const DigitalInvites: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {templates.map((template) => (
-                    <div key={template.id} className="group relative rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg transition-all cursor-pointer">
+                    <div key={template.id} className="group relative rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  transition-all cursor-pointer">
                         <div className={`h-40 w-full ${template.color} flex items-center justify-center`}>
                             <FileText size={48} className="text-gray-400/50 dark:text-slate-500/50" />
                         </div>
@@ -291,7 +291,7 @@ export const Support: React.FC = () => {
                             className="h-14 px-6 rounded-2xl bg-neutral-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-red-500/20 transition-all font-medium pr-12"
                         />
                     </div>
-                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="h-14 w-14 bg-red-500 hover:bg-red-600 text-white rounded-2xl shadow-xl shadow-red-500/20 hover:scale-105 active:scale-95 transition-all shrink-0">
+                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="h-14 w-14 bg-red-500 hover:bg-red-600 text-white rounded-2xl shadow-xl shadow-red-500/20  active:scale-95 transition-all shrink-0">
                         <Send size={20} />
                     </Button>
                 </form>

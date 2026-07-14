@@ -189,7 +189,7 @@ const ProfileSettings: React.FC = () => {
 
                             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-neutral-200 dark:border-slate-800">
                                 <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                                    <div className="w-28 h-28 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105 active:scale-95">
+                                    <div className="w-28 h-28 rounded-full bg-neutral-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-xl flex items-center justify-center overflow-hidden transition-transform  active:scale-95">
                                         {uploading ? (
                                             <div className="absolute inset-0 bg-black/20 flex items-center justify-center backdrop-blur-sm">
                                                 <Loader className="animate-spin text-white" size={32} />
@@ -281,7 +281,7 @@ const ProfileSettings: React.FC = () => {
                                                             onClick={() => setLanguage(lang.code)}
                                                             className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${language === lang.code
                                                                 ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
-                                                                : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
+                                                                : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800  dark:'
                                                                 }`}
                                                         >
                                                             {lang.name}
@@ -401,7 +401,7 @@ const ProfileSettings: React.FC = () => {
                                     { q: 'How do I contact a vendor?', a: 'Once booked, you can message vendors directly from the dashboard.' },
                                     { q: 'What payment methods are accepted?', a: 'We accept all major cards, UPI, and bank transfers via Razorpay.' }
                                 ].map((item, i) => (
-                                    <div key={i} className="p-4 border border-neutral-200 dark:border-slate-800 rounded-2xl hover:border-red-200 transition-colors">
+                                    <div key={i} className="p-4 border border-neutral-200 dark:border-slate-800 rounded-2xl  transition-colors">
                                         <h4 className="font-bold text-neutral-900 dark:text-white mb-2">{item.q}</h4>
                                         <p className="text-sm text-neutral-500 dark:text-slate-400">{item.a}</p>
                                     </div>

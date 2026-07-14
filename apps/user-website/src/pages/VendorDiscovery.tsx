@@ -421,8 +421,8 @@ const VendorDiscovery: React.FC = () => {
 
                         {!loading && sortedVendors.length > 0 && (
                             <div className="mt-20 flex justify-center">
-                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs tracking-[0.3em] hover:shadow-2xl hover:scale-105 transition-all border-2 border-white/10">
-                                    Expand network results
+                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs tracking-[0.3em]   transition-all border-2 border-white/10">
+                                    View More Vendors
                                 </button>
                             </div>
                         )}

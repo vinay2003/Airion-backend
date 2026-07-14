@@ -63,7 +63,7 @@ const Inspiration: React.FC = () => {
                                 onClick={() => setActiveFilter(filter)}
                                 className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm ${activeFilter === filter
                                     ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900'
-                                    : 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:border-neutral-900 dark:hover:border-white'
+                                    : 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300  dark:'
                                     }`}
                             >
                                 {filter}
@@ -94,7 +94,7 @@ const Inspiration: React.FC = () => {
                                     <p className="text-white font-bold text-lg mb-3 tracking-wide">{item.title}</p>
                                     <div className="flex justify-between items-center">
                                         <div className="flex gap-2">
-                                            <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-red-500 hover:border-transparent border border-white/30 transition-all cursor-pointer">
+                                            <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-red-500  border border-white/30 transition-all cursor-pointer">
                                                 <Heart size={16} className="fill-current bg-transparent" />
                                             </button>
                                             <button className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-neutral-900 border border-white/30 transition-all cursor-pointer">

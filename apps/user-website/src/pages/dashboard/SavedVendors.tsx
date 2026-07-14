@@ -63,7 +63,7 @@ const SavedVendors: React.FC = () => {
                                         <img 
                                             src={vendor?.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=600&q=80'} 
                                             alt={vendor?.businessName} 
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                                            className="w-full h-full object-cover  transition-transform duration-300" 
                                         />
                                         
                                         <button 

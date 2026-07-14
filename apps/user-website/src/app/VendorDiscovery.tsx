@@ -130,7 +130,7 @@ const VendorDiscovery: React.FC = () => {
                         <div className="relative">
                             <button
                                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                                className="flex items-center gap-3 px-6 py-3.5 rounded-2xl border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm bg-white hover:border-red-600 transition-all hover:shadow-xl active:scale-95"
+                                className="flex items-center gap-3 px-6 py-3.5 rounded-2xl border border-slate-100 text-[10px] font-black uppercase tracking-widest shadow-sm bg-white  transition-all  active:scale-95"
                             >
                                 <ArrowUpDown size={14} className="text-red-600" />
                                 {currentSortLabel}
@@ -236,7 +236,7 @@ const VendorDiscovery: React.FC = () => {
                         )}
 
                         <div className="mt-20 pt-10 border-t border-slate-50 flex justify-center">
-                            <button className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-xl hover:-translate-y-1 active:scale-95">
+                            <button className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-xl  active:scale-95">
                                 Load Additional Results
                             </button>
                         </div>

@@ -94,7 +94,7 @@ const CalendarPage: React.FC = () => {
                     <button className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-2 rounded-xl text-gray-600 dark:text-slate-400 hover:text-red-500 transition-colors">
                         <Filter size={20} />
                     </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all hover:scale-105 transform">
+                    <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all  transform">
                         <Plus size={20} />
                         Quick Add
                     </button>

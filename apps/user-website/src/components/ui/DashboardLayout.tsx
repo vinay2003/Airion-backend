@@ -151,7 +151,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         <div className="relative">
                             <button 
                                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                className="flex items-center gap-3 p-1 pl-1 pr-3 hover:bg-[var(--ease2event-bg-surface)] rounded-2xl border border-transparent hover:border-[var(--ease2event-border-subtle)] transition-all"
+                                className="flex items-center gap-3 p-1 pl-1 pr-3 hover:bg-[var(--ease2event-bg-surface)] rounded-2xl border border-transparent )] transition-all"
                             >
                                 <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--ease2event-brand-primary)] to-[var(--ease2event-brand-secondary)] flex items-center justify-center text-white font-bold text-sm shadow-lg overflow-hidden">
                                     {user.avatar ? (

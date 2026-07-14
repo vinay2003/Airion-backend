@@ -68,7 +68,7 @@ const Bookings: React.FC = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center justify-between group   transition-all duration-300">
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
                             <h3 className="text-2xl font-black text-gray-900 dark:text-white leading-none">{stat.value}</h3>

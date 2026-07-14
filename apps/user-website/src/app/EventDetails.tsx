@@ -157,20 +157,20 @@ const EventDetails: React.FC = () => {
                 {/* Masonry Gallery */}
                 <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12">
                     <div className="col-span-1 md:col-span-2 row-span-2 relative group cursor-pointer" onClick={() => { setSelectedImage(0); setIsGalleryOpen(true); }}>
-                        <img src={portfolioImages[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={portfolioImages[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 " />
                         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
                     </div>
                     <div className="col-span-1 row-span-1 relative group cursor-pointer" onClick={() => { setSelectedImage(1); setIsGalleryOpen(true); }}>
-                        <img src={portfolioImages[1]} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={portfolioImages[1]} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-700 " />
                     </div>
                     <div className="col-span-1 row-span-1 relative group cursor-pointer" onClick={() => { setSelectedImage(2); setIsGalleryOpen(true); }}>
-                        <img src={portfolioImages[2]} alt="Gallery 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={portfolioImages[2]} alt="Gallery 2" className="w-full h-full object-cover transition-transform duration-700 " />
                     </div>
                     <div className="col-span-1 row-span-1 relative group cursor-pointer" onClick={() => { setSelectedImage(3); setIsGalleryOpen(true); }}>
-                        <img src={portfolioImages[3]} alt="Gallery 3" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={portfolioImages[3]} alt="Gallery 3" className="w-full h-full object-cover transition-transform duration-700 " />
                     </div>
                     <div className="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden" onClick={() => { setSelectedImage(4); setIsGalleryOpen(true); }}>
-                        <img src={portfolioImages[4]} alt="Gallery 4" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={portfolioImages[4]} alt="Gallery 4" className="w-full h-full object-cover transition-transform duration-700 " />
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[1px] group-hover:backdrop-blur-none transition-all">
                             <span className="text-white font-bold text-lg">+ 12 Photos</span>
                         </div>
@@ -256,7 +256,7 @@ const EventDetails: React.FC = () => {
                                     { title: 'Gold', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
                                     { title: 'Platinum', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
                                 ].map((pkg, idx) => (
-                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all cursor-pointer border-gray-100 hover:border-red-500 dark:border-slate-800 dark:hover:border-red-500 shadow-sm hover:shadow-xl relative overflow-hidden group">
+                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all cursor-pointer border-gray-100  dark:border-slate-800 dark: shadow-sm  relative overflow-hidden group">
                                         {idx === 1 && (
                                             <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                                                 Most Popular
@@ -279,7 +279,7 @@ const EventDetails: React.FC = () => {
                                         </ul>
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all"
+                                            className="w-full py-3 rounded-xl font-bold text-sm border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white group-hover:bg-red-500 group- group-hover:text-white transition-all"
                                         >
                                             Select Package
                                         </button>

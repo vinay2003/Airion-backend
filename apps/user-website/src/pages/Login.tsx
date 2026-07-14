@@ -314,7 +314,7 @@ const Login: React.FC = () => {
 
                     <div className="flex flex-col gap-4">
                         <button onClick={() => { setAuthMode(authMode === 'otp' ? 'password' : 'otp'); setStep('phone'); }}
-                            className="w-full bg-white dark:bg-slate-900 border-2 border-neutral-200 dark:border-slate-800 hover:border-neutral-900 dark:hover:border-white text-neutral-900 dark:text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                            className="w-full bg-white dark:bg-slate-900 border-2 border-neutral-200 dark:border-slate-800  dark: text-neutral-900 dark:text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
                             {authMode === 'otp' ? <><Mail size={18} /> Login with Email Address</> : <><Phone size={18} /> Login via Mobile OTP</>}
                         </button>
                     </div>

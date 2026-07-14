@@ -201,14 +201,14 @@ const CalendarPage: React.FC = () => {
  <div className="flex items-center gap-5">
  <Button
  variant="secondary"
- className="h-10 px-5 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 active:scale-95 transition-all"
+ className="h-10 px-5 rounded-2xl font-bold text-xs tracking-widest  active:scale-95 transition-all"
  leftIcon={<Filter size={16} />}
  onClick={() => alert('Filter system coming soon! You will be able to filter by event type, status, and client.')}
  >
  Filter Events
  </Button>
  <Button
- className="h-10 px-6 rounded-2xl font-bold text-xs tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all"
+ className="h-10 px-6 rounded-2xl font-bold text-xs tracking-widest bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20  active:scale-95 transition-all"
  leftIcon={<PlusCircle size={16} />}
  onClick={() => {
  if (selectedDate) {

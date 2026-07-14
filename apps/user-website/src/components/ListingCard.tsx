@@ -87,7 +87,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.4 }}
-            className="group flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-neutral-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative"
+            className="group flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-neutral-100 dark:border-slate-800 shadow-sm   transition-all duration-300 relative"
         >
             {/* Image Section */}
             <Link to={`/event/${id}`} className="block relative aspect-[4/3] w-full overflow-hidden bg-neutral-100 group/image">
@@ -112,7 +112,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 {/* Verified / Trading Badges */}
                 <div className="absolute top-3 left-3 right-12 z-10 flex flex-wrap gap-1.5 items-start">
                     {tags.map((tag) => (
-                        <span key={tag} className={`${tag === 'Verified' ? 'bg-emerald-500/90 shadow-emerald-500/20' : 'bg-black/60 shadow-black/20'} backdrop-blur-md text-white text-[9px] md:text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1 shadow-lg border border-white/10 transition-transform hover:scale-105 pointer-events-auto`}>
+                        <span key={tag} className={`${tag === 'Verified' ? 'bg-emerald-500/90 shadow-emerald-500/20' : 'bg-black/60 shadow-black/20'} backdrop-blur-md text-white text-[9px] md:text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1 shadow-lg border border-white/10 transition-transform  pointer-events-auto`}>
                             {tag === 'Verified' && <ShieldCheck size={11} className="text-white" />}
                             {tag}
                         </span>
@@ -138,7 +138,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 >
                     <Heart
                         size={18}
-                        className={`transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500 scale-110' : 'text-neutral-500 hover:scale-105'}`}
+                        className={`transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500 scale-110' : 'text-neutral-500 '}`}
                     />
                 </button>
 
@@ -156,13 +156,13 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     <>
                         <button
                             onClick={prevImage}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity hover:scale-105 hover:bg-white z-10"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity  hover:bg-white z-10"
                         >
                             <ChevronLeft size={18} className="text-gray-900" />
                         </button>
                         <button
                             onClick={nextImage}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity hover:scale-105 hover:bg-white z-10"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity  hover:bg-white z-10"
                         >
                             <ChevronRight size={18} className="text-gray-900" />
                         </button>
@@ -231,7 +231,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     <button
                         onClick={handleBookNow}
                         disabled={marketplaceStatus === 'SOLD_OUT'}
-                        className={`${marketplaceStatus === 'SOLD_OUT' ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/10 hover:shadow-lg'} text-[10px] md:text-xs font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition flex items-center gap-1`}
+                        className={`${marketplaceStatus === 'SOLD_OUT' ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/10 '} text-[10px] md:text-xs font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition flex items-center gap-1`}
                     >
                         {marketplaceStatus === 'SOLD_OUT' ? 'Waitlist' : 'Book Now'}
                     </button>

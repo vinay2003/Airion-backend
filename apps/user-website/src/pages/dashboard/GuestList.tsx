@@ -130,7 +130,7 @@ const GuestList: React.FC = () => {
                                     }}
                                     className={`px-5 py-2.5 rounded-2xl text-sm font-bold tracking-wide transition-all duration-300 border shadow-sm whitespace-nowrap ${filterGroup === group
                                         ? 'bg-red-600 border-red-600 text-white shadow-red-500/20'
-                                        : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400 hover:border-red-500/50 hover:text-red-500'
+                                        : 'bg-white dark:bg-slate-900 border-neutral-200 dark:border-slate-800 text-neutral-500 dark:text-slate-400  hover:text-red-500'
                                         }`}
                                 >
                                     {group}

@@ -299,7 +299,7 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  disabled={loading || success}
  className={`px-6 py-2.5 rounded-lg text-sm font-bold text-white transition-all flex items-center justify-center min-w-[120px] shadow-md ${success
  ? 'bg-emerald-500 shadow-emerald-500/30'
- : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 hover:-translate-y-0.5'
+ : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 .5'
  } disabled:opacity-70 disabled:hover:translate-y-0`}
  >
  {loading ? (

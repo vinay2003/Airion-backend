@@ -97,7 +97,7 @@ const DashboardLayout: React.FC<{ portalRole: Role }> = ({ portalRole }) => {
                 <SidebarContent items={navItems} currentPath={location.pathname} isCollapsed={!isSidebarOpen} portalRole={portalRole} />
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className="absolute -right-3 top-24 w-7 h-7 bg-white border border-slate-100 text-slate-400 rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:text-white hover:border-red-600 transition-all hover:scale-110 active:scale-95"
+                    className="absolute -right-3 top-24 w-7 h-7 bg-white border border-slate-100 text-slate-400 rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 hover:text-white  transition-all hover:scale-110 active:scale-95"
                 >
                     {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                 </button>
@@ -218,7 +218,7 @@ const SidebarContent: React.FC<{ items: NavItem[], currentPath: string, isCollap
                         <div className="p-2.5 bg-red-600 text-white rounded-2xl"><PlusCircle size={18} /></div>
                         <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none">New Record</p>
                     </div>
-                    <button className="w-full py-4 bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 hover:text-white uppercase tracking-widest rounded-2xl hover:bg-red-600 hover:border-red-600 transition-all shadow-inner active:scale-95">Initiate Add</button>
+                    <button className="w-full py-4 bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 hover:text-white uppercase tracking-widest rounded-2xl hover:bg-red-600  transition-all shadow-inner active:scale-95">Initiate Add</button>
                     <div className="mt-6 flex items-center gap-4 text-[9px] font-black text-slate-500 uppercase tracking-widest">
                         <Sparkles size={12} className="text-red-500 animate-pulse" /> AI Logic Ready
                     </div>

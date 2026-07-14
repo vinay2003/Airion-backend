@@ -280,7 +280,7 @@ export const Inbox: React.FC = () => {
                                     onChange={handleInputChange}
                                     className="flex-1 bg-transparent border-none outline-none py-2 text-sm font-bold text-neutral-800 dark:text-white"
                                 />
-                                <button type="submit" disabled={!messageText.trim()} className="p-3.5 bg-red-500 text-white rounded-xl hover:scale-105 active:scale-95 shadow-lg shadow-red-500/30 transition-all disabled:opacity-30 disabled:hover:scale-100 shrink-0">
+                                <button type="submit" disabled={!messageText.trim()} className="p-3.5 bg-red-500 text-white rounded-xl  active:scale-95 shadow-lg shadow-red-500/30 transition-all disabled:opacity-30 disabled: shrink-0">
                                     <Send size={18} />
                                 </button>
                             </div>

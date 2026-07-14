@@ -307,7 +307,7 @@ const Settings: React.FC = () => {
  onClick={() => setActiveTab(tab.id as any)}
  className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all group relative overflow-hidden ${activeTab === tab.id
  ? 'bg-[var(--ease2event-brand-primary)] text-white /30 scale-105 z-10'
- : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-muted)] border border-[var(--ease2event-border-base)] hover:border-[var(--ease2event-brand-primary)]/50 hover:text-[var(--ease2event-text-primary)]'
+ : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-muted)] border border-[var(--ease2event-border-base)]  hover:text-[var(--ease2event-text-primary)]'
  }`}
  >
  <div className={`p-2.5 rounded-xl scale-110 ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-brand-primary)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white'} transition-all `}>
@@ -435,7 +435,7 @@ const Settings: React.FC = () => {
  </div>
 
  <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
- <Button onClick={handleSavePersonal} disabled={submitting} className="h-12 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-bold tracking-widest rounded-2xl hover:/40 hover:scale-105 transition-all active:scale-[0.98]">
+ <Button onClick={handleSavePersonal} disabled={submitting} className="h-12 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-bold tracking-widest rounded-2xl hover:/40  transition-all active:scale-[0.98]">
  {submitting ? <Loader2 className="animate-spin" /> : <><Save size={16} className="mr-4" /> SAVE CHANGES</>}
  </Button>
  </div>
@@ -504,7 +504,7 @@ const Settings: React.FC = () => {
  <button onClick={() => setBusinessData(p => ({ ...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i) }))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={16} /></button>
  </div>
  ))}
- <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/5 transition-all gap-2 sm:gap-3 group cursor-pointer">
+ <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)]  hover:bg-[var(--ease2event-brand-primary)]/5 transition-all gap-2 sm:gap-3 group cursor-pointer">
  <input
  type="file"
  className="hidden"
@@ -554,7 +554,7 @@ const Settings: React.FC = () => {
  </div>
 
  <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
- <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-bold tracking-widest rounded-[24px] hover:/40 hover:scale-105 transition-all active:scale-[0.98]">
+ <Button onClick={handleSaveBusiness} disabled={submitting} className="h-18 px-16 bg-[var(--ease2event-brand-primary)] text-white text-[12px] font-bold tracking-widest rounded-[24px] hover:/40  transition-all active:scale-[0.98]">
  {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={16} className="mr-4" /> UPDATE PROFILE</>}
  </Button>
  </div>
@@ -611,7 +611,7 @@ const Settings: React.FC = () => {
  <Button
  onClick={handleUpdatePassword}
  disabled={submitting}
- className="h-12 sm:h-10 w-full bg-amber-500 text-white shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold tracking-widest hover:scale-105 transition-all"
+ className="h-12 sm:h-10 w-full bg-amber-500 text-white shadow-amber-500/20 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-bold tracking-widest  transition-all"
  >
  {submitting ? <Loader2 className="animate-spin mx-auto" /> : 'UPDATE PASSWORD'}
  </Button>
@@ -708,7 +708,7 @@ const Settings: React.FC = () => {
  <p className="text-[10px] sm:text-[11px] font-bold text-[var(--ease2event-text-secondary)] tracking-widest mb-6 sm:mb-8">Theme Preferences</p>
  <button
  onClick={toggleTheme}
- className="w-full flex items-center justify-between p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[20px] sm:rounded-[28px] hover:border-[var(--ease2event-brand-primary)]/50 transition-all active:scale-[0.98] group/btn"
+ className="w-full flex items-center justify-between p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] rounded-[20px] sm:rounded-[28px]  transition-all active:scale-[0.98] group/btn"
  >
  <div className="flex items-center gap-4 sm:gap-6">
  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-brand-primary)] group-hover/btn:rotate-12 transition-transform shrink-0">

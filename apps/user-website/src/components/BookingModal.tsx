@@ -156,7 +156,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                             <button
                                                 key={occ}
                                                 onClick={() => { setFormData({ ...formData, occasion: occ }); nextStep(); }}
-                                                className={`p-4 rounded-2xl border-2 text-left transition-all ${formData.occasion === occ ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 font-bold' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300 text-neutral-700 dark:text-slate-300 font-medium'}`}
+                                                className={`p-4 rounded-2xl border-2 text-left transition-all ${formData.occasion === occ ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 font-bold' : 'border-neutral-200 dark:border-slate-700  text-neutral-700 dark:text-slate-300 font-medium'}`}
                                             >
                                                 {occ}
                                             </button>
@@ -225,7 +225,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                             <div
                                                 key={pkg.name}
                                                 onClick={() => setFormData({ ...formData, package: pkg.name })}
-                                                className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.package === pkg.name ? 'border-red-500 bg-red-50/50 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300 dark:hover:border-slate-600'}`}
+                                                className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.package === pkg.name ? 'border-red-500 bg-red-50/50 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700  dark:'}`}
                                             >
                                                 {pkg.popular && (
                                                     <span className="absolute -top-3 left-6 bg-neutral-900 dark:bg-white text-white dark:text-black text-[10px] uppercase tracking-wider font-bold py-1 px-3 rounded-full">Most Popular</span>
@@ -276,7 +276,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                                             : [...formData.addons, addon.id];
                                                         setFormData({ ...formData, addons: newAddons });
                                                     }}
-                                                    className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isSelected ? 'border-red-500 bg-red-50/30 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700 hover:border-neutral-300'}`}
+                                                    className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${isSelected ? 'border-red-500 bg-red-50/30 dark:bg-red-500/10' : 'border-neutral-200 dark:border-slate-700 '}`}
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         <div className={`p-3 rounded-full ${isSelected ? 'bg-red-100 text-red-500' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-500'}`}>
@@ -365,7 +365,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                             <button
                                 onClick={nextStep}
                                 disabled={step === 1 && !formData.occasion || step === 2 && (!formData.date || !formData.time)}
-                                className="w-full flex items-center justify-center gap-2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 py-3.5 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 shadow-lg"
+                                className="w-full flex items-center justify-center gap-2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 py-3.5 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled: shadow-lg"
                             >
                                 Continue <ArrowRight size={18} />
                             </button>
@@ -374,7 +374,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, eventName,
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 shadow-xl shadow-red-500/20"
+                                    className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled: shadow-xl shadow-red-500/20"
                                 >
                                     {loading ? 'Processing Secure Payment...' : 'Confirm & Pay Now'}
                                 </button>

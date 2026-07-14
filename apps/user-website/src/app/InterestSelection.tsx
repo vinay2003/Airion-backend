@@ -144,7 +144,7 @@ const OnboardingFlow: React.FC = () => {
                                         onClick={() => setEventType(type.id)}
                                         className={`flex items-center gap-4 p-5 rounded-2xl border-2 transition-all text-left group ${eventType === type.id
                                                 ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500'
-                                                : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
+                                                : 'border-neutral-200 dark:border-slate-800  dark: hover:bg-neutral-50 dark:hover:bg-slate-800/50'
                                             }`}
                                     >
                                         <div className={`p-3 rounded-xl transition-colors ${eventType === type.id ? 'bg-red-500 text-white' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500'
@@ -186,7 +186,7 @@ const OnboardingFlow: React.FC = () => {
                                         onClick={() => toggleService(service.id)}
                                         className={`flex flex-col items-center justify-center p-6 space-y-4 rounded-3xl border-2 transition-all text-center group ${selectedServices.includes(service.id)
                                                 ? 'border-red-500 bg-red-50 dark:bg-red-500/10 dark:border-red-500'
-                                                : 'border-neutral-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-500/30 hover:bg-neutral-50 dark:hover:bg-slate-800/50'
+                                                : 'border-neutral-200 dark:border-slate-800  dark: hover:bg-neutral-50 dark:hover:bg-slate-800/50'
                                             }`}
                                     >
                                         <div className={`p-4 rounded-2xl transition-colors ${selectedServices.includes(service.id) ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'bg-neutral-100 dark:bg-slate-800 text-neutral-600 dark:text-neutral-400 group-hover:text-red-500 group-hover:bg-red-50 dark:group-hover:bg-red-500/20'

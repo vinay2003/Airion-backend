@@ -29,7 +29,7 @@ const CMS: React.FC = () => {
                     <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                         <RefreshCw size={18} /> Revert Changes
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all hover:scale-105 active:scale-95 transform">
+                    <button className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all  active:scale-95 transform">
                         <Save size={18} /> Publish Changes
                     </button>
                 </div>

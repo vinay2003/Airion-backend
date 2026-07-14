@@ -533,7 +533,7 @@ const Packages: React.FC = () => {
                 onClick={() => setActiveFilter(filter.value)}
                 className={`px-8 py-3.5 text-sm font-bold tracking-widest transition-all duration-500 border ${activeFilter === filter.value
                   ? 'bg-[#c5a059] border-[#c5a059] text-black shadow-lg shadow-[#c5a059]/20'
-                  : 'bg-transparent border-gray-200 dark:border-white/10 text-gray-400 dark:text-white/40 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-white/30'
+                  : 'bg-transparent border-gray-200 dark:border-white/10 text-gray-400 dark:text-white/40 hover:text-gray-900 dark:hover:text-white  dark:'
                   }`}
               >
                 {filter.label}
@@ -558,7 +558,7 @@ const Packages: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="group bg-gray-50 dark:bg-[#111111] border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col h-full transition-colors duration-300 shadow-sm hover:shadow-xl"
+                  className="group bg-gray-50 dark:bg-[#111111] border border-gray-200 dark:border-white/5 overflow-hidden flex flex-col h-full transition-colors duration-300 shadow-sm "
                 >
                   {/* Card Image */}
                   <div className="relative h-48 overflow-hidden">
@@ -636,7 +636,7 @@ const Packages: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className={`relative flex flex-col rounded-3xl border-2 ${pkg.borderColor} bg-white dark:bg-slate-900 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 ${pkg.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
+                  className={`relative flex flex-col rounded-3xl border-2 ${pkg.borderColor} bg-white dark:bg-slate-900 overflow-hidden shadow-sm  transition-all duration-500 ${pkg.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
                 >
                   {pkg.badge && (
                     <div className="absolute top-4 right-4 z-10 bg-amber-400 text-black text-sm font-medium uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
@@ -820,7 +820,7 @@ const Packages: React.FC = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-gray-50 dark:bg-white/[0.03] p-10 text-left border border-gray-200 dark:border-white/5 relative group hover:border-[#c5a059]/20 transition-all"
+                className="bg-gray-50 dark:bg-white/[0.03] p-10 text-left border border-gray-200 dark:border-white/5 relative group  transition-all"
               >
                 <div className="text-[#c5a059] mb-8">
                   <Mail size={24} className="opacity-20" /> {/* Using Mail as a placeholder for quote icon or just a visual element */}
@@ -858,7 +858,7 @@ const Packages: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => navigate('/plan-event')}
-                className="inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-red-500/30"
+                className="inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-2xl font-black transition-all  shadow-lg shadow-red-500/30"
               >
                 Build Custom Package <ArrowRight size={18} />
               </button>

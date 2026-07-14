@@ -141,7 +141,7 @@ export const DigitalInvites: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {templates.map((template) => (
-                    <div key={template.id} className="group relative rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg transition-all cursor-pointer">
+                    <div key={template.id} className="group relative rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  transition-all cursor-pointer">
                         <div className={`h-40 w-full ${template.color} flex items-center justify-center`}>
                             <FileText size={48} className="text-gray-400/50 dark:text-slate-500/50" />
                         </div>

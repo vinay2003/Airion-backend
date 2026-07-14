@@ -97,7 +97,7 @@ const BecomeVendor: React.FC = () => {
                             { title: 'Analytics & Insights', desc: 'Track your performance with detailed analytics on views, clicks, and conversion rates.' },
                             { title: 'Secure Payments', desc: 'Receive payments directly to your bank account with our secure payment gateway.' },
                         ].map((item, idx) => (
-                            <div key={idx} className="p-8 rounded-3xl bg-gray-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-slate-700 shadow-sm hover:shadow-xl">
+                            <div key={idx} className="p-8 rounded-3xl bg-gray-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-colors border border-transparent  dark: shadow-sm ">
                                 <div className="w-12 h-12 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center text-red-600 dark:text-red-400 mb-6 font-bold text-xl">
                                     {idx + 1}
                                 </div>
@@ -114,7 +114,7 @@ const BecomeVendor: React.FC = () => {
                 <div className="max-w-5xl mx-auto bg-red-600 rounded-3xl p-12 md:p-20 text-center text-white shadow-2xl shadow-red-600/30">
                     <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Scale Your Business?</h2>
                     <p className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Join thousands of successful vendors on Ease2event today. It takes less than 5 minutes to get started.</p>
-                    <a href="/vendor/signup" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105">
+                    <a href="/vendor/signup" className="inline-block bg-white text-red-600 px-12 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-all shadow-lg ">
                         Join as a Vendor
                     </a>
                     <p className="mt-6 text-sm text-white/70">No credit card required for basic listing</p>

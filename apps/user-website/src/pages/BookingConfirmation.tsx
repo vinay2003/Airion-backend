@@ -138,7 +138,7 @@ const BookingConfirmation: React.FC = () => {
                         </div>
 
                         <div className="mt-8 flex gap-4">
-                            <button className="flex-1 border-2 border-neutral-200 dark:border-slate-700 hover:border-neutral-900 dark:hover:border-white py-4 rounded-xl font-bold text-neutral-700 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white flex items-center justify-center gap-2 transition-all">
+                            <button className="flex-1 border-2 border-neutral-200 dark:border-slate-700  dark: py-4 rounded-xl font-bold text-neutral-700 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white flex items-center justify-center gap-2 transition-all">
                                 <Download size={18} />
                                 Invoice
                             </button>

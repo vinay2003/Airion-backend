@@ -213,10 +213,10 @@ const MyBookings: React.FC = () => {
                                 transition={{ duration: 0.3 }}
                                 key={booking.id}
                                 onClick={() => setSelectedBooking(booking)}
-                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-5 shadow-sm border border-neutral-300 dark:border-slate-800 hover:shadow-xl hover:border-red-500/30 transition-all duration-300 group flex flex-col sm:flex-row gap-6 cursor-pointer"
+                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-5 shadow-sm border border-neutral-300 dark:border-slate-800   transition-all duration-300 group flex flex-col sm:flex-row gap-6 cursor-pointer"
                             >
                                 <div className="sm:w-48 h-40 sm:h-full rounded-2xl overflow-hidden shrink-0 relative">
-                                    <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+                                    <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover transform  transition-transform duration-700" />
                                     <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider backdrop-blur-md border border-white/20 ${style.bg.replace('bg-', 'bg-').split(' ')[0]} ${style.text.split(' ')[0]} bg-opacity-90`}>
                                         {style.label}
                                     </div>

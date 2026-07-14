@@ -150,7 +150,7 @@ const ProfileSettings: React.FC = () => {
                                                             onClick={() => setLanguage(lang.code)}
                                                             className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${language === lang.code
                                                                     ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
-                                                                    : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800 hover:border-neutral-200 dark:hover:border-slate-700'
+                                                                    : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800  dark:'
                                                                 }`}
                                                         >
                                                             {lang.name}

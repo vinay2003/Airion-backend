@@ -85,7 +85,7 @@ const Vendors: React.FC = () => {
         return (
             <div className="flex justify-center items-center h-[60vh]">
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-red-500/10 border-t-red-600 rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-red-500/10 border-t-red-600 rounded-full "></div>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Building2 className="text-red-600/40" size={24} />
                     </div>
@@ -95,7 +95,7 @@ const Vendors: React.FC = () => {
     }
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10  fade-in ">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Vendors</h1>
@@ -103,13 +103,13 @@ const Vendors: React.FC = () => {
                 </div>
                 <div className="flex flex-wrap gap-4 w-full md:w-auto">
                     <div className="relative group flex-1 md:flex-none">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors" size={20} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 " size={20} />
                         <input
                             type="text"
                             placeholder="Search vendors..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all font-medium text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
+                            className="w-full md:w-80 pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500  font-medium text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500"
                         />
                     </div>
                 </div>
@@ -120,9 +120,9 @@ const Vendors: React.FC = () => {
                     <button
                         key={status}
                         onClick={() => setFilter(status as any)}
-                        className={`px-6 py-3 rounded-xl text-sm font-semibold capitalize transition-all ${filter === status
+                        className={`px-6 py-3 rounded-xl text-sm font-semibold capitalize  ${filter === status
                             ? 'bg-white dark:bg-slate-800 text-red-600 shadow-xl border border-neutral-100 dark:border-slate-700'
-                            : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                            : 'text-gray-400  dark:'
                             }`}
                     >
                         {status}
@@ -143,7 +143,7 @@ const Vendors: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                             {filteredVendors.map((vendor) => (
-                                <tr key={vendor.id} className="hover:bg-neutral-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                <tr key={vendor.id} className="/50 dark:/30  group">
                                     <td className="px-10 py-8 whitespace-nowrap">
                                         <div className="flex items-center gap-6">
                                             <div className="w-16 h-16 rounded-[22px] bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-black text-xl shadow-xl shadow-indigo-500/20 uppercase italic">
@@ -176,16 +176,16 @@ const Vendors: React.FC = () => {
                                         </span>
                                     </td>
                                     <td className="px-10 py-8 whitespace-nowrap text-right">
-                                        <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                                            <button className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-slate-800 hover:bg-[var(--ease2event-brand-primary)] hover:text-white rounded-xl text-gray-500 transition-all shadow-sm">
+                                        <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0    ">
+                                            <button className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-slate-800 -[var(--ease2event-brand-primary)]  rounded-xl text-gray-500  shadow-sm">
                                                 <Eye size={18} />
                                             </button>
                                             {vendor.verificationStatus === 'pending' && (
                                                 <>
-                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="w-12 h-12 flex items-center justify-center bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-xl transition-all shadow-sm border border-emerald-500/10">
+                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="w-12 h-12 flex items-center justify-center bg-emerald-500/10 text-emerald-600   rounded-xl  shadow-sm border border-emerald-500/10">
                                                         <Check size={18} />
                                                     </button>
-                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="w-12 h-12 flex items-center justify-center bg-rose-500/10 text-rose-600 hover:bg-rose-500 hover:text-white rounded-xl transition-all shadow-sm border border-rose-500/10">
+                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="w-12 h-12 flex items-center justify-center bg-rose-500/10 text-rose-600   rounded-xl  shadow-sm border border-rose-500/10">
                                                         <X size={18} />
                                                     </button>
                                                 </>

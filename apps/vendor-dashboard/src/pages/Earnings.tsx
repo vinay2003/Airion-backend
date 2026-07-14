@@ -197,7 +197,7 @@ const Earnings: React.FC = () => {
  </Button>
  <Button
  onClick={handleExport}
- className="flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:scale-105 transition-all active:scale-95 whitespace-nowrap"
+ className="flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white  transition-all active:scale-95 whitespace-nowrap"
  >
  <Download size={14} className="mr-2 sm:mr-3" />
  Export Logs
@@ -211,7 +211,7 @@ const Earnings: React.FC = () => {
 
  {/* 🚀 Primary Intelligence Nodes */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between hover:border-emerald-500/40 transition-all bg-[var(--ease2event-bg-surface)]">
+ <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between  transition-all bg-[var(--ease2event-bg-surface)]">
  <div>
  <div className="flex justify-between items-start mb-6 sm:mb-10 relative">
  <div className="p-4 sm:p-5 bg-emerald-500/10 text-emerald-500 rounded-[20px] sm:rounded-[24px] border border-emerald-500/10">
@@ -241,7 +241,7 @@ const Earnings: React.FC = () => {
  </div>
  </div>
 
- <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between hover:border-[var(--ease2event-brand-primary)]/40 transition-all bg-[var(--ease2event-bg-surface)]">
+ <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between  transition-all bg-[var(--ease2event-bg-surface)]">
  <div>
  <div className="flex justify-between items-start mb-6 sm:mb-10 relative">
  <div className="p-4 sm:p-5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] rounded-[20px] sm:rounded-[24px] border border-[var(--ease2event-brand-primary)]/10">
@@ -268,7 +268,7 @@ const Earnings: React.FC = () => {
  </div>
  </div>
 
- <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between hover:border-amber-500/40 transition-all bg-[var(--ease2event-bg-surface)]">
+ <div className="card-minimal p-6 sm:p-6 flex flex-col justify-between  transition-all bg-[var(--ease2event-bg-surface)]">
  <div className="flex justify-between items-start mb-6 sm:mb-8">
  <div className="flex-1">
  <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-1 sm:mb-2">Monthly Target</p>
@@ -402,7 +402,7 @@ const Earnings: React.FC = () => {
  </div>
  <button
  onClick={() => document.getElementById('transactions-registry')?.scrollIntoView({ behavior: 'smooth' })}
- className="w-full mt-12 py-5 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] rounded-lg text-sm font-semibold tracking-normal text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/40 transition-all active:scale-95 "
+ className="w-full mt-12 py-5 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] rounded-lg text-sm font-semibold tracking-normal text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)]  transition-all active:scale-95 "
  >
  Access Ledger Logs
  </button>
@@ -449,7 +449,7 @@ const Earnings: React.FC = () => {
  className="w-full pl-16 pr-8 py-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[12px] font-bold outline-none focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 transition-all text-[var(--ease2event-text-primary)] tracking-widest placeholder:text-[var(--ease2event-text-secondary)]/40 "
  />
  </div>
- <Button className="hidden sm:flex h-12 w-16 items-center justify-center bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] transition-all active:scale-90 hover:border-[var(--ease2event-brand-primary)]/40 ">
+ <Button className="hidden sm:flex h-12 w-16 items-center justify-center bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] transition-all active:scale-90  ">
  <Filter size={16} />
  </Button>
  </div>
@@ -504,7 +504,7 @@ const Earnings: React.FC = () => {
  <td className="px-12 py-10 text-[11px] font-black text-[var(--ease2event-text-primary)] tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">{trx.client}</td>
  <td className="px-12 py-10 text-[var(--ease2event-text-muted)] text-[10px] font-black tracking-[0.2em] opacity-60">{trx.date}</td>
  <td className="px-12 py-10">
- <span className="text-[10px] font-black tracking-[0.3em] bg-[var(--ease2event-bg-elevated)] px-4 py-2 rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-text-primary)] group-hover:border-[var(--ease2event-brand-primary)]/20 transition-all ">{trx.method}</span>
+ <span className="text-[10px] font-black tracking-[0.3em] bg-[var(--ease2event-bg-elevated)] px-4 py-2 rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-text-primary)] group- transition-all ">{trx.method}</span>
  </td>
  <td className="px-12 py-10 font-black text-xl text-[var(--ease2event-text-primary)] tracking-tighter font-display group-hover:text-[var(--ease2event-brand-primary)] transition-all origin-left">₹{trx.amount.replace('₹', '')}</td>
  <td className="px-12 py-10">

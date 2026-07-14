@@ -151,7 +151,7 @@ const Gallery: React.FC = () => {
  <Button
  onClick={() => fileInputRef.current?.click()}
  disabled={uploading}
- className="btn-primary flex-1 xl:flex-initial !h-12 px-14 rounded-3xl text-sm font-bold tracking-normal shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all"
+ className="btn-primary flex-1 xl:flex-initial !h-12 px-14 rounded-3xl text-sm font-bold tracking-normal shadow-blue-500/20  active:scale-95 transition-all"
  >
  {uploading ? <Loader2 className="animate-spin mr-3" size={16} /> : <Plus size={16} className="mr-3" />}
  <span>{uploading ? 'UPLOADING...' : 'UPLOAD IMAGES'}</span>
@@ -188,7 +188,7 @@ const Gallery: React.FC = () => {
  onClick={() => !item.isUploading && setSelectedImage(item)}
  className={`relative group cursor-pointer break-inside-avoid rounded-xl overflow-hidden border-2 transition-all bg-[var(--ease2event-bg-surface)] ${item.isUploading
  ? 'border-blue-500/30 opacity-80 cursor-wait'
- : 'border-[var(--ease2event-border-subtle)] hover:border-blue-500/50 hover: '
+ : 'border-[var(--ease2event-border-subtle)]  hover: '
  }`}
  >
  <img
@@ -258,7 +258,7 @@ const Gallery: React.FC = () => {
  <div className="flex items-center justify-end">
  <button
  onClick={() => setSelectedImage(null)}
- className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs tracking-[0.3em] hover:scale-105"
+ className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs tracking-[0.3em] "
  >
  Close <X size={38} className="p-2 bg-rose-600 text-white rounded-2xl shadow-rose-600/30" />
  </button>

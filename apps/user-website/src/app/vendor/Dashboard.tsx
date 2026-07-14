@@ -52,7 +52,7 @@ const Dashboard = () => {
       {/* KPI Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {kpis.map((kpi, idx) => (
-          <Card key={idx} className="flex flex-col justify-between border-gray-100 shadow-sm hover:shadow-xl transition-all h-full group bg-white rounded-3xl p-8">
+          <Card key={idx} className="flex flex-col justify-between border-gray-100 shadow-sm  transition-all h-full group bg-white rounded-3xl p-8">
               <div className="flex justify-between items-start mb-6">
                  <div className={`p-4 rounded-[1.5rem] ${kpi.bg} ${kpi.color} group-hover:scale-110 transition-transform`}>
                     <kpi.icon size={24} />
@@ -81,7 +81,7 @@ const Dashboard = () => {
             { label: 'Earnings', icon: DollarSign, color: 'bg-sky-500' },
             { label: 'Settings', icon: Settings, color: 'bg-slate-500' },
         ].map((action, idx) => (
-            <button key={idx} className="bg-white p-6 rounded-3xl border border-slate-100 hover:border-red-500/50 hover:shadow-xl transition-all flex flex-col items-center gap-3 group text-center">
+            <button key={idx} className="bg-white p-6 rounded-3xl border border-slate-100   transition-all flex flex-col items-center gap-3 group text-center">
                 <div className={`p-3 rounded-2xl text-white ${action.color} group-hover:scale-110 transition-transform shadow-lg`}>
                     <action.icon size={20} />
                 </div>

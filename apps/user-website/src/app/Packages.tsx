@@ -140,7 +140,7 @@ const Packages: React.FC = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 flex flex-col"
+                                    className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm  transition-all duration-300 border border-gray-100 dark:border-slate-700 flex flex-col"
                                 >
                                     <div className="h-48 relative overflow-hidden">
                                         <img src={pkg.image} alt={pkg.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />

@@ -265,7 +265,7 @@ const Analytics: React.FC = () => {
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
  {topNodes.map((node, i) => (
- <div key={i} className="space-y-6 sm:space-y-5 p-6 sm:p-6 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[32px] sm:rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all hover:scale-105 group/node">
+ <div key={i} className="space-y-6 sm:space-y-5 p-6 sm:p-6 bg-[var(--ease2event-bg-elevated)]/20 border border-[var(--ease2event-border-subtle)] rounded-[32px] sm:rounded-[40px] hover:bg-[var(--ease2event-bg-surface)] transition-all  group/node">
  <div className="flex justify-between items-start">
  <span className="text-xl sm:text-lg font-semibold text-[var(--ease2event-brand-primary)]/20 group-hover/node:text-[var(--ease2event-brand-primary)] transition-colors">0{i + 1}</span>
  <Badge className={`bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold text-[8px] px-2 py-0.5`}>{node.status}</Badge>

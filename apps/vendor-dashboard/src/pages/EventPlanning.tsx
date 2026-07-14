@@ -138,10 +138,10 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  onClick={() => handleEventTypeSelect(type.id)}
  className={`p-6 rounded-2xl border-2 transition-all group relative overflow-hidden ${formData.eventType === type.id
  ? 'border-blue-500 bg-[var(--ease2event-bg-elevated)] shadow-blue-500/10'
- : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] hover:border-blue-500/30'
+ : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] '
  }`}
  >
- <div className={`absolute inset-0 bg-blue-500/5 transition-transform ${formData.eventType === type.id ? 'scale-100' : 'scale-0 group-hover:scale-100'}`}></div>
+ <div className={`absolute inset-0 bg-blue-500/5 transition-transform ${formData.eventType === type.id ? 'scale-100' : 'scale-0 '}`}></div>
  <type.icon
  size={48}
  className={`mx-auto mb-6 transition-all relative z-10 ${formData.eventType === type.id
@@ -179,7 +179,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  onClick={() => handleCateringToggle(option)}
  className={`p-6 rounded-2xl border-2 transition-all text-left group relative overflow-hidden ${formData.catering.includes(option)
  ? 'border-blue-500 bg-[var(--ease2event-bg-elevated)] '
- : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] hover:border-blue-500/30'
+ : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] '
  }`}
  >
  <div className="flex items-center justify-between relative z-10">
@@ -228,7 +228,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  <button
  key={count}
  onClick={() => setFormData({ ...formData, guestCount: count })}
- className="p-4 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] hover:border-blue-500/30 rounded-xl font-bold text-lg text-[var(--ease2event-text-primary)] transition-all tracking-tight "
+ className="p-4 bg-[var(--ease2event-bg-surface)] border-2 border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)]  rounded-xl font-bold text-lg text-[var(--ease2event-text-primary)] transition-all tracking-tight "
  >
  {count}
  </button>
@@ -278,7 +278,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  onClick={() => setFormData({ ...formData, budget: range })}
  className={`p-6 rounded-2xl border-2 transition-all group overflow-hidden ${formData.budget === range
  ? 'border-blue-500 bg-[var(--ease2event-bg-elevated)] '
- : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] hover:border-blue-500/30'
+ : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] '
  }`}
  >
  <span className={`font-bold text-lg tracking-tight uppercase ${formData.budget === range
@@ -334,7 +334,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  onClick={() => handleServiceToggle(service)}
  className={`p-4 rounded-xl border-2 transition-all group relative overflow-hidden ${formData.additionalServices.includes(service)
  ? 'border-blue-500 bg-[var(--ease2event-bg-elevated)] '
- : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] hover:border-blue-500/30'
+ : 'border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-surface)] '
  }`}
  >
  <div className="flex items-center justify-between relative z-10">

@@ -196,7 +196,7 @@ const Products: React.FC = () => {
  <Button
  onClick={handleCreateService}
  disabled={submitting}
- className="px-6 h-12 bg-[var(--ease2event-brand-primary)] text-white /20 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 transition-all active:scale-95"
+ className="px-6 h-12 bg-[var(--ease2event-brand-primary)] text-white /20 rounded-2xl font-bold text-xs tracking-widest  transition-all active:scale-95"
  >
  {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Register Product'}
  </Button>
@@ -285,13 +285,13 @@ const Products: React.FC = () => {
  <img src={img} className="w-full h-full object-cover transition-transform " alt="Node Visual" />
  <button
  onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
- className="absolute top-2 right-2 p-2 bg-rose-500 text-white rounded-xl scale-0 group-hover:scale-100 transition-all "
+ className="absolute top-2 right-2 p-2 bg-rose-500 text-white rounded-xl scale-0  transition-all "
  >
  <X size={12} />
  </button>
  </div>
  ))}
- <label className="aspect-square rounded-2xl border-2 border-dashed border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-4 group cursor-pointer hover:bg-[var(--ease2event-bg-elevated)] hover:border-[var(--ease2event-brand-primary)]/30 transition-all">
+ <label className="aspect-square rounded-2xl border-2 border-dashed border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-4 group cursor-pointer hover:bg-[var(--ease2event-bg-elevated)]  transition-all">
  <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
  <Plus size={16} className="text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-brand-primary)] group-hover:scale-125 transition-all mb-2" />
  <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] tracking-[0.1em]">Sync Link</p>
@@ -399,7 +399,7 @@ const Products: React.FC = () => {
  <div >
  <Button
  onClick={() => setIsAdding(true)}
- className="h-10 px-6 bg-[var(--ease2event-brand-primary)] text-white /30 rounded-2xl font-bold text-xs tracking-widest hover:scale-105 transition-all active:scale-95"
+ className="h-10 px-6 bg-[var(--ease2event-brand-primary)] text-white /30 rounded-2xl font-bold text-xs tracking-widest  transition-all active:scale-95"
  leftIcon={<Plus size={18} />}
  >
  Register New Node
@@ -426,7 +426,7 @@ const Products: React.FC = () => {
  onClick={() => setActiveTab(tab)}
  className={`py-4 text-sm font-bold tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
  >
- <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-hover:border-red-500'}`}>
+ <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-'}`}>
  {tab.replace('_', ' ')}
  </span>
  </button>
@@ -446,7 +446,7 @@ const Products: React.FC = () => {
  {filteredProducts.map((prod: any, idx: number) => (
  <div
  key={prod.id || idx}
- className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-brand-primary)]/40 transition-all flex flex-col h-full cursor-pointer rounded-xl"
+ className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)]  transition-all flex flex-col h-full cursor-pointer rounded-xl"
  >
  <div className="h-56 bg-slate-900 relative overflow-hidden">
  <img
@@ -490,7 +490,7 @@ const Products: React.FC = () => {
  <div
  
  onClick={() => setIsAdding(true)}
- className="card-minimal border-4 border-dashed border-[var(--ease2event-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20 hover:border-[var(--ease2event-brand-primary)]/40 hover:bg-[var(--ease2event-brand-primary)]/[0.03] cursor-pointer group transition-all rounded-xl"
+ className="card-minimal border-4 border-dashed border-[var(--ease2event-border-subtle)] bg-transparent flex flex-col items-center justify-center gap-6 py-20  hover:bg-[var(--ease2event-brand-primary)]/[0.03] cursor-pointer group transition-all rounded-xl"
  >
  <div className="w-16 h-12 rounded-3xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] flex items-center justify-center text-[var(--ease2event-text-muted)] group-hover:bg-[var(--ease2event-brand-primary)] group-hover:text-white group-hover:rotate-90 transition-all ">
  <Plus size={16} />

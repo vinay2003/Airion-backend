@@ -71,7 +71,7 @@ const Bookings: React.FC = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {displayStats.map((stat, idx) => (
-                    <Card key={idx} className="flex flex-col border-none shadow-sm hover:shadow-xl transition-all h-full justify-between group">
+                    <Card key={idx} className="flex flex-col border-none shadow-sm  transition-all h-full justify-between group">
                         <div className="flex items-center justify-between mb-4">
                             <div className={`p-4 rounded-3xl bg-[var(--ease2event-bg-elevated)] text-${stat.color}-500/80 group-hover:scale-110 transition-transform`}>
                                 <stat.icon size={28} />
@@ -123,7 +123,7 @@ const Bookings: React.FC = () => {
                     [1, 2, 3].map(i => <Skeleton key={i} height={160} className="rounded-3xl" />)
                 ) : filteredBookings.length > 0 ? (
                     filteredBookings.map((booking) => (
-                        <Card key={booking.id} padding="none" className="hover:shadow-2xl transition-all border-none relative overflow-hidden group">
+                        <Card key={booking.id} padding="none" className=" transition-all border-none relative overflow-hidden group">
                            <div className="flex flex-col lg:flex-row lg:items-center p-8 gap-8">
                                 <div className="flex-1">
                                     <div className="flex items-start justify-between mb-6">

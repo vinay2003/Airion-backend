@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="space-y-4">
-                        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 hover:scale-105 transition-transform inline-flex">
+                        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3  transition-transform inline-flex">
                             <img
                                 src="/logo.svg"
                                 alt="Ease2Event Logo"
@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
                                 { Icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61560780569664' },
                                 { Icon: Instagram, href: 'https://www.instagram.com/ease2event' },
                             ].map(({ Icon, href }, i) => (
-                                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white dark:bg-slate-800 border border-neutral-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500/30 hover:shadow-lg hover:shadow-red-500/10 transition-all">
+                                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white dark:bg-slate-800 border border-neutral-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500   hover:shadow-red-500/10 transition-all">
                                     <Icon size={18} />
                                 </a>
                             ))}

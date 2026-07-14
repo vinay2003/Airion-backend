@@ -131,9 +131,9 @@ const PlanEvent: React.FC = () => {
                                 <button
                                     key={type.id}
                                     onClick={() => handleEventTypeSelect(type.id)}
-                                    className={`p-6 rounded-2xl border-2 transition-all hover:scale-105 ${formData.eventType === type.id
+                                    className={`p-6 rounded-2xl border-2 transition-all  ${formData.eventType === type.id
                                         ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  dark:'
                                         }`}
                                 >
                                     <type.icon
@@ -173,7 +173,7 @@ const PlanEvent: React.FC = () => {
                                     onClick={() => handleCateringToggle(option)}
                                     className={`p-6 rounded-xl border-2 transition-all text-left ${formData.catering.includes(option)
                                         ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  dark:'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
@@ -211,7 +211,7 @@ const PlanEvent: React.FC = () => {
                                     onClick={() => handleServiceToggle(service)}
                                     className={`p-6 rounded-xl border-2 transition-all ${formData.additionalServices.includes(service)
                                         ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  dark:'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
@@ -305,7 +305,7 @@ const PlanEvent: React.FC = () => {
                                     onClick={() => setFormData({ ...formData, budget: range })}
                                     className={`p-6 rounded-xl border-2 transition-all ${formData.budget === range
                                         ? 'border-red-500 bg-red-50 dark:bg-red-500/10'
-                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-400'
+                                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800  dark:'
                                         }`}
                                 >
                                     <span className={`font-medium text-lg ${formData.budget === range

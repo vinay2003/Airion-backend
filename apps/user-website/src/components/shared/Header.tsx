@@ -21,7 +21,7 @@ const UserProfileMenu = ({
     <div className="relative" ref={userMenuRef}>
         <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+            className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent  dark:"
         >
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-sm">
                 {user?.name?.[0] || <UserIcon size={20} />}
@@ -180,7 +180,7 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link
                 to="/"
-                className="text-2xl md:text-3xl font-bold text-red-500 z-50 hover:scale-105 transition-transform flex items-center gap-2 flex-shrink-0"
+                className="text-2xl md:text-3xl font-bold text-red-500 z-50  transition-transform flex items-center gap-2 flex-shrink-0"
             >
                 <Sparkles size={24} className="text-red-500 hidden sm:block" />
                 aayojan
@@ -306,7 +306,7 @@ const Header: React.FC = () => {
                                         onClick={toggleMenu}
                                         className={`block text-xl font-black uppercase tracking-tight py-4 px-6 rounded-2xl transition-all ${isActivePath(item.path)
                                             ? 'bg-red-500 text-white shadow-xl shadow-red-500/20'
-                                            : 'text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border border-transparent hover:border-red-500/10'
+                                            : 'text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border border-transparent '
                                             }`}
                                     >
                                         {item.name}

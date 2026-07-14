@@ -66,7 +66,7 @@ const UserDashboard: React.FC = () => {
                 </div>
                 <Link
                     to="/marketplace"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-2xl shadow-xl shadow-red-500/20 font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-all hover:-translate-y-1"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-2xl shadow-xl shadow-red-500/20 font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-all "
                 >
                     <Plus size={16} />
                     Find Vendors
@@ -81,7 +81,7 @@ const UserDashboard: React.FC = () => {
                     { title: 'Pending Tasks', value: 3, icon: Clock, bg: 'bg-amber-50', text: 'text-amber-600', link: '/dashboard/bookings' },
                 ].map((stat, i) => (
                     <motion.div key={stat.title} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
-                        <Link to={stat.link} className="p-8 bg-white border border-slate-100 rounded-3xl flex items-center gap-6 hover:shadow-2xl hover:border-red-500/50 transition-all block group">
+                        <Link to={stat.link} className="p-8 bg-white border border-slate-100 rounded-3xl flex items-center gap-6   transition-all block group">
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${stat.bg} ${stat.text} group-hover:scale-110 transition-transform`}>
                                 <stat.icon size={28} />
                             </div>
@@ -102,7 +102,7 @@ const UserDashboard: React.FC = () => {
                 <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                     {OCCASIONS.map((occ, idx) => (
                         <Link key={idx} to={`/category/${occ.label.toLowerCase().replace(' ', '-')}`} className="flex-shrink-0 flex flex-col items-center gap-3 group">
-                            <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center text-3xl shadow-sm border border-slate-50 group-hover:scale-110 group-hover:shadow-2xl group-hover:border-red-500 transition-all duration-300">
+                            <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center text-3xl shadow-sm border border-slate-50 group-hover:scale-110 group- group- transition-all duration-300">
                                 {occ.emoji}
                             </div>
                             <span className="text-[10px] font-black text-slate-400 group-hover:text-red-500 uppercase tracking-widest transition-colors">{occ.label}</span>
@@ -145,8 +145,8 @@ const UserDashboard: React.FC = () => {
                     </div>
                     <div className="space-y-4">
                         {activeBookings.length > 0 ? activeBookings.map((booking: Booking) => (
-                            <motion.div key={booking.id} className="bg-white border border-slate-100 rounded-3xl p-6 flex gap-6 hover:shadow-2xl transition-all cursor-pointer group">
-                                <div className="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-50 group-hover:scale-105 transition-transform">
+                            <motion.div key={booking.id} className="bg-white border border-slate-100 rounded-3xl p-6 flex gap-6  transition-all cursor-pointer group">
+                                <div className="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-50  transition-transform">
                                     <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover" />
                                 </div>
                                 <div className="flex-1 flex flex-col justify-between min-w-0">
@@ -226,7 +226,7 @@ const UserDashboard: React.FC = () => {
                 </div>
                 <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-6">
                     {TRENDING_VENDORS.map(vendor => (
-                        <div key={vendor.id} className="flex-shrink-0 w-72 bg-white rounded-[2rem] overflow-hidden border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
+                        <div key={vendor.id} className="flex-shrink-0 w-72 bg-white rounded-[2rem] overflow-hidden border border-slate-50 shadow-sm  transition-all group">
                             <div className="relative h-48">
                                 <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black text-red-600 uppercase tracking-widest shadow-lg">{vendor.category}</div>

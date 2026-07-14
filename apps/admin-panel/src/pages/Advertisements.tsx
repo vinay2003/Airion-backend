@@ -60,7 +60,7 @@ const Advertisements: React.FC = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+                <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
             </div>
         );
     }
@@ -76,27 +76,27 @@ const Advertisements: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="space-y-8  fade-in ">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Advertisements</h1>
                     <p className="text-sm font-medium text-gray-400 dark:text-slate-500 mt-2">Manage vendor ad campaigns</p>
                 </div>
                 <div className="relative w-full md:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 " size={20} />
                     <input
                         type="text"
                         placeholder="Search campaigns..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium text-sm dark:text-white"
+                        className="w-full pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500  font-medium text-sm dark:text-white"
                     />
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {filteredAds.map((ad) => (
-                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-gray-50 dark:border-slate-800 hover:shadow-xl transition-all">
+                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-gray-50 dark:border-slate-800  ">
                         <div className="flex justify-between items-start mb-6">
                             <div>
                                 <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2">{ad.campaignName}</h3>
@@ -135,21 +135,21 @@ const Advertisements: React.FC = () => {
                         <div className="pt-6 border-t border-gray-50 dark:border-slate-800 flex gap-3">
                             {ad.status === 'pending' && (
                                 <>
-                                    <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
+                                    <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-500 text-white rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
                                         <CheckCircle size={18} /> Approve
                                     </button>
-                                    <button onClick={() => updateAdStatus(ad.id, 'rejected')} className="flex-1 h-12 bg-red-50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-100 transition-all flex items-center justify-center gap-2">
+                                    <button onClick={() => updateAdStatus(ad.id, 'rejected')} className="flex-1 h-12 bg-red-50 text-red-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
                                         <XCircle size={18} /> Reject
                                     </button>
                                 </>
                             )}
                             {ad.status === 'active' && (
-                                <button onClick={() => updateAdStatus(ad.id, 'paused')} className="flex-1 h-12 bg-amber-50 text-amber-600 rounded-xl font-bold text-sm hover:bg-amber-100 transition-all flex items-center justify-center gap-2">
+                                <button onClick={() => updateAdStatus(ad.id, 'paused')} className="flex-1 h-12 bg-amber-50 text-amber-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
                                     <PauseCircle size={18} /> Pause Campaign
                                 </button>
                             )}
                             {(ad.status === 'paused' || ad.status === 'rejected') && (
-                                <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-sm hover:bg-emerald-100 transition-all flex items-center justify-center gap-2">
+                                <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
                                     <Activity size={18} /> Resume Campaign
                                 </button>
                             )}

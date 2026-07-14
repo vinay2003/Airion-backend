@@ -111,7 +111,7 @@ const DashboardOverview: React.FC = () => {
                     >
                         <Link
                             to={stat.link}
-                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group hover:shadow-2xl hover:scale-[1.02] transition-all border-b-4 border-b-transparent hover:border-b-red-500 overflow-hidden relative"
+                            className="p-8 bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] flex items-center justify-between group  hover:scale-[1.02] transition-all border-b-4 border-b-transparent  overflow-hidden relative"
                         >
                             <div className="relative z-10">
                                 <p className="text-sm font-medium text-neutral-600 dark:text-slate-500 mb-2">{stat.title}</p>
@@ -331,7 +331,7 @@ const DashboardOverview: React.FC = () => {
                 </div>
                 <Link
                     to="/dashboard/budget"
-                    className="relative z-10 whitespace-nowrap text-sm font-black tracking-[0.1em] text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-500 border-b-2 border-transparent hover:border-red-500 transition-all pb-1"
+                    className="relative z-10 whitespace-nowrap text-sm font-black tracking-[0.1em] text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-500 border-b-2 border-transparent  transition-all pb-1"
                 >
                     Verify Eligibility
                 </Link>

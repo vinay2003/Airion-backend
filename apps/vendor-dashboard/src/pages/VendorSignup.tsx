@@ -330,7 +330,7 @@ const VendorSignupWizard: React.FC = () => {
  className={`p-4 rounded-2xl border-2 text-left transition-all ${
  formData.acquisitionChannels.includes(item) 
  ? 'border-red-500 bg-red-500/10 text-red-500' 
- : 'border-slate-800 bg-slate-900/40 text-slate-500 hover:border-slate-700'
+ : 'border-slate-800 bg-slate-900/40 text-slate-500 '
  }`}
  >
  <span className="font-bold">{item === 'Google Registry' ? 'Google Search' : item}</span>
@@ -344,7 +344,7 @@ const VendorSignupWizard: React.FC = () => {
  <label className="text-sm font-bold text-slate-400 flex items-center gap-2"><TrendingUp size={16} /> Monthly Bookings</label>
  <div className="grid grid-cols-2 gap-2">
  {["1-2", "3-5", "5-10", "10+"].map(vol => (
- <button key={vol} type="button" onClick={() => setFormData(p => ({...p, monthlyEventVolume: vol}))} className={`py-3 rounded-xl border font-bold transition-all ${formData.monthlyEventVolume === vol ? 'bg-white text-black border-white' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}>
+ <button key={vol} type="button" onClick={() => setFormData(p => ({...p, monthlyEventVolume: vol}))} className={`py-3 rounded-xl border font-bold transition-all ${formData.monthlyEventVolume === vol ? 'bg-white text-black border-white' : 'border-slate-800 text-slate-500 '}`}>
  {vol} Events
  </button>
  ))}
@@ -387,7 +387,7 @@ const VendorSignupWizard: React.FC = () => {
  </div>
  ))}
  {formData.portfolioImages.length < 8 && (
- <button type="button" onClick={() => fileInputRef.current?.click()} className="aspect-square rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center text-slate-600 hover:border-emerald-500/40 hover:text-emerald-400 transition-all bg-slate-900/20 group">
+ <button type="button" onClick={() => fileInputRef.current?.click()} className="aspect-square rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center text-slate-600  hover:text-emerald-400 transition-all bg-slate-900/20 group">
  <Plus size={16} className="group-hover:scale-125 transition-transform" />
  <span className="text-[10px] font-bold uppercase mt-2">Add Photo</span>
  </button>

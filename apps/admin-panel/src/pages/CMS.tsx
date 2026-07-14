@@ -19,17 +19,17 @@ const CMS: React.FC = () => {
     ];
 
     return (
-        <div className="space-y-6 animate-fadeIn">
+        <div className="space-y-6 ">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Content Management</h1>
                     <p className="text-gray-500 dark:text-slate-400">Manage your platform's public facing content</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-sm font-bold text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-sm font-bold text-gray-600 dark:text-slate-400  dark: ">
                         <RefreshCw size={18} /> Revert Changes
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all hover:scale-105 active:scale-95 transform">
+                    <button className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20    active: ">
                         <Save size={18} /> Publish Changes
                     </button>
                 </div>
@@ -49,10 +49,10 @@ const CMS: React.FC = () => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all ${
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl  ${
                                 activeTab === tab.id 
                                 ? 'bg-red-500 text-white shadow-lg shadow-red-500/20 translate-x-2' 
-                                : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-100 dark:border-slate-800  dark:'
                             }`}
                         >
                             <div className="flex items-center gap-3">
@@ -111,8 +111,8 @@ const CMS: React.FC = () => {
                                     <div>
                                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Hero Background Image</label>
                                         <div className="relative group">
-                                            <img src={heroSection.backgroundImage} className="w-full h-48 object-cover rounded-2xl border border-gray-100 dark:border-slate-800 opacity-80 group-hover:opacity-100 transition-opacity" alt="Hero Preview" />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                            <img src={heroSection.backgroundImage} className="w-full h-48 object-cover rounded-2xl border border-gray-100 dark:border-slate-800 opacity-80  " alt="Hero Preview" />
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0   pointer-events-none">
                                                 <button className="px-6 py-2 bg-white/90 text-black rounded-full font-bold text-xs pointer-events-auto shadow-2xl">Upload New Image</button>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@ const CMS: React.FC = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
                                     <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Featured Categories</h2>
-                                    <button className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all"><Plus size={18} /></button>
+                                    <button className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20  "><Plus size={18} /></button>
                                 </div>
                                 <div className="space-y-3">
                                     {categories.map((cat, i) => (
@@ -142,9 +142,9 @@ const CMS: React.FC = () => {
                                                 />
                                                 <p className="text-[10px] text-gray-400 font-bold uppercase">{cat.count} listings connected</p>
                                             </div>
-                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-lg text-gray-500"><Edit2 size={16} /></button>
-                                                <button className="p-2 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg text-red-500"><Trash2 size={16} /></button>
+                                            <div className="flex items-center gap-1 opacity-0  ">
+                                                <button className="p-2  dark: rounded-lg text-gray-500"><Edit2 size={16} /></button>
+                                                <button className="p-2  dark:/20 rounded-lg text-red-500"><Trash2 size={16} /></button>
                                             </div>
                                         </div>
                                     ))}

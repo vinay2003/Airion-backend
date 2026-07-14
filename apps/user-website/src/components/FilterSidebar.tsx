@@ -352,7 +352,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ onApply, initialFilters }
                 </button>
                 <button
                     onClick={handleClearAll}
-                    className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-200 dark:hover:border-slate-700 font-bold text-xs tracking-widest rounded-2xl transition-all"
+                    className="w-full py-4 bg-transparent border-2 border-neutral-100 dark:border-slate-800 text-neutral-400 hover:text-neutral-900 dark:hover:text-white  dark: font-bold text-xs tracking-widest rounded-2xl transition-all"
                 >
                     Clear All Filters
                 </button>

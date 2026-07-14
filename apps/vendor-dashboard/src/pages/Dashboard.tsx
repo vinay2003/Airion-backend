@@ -46,7 +46,7 @@ const StatCard = ({ title, value, trend, direction, icon: Icon, isLoading, curre
  {trend}
  </div>
  ) : <div className="h-6" />}
- <div className="p-2.5 rounded-lg bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-secondary)] transition-colors group-hover:text-blue-500 group-hover:border-blue-500/30">
+ <div className="p-2.5 rounded-lg bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-secondary)] transition-colors group-hover:text-blue-500 group-">
  {Icon && <Icon size={18} />}
  </div>
  </div>
@@ -322,7 +322,7 @@ const Dashboard = () => {
  <Target size={18} className="text-amber-500" />
  <h2 className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-wider">Pending Tasks</h2>
  </div>
- <div className="bg-white dark:bg-slate-900 border border-[var(--ease2event-border-subtle)] p-5 rounded-xl space-y-4 transition-colors hover:border-blue-500/30">
+ <div className="bg-white dark:bg-slate-900 border border-[var(--ease2event-border-subtle)] p-5 rounded-xl space-y-4 transition-colors ">
  <div className="flex justify-between items-start">
  <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight">Setup Decoration Flow</p>
  <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">JAN 18</span>

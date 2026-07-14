@@ -109,7 +109,7 @@ const Ads: React.FC = () => {
 
  <Button
  onClick={() => setShowCreateModal(true)}
- className="btn-primary flex items-center justify-center h-12 md:h-10 px-6 md:px-6 rounded-2xl text-[10px] md:text-[11px] font-semibold tracking-normal shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all w-full md:w-auto"
+ className="btn-primary flex items-center justify-center h-12 md:h-10 px-6 md:px-6 rounded-2xl text-[10px] md:text-[11px] font-semibold tracking-normal shadow-blue-500/20  active:scale-95 transition-all w-full md:w-auto"
  >
  <Plus size={18} className="mr-2 md:mr-3" />
  <span>Create New Campaign</span>
@@ -132,7 +132,7 @@ const Ads: React.FC = () => {
  >
  <div className="flex justify-between items-start z-10">
  <h3 className="text-[11px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal">{stat.label}</h3>
- <div className={`p-4 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-2xl ${stat.color} transition-all group-hover:border-blue-500/30 `}>
+ <div className={`p-4 bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-2xl ${stat.color} transition-all group- `}>
  <stat.icon size={16} />
  </div>
  </div>
@@ -173,7 +173,7 @@ const Ads: React.FC = () => {
  </div>
  <Button
  onClick={() => setShowCreateModal(true)}
- className="btn-secondary !h-12 md:h-10 px-5 md:px-14 text-[10px] md:text-xs font-semibold tracking-normal border-2 border-[var(--ease2event-border-base)] rounded-2xl md:rounded-3xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all "
+ className="btn-secondary !h-12 md:h-10 px-5 md:px-14 text-[10px] md:text-xs font-semibold tracking-normal border-2 border-[var(--ease2event-border-base)] rounded-2xl md:rounded-3xl hover:bg-blue-600 hover:text-white  transition-all "
  >
  Launch Campaign
  </Button>
@@ -186,7 +186,7 @@ const Ads: React.FC = () => {
  
  
  
- className="card-minimal !p-0 overflow-hidden group border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40 flex flex-col h-full hover:shadow-blue-500/10 transition-all rounded-[3.5rem] bg-[var(--ease2event-bg-surface)]"
+ className="card-minimal !p-0 overflow-hidden group border-2 border-[var(--ease2event-border-subtle)]  flex flex-col h-full hover:shadow-blue-500/10 transition-all rounded-[3.5rem] bg-[var(--ease2event-bg-surface)]"
  >
  <div className="h-72 relative overflow-hidden">
  <img src={ad.imageUrl} className="w-full h-full object-cover transition-transform " alt={ad.title} />
@@ -215,12 +215,12 @@ const Ads: React.FC = () => {
  </div>
 
  <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-2">
- <Button className="btn-secondary !h-12 sm:h-10 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:scale-105 transition-all">
+ <Button className="btn-secondary !h-12 sm:h-10 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)]  transition-all">
  <BarChart2 size={18} className="mr-2" /> View Stats
  </Button>
  <Button 
  onClick={() => handleDeleteAd(ad.id)}
- className="btn-secondary !h-12 sm:h-10 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl !bg-rose-500/5 !text-rose-500 !border-rose-500/20 hover:!bg-rose-500 hover:!text-white transition-all hover:scale-105">
+ className="btn-secondary !h-12 sm:h-10 text-[10px] sm:text-[11px] font-semibold tracking-normal rounded-xl sm:rounded-2xl !bg-rose-500/5 !text-rose-500 !border-rose-500/20 hover:!bg-rose-500 hover:!text-white transition-all ">
  <Trash2 size={18} className="mr-2" /> Delete ad
  </Button>
  </div>
@@ -254,7 +254,7 @@ const Ads: React.FC = () => {
  onClick={() => setShowCreateModal(false)}
  className="absolute top-6 right-6 sm:top-12 sm:right-12 text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)] transition-all"
  >
- <X className="size-6 sm:size-10 p-1.5 sm:p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] hover:border-blue-500/40" />
+ <X className="size-6 sm:size-10 p-1.5 sm:p-2.5 bg-[var(--ease2event-bg-elevated)] rounded-xl sm:rounded-2xl border-2 border-[var(--ease2event-border-subtle)] " />
  </button>
 
  <div className="space-y-6 sm:space-y-6 mt-8 sm:mt-0">

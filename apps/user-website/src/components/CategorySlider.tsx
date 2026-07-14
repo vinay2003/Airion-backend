@@ -131,7 +131,7 @@ const CategorySlider: React.FC = () => {
                     <button
                         onClick={() => slide('left')}
                         type="button"
-                        className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
+                        className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center   transition-all"
                         aria-label="Scroll left"
                     >
                         <ChevronLeft size={16} className="text-gray-700 dark:text-gray-300" />
@@ -159,10 +159,10 @@ const CategorySlider: React.FC = () => {
                             onClick={() => !isDragging && handleCategoryClick(category.id)}
                             className={`pointer-events-auto flex flex-col items-center gap-3 group min-w-[90px] md:min-w-[110px] ${isActive
                                 ? 'text-red-500 scale-105 transition-all duration-300'
-                                : 'text-gray-500 dark:text-slate-400 hover:text-red-500 hover:scale-105 transition-all duration-300'
+                                : 'text-gray-500 dark:text-slate-400 hover:text-red-500  transition-all duration-300'
                                 }`}
                         >
-                            <div className={`w-20 h-20 md:w-28 md:h-28 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-300 shadow-sm overflow-hidden border-2 ${isActive ? 'border-red-500 shadow-red-500/30 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-slate-800 group-hover:border-red-300 dark:group-hover:border-red-900/50'}`}>
+                            <div className={`w-20 h-20 md:w-28 md:h-28 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-300 shadow-sm overflow-hidden border-2 ${isActive ? 'border-red-500 shadow-red-500/30 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-slate-800 group- dark:group-'}`}>
                                 <img 
                                     src={category.image} 
                                     alt={category.label}
@@ -183,7 +183,7 @@ const CategorySlider: React.FC = () => {
                     <button
                         onClick={() => slide('right')}
                         type="button"
-                        className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all"
+                        className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-center   transition-all"
                         aria-label="Scroll right"
                     >
                         <ChevronRight size={16} className="text-gray-700 dark:text-gray-300" />

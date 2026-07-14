@@ -54,7 +54,7 @@ export const Dropdown = ({
           ${
             isOpen
               ? 'border-[var(--ease2event-brand-primary)] ring-4 ring-[rgba(108,99,255,0.08)] bg-[var(--ease2event-bg-surface)] shadow-[var(--ease2event-shadow-md)]'
-              : 'border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)] hover:border-[var(--ease2event-border-active)] hover:bg-[var(--ease2event-bg-elevated)]/50'
+              : 'border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)] )] hover:bg-[var(--ease2event-bg-elevated)]/50'
           }
           text-sm font-bold uppercase tracking-tight
         `}

@@ -57,7 +57,7 @@ const AdminDashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50 hover:shadow-2xl hover:-translate-y-2 transform transition-all duration-500 group">
+                    <div key={idx} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50   transform transition-all duration-500 group">
                         <div className="flex justify-between items-start mb-6">
                             <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform shadow-lg shadow-black/5`}>
                                 <stat.icon size={24} />
@@ -178,7 +178,7 @@ const AdminDashboard: React.FC = () => {
                             { name: 'Royal Palace Banquet', type: 'Hospitality', city: 'Delhi', rate: '85%' },
                             { name: 'Flash Moments', type: 'Creative Services', city: 'Bangalore', rate: '78%' }
                         ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-6 bg-slate-50/50 rounded-3xl border border-white hover:bg-white hover:shadow-xl transition-all group cursor-pointer">
+                            <div key={i} className="flex items-center justify-between p-6 bg-slate-50/50 rounded-3xl border border-white hover:bg-white  transition-all group cursor-pointer">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-2xl bg-red-600 text-white flex items-center justify-center font-black text-xl shadow-lg ring-4 ring-red-50 shadow-red-600/10">
                                         {vendor.name[0]}

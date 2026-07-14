@@ -49,7 +49,7 @@ const Reports: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6 animate-fadeIn">
+        <div className="space-y-6 ">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Content Moderation</h1>
@@ -115,7 +115,7 @@ const Reports: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800/50">
                             {filteredReports.map((report) => (
-                                <tr key={report.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/20 transition-all transition-duration-200 group">
+                                <tr key={report.id} className="/50 dark:/20   group">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2 font-bold text-xs uppercase dark:text-slate-300">
                                             {getTypeIcon(report.type)}
@@ -139,14 +139,14 @@ const Reports: React.FC = () => {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl text-gray-500 transition-colors" title="View Details">
+                                        <div className="flex items-center gap-2 opacity-0  ">
+                                            <button className="p-2  dark: rounded-xl text-gray-500 " title="View Details">
                                                 <Eye size={18} />
                                             </button>
-                                            <button className="p-2 hover:bg-green-50 dark:hover:bg-green-950/30 rounded-xl text-green-500 transition-colors" title="Resolve">
+                                            <button className="p-2  dark:/30 rounded-xl text-green-500 " title="Resolve">
                                                 <CheckCircle size={18} />
                                             </button>
-                                            <button className="p-2 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl text-red-500 transition-colors" title="Delete Content">
+                                            <button className="p-2  dark:/30 rounded-xl text-red-500 " title="Delete Content">
                                                 <Trash2 size={18} />
                                             </button>
                                         </div>

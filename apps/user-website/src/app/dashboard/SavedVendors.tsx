@@ -70,7 +70,7 @@ const SavedVendors: React.FC = () => {
                                 className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-neutral-200/60 dark:border-slate-800 group relative"
                             >
                                 <div className="h-48 relative overflow-hidden">
-                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover  transition-transform duration-300" />
                                     
                                     <button 
                                         onClick={() => handleRemove(item.id)}

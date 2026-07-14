@@ -39,6 +39,11 @@ async function bootstrap() {
     const compression = require('compression');
     app.use(compression());
 
+    // Increase JSON body limit for Base64 image uploads
+    const express = require('express');
+    app.use(express.json({ limit: '50mb' }));
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
     // Enable CORS with dynamic absolute origin
     app.enableCors({
         origin: (origin, callback) => {

@@ -122,7 +122,7 @@ const Settings: React.FC = () => {
  setPersonalData({
  name: user.name || '',
  phone: user.phoneNumber || '',
- profileImage: user.vendor?.logo || ''
+ profileImage: (user as any).avatar || user.vendor?.logo || ''
  });
 
  const v = user.vendor;
@@ -171,8 +171,8 @@ const Settings: React.FC = () => {
  };
 
  const handleSaveBusiness = async () => {
- if (!businessData.businessName || !businessData.businessPhone || !businessData.description) {
- toast.error('Please fill in all required fields.');
+ if (!businessData.businessName || !businessData.description) {
+ toast.error('Please fill in all required fields (Name & Description).');
  return;
  }
 
@@ -481,9 +481,15 @@ const Settings: React.FC = () => {
  {/* Section: Branding */}
  <div className="space-y-5">
  <div className="space-y-6 sm:space-y-5">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-6">
  <div className="space-y-2">
  <label className="text-sm font-semibold text-[var(--ease2event-text-secondary)] tracking-wide ml-1">Business Name</label>
  <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-10 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Business Name" />
+ </div>
+ <div className="space-y-2">
+ <label className="text-sm font-semibold text-[var(--ease2event-text-secondary)] tracking-wide ml-1">Business Phone</label>
+ <input value={businessData.businessPhone} onChange={(e: any) => setBusinessData({ ...businessData, businessPhone: e.target.value })} className="w-full h-10 bg-[var(--ease2event-bg-elevated)] px-6 rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Business Phone" />
+ </div>
  </div>
  <div className="space-y-3">
  <label className="text-sm font-semibold text-[var(--ease2event-text-secondary)] tracking-wide ml-1">Portfolio Highlights</label>

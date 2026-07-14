@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus, Sparkles, LocateFixed, Loader2, PartyPopper, Heart, Cake, Briefcase, Mic2, Wine, Flower2, Music, Image as ImageIcon, type LucideIcon } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
 import { cn } from '../lib/utils';
@@ -14,6 +14,17 @@ import {
     PopoverTrigger,
 } from './ui/popover';
 import { POPULAR_LOCATIONS } from '../lib/constants';
+
+const EVENT_TYPES: { value: string; label: string; icon: LucideIcon; color: string; bg: string }[] = [
+    { value: 'wedding',     label: 'Wedding',        icon: Heart,      color: 'text-pink-600',   bg: 'bg-pink-50 dark:bg-pink-950/40' },
+    { value: 'birthday',    label: 'Birthday Party', icon: Cake,       color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950/40' },
+    { value: 'corporate',   label: 'Corporate',      icon: Briefcase,  color: 'text-blue-600',   bg: 'bg-blue-50 dark:bg-blue-950/40' },
+    { value: 'conference',  label: 'Conference',     icon: Mic2,       color: 'text-violet-600', bg: 'bg-violet-50 dark:bg-violet-950/40' },
+    { value: 'anniversary', label: 'Anniversary',    icon: Wine,       color: 'text-red-500',    bg: 'bg-red-50 dark:bg-red-950/40' },
+    { value: 'reception',   label: 'Reception',      icon: Flower2,    color: 'text-rose-500',   bg: 'bg-rose-50 dark:bg-rose-950/40' },
+    { value: 'concert',     label: 'Concert',        icon: Music,      color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
+    { value: 'exhibition',  label: 'Exhibition',     icon: ImageIcon,  color: 'text-teal-600',   bg: 'bg-teal-50 dark:bg-teal-950/40' },
+];
 
 const TypewriterEffect = ({ words }: { words: string[] }) => {
     const [index, setIndex] = useState(0);
@@ -56,7 +67,7 @@ const TypewriterEffect = ({ words }: { words: string[] }) => {
 
     return (
         <span className="flex items-center">
-            {`What type of event are you searching for? "${words[index].substring(0, subIndex)}"`}
+            {`Search city, e.g. "${words[index].substring(0, subIndex)}"`}
             <span className={`ml-0.5 w-[2px] h-4 bg-red-500 ${blink ? 'opacity-100' : 'opacity-0'}`}></span>
         </span>
     );
@@ -67,6 +78,59 @@ const SearchBar = () => {
     const [location, setLocation] = useState("");
     const [locationSearch, setLocationSearch] = useState(""); // ✅ search filter state
     const [openLocation, setOpenLocation] = useState(false);
+    const [geoLocating, setGeoLocating] = useState(false);
+    const [geoError, setGeoError] = useState("");
+
+    const detectCurrentLocation = useCallback(() => {
+        if (!navigator.geolocation) {
+            setGeoError("Geolocation not supported by your browser.");
+            return;
+        }
+        setGeoLocating(true);
+        setGeoError("");
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    const res = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+                        { headers: { 'Accept-Language': 'en' } }
+                    );
+                    const data = await res.json();
+                    const city =
+                        data.address?.city ||
+                        data.address?.town ||
+                        data.address?.village ||
+                        data.address?.county ||
+                        data.address?.state ||
+                        "";
+                    if (city) {
+                        // Try to match with POPULAR_LOCATIONS first
+                        const matched = POPULAR_LOCATIONS.find(
+                            (loc) => loc.label.toLowerCase().includes(city.toLowerCase())
+                        );
+                        setLocation(matched ? matched.value : city);
+                        setOpenLocation(false);
+                    } else {
+                        setGeoError("Could not determine your city.");
+                    }
+                } catch {
+                    setGeoError("Failed to fetch location name.");
+                } finally {
+                    setGeoLocating(false);
+                }
+            },
+            (err) => {
+                setGeoLocating(false);
+                if (err.code === err.PERMISSION_DENIED) {
+                    setGeoError("Location access denied. Please allow it in browser settings.");
+                } else {
+                    setGeoError("Unable to retrieve your location.");
+                }
+            },
+            { timeout: 10000 }
+        );
+    }, []);
 
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     const [openDate, setOpenDate] = useState(false);
@@ -74,34 +138,37 @@ const SearchBar = () => {
     const [guests, setGuests] = useState(0);
     const [openGuests, setOpenGuests] = useState(false);
 
+    const [eventType, setEventType] = useState("");
+    const [openEventType, setOpenEventType] = useState(false);
+
     const handleSearch = () => {
         const params = new URLSearchParams();
         if (location) params.append('location', location);
+        if (eventType) params.append('category', eventType); // VendorDiscovery reads 'category'
         if (date?.from) params.append('check_in', date.from.toISOString());
         if (date?.to) params.append('check_out', date.to.toISOString());
-        params.append('guests', guests.toString());
-
+        if (guests > 0) params.append('guests', guests.toString());
         navigate(`/search?${params.toString()}`);
     };
 
     return (
-        <div className="relative z-[100] bg-white dark:bg-slate-900 p-1.5 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500">
+        <div className="relative z-[100] bg-white dark:bg-slate-900 p-1.5 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500 overflow-hidden">
             {/* Location Selector */}
-            <div className="flex-1 relative group/input w-full border-b md:border-b-0 border-gray-100 dark:border-slate-800">
+            <div className="w-full md:w-[230px] md:flex-shrink-0 relative group/input border-b md:border-b-0 border-gray-100 dark:border-slate-800">
                 <Popover open={openLocation} onOpenChange={(open) => {
                     setOpenLocation(open);
                     if (!open) setLocationSearch(""); // reset search when closed
                 }}>
                     <PopoverTrigger asChild>
-                        <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
+                        <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500 overflow-hidden">
                             <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
-                            <div className="text-left">
+                            <div className="text-left min-w-0 overflow-hidden flex-1">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Location</label>
-                                <div className={`text-base truncate ${location ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
+                                <div className={`text-sm truncate max-w-full overflow-hidden ${location ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
                                     {location ? (
                                         POPULAR_LOCATIONS.find((loc) => loc.value === location)?.label || location
                                     ) : (
-                                        <TypewriterEffect words={["Wedding", "Corporate Event", "Birthday Party", "Conference", "Anniversary"]} />
+                                        <TypewriterEffect words={["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Jaipur", "Goa", "Chennai", "Pune"]} />
                                     )}
                                 </div>
                             </div>
@@ -109,6 +176,31 @@ const SearchBar = () => {
                     </PopoverTrigger>
                     <PopoverContent className="p-0 w-[380px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
                         <div className="bg-white dark:bg-slate-900">
+                            {/* Use my location button */}
+                            <button
+                                type="button"
+                                onClick={detectCurrentLocation}
+                                disabled={geoLocating}
+                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors border-b border-gray-100 dark:border-slate-800 group disabled:opacity-60"
+                            >
+                                <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center shrink-0 group-hover:bg-red-200 transition-colors">
+                                    {geoLocating ? (
+                                        <Loader2 className="w-4 h-4 text-red-600 animate-spin" />
+                                    ) : (
+                                        <LocateFixed className="w-4 h-4 text-red-600" />
+                                    )}
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-sm font-black text-gray-900 dark:text-white group-hover:text-red-600 transition-colors">
+                                        {geoLocating ? "Detecting location…" : "Use my current location"}
+                                    </p>
+                                    {geoError ? (
+                                        <p className="text-[10px] text-red-500 font-bold">{geoError}</p>
+                                    ) : (
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Auto-detect via GPS</p>
+                                    )}
+                                </div>
+                            </button>
                             {/* Search input */}
                             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-slate-800">
                                 <Search className="w-4 h-4 text-gray-400 shrink-0" />
@@ -163,15 +255,75 @@ const SearchBar = () => {
 
             <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
+            {/* Event Type Selector */}
+            <div className="w-full md:w-[180px] md:flex-shrink-0 relative group/input border-b md:border-b-0 border-gray-100 dark:border-slate-800">
+                <Popover open={openEventType} onOpenChange={setOpenEventType}>
+                    <PopoverTrigger asChild>
+                        <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500 overflow-hidden">
+                            {(() => {
+                                const selected = EVENT_TYPES.find(e => e.value === eventType);
+                                const Icon = selected?.icon ?? PartyPopper;
+                                return <Icon className={`w-5 h-5 shrink-0 ${eventType ? (selected?.color ?? 'text-red-500') : 'text-gray-400 group-hover/input:text-red-500'} transition-colors`} />;
+                            })()}
+                            <div className="text-left min-w-0 overflow-hidden flex-1">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Event Type</label>
+                                <p className={`text-sm truncate font-bold ${eventType ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                                    {eventType ? EVENT_TYPES.find(e => e.value === eventType)?.label : 'Any Event'}
+                                </p>
+                            </div>
+                        </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[270px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
+                        <div className="bg-white dark:bg-slate-900">
+                            <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-slate-800">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">What's the occasion?</p>
+                            </div>
+                            <div className="py-1.5 grid grid-cols-2 gap-1 p-2">
+                                {EVENT_TYPES.map((ev) => {
+                                    const Icon = ev.icon;
+                                    const isSelected = eventType === ev.value;
+                                    return (
+                                        <button
+                                            key={ev.value}
+                                            type="button"
+                                            onClick={() => {
+                                                setEventType(isSelected ? '' : ev.value);
+                                                setOpenEventType(false);
+                                            }}
+                                            className={cn(
+                                                'flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all border text-center',
+                                                isSelected
+                                                    ? 'border-red-400 bg-red-50 dark:bg-red-950/30'
+                                                    : 'border-transparent hover:border-gray-200 dark:hover:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                            )}
+                                        >
+                                            <div className={cn('w-9 h-9 rounded-full flex items-center justify-center', ev.bg)}>
+                                                <Icon className={cn('w-4 h-4', isSelected ? 'text-red-600' : ev.color)} />
+                                            </div>
+                                            <span className={cn(
+                                                'text-[11px] font-bold leading-tight',
+                                                isSelected ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+                                            )}>{ev.label}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </PopoverContent>
+                </Popover>
+            </div>
+
+            <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
+
             {/* Date Range Picker */}
-            <div className="flex-1 relative group/input w-full">
+            <div className="w-full md:w-[200px] md:flex-shrink-0 relative group/input">
                 <Popover open={openDate} onOpenChange={setOpenDate}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <CalendarIcon className={`w-5 h-5 shrink-0 ${date?.from ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
-                            <div className="text-left">
+                            <div className="text-left min-w-0 overflow-hidden flex-1">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Date</label>
-                                <p className={`text-base truncate ${date?.from ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
+                                <p className={`text-sm truncate ${date?.from ? "text-gray-900 dark:text-white font-bold" : "text-gray-400"}`}>
                                     {date?.from ? (
                                         date.to ? (
                                             <>
@@ -213,14 +365,14 @@ const SearchBar = () => {
             <div className="w-full h-px md:w-px md:h-auto bg-gray-100 dark:bg-slate-800 md:my-2"></div>
 
             {/* Guest Counter */}
-            <div className="flex-1 relative group/input w-full">
+            <div className="w-full md:w-[140px] md:flex-shrink-0 relative group/input">
                 <Popover open={openGuests} onOpenChange={setOpenGuests}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500">
                             <Users className={`w-5 h-5 shrink-0 ${guests > 1 ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
-                            <div className="text-left">
+                            <div className="text-left min-w-0 overflow-hidden flex-1">
                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer">Guests</label>
-                                <p className={`text-base truncate ont-bold ${guests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
+                                <p className={`text-sm truncate font-bold ${guests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
                                     {guests === 0 ? 'Add Guests' : `${guests} ${guests === 1 ? 'Guest' : 'Guests'}`}
                                 </p>
                             </div>

@@ -9,7 +9,7 @@ const Dashboard: React.FC = () => {
     const { data, isLoading: statsLoading } = useQuery<any>({
         queryKey: ['admin-stats'],
         queryFn: async () => {
-            const res = await api.get('/analytics/admin/global-stats');
+            const res = await api.get<any>('/analytics/admin/global-stats');
             return res.data?.data || res.data;
         }
     });

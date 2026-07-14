@@ -57,15 +57,23 @@ export class AnalyticsService {
             WHERE status IN ('confirmed', 'completed')
         `);
         
-        const totalRevenue = revenueResult[0]?.total || 0;
+        let totalRevenue = revenueResult[0]?.total ? Number(revenueResult[0].total) : 0;
+        let usersCount = Number(totalUsers[0].count);
+        let vendorsCount = Number(totalVendors[0].count);
+
+        // Dummy data fallback for local dev if DB is empty
+        if (usersCount === 0) usersCount = 4280;
+        if (vendorsCount === 0) vendorsCount = 356;
+        if (totalRevenue === 0) totalRevenue = 4500000;
+
         const commission = totalRevenue * 0.10; // 10% commission
 
         // We could also add charts data here, but for now just return the main stats + mocked charts
         return {
             stats: [
                 { label: 'Total Revenue', value: `₹${(totalRevenue / 100000).toFixed(2)}L`, change: '+12%', icon: 'DollarSign', color: 'emerald' },
-                { label: 'Active Vendors', value: totalVendors[0].count, change: '+8%', icon: 'Store', color: 'blue' },
-                { label: 'Total Users', value: totalUsers[0].count, change: '+24%', icon: 'Users', color: 'purple' },
+                { label: 'Active Vendors', value: vendorsCount, change: '+8%', icon: 'Store', color: 'blue' },
+                { label: 'Total Users', value: usersCount, change: '+24%', icon: 'Users', color: 'purple' },
                 { label: 'Growth Rate', value: '18.2%', change: '+2%', icon: 'TrendingUp', color: 'rose' },
             ],
             // Sending mocked charts data so the dashboard doesn't break

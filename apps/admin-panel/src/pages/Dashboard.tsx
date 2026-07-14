@@ -1,19 +1,16 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp, Users, Store, DollarSign, ArrowUpRight } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import { Skeleton, SkeletonText } from '@ease2event/ui';
+import api from '../lib/api';
 
 const Dashboard: React.FC = () => {
     const { data, isLoading: statsLoading } = useQuery<any>({
         queryKey: ['admin-stats'],
         queryFn: async () => {
-            const token = localStorage.getItem('ease2event_admin_token');
-            const res = await fetch('http://localhost:3000/api/analytics/admin/global-stats', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error('Failed to fetch stats');
-            return res.json();
+            const res = await api.get('/analytics/admin/global-stats');
+            return res.data;
         }
     });
 
@@ -39,20 +36,23 @@ const Dashboard: React.FC = () => {
                             <SkeletonText lines={2} />
                         </div>
                     ))
-                ) : stats?.map((stat: any, idx: number) => (
-                    <div key={idx} className="card-premium">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600 border border-${stat.color}-100`}>
-                                <stat.icon size={24} />
-                            </div>
+                ) : stats?.map((stat: any, idx: number) => {
+                    const Icon = (Icons as any)[stat.icon] || Icons.TrendingUp;
+                    return (
+                        <div key={idx} className="card-premium">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600 border border-${stat.color}-100`}>
+                                    <Icon size={24} />
+                                </div>
                             <span className="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
-                                {stat.change} <ArrowUpRight size={14} />
+                                {stat.change} <Icons.ArrowUpRight size={14} />
                             </span>
                         </div>
                         <p className="text-[var(--ease2event-text-secondary)] text-sm font-medium mb-1">{stat.label}</p>
                         <h3 className="text-3xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">{stat.value}</h3>
                     </div>
-                ))}
+                );
+                })}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

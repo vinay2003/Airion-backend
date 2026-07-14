@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
         queryKey: ['admin-stats'],
         queryFn: async () => {
             const res = await api.get('/analytics/admin/global-stats');
-            return res.data;
+            return res.data?.data || res.data;
         }
     });
 

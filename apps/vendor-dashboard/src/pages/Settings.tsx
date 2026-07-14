@@ -726,7 +726,7 @@ const Settings: React.FC = () => {
  </div>
  </div>
  )}
- </div>
+ </motion.div>
  </AnimatePresence>
  </div>
  </div>

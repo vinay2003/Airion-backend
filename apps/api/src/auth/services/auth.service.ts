@@ -128,8 +128,10 @@ export class AuthService {
             await this.smsService.sendOtpSms(dto.phone, otpCode, 'signup');
         }
 
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
         return {
             message: 'OTP sent successfully',
+            ...(!isProduction && { _dev_otp: otpCode })
         };
     }
 
@@ -270,8 +272,10 @@ export class AuthService {
             await this.smsService.sendOtpSms(dto.phone, otpCode, 'login');
         }
 
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
         return {
             message: 'OTP sent successfully',
+            ...(!isProduction && { _dev_otp: otpCode })
         };
     }
 

@@ -318,7 +318,7 @@ const Settings: React.FC = () => {
  <p className={`text-[9px] font-normal mt-1.5 ${activeTab === tab.id ? 'text-white' : 'text-[var(--ease2event-text-muted)]'}`}>{tab.desc}</p>
  </div>
  {activeTab === tab.id && (
- <div layoutId="tab-indicator" className="absolute right-5 w-2 h-2 rounded-full bg-white " />
+  <motion.div layoutId="tab-indicator" className="absolute right-5 w-2 h-2 rounded-full bg-white " />
  )}
  </button>
  ))}

@@ -52,7 +52,7 @@ export class AnalyticsService {
         
         // Sum totalAmount from bookings where status is completed or confirmed
         const revenueResult = await this.dataSource.query(`
-            SELECT SUM(CAST("totalAmount" AS NUMERIC)) as total 
+            SELECT SUM(CAST(total_amount AS NUMERIC)) as total 
             FROM bookings 
             WHERE status IN ('confirmed', 'completed')
         `);

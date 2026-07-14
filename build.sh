@@ -5,6 +5,15 @@ echo "========================================="
 echo "  AIRION FULL BUILD SCRIPT"
 echo "========================================="
 
+# Clean all previous build artifacts to ensure fresh build
+echo ""
+echo ">>> Cleaning previous build artifacts..."
+rm -rf dist
+rm -rf apps/user-website/dist
+rm -rf apps/vendor-dashboard/dist
+rm -rf apps/admin-panel/dist
+echo ">>> Clean DONE"
+
 # Build user-website
 echo ""
 echo ">>> [1/3] Building user-website..."

@@ -47,8 +47,8 @@ export class AnalyticsService {
     }
 
     async getAdminGlobalStats() {
-        const totalUsers = await this.dataSource.query(`SELECT COUNT(*) as count FROM users WHERE role = 'USER'`);
-        const totalVendors = await this.dataSource.query(`SELECT COUNT(*) as count FROM users WHERE role = 'VENDOR'`);
+        const totalUsers = await this.dataSource.query(`SELECT COUNT(*) as count FROM users WHERE role = 'user'`);
+        const totalVendors = await this.dataSource.query(`SELECT COUNT(*) as count FROM users WHERE role = 'vendor'`);
         
         // Sum totalAmount from bookings where status is completed or confirmed
         const revenueResult = await this.dataSource.query(`

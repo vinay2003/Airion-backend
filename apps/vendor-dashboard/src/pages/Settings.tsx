@@ -732,7 +732,8 @@ const Settings: React.FC = () => {
  </div>
  </div>
  )}
- </motion.div>
+  {/* ✅ motion.div closes here - DO NOT change to </div> */}
+  </motion.div>
  </AnimatePresence>
  </div>
  </div>

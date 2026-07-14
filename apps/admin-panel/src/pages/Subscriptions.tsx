@@ -230,8 +230,8 @@ export default function Subscriptions() {
                                     key={plan.id}
                                     layout
                                     initial={{ opacity: 0, y: 12 }}
-                                    ={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, : 0.95 }}
+                                    animateanimate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
                                     className={`group relative bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] ${a.ring} rounded-2xl p-6 flex flex-col gap-4   ${!plan.isActive ? 'opacity-60' : ''}`}
                                 >
                                     {/* Type pill + action buttons */}
@@ -331,12 +331,12 @@ export default function Subscriptions() {
             <AnimatePresence>
                 {isModalOpen && (
                     <motion.div
-                        initial={{ opacity: 0 }} ={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
                         onClick={e => e.target === e.currentTarget && closeModal()}
                     >
                         <motion.div
-                            initial={{ : 0.95, y: 16 }} ={{ : 1, y: 0 }} exit={{ : 0.95, y: 16 }}
+                            initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 16 }}
                             className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-lg border border-[var(--ease2event-border-base)] overflow-hidden"
                         >
                             {/* Modal header */}
@@ -503,11 +503,11 @@ export default function Subscriptions() {
             <AnimatePresence>
                 {confirmDelete && (
                     <motion.div
-                        initial={{ opacity: 0 }} ={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
                     >
                         <motion.div
-                            initial={{ : 0.95 }} ={{ : 1 }} exit={{ : 0.95 }}
+                            initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
                             className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-[var(--ease2event-border-base)] text-center"
                         >
                             <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">

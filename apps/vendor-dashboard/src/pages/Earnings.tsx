@@ -273,7 +273,7 @@ const Earnings: React.FC = () => {
  <div className="flex-1">
  <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-1 sm:mb-2">Monthly Target</p>
  <h3 className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">
- {isLoading ? <Skeleton className="h-10 w-28 rounded-xl" /> : `₹${displayData.payoutTarget.toLocaleString()} GOAL`}
+ {isLoading ? <Skeleton className="h-10 w-28 rounded-xl" /> : `₹${displayData.payoutTarget.toLocaleString()}`}
  </h3>
  </div>
  <div className="p-3 sm:p-4 bg-amber-500/10 text-amber-600 rounded-[20px] sm:rounded-[24px] border border-amber-500/20 shrink-0">

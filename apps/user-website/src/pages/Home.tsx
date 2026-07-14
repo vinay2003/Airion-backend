@@ -582,7 +582,7 @@ const Home: React.FC = () => {
             {/* FAQ Section */}
             <section className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 border-t border-gray-200 dark:border-slate-800">
                 <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
-                    <p className="text-xs font-bold text-[#C25844] tracking-[0.25em] mb-4">Got Questions?</p>
+                    <p className="text-base font-bold text-[#C25844] mb-4">Got Questions?</p>
                     <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
                         Everything You Need to Know Before Booking
                     </h2>

@@ -52,7 +52,7 @@ const Listings: React.FC = () => {
  if (editingListing) {
  return api.put(`/services/${editingListing.id}`, payload);
  } else {
- return api.post('/services', { ...payload, vendorId });
+ return api.post('/services', payload);
  }
  },
  onSuccess: () => {

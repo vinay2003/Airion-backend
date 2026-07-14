@@ -244,7 +244,7 @@ const Dashboard = () => {
  <div className="space-y-4">
  {enquiriesList.length > 0 ? (
  enquiriesList.map((e: any, i: number) => (
- <div key={i} className="flex items-center gap-4 cursor-pointer p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+ <div key={i} onClick={() => navigate('/bookings')} className="flex items-center gap-4 cursor-pointer p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-sm text-[var(--ease2event-text-primary)]">
  {e.client?.charAt(0) || 'C'}
  </div>
@@ -252,7 +252,7 @@ const Dashboard = () => {
  <h4 className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight truncate">{e.client || 'Customer'}</h4>
  <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium truncate">{e.service} • <span className="text-blue-600 font-semibold">{e.amount}</span></p>
  </div>
- <button className="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+ <button onClick={(ev) => { ev.stopPropagation(); navigate('/bookings'); }} className="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
  <MoreVertical size={16} />
  </button>
  </div>

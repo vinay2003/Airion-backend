@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
- Layout, Plus, Megaphone, TrendingUp, DollarSign, Clock,
+ Layout, Plus, Megaphone, TrendingUp, IndianRupee, Clock,
  CheckCircle, X, Sparkles, AlertCircle, MoreVertical, Edit,
  Trash2, ExternalLink, Info, Loader2, CreditCard, BarChart2,
  Zap, Rocket, Target, Activity, ShieldCheck
@@ -282,7 +282,7 @@ const Ads: React.FC = () => {
  <div className="flex flex-col gap-3">
  <label className="text-[9px] sm:text-[10px] font-bold text-[var(--ease2event-text-secondary)] tracking-normal pl-4">Daily Budget (₹)</label>
  <div className="relative group">
- <DollarSign className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
+ <IndianRupee className="size-5 sm:size-6 absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" />
  <input
  required
  type="number"
@@ -312,9 +312,9 @@ const Ads: React.FC = () => {
  <Target className="size-6 sm:size-8" />
  </div>
  <div className="flex flex-col gap-3">
- <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-normal leading-none">Deployment Intelligence Protocol</p>
+ <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-normal leading-none">Ad Campaign Review Process</p>
  <p className="text-xs text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed sm:leading-loose opacity-100">
- Nodes are verified for marketplace compliance by the Nexus Central Hive. Standard validation cycle: <strong className="text-[var(--ease2event-text-primary)]">2-6 cycles</strong>. Operation initializes immediately post-validation.
+ Your campaign will be reviewed by our team to ensure it meets our guidelines. Standard review time: <strong className="text-[var(--ease2event-text-primary)]">2-6 hours</strong>. Your ad will go live immediately after approval.
  </p>
  </div>
  </div>

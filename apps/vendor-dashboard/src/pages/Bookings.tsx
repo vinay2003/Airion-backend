@@ -100,7 +100,7 @@ const Bookings: React.FC = () => {
  };
 
  const filteredBookings = bookings.filter((booking: Booking) => {
- const matchesFilter = filter === 'all' || booking.status === filter;
+ const matchesFilter = filter === 'all' || booking.status.toLowerCase() === filter.toLowerCase();
  const matchesSearch = booking.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
  booking.venueName.toLowerCase().includes(searchQuery.toLowerCase());
  return matchesFilter && matchesSearch;

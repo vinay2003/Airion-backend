@@ -345,11 +345,11 @@ const EventDetails: React.FC = () => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {[
-                                    { title: 'Silver', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
-                                    { title: 'Gold', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
-                                    { title: 'Platinum', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
-                                ].map((pkg, idx) => (
+                                (event?.packages?.length ? event.packages : [
+                                    { title: 'Basic', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
+                                    { title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
+                                    { title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
+                                ]).map((pkg: any, idx: number) => (
                                     <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all border-gray-100 hover:border-red-500 dark:border-slate-800 dark:hover:border-red-500 shadow-sm hover:shadow-xl relative overflow-hidden group flex flex-col h-full">
                                         {idx === 1 && (
                                             <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">

@@ -21,7 +21,7 @@ const ResponsiveNavbar = () => {
                     <button onClick={() => setIsOpen(!isOpen)} className="p-2">
                         {isOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
-                    <div className="text-xl font-bold">Ease2event</div>
+                    <div className="text-2xl font-black tracking-tight text-red-600">Ease2event</div>
                 </div>
 
                 <div className="flex items-center space-x-3">
@@ -40,7 +40,7 @@ const ResponsiveNavbar = () => {
                     <div className="flex items-center justify-between">
                         {/* Logo & Main Navigation */}
                         <div className="flex items-center space-x-12">
-                            <div className="text-2xl font-bold text-red-500">Ease2event</div>
+                            <div className="text-3xl font-black tracking-tighter text-red-600">Ease2event</div>
 
                             <div className="flex items-center space-x-8">
                                 <a href="/" className="hover:text-red-500 transition-colors font-medium">Home</a>

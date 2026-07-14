@@ -741,4 +741,3 @@ const Settings: React.FC = () => {
 };
 
 export default Settings;
-// Force Vercel rebuild

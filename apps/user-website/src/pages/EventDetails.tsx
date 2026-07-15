@@ -197,14 +197,14 @@ const EventDetails: React.FC = () => {
                         <ArrowLeft size={20} />
                         <span>Back</span>
                     </Link>
-                     <div className="flex gap-3">
-                        <button 
+                    <div className="flex gap-3">
+                        <button
                             onClick={(e) => handleShare(e)}
                             className="p-2.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-700 dark:text-slate-300"
                         >
                             <Share2 size={18} />
                         </button>
-                        <button 
+                        <button
                             onClick={(e) => handleLike(e)}
                             className={`p-2.5 rounded-full transition-all duration-300 ${isLiked ? 'bg-red-50 text-red-500 border border-red-100 shadow-lg shadow-red-500/10' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-110'}`}
                         >
@@ -345,47 +345,47 @@ const EventDetails: React.FC = () => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {((event as any)?.packages && (event as any).packages.length > 0 ? (event as any).packages : [
-                                    { title: 'Basic', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
-                                    { title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
-                                    { title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
+                                (event?.packages?.length ? event.packages : [
+                                {title: 'Basic', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
+                                {title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
+                                {title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
                                 ]).map((pkg: any, idx: number) => (
-                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all border-gray-100  dark:border-slate-800 dark: shadow-sm  relative overflow-hidden group flex flex-col h-full">
-                                        {idx === 1 && (
-                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                                                Most Popular
-                                            </div>
-                                        )}
-                                        <div className="mb-4">
-                                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 tracking-tight">{pkg.title}</h3>
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-2xl font-black text-red-500">{pkg.price}</span>
-                                                <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
-                                            </div>
+                                <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all border-gray-100  dark:border-slate-800 dark: shadow-sm  relative overflow-hidden group flex flex-col h-full">
+                                    {idx === 1 && (
+                                        <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                                            Most Popular
                                         </div>
-
-                                        <p className="text-xs text-gray-500 dark:text-slate-400 mb-6 min-h-[32px] leading-relaxed">
-                                            {pkg.desc}
-                                        </p>
-
-                                        <div className="flex-1">
-                                            <ul className="space-y-3 mb-6">
-                                                {pkg.features.map((feature, fIdx) => (
-                                                    <li key={fIdx} className="flex items-start gap-2 text-xs text-gray-600 dark:text-slate-300">
-                                                        <Check size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                                                        <span className="font-medium">{feature}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                    )}
+                                    <div className="mb-4">
+                                        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 tracking-tight">{pkg.title}</h3>
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-2xl font-black text-red-500">{pkg.price}</span>
+                                            <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
                                         </div>
-
-                                        <button
-                                            onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group- group-hover:text-white transition-all"
-                                        >
-                                            {pkg.title}
-                                        </button>
                                     </div>
+
+                                    <p className="text-xs text-gray-500 dark:text-slate-400 mb-6 min-h-[32px] leading-relaxed">
+                                        {pkg.desc}
+                                    </p>
+
+                                    <div className="flex-1">
+                                        <ul className="space-y-3 mb-6">
+                                            {pkg.features.map((feature, fIdx) => (
+                                                <li key={fIdx} className="flex items-start gap-2 text-xs text-gray-600 dark:text-slate-300">
+                                                    <Check size={14} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                    <span className="font-medium">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleBookingClick(pkg.title)}
+                                        className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group- group-hover:text-white transition-all"
+                                    >
+                                        {pkg.title}
+                                    </button>
+                                </div>
                                 ))}
                             </div>
                         </motion.section>

@@ -345,7 +345,7 @@ const EventDetails: React.FC = () => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                (event?.packages?.length ? event.packages : [
+                            {(event?.packages?.length ? event.packages : [
                                     { title: 'Basic', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
                                     { title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
                                     { title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }

@@ -12,6 +12,7 @@ export interface Event {
     capacity: string;
     description: string;
     amenities?: string[];
+    packages?: { title: string; price: string; desc: string; features: string[] }[];
 }
 
 export interface Category {

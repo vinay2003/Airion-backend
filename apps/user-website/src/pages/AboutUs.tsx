@@ -27,7 +27,7 @@ const AboutUs: React.FC = () => {
                             Founded by a team of passionate event architects, Ease2event was engineered with a mission to make event orchestration a seamless, premium experience. We eliminate the friction of organizing complex celebrations.
                         </p>
                         <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed font-medium">
-                            What started as a disruptive idea has evolved into a global marketplace connecting the world with verified venues and elite vendors.
+                            What started as a disruptive idea has evolved into a global platform connecting the world with verified venues and elite vendors.
                         </p>
                     </div>
                 </div>

@@ -112,7 +112,7 @@ const Header: React.FC = () => {
 
     const navItems = [
         { name: 'Home', path: '/' },
-        { name: 'Marketplace', path: '/search' },
+        { name: 'Venues', path: '/search' },
         { name: 'Packages', path: '/packages' },
         {
             name: 'Events',
@@ -173,8 +173,8 @@ const Header: React.FC = () => {
     return (
         <header
             className={`w-full py-3 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-[1000] transition-all duration-300 ${isScrolled
-                ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-md py-2'
-                : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
+                ? 'bg-white dark:bg-slate-900 shadow-md py-2'
+                : 'bg-white dark:bg-slate-900'
                 } border-b border-red-100 dark:border-slate-800`}
         >
             {/* ── Logo ── */}

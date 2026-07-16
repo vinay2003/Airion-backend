@@ -72,8 +72,8 @@ export class AuthService {
                     formattedPrivateKey = formattedPrivateKey.slice(1, -1);
                 }
 
-                // Replace escaped newlines with actual newlines
-                formattedPrivateKey = formattedPrivateKey.replace(/\\n/g, '\n');
+                // Replace escaped newlines with actual newlines and normalize double-escaped chars
+                formattedPrivateKey = formattedPrivateKey.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\'/g, "'").trim();
                 
                 // Fix spacing/formatting if it's on a single line without explicit \n
                 if (!formattedPrivateKey.includes('\n')) {

@@ -223,7 +223,7 @@ const Hero: React.FC = () => {
             />
 
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
-            <div ref={heroRef} className="hero-section relative w-full h-[600px] md:h-[750px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-[100svh] md:min-h-0">
+            <div ref={heroRef} className="hero-section relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-0">
 
                 {/* ── FILMSTRIP (with clone at end for seamless infinite loop) ── */}
                 <div
@@ -235,92 +235,87 @@ const Hero: React.FC = () => {
                         willChange: 'transform',
                     }}
                 >
-                    {LOOP_IMAGES.map((src, idx) => (
-                        <div
-                            key={idx}
-                            className="relative flex-shrink-0"
-                            style={{ width: `${100 / LOOP_IMAGES.length}%` }}
-                        >
-                            <img
-                                src={src}
-                                className="w-full h-full object-cover"
-                                alt={`slide-${idx}`}
-                                loading={idx === 0 ? 'eager' : 'lazy'}
-                                decoding={idx === 0 ? 'sync' : 'async'}
-                                fetchPriority={idx === 0 ? 'high' : 'low'}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
-                        </div>
-                    ))}
-                </div>
+                    {LOOP_IMAGES.map((src, idx) => {
+                        const contentIdx = idx % HERO_CONTENT.length;
+                        const content = HERO_CONTENT[contentIdx];
+                        return (
+                            <div
+                                key={idx}
+                                className="relative flex-shrink-0"
+                                style={{ width: `${100 / LOOP_IMAGES.length}%` }}
+                            >
+                                <img
+                                    src={src}
+                                    className="w-full h-full object-cover"
+                                    alt={`slide-${idx}`}
+                                    loading={idx === 0 ? 'eager' : 'lazy'}
+                                    decoding={idx === 0 ? 'sync' : 'async'}
+                                    fetchPriority={idx === 0 ? 'high' : 'low'}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
+                                
+                                {/* ── TEXT OVERLAY: slides horizontally with the image ── */}
+                                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
+                                    <div className="space-y-8 max-w-4xl w-full">
+                                        {/* Welcome badge (authenticated) */}
+                                        {isAuthenticated && (
+                                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl mx-auto">
+                                                <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]" />
+                                                Welcome back,
+                                                <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                                                    {user?.name.split(' ')[0]}
+                                                </span>
+                                                !
+                                            </div>
+                                        )}
 
-                {/* ── TEXT OVERLAY: fades between slides using displayIndex ── */}
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={displayIndex}
-                            initial={{ opacity: 0, y: 14 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -14 }}
-                            transition={{ duration: 0.4, ease: 'easeInOut' }}
-                            className="space-y-8 max-w-4xl w-full"
-                        >
-                            {/* Welcome badge (authenticated) */}
-                            {isAuthenticated && (
-                                <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl mx-auto">
-                                    <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]" />
-                                    Welcome back,
-                                    <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                                        {user?.name.split(' ')[0]}
-                                    </span>
-                                    !
-                                </div>
-                            )}
+                                        {/* Heading */}
+                                        {isAuthenticated ? (
+                                            <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
+                                                {content.authTitle}
+                                            </h1>
+                                        ) : (
+                                            <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+                                                {content.title}
+                                            </h1>
+                                        )}
 
-                            {/* Heading */}
-                            {isAuthenticated ? (
-                                <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
-                                    {HERO_CONTENT[displayIndex].authTitle}
-                                </h1>
-                            ) : (
-                                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
-                                    {HERO_CONTENT[displayIndex].title}
-                                </h1>
-                            )}
+                                        {/* Description */}
+                                        <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
+                                            {isAuthenticated
+                                                ? content.authDescription
+                                                : content.description}
+                                        </p>
 
-                            {/* Description */}
-                            <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
-                                {isAuthenticated
-                                    ? HERO_CONTENT[displayIndex].authDescription
-                                    : HERO_CONTENT[displayIndex].description}
-                            </p>
+                                        {/* Trust Badge */}
+                                        {!isAuthenticated && content.badge && (
+                                            <div className="flex justify-center">
+                                                <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-4 hover:bg-black/50 transition-colors">
+                                                    <span className={`text-2xl ${content.badge.color}`}>
+                                                        {content.badge.icon}
+                                                    </span>
+                                                    <span className="text-white text-sm md:text-lg font-bold tracking-wide">
+                                                        {content.badge.text}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
 
-                            {/* Trust Badge */}
-                            {!isAuthenticated && HERO_CONTENT[displayIndex].badge && (
-                                <div className="flex justify-center">
-                                    <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-4 hover:bg-black/50 transition-colors">
-                                        <span className={`text-2xl ${HERO_CONTENT[displayIndex].badge.color}`}>
-                                            {HERO_CONTENT[displayIndex].badge.icon}
-                                        </span>
-                                        <span className="text-white text-sm md:text-lg font-bold tracking-wide">
-                                            {HERO_CONTENT[displayIndex].badge.text}
-                                        </span>
+                                        {/* CTA Button (authenticated) */}
+                                        {isAuthenticated && (
+                                            <Link
+                                                to="/dashboard"
+                                                className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform  active:scale-95"
+                                            >
+                                                Go to Dashboard
+                                                <ArrowRight size={18} />
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
-                            )}
-
-                            {/* CTA Button (authenticated) */}
-                            {isAuthenticated && (
-                                <Link
-                                    to="/dashboard"
-                                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform  active:scale-95"
-                                >
-                                    Go to Dashboard
-                                    <ArrowRight size={18} />
-                                </Link>
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* ── Sound Toggle Button ── */}
@@ -368,7 +363,7 @@ const Hero: React.FC = () => {
 
             {/* Search Section */}
             <motion.div
-                className="relative z-30 -mt-12 md:-mt-40 max-w-5xl mx-auto px-4"
+                className="relative z-30 -mt-12 md:-mt-24 max-w-5xl mx-auto px-4"
                 onMouseEnter={() => setIsSearchFocused(true)}
                 onMouseLeave={() => setIsSearchFocused(false)}
                 initial={{ opacity: 0, y: 20 }}

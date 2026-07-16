@@ -282,7 +282,7 @@ const BookingModal: React.FC<{ pkg: typeof packages[0]; onClose: () => void }> =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Calculate a token amount (e.g., 5% of the lower range)
     // For demo, using a fixed amount or derived from pkg.price
     const priceStr = pkg.price.replace(/[^\d]/g, '');
@@ -465,7 +465,7 @@ const Packages: React.FC = () => {
           {/* Location / Tagline */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-[1px] w-12 bg-[#c5a059]/50" />
-            <span className="text-sm md:text-base font-bold text-[#c5a059] uppercase tracking-[0.4em]">
+            <span className="text-sm md:text-base font-bold text-[#ffffff] uppercase tracking-[0.4em]">
               India
             </span>
             <div className="h-[1px] w-12 bg-[#c5a059]/50" />
@@ -474,7 +474,7 @@ const Packages: React.FC = () => {
           {/* Main Title */}
           <h1 className="text-6xl md:text-8xl font-normal text-white mb-8 leading-tight font-['Playfair_Display']">
             Your Wedding,<br />
-            <span className="text-[#c5a059]">Day by Day</span>
+            <span className="text-[#ffffff]">Day by Day</span>
           </h1>
 
           {/* Description */}
@@ -485,8 +485,8 @@ const Packages: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button className="px-10 py-4 bg-[#c5a059] hover:bg-[#b38f4a] text-black font-bold text-sm tracking-widest transition-all duration-300">
-              Explore Packages
+            <button className="px-10 py-4 border border-[#c5a059] hover:bg-[#c5a059]/10 text-white font-bold text-sm tracking-widest transition-all duration-300">
+              Explore Package
             </button>
             <button className="px-10 py-4 border border-[#c5a059] hover:bg-[#c5a059]/10 text-white font-bold text-sm tracking-widest transition-all duration-300">
               Free Consultation
@@ -507,7 +507,7 @@ const Packages: React.FC = () => {
             viewport={{ once: true }}
             className="mb-16"
           >
-            <span className="text-[#c5a059] text-sm md:text-base font-bold uppercase tracking-[0.4em] mb-6 block">
+            <span className="text-[#ffffff] text-sm md:text-base font-bold uppercase tracking-[0.4em] mb-6 block">
               Day-wise Experiences
             </span>
             <h2 className="text-5xl md:text-7xl text-gray-900 dark:text-white font-normal mb-8 font-['Playfair_Display'] leading-tight">
@@ -639,7 +639,7 @@ const Packages: React.FC = () => {
                   className={`relative flex flex-col rounded-3xl border-2 ${pkg.borderColor} bg-white dark:bg-slate-900 overflow-hidden shadow-sm  transition-all duration-500 ${pkg.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
                 >
                   {pkg.badge && (
-                    <div className="absolute top-4 right-4 z-10 bg-amber-400 text-black text-sm font-medium uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
+                    <div className="absolute top-4 right-4 z-10 bg-amber-400 text-black text-sm font-medium tracking-wider px-3 py-1 rounded-full shadow-lg">
                       {pkg.badge}
                     </div>
                   )}
@@ -724,13 +724,13 @@ const Packages: React.FC = () => {
           >
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-[1px] w-8 bg-[#c5a059]/30" />
-              <span className="text-[#c5a059] text-sm font-bold uppercase tracking-[0.4em]">Our Process</span>
+              <span className="text-[#ffffff] text-sm font-bold uppercase tracking-[0.4em]">Our Process</span>
               <div className="h-[1px] w-8 bg-[#c5a059]/30" />
             </div>
 
             <h2 className="text-4xl md:text-6xl text-gray-900 dark:text-white font-normal font-['Playfair_Display'] leading-tight">
               How We Build Your<br />
-              <span className=" text-[#c5a059]">Celebration Story</span>
+              <span className=" text-[#ffffff]">Celebration Story</span>
             </h2>
           </motion.div>
 
@@ -787,12 +787,12 @@ const Packages: React.FC = () => {
           >
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-[1px] w-8 bg-[#c5a059]/30" />
-              <span className="text-[#c5a059] text-sm font-bold uppercase tracking-[0.4em]">Client Stories</span>
+              <span className="text-[#ffffff] text-sm font-bold uppercase tracking-[0.4em]">Client Stories</span>
               <div className="h-[1px] w-8 bg-[#c5a059]/30" />
             </div>
             <h2 className="text-4xl md:text-6xl text-gray-900 dark:text-white font-normal font-['Playfair_Display'] leading-tight">
               Moments They'll<br />
-              <span className=" text-[#c5a059]">Never Forget</span>
+              <span className=" text-[#ffffff]">Never Forget</span>
             </h2>
           </motion.div>
 

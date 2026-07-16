@@ -189,7 +189,7 @@ const Header: React.FC = () => {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-6">
                 <Link to="/" className={`text-sm font-medium transition-colors ${isActivePath('/') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Home</Link>
-                <Link to="/search" className={`text-sm font-medium transition-colors ${isActivePath('/search') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Marketplace</Link>
+                <Link to="/search" className={`text-sm font-medium transition-colors ${isActivePath('/search') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Venues</Link>
                 <Link to="/packages" className={`text-sm font-medium transition-colors ${isActivePath('/packages') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Packages</Link>
                 {/* <Link to="/inspiration" className={`text-sm font-medium transition-colors ${isActivePath('/inspiration') ? 'text-red-500' : 'text-neutral-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400'}`}>Inspiration</Link> */}
             </nav>
@@ -294,7 +294,7 @@ const Header: React.FC = () => {
                         <div className="flex-1 overflow-y-auto p-6 bg-white dark:bg-slate-950">
                             <nav className="space-y-4">
                                 {[
-                                    { name: 'Marketplace', path: '/search' },
+                                    { name: 'Venues', path: '/search' },
                                     { name: 'Packages', path: '/packages' },
                                     { name: 'Inspiration', path: '/inspiration' },
                                     { name: 'Weddings', path: '/category/weddings' },

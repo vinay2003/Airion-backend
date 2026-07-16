@@ -26,6 +26,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     useEffect(() => {
         const root = window.document.documentElement;
 
+        // Temporarily disable all CSS transitions to force an instant theme switch
+        const css = document.createElement('style');
+        css.type = 'text/css';
+        css.appendChild(
+            document.createTextNode(
+                `* {
+                    -webkit-transition: none !important;
+                    -moz-transition: none !important;
+                    -o-transition: none !important;
+                    -ms-transition: none !important;
+                    transition: none !important;
+                }`
+            )
+        );
+        document.head.appendChild(css);
+
         // Remove both classes first
         root.classList.remove('light', 'dark');
 
@@ -37,6 +53,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // Update color-scheme for better browser integration
         root.style.colorScheme = theme;
+
+        // Force a style reflow to apply the theme change instantly without transitions
+        const _ = window.getComputedStyle(css).opacity;
+
+        // Re-enable transitions on the next animation frame
+        requestAnimationFrame(() => {
+            document.head.removeChild(css);
+        });
     }, [theme]);
 
     const toggleTheme = () => {

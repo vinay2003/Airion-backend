@@ -15,6 +15,16 @@ const mapServiceToEvent = (service: any): Event => {
         price: `${service.currency || 'INR'} ${parseFloat(service.basePrice).toLocaleString()}`,
         capacity: 'Contact Vendor',
         description: service.description || '',
+        packages: service.packages && service.packages.length
+            ? service.packages.map((pkg: any) => ({
+                title: pkg.name || pkg.title || '',
+                price: typeof pkg.price === 'number'
+                    ? `₹${pkg.price.toLocaleString()}`
+                    : (pkg.price ? (String(pkg.price).startsWith('₹') ? pkg.price : `₹${pkg.price}`) : 'Contact Vendor'),
+                desc: pkg.description || pkg.desc || '',
+                features: pkg.features || [],
+            }))
+            : undefined,
     };
 };
 

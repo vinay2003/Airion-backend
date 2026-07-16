@@ -53,7 +53,7 @@ const VendorDiscovery: React.FC = () => {
             if (normalized === 'Weddings') normalized = 'Wedding';
             if (normalized === 'Parties') normalized = 'Party';
             if (normalized === 'Birthdays') normalized = 'Birthday';
-            
+
             const newFilters: FilterValues = {
                 locationInput: '',
                 priceRange: 1000000,
@@ -86,12 +86,12 @@ const VendorDiscovery: React.FC = () => {
 
         // ─── Normalization map: sidebar label → canonical lowercase ──────────────
         const CATEGORY_ALIASES: Record<string, string[]> = {
-            'wedding':       ['wedding', 'weddings'],
-            'corporate':     ['corporate'],
-            'birthday':      ['birthday', 'birthdays'],
+            'wedding': ['wedding', 'weddings'],
+            'corporate': ['corporate'],
+            'birthday': ['birthday', 'birthdays'],
             'private party': ['private party'],
-            'engagement':    ['engagement'],
-            'party':         ['parties', 'party'],
+            'engagement': ['engagement'],
+            'party': ['parties', 'party'],
         };
 
         if (import.meta.env.DEV) {
@@ -157,9 +157,9 @@ const VendorDiscovery: React.FC = () => {
                     // Handles "500+ guests", "200 guests", "100-200" — takes first number
                     const capNum = parseInt(v.capacity?.match(/\d+/)?.[0] ?? '0', 10);
                     const sel = appliedFilters.selectedCapacity;
-                    if (sel === 'Small Intimate'    && capNum > 50)          { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} > 50 for Small Intimate`);  return false; }
-                    if (sel === 'Medium Gathering'  && (capNum < 50 || capNum > 200)) { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} out of 50-200`); return false; }
-                    if (sel === 'Large Celebration' && capNum < 200)         { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} < 200 for Large`);        return false; }
+                    if (sel === 'Small Intimate' && capNum > 50) { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} > 50 for Small Intimate`); return false; }
+                    if (sel === 'Medium Gathering' && (capNum < 50 || capNum > 200)) { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} out of 50-200`); return false; }
+                    if (sel === 'Large Celebration' && capNum < 200) { if (import.meta.env.DEV) console.log(`[EXCLUDE] ${vendorId} — Capacity: ${capNum} < 200 for Large`); return false; }
                 }
             }
 
@@ -210,7 +210,7 @@ const VendorDiscovery: React.FC = () => {
     const removeFilter = (filter: string) => {
         const updated = activeFilters.filter(f => f !== filter);
         setActiveFilters(updated);
-        
+
         if (updated.length === 0) {
             setAppliedFilters(null);
             return;
@@ -218,14 +218,14 @@ const VendorDiscovery: React.FC = () => {
 
         if (appliedFilters) {
             const newFilters = { ...appliedFilters };
-            
+
             if (newFilters.locationInput === filter) newFilters.locationInput = '';
             if (newFilters.selectedCapacity === filter) newFilters.selectedCapacity = '';
             if (newFilters.selectedDate === filter) newFilters.selectedDate = '';
-            
+
             newFilters.selectedEventTypes = newFilters.selectedEventTypes.filter(t => t !== filter);
             newFilters.selectedAmenities = newFilters.selectedAmenities.filter(a => a !== filter);
-            
+
             setAppliedFilters(newFilters);
         }
     };
@@ -361,8 +361,8 @@ const VendorDiscovery: React.FC = () => {
                     {/* Sidebar */}
                     <aside className={`w-full lg:w-[280px] xl:w-[320px] flex-shrink-0 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-28">
-                            <FilterSidebar 
-                                onApply={handleApplyFilters} 
+                            <FilterSidebar
+                                onApply={handleApplyFilters}
                                 initialFilters={appliedFilters}
                             />
                         </div>
@@ -421,7 +421,7 @@ const VendorDiscovery: React.FC = () => {
 
                         {!loading && sortedVendors.length > 0 && (
                             <div className="mt-20 flex justify-center">
-                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs tracking-[0.3em]   transition-all border-2 border-white/10">
+                                <button className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-black text-xs tracking-[0.2em]   transition-all border-2 border-white/10">
                                     View More Vendors
                                 </button>
                             </div>

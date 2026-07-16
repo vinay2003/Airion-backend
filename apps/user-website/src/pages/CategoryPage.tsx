@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ListingCard from '../components/ListingCard';
 import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import { ArrowLeft, ChevronDown, Search } from 'lucide-react';
 import { fetchEvents } from '../lib/api';
 import type { Event as EventType } from '../types';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const SORT_OPTIONS = [
+    { label: 'Recommended', value: 'recommended' },
+    { label: 'Price: Low to High', value: 'price_asc' },
+    { label: 'Price: High to Low', value: 'price_desc' },
+    { label: 'Highest Rated', value: 'rating' },
+];
 
 const CategoryPage: React.FC = () => {
     const { category } = useParams<{ category: string }>();
@@ -12,6 +20,20 @@ const CategoryPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [appliedFilters, setAppliedFilters] = useState<FilterValues | null>(null);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [sortBy, setSortBy] = useState('recommended');
+    const [showSortDropdown, setShowSortDropdown] = useState(false);
+    const sortRef = useRef<HTMLDivElement>(null);
+
+    // Outside click to close sort dropdown
+    useEffect(() => {
+        const handleOutsideClick = (e: MouseEvent) => {
+            if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+                setShowSortDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -22,12 +44,12 @@ const CategoryPage: React.FC = () => {
                 setCategoryEvents(allEvents.filter(e => {
                     const eCat = (e.category || '').toLowerCase();
                     // Flexible match: "wedding" matches "weddings", "party" matches "parties"
-                    return eCat.includes(catParam) || 
-                           catParam.includes(eCat) ||
-                           (eCat === 'weddings' && catParam === 'wedding') ||
-                           (catParam === 'weddings' && eCat === 'wedding') ||
-                           (eCat === 'parties' && catParam === 'party') ||
-                           (catParam === 'parties' && eCat === 'party');
+                    return eCat.includes(catParam) ||
+                        catParam.includes(eCat) ||
+                        (eCat === 'weddings' && catParam === 'wedding') ||
+                        (catParam === 'weddings' && eCat === 'wedding') ||
+                        (eCat === 'parties' && catParam === 'party') ||
+                        (catParam === 'parties' && eCat === 'party');
                 }));
             } catch (err) {
                 console.error(err);
@@ -71,6 +93,30 @@ const CategoryPage: React.FC = () => {
             return true;
         });
     }, [categoryEvents, appliedFilters]);
+
+    const sortedEvents = useMemo(() => {
+        const copy = [...filteredEvents];
+        switch (sortBy) {
+            case 'price_asc':
+                return copy.sort((a, b) => {
+                    const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+                    const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+                    return priceA - priceB;
+                });
+            case 'price_desc':
+                return copy.sort((a, b) => {
+                    const priceA = typeof a.price === 'string' ? parseInt(a.price.replace(/\D/g, '') || '0') : a.price || 0;
+                    const priceB = typeof b.price === 'string' ? parseInt(b.price.replace(/\D/g, '') || '0') : b.price || 0;
+                    return priceB - priceA;
+                });
+            case 'rating':
+                return copy.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            default:
+                return copy;
+        }
+    }, [filteredEvents, sortBy]);
+
+    const currentSortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Recommended';
 
     const getCategoryHeroImage = (cat: string | undefined) => {
         switch (cat?.toLowerCase()) {
@@ -143,8 +189,8 @@ const CategoryPage: React.FC = () => {
                     {/* Sidebar */}
                     <aside className={`w-full lg:w-1/4 ${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
                         <div className="sticky top-24">
-                            <FilterSidebar 
-                                onApply={handleApplyFilters} 
+                            <FilterSidebar
+                                onApply={handleApplyFilters}
                                 initialFilters={appliedFilters}
                             />
                         </div>
@@ -156,16 +202,40 @@ const CategoryPage: React.FC = () => {
                             <p className="text-gray-600 dark:text-slate-400">
                                 Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEvents.length}</span> properties
                             </p>
-                            <div className="relative">
-                                <button className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2  dark: transition-colors shadow-sm">
-                                    Sort by: Popularity
-                                    <ChevronDown size={16} />
+                            <div className="relative" ref={sortRef}>
+                                <button
+                                    onClick={() => setShowSortDropdown(!showSortDropdown)}
+                                    className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 flex items-center gap-2 transition-colors shadow-sm active:scale-98"
+                                >
+                                    Sort by: {currentSortLabel}
+                                    <ChevronDown size={16} className={`transition-transform duration-300 ${showSortDropdown ? 'rotate-180 text-red-500' : ''}`} />
                                 </button>
+
+                                <AnimatePresence>
+                                    {showSortDropdown && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -8 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -8 }}
+                                            className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden z-30"
+                                        >
+                                            {SORT_OPTIONS.map(opt => (
+                                                <button
+                                                    key={opt.value}
+                                                    onClick={() => { setSortBy(opt.value); setShowSortDropdown(false); }}
+                                                    className={`w-full text-left px-5 py-3 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors ${sortBy === opt.value ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-neutral-700 dark:text-neutral-300'}`}
+                                                >
+                                                    {opt.label}
+                                                </button>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredEvents.map((event) => (
+                            {sortedEvents.map((event) => (
                                 <ListingCard key={event.id} {...event} />
                             ))}
                         </div>

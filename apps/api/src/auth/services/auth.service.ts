@@ -62,8 +62,19 @@ export class AuthService {
             }
 
             try {
-                // Ensure newlines in private key are correctly unescaped
-                const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+                // Ensure newlines in private key are correctly unescaped, and strip any literal surrounding quotes
+                let formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+                
+                // Clean up leading/trailing quotes if parsed literally from .env
+                if (formattedPrivateKey.startsWith('"') && formattedPrivateKey.endsWith('"')) {
+                    formattedPrivateKey = formattedPrivateKey.slice(1, -1);
+                }
+                if (formattedPrivateKey.startsWith("'") && formattedPrivateKey.endsWith("'")) {
+                    formattedPrivateKey = formattedPrivateKey.slice(1, -1);
+                }
+                
+                // Normalize and clean up double-escaped characters and trim whitespace
+                formattedPrivateKey = formattedPrivateKey.replace(/\\"/g, '"').replace(/\\'/g, "'").trim();
 
                 admin.initializeApp({
                     credential: admin.credential.cert({

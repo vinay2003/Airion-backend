@@ -249,7 +249,7 @@ const VendorSignupBasic: React.FC = () => {
                     </div>
                     <CardTitle className="text-3xl font-bold">Become a Vendor</CardTitle>
                     <p className="text-base text-gray-600 dark:text-slate-400">
-                        Join Bihar's fastest-growing event marketplace
+                        Join Bihar's fastest-growing event venues platform
                     </p>
                 </CardHeader>
                 <CardBody>

@@ -113,7 +113,7 @@ const VendorDiscovery: React.FC = () => {
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5 shadow-sm shadow-red-500/5">
-                                <Sparkles size={12} /> Marketplace Hub Live
+                                <Sparkles size={12} /> Venues Hub Live
                             </div>
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-4 tracking-tighter uppercase leading-none">

@@ -197,14 +197,14 @@ const EventDetails: React.FC = () => {
                         <ArrowLeft size={20} />
                         <span>Back</span>
                     </Link>
-                     <div className="flex gap-3">
-                        <button 
+                    <div className="flex gap-3">
+                        <button
                             onClick={(e) => handleShare(e)}
                             className="p-2.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full transition-colors text-gray-700 dark:text-slate-300"
                         >
                             <Share2 size={18} />
                         </button>
-                        <button 
+                        <button
                             onClick={(e) => handleLike(e)}
                             className={`p-2.5 rounded-full transition-all duration-300 ${isLiked ? 'bg-red-50 text-red-500 border border-red-100 shadow-lg shadow-red-500/10' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-110'}`}
                         >
@@ -345,22 +345,29 @@ const EventDetails: React.FC = () => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {(event?.packages?.length ? event.packages : [
+                                {(event?.packages?.length ? event.packages : [
                                     { title: 'Basic', price: '₹49,999', desc: 'Basic venue setup with standard catering for up to 100 guests.', features: ['Venue Access (6 hours)', 'Standard Decor', 'Buffet Catering'] },
                                     { title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
                                     { title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
                                 ]).map((pkg: any, idx: number) => (
-                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border-2 transition-all border-gray-100  dark:border-slate-800 dark: shadow-sm  relative overflow-hidden group flex flex-col h-full">
+                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border-2 transition-all border-gray-100 dark:border-slate-800/80 hover:border-red-500/20 hover:shadow-xl hover:shadow-red-500/5 relative overflow-hidden group flex flex-col h-full">
                                         {idx === 1 && (
-                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
                                                 Most Popular
                                             </div>
                                         )}
-                                        <div className="mb-4">
-                                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 tracking-tight">{pkg.title}</h3>
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-2xl font-black text-red-500">{pkg.price}</span>
-                                                <span className="text-[10px] text-gray-400 uppercase font-bold ml-1 tracking-widest">PRO</span>
+                                        <div className="mb-5 flex flex-col gap-2">
+                                            <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border ${pkg.title.toLowerCase() === 'basic'
+                                                    ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-800'
+                                                    : pkg.title.toLowerCase() === 'premium'
+                                                        ? 'bg-rose-50/50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/60 dark:border-rose-900/30'
+                                                        : 'bg-amber-50/50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border-amber-100/60 dark:border-amber-900/30'
+                                                }`}>
+                                                {pkg.title}
+                                            </span>
+                                            <div className="flex items-baseline gap-1 mt-1">
+                                                <span className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{pkg.price}</span>
+                                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">/ event</span>
                                             </div>
                                         </div>
 
@@ -381,9 +388,9 @@ const EventDetails: React.FC = () => {
 
                                         <button
                                             onClick={() => handleBookingClick(pkg.title)}
-                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[9px] tracking-[0.2em] border-2 border-slate-900 dark:border-white text-slate-900 dark:text-white group-hover:bg-red-600 group- group-hover:text-white transition-all"
+                                            className="w-full mt-auto py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.18em] border-2 border-slate-900 dark:border-slate-700 text-slate-900 dark:text-slate-300 group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white transition-all duration-300 active:scale-[0.97]"
                                         >
-                                            {pkg.title}
+                                            Choose {pkg.title}
                                         </button>
                                     </div>
                                 ))}
@@ -514,10 +521,10 @@ const EventDetails: React.FC = () => {
                                         <div className="p-3">
                                             <label className="block text-[10px] font-black text-neutral-800 dark:text-slate-300 uppercase tracking-wider mb-1">Estimated Guests</label>
                                             <select value={guestMode} onChange={(e) => setGuestMode(Number(e.target.value))} className="w-full bg-transparent text-sm font-semibold outline-none text-neutral-900 dark:text-white appearance-none cursor-pointer">
-                                                <option value={1}>Up to 50 Guests (1x Multiplier)</option>
-                                                <option value={1.5}>50-200 Guests (1.5x Multiplier)</option>
-                                                <option value={2}>200-500 Guests (2x Multiplier)</option>
-                                                <option value={3}>500+ Guests (3x Multiplier)</option>
+                                                <option value={1} className="bg-white dark:bg-slate-900 text-neutral-900 dark:text-white">Up to 50 Guests (1x Multiplier)</option>
+                                                <option value={1.5} className="bg-white dark:bg-slate-900 text-neutral-900 dark:text-white">50-200 Guests (1.5x Multiplier)</option>
+                                                <option value={2} className="bg-white dark:bg-slate-900 text-neutral-900 dark:text-white">200-500 Guests (2x Multiplier)</option>
+                                                <option value={3} className="bg-white dark:bg-slate-900 text-neutral-900 dark:text-white">500+ Guests (3x Multiplier)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -533,7 +540,7 @@ const EventDetails: React.FC = () => {
                                 <button
                                     onClick={() => handleBookingClick()}
                                     disabled={isAvailable === false || checkingAvailability}
-                                    className={`w-full py-5 rounded-2xl font-black text-xs tracking-[0.25em] transition-all duration-300 transform active:scale-[0.98] shadow-xl ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
+                                    className={`w-full py-5 rounded-2xl font-black text-sm tracking-[0.23em] transition-all duration-300 transform active:scale-[0.98] shadow-xl ${isAvailable === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-black dark:hover:bg-white text-white dark:hover:text-black shadow-red-500/20'}`}
                                 >
                                     {isAvailable === false ? 'Slot Unavailable' : 'Booking'}
                                 </button>

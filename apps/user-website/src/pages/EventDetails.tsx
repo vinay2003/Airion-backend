@@ -12,6 +12,14 @@ import { motion } from 'framer-motion';
 import BookingModal from '../components/BookingModal';
 import toast from 'react-hot-toast';
 
+const getLocalTodayString = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+};
+
 const EventDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -93,6 +101,11 @@ const EventDetails: React.FC = () => {
     useEffect(() => {
         const verifyAvailability = async () => {
             if (bookingDate && event?.vendorId) {
+                const todayStr = getLocalTodayString();
+                if (bookingDate < todayStr) {
+                    setIsAvailable(false);
+                    return;
+                }
                 setCheckingAvailability(true);
                 try {
                     const res = await checkAvailability(event.vendorId, bookingDate);
@@ -358,10 +371,10 @@ const EventDetails: React.FC = () => {
                                         )}
                                         <div className="mb-5 flex flex-col gap-2">
                                             <span className={`w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border ${pkg.title.toLowerCase() === 'basic'
-                                                    ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-800'
-                                                    : pkg.title.toLowerCase() === 'premium'
-                                                        ? 'bg-rose-50/50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/60 dark:border-rose-900/30'
-                                                        : 'bg-amber-50/50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border-amber-100/60 dark:border-amber-900/30'
+                                                ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-800'
+                                                : pkg.title.toLowerCase() === 'premium'
+                                                    ? 'bg-rose-50/50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/60 dark:border-rose-900/30'
+                                                    : 'bg-amber-50/50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border-amber-100/60 dark:border-amber-900/30'
                                                 }`}>
                                                 {pkg.title}
                                             </span>

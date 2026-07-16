@@ -275,10 +275,10 @@ const SearchBar = () => {
                     </PopoverTrigger>
                     <PopoverContent className="p-0 w-[300px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
                         <div className="bg-white dark:bg-slate-900">
-                            <div className="px-4 pt-2.5 pb-1.5 border-b border-gray-100 dark:border-slate-800 text-center">
+                            <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-slate-800 text-center">
                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">What's the occasion?</p>
                             </div>
-                            <div className="py-1 grid grid-cols-2 gap-1 p-1.5">
+                            <div className="py-1.5 flex flex-col gap-1 p-2 max-h-[300px] overflow-y-auto">
                                 {EVENT_TYPES.map((ev) => {
                                     const Icon = ev.icon;
                                     const isSelected = eventType === ev.value;
@@ -291,17 +291,17 @@ const SearchBar = () => {
                                                 setOpenEventType(false);
                                             }}
                                             className={cn(
-                                                'flex flex-col items-center gap-1 p-2 rounded-xl transition-all border text-center',
+                                                'flex items-center gap-3 p-2.5 rounded-xl transition-all border text-left w-full',
                                                 isSelected
                                                     ? 'border-red-400 bg-red-50 dark:bg-red-950/30'
                                                     : 'border-transparent hover:border-gray-200 dark:hover:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800'
                                             )}
                                         >
-                                            <div className={cn('w-8 h-8 rounded-full flex items-center justify-center', ev.bg)}>
+                                            <div className={cn('w-8 h-8 rounded-full flex items-center justify-center shrink-0', ev.bg)}>
                                                 <Icon className={cn('w-4 h-4', isSelected ? 'text-red-600' : ev.color)} />
                                             </div>
                                             <span className={cn(
-                                                'text-[11px] font-bold leading-tight',
+                                                'text-xs font-bold leading-tight',
                                                 isSelected ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
                                             )}>{ev.label}</span>
                                         </button>

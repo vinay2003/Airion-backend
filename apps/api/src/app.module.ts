@@ -100,7 +100,7 @@ import { MerchandiseModule } from './merchandise/merchandise.module';
                     },
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     autoLoadEntities: true,
-                    synchronize: false,
+                    synchronize: !isProd,
                     logging: !isProd ? ['error', 'warn'] : false,
                     retryAttempts: 20,
                     retryDelay: 5000,

@@ -48,7 +48,7 @@ const Vendors: React.FC = () => {
     const handleAction = async (id: string, action: 'approve' | 'reject' | 'kyc') => {
         try {
             if (action === 'approve' || action === 'reject') {
-                await verifyMutation.mutateAsync({ vendorId: id, status: action });
+                await verifyMutation.mutateAsync({ vendorId: id, status: action === 'approve' ? 'approved' : 'rejected' });
             } else if (action === 'kyc') {
                 await verifyMutation.mutateAsync({ vendorId: id, status: 'approved' });
             }

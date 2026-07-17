@@ -527,12 +527,12 @@ export class AuthService {
         // Success: Clear OTP
         await this.otpRepository.delete({ identifier });
 
-        // Use QueryBuilder with raw column names to bypass TypeORM caching issues
-        const adminUser = await this.userRepository
-            .createQueryBuilder('user')
-            .where('user.phone_number = :phone', { phone: identifier })
-            .andWhere('user.role = :role', { role: 'admin' })
-            .getOne();
+        // Raw SQL query — bypasses TypeORM metadata/module cache entirely
+        const rows = await this.userRepository.query(
+            `SELECT id, name, phone_number as "phoneNumber", role FROM users WHERE phone_number = $1 AND role = 'admin' LIMIT 1`,
+            [identifier]
+        );
+        const adminUser = rows[0];
 
         if (!adminUser) {
             this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for phone: ${identifier}`);

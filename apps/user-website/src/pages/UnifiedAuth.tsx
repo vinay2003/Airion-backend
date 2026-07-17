@@ -188,7 +188,6 @@ const UnifiedAuth: React.FC = () => {
                 toast.success('Verification code sent to ' + phoneNumber);
                 if (response?._dev_otp) {
                     console.warn('🛠️ [DEV OTP]:', response._dev_otp);
-                    toast.success(`[DEV] Your OTP is: ${response._dev_otp}`, { duration: 10000 });
                 }
             }
 

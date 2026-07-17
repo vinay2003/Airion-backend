@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 interface Category {
     id: string;
     name: string;
-    vendorsCount: parseInt;
+    vendorsCount: number;
     status: 'Active' | 'Inactive';
 }
 
@@ -13,7 +13,7 @@ interface Location {
     id: string;
     city: string;
     state: string;
-    vendorsCount: parseInt;
+    vendorsCount: number;
     status: 'Active' | 'Inactive';
 }
 

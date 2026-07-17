@@ -24,7 +24,7 @@ export const exportToPDF = ({ filename, title, subtitle, data, columns }: Export
     // Add Company Logo / Name
     doc.setFontSize(20);
     doc.setTextColor(79, 70, 229); // Indigo-600
-    doc.text('Airion Admin', 14, 22);
+    doc.text('Ease2event Admin', 14, 22);
 
     // Add Title
     doc.setFontSize(16);
@@ -70,7 +70,7 @@ export const exportToPDF = ({ filename, title, subtitle, data, columns }: Export
         },
         didDrawPage: (data) => {
             // Footer with Page Numbers
-            const str = `Page ${doc.internal.getNumberOfPages()}`;
+            const str = `Page ${doc.getNumberOfPages()}`;
             doc.setFontSize(8);
             doc.setTextColor(156, 163, 175); // Gray-400
             doc.text(str, pageWidth - data.settings.margin.right - 20, doc.internal.pageSize.height - 10);

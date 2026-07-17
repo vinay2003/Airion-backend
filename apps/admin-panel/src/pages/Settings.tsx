@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw } from 'lucide-react';
+import { User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
     // Admin Users Mock State
     const [admins, setAdmins] = useState<AdminUser[]>([
         { id: '1', name: 'Vinay Sharma', email: 'vinaysharma31681@gmail.com', phone: '9616981292', role: 'Super Admin' },
-        { id: '2', name: 'Admin 2', email: 'admin2@airion.com', phone: '8130607796', role: 'Admin' },
+        { id: '2', name: 'Admin 2', email: 'admin2@ease2event.com', phone: '8130607796', role: 'Admin' },
     ]);
 
     // Modals
@@ -66,7 +66,7 @@ const Settings: React.FC = () => {
     const handleBackupDatabase = () => {
         const id = toast.loading('Exporting database schema and data...');
         setTimeout(() => {
-            toast.success('Backup export completed successfully: airion_db_backup.sql', { id });
+            toast.success('Backup export completed successfully: ease2event_db_backup.sql', { id });
         }, 1500);
     };
 
@@ -150,7 +150,7 @@ const Settings: React.FC = () => {
                                             <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Platform Name</label>
                                             <input
                                                 type="text"
-                                                defaultValue="Airion UI"
+                                                defaultValue="Ease2event UI"
                                                 className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-gray-900 dark:text-white"
                                             />
                                         </div>
@@ -158,7 +158,7 @@ const Settings: React.FC = () => {
                                             <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Support Email</label>
                                             <input
                                                 type="email"
-                                                defaultValue="support@airion.com"
+                                                defaultValue="support@ease2event.com"
                                                 className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-gray-900 dark:text-white"
                                             />
                                         </div>
@@ -452,7 +452,7 @@ const Settings: React.FC = () => {
                                 <input
                                     type="email"
                                     required
-                                    placeholder="e.g. john@airion.com"
+                                    placeholder="e.g. john@ease2event.com"
                                     value={newAdminEmail}
                                     onChange={(e) => setNewAdminEmail(e.target.value)}
                                     className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"

@@ -79,7 +79,7 @@ const AdminLogin: React.FC = () => {
                     <p className="text-center text-sm text-gray-500 dark:text-slate-400 mb-8">
                         {showOTP
                             ? `Enter the 6-digit OTP sent to ${phone}`
-                            : 'Secure access for Airion administrators'}
+                            : 'Secure access for Ease2event administrators'}
                     </p>
 
                     {/* Step 1: Phone Number */}

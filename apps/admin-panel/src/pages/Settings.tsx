@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw, X } from 'lucide-react';
+import { 
+    User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, 
+    Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw, X 
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
@@ -385,7 +388,7 @@ const Settings: React.FC = () => {
                                             <p className="text-sm text-rose-600 dark:text-rose-500/80 mt-1">Make platform temporarily inaccessible to users and vendors. Admins can still log in normally.</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => setNotifySupport(e.target.checked)} className="sr-only peer" />
+                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => setSystemMaintenance(e.target.checked)} className="sr-only peer" />
                                             <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                                         </label>
                                     </div>

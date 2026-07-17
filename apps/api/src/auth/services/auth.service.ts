@@ -527,12 +527,15 @@ export class AuthService {
         // Success: Clear OTP
         await this.otpRepository.delete({ identifier });
 
-        // Find existing admin record (Strict: No auto-create)
-        const adminUser = await this.userRepository.findOne({
-            where: { phoneNumber: identifier, role: UserRole.ADMIN }
-        });
+        // Use QueryBuilder with raw column names to bypass TypeORM caching issues
+        const adminUser = await this.userRepository
+            .createQueryBuilder('user')
+            .where('user.phone_number = :phone', { phone: identifier })
+            .andWhere('user.role = :role', { role: 'admin' })
+            .getOne();
 
         if (!adminUser) {
+            this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for phone: ${identifier}`);
             throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
         }
 

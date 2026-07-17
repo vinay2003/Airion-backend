@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Search, CheckCircle, XCircle, PauseCircle, Activity, DollarSign, Eye, MousePointer2 } from 'lucide-react';
-import api from '../lib/api';
+import { Search, CheckCircle, XCircle, PauseCircle, Activity, DollarSign, Eye, MousePointer2, Image as ImageIcon, Calendar, Plus, UploadCloud } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Ad {
     id: string;
     campaignName: string;
-    vendorId: string;
-    adType: string;
-    status: 'draft' | 'pending' | 'active' | 'paused' | 'completed' | 'rejected';
+    vendorName: string;
+    adType: 'Banner' | 'Native' | 'Video';
+    status: 'pending' | 'active' | 'paused' | 'rejected';
     dailyBudget: number;
     totalBudget: number;
     startDate: string;
     endDate: string;
     impressions: number;
     clicks: number;
-    createdAt: string;
 }
 
 const Advertisements: React.FC = () => {
@@ -23,133 +21,150 @@ const Advertisements: React.FC = () => {
     const [ads, setAds] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchAds = async () => {
-        try {
-            const data = await api.get('/ads') as any;
-            if (Array.isArray(data)) {
-                setAds(data);
-            } else if (data && Array.isArray(data.data)) {
-                setAds(data.data);
-            }
-        } catch (error: any) {
-            toast.error('Failed to load advertisements: ' + error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchAds();
+        // Mock data
+        const mockAds: Ad[] = [
+            { id: '1', campaignName: 'Summer Wedding Promo', vendorName: 'Grand Hotel', adType: 'Banner', status: 'active', dailyBudget: 500, totalBudget: 15000, startDate: '2026-05-01', endDate: '2026-05-30', impressions: 45000, clicks: 1250 },
+            { id: '2', campaignName: 'Premium Decor Showcase', vendorName: 'Elite Decorators', adType: 'Video', status: 'pending', dailyBudget: 1000, totalBudget: 30000, startDate: '2026-06-01', endDate: '2026-06-30', impressions: 0, clicks: 0 },
+            { id: '3', campaignName: 'Bridal Makeup Special', vendorName: 'Glow Makeup Studio', adType: 'Native', status: 'paused', dailyBudget: 300, totalBudget: 9000, startDate: '2026-04-15', endDate: '2026-05-15', impressions: 22000, clicks: 840 },
+        ];
+        setTimeout(() => {
+            setAds(mockAds);
+            setLoading(false);
+        }, 500);
     }, []);
 
-    const updateAdStatus = async (id: string, status: string) => {
-        try {
-            await api.patch(`/ads/${id}/status`, { status });
-            toast.success(`Ad status updated to ${status}`);
-            fetchAds();
-        } catch (error: any) {
-            toast.error('Failed to update status');
-        }
+    const updateAdStatus = (id: string, status: Ad['status']) => {
+        setAds(prev => prev.map(ad => ad.id === id ? { ...ad, status } : ad));
+        toast.success(`Ad status updated to ${status}`);
     };
 
     const filteredAds = ads.filter(ad => 
         ad.campaignName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ad.adType.toLowerCase().includes(searchQuery.toLowerCase())
+        ad.vendorName.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'active': return 'bg-emerald-50 text-emerald-600 border-emerald-200';
+            case 'pending': return 'bg-amber-50 text-amber-600 border-amber-200';
+            case 'rejected': return 'bg-rose-50 text-rose-600 border-rose-200';
+            case 'paused': return 'bg-gray-100 text-gray-600 border-gray-200';
+            default: return 'bg-indigo-50 text-indigo-600 border-indigo-200';
+        }
+    };
 
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[60vh]">
-                <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+                <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
             </div>
         );
     }
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'active': return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
-            case 'pending': return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-            case 'rejected': return 'bg-red-500/10 text-red-600 border-red-500/20';
-            case 'paused': return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
-            default: return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-        }
-    };
-
     return (
-        <div className="space-y-8  fade-in ">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="fade-in pb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Advertisements</h1>
-                    <p className="text-sm font-medium text-gray-400 dark:text-slate-500 mt-2">Manage vendor ad campaigns</p>
+                    <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Advertisements</h1>
+                    <p className="text-sm font-medium text-[var(--ease2event-text-secondary)] mt-1">Manage vendor ad campaigns and monitor performance</p>
                 </div>
-                <div className="relative w-full md:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 " size={20} />
+                <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all">
+                    <Plus size={18} />
+                    <span>Create Campaign</span>
+                </button>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="relative w-full md:w-96">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Search campaigns..."
+                        placeholder="Search campaigns or vendors..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-6 h-14 border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500  font-medium text-sm dark:text-white"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900 dark:text-white"
                     />
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Create Ad Card (Drag & Drop Preview) */}
+                <div className="bg-gray-50 dark:bg-slate-900/50 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-[32px] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group min-h-[400px]">
+                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                        <UploadCloud size={28} className="text-indigo-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Drag & Drop Media</h3>
+                    <p className="text-sm text-gray-500 max-w-sm mb-6">Upload banner images or promotional videos to preview ad placement instantly.</p>
+                    <button className="px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-bold rounded-xl shadow-sm hover:border-indigo-500 transition-colors">
+                        Browse Files
+                    </button>
+                </div>
+
                 {filteredAds.map((ad) => (
-                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-gray-50 dark:border-slate-800  ">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2">{ad.campaignName}</h3>
-                                <div className="flex gap-2">
-                                    <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase border ${getStatusColor(ad.status)}`}>
-                                        {ad.status}
-                                    </span>
-                                    <span className="text-xs px-3 py-1 rounded-full font-bold uppercase border bg-indigo-500/10 text-indigo-600 border-indigo-500/20">
-                                        {ad.adType}
-                                    </span>
+                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col justify-between min-h-[400px]">
+                        <div>
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-1">{ad.campaignName}</h3>
+                                    <p className="text-sm font-medium text-indigo-600 mb-3">{ad.vendorName}</p>
+                                    <div className="flex gap-2">
+                                        <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase border ${getStatusColor(ad.status)}`}>
+                                            {ad.status}
+                                        </span>
+                                        <span className="text-xs px-3 py-1 rounded-full font-bold uppercase border bg-gray-100 text-gray-600 border-gray-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 flex items-center gap-1">
+                                            {ad.adType === 'Video' ? <Activity size={12}/> : <ImageIcon size={12}/>}
+                                            {ad.adType}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-2xl font-black text-gray-900 dark:text-white">₹{ad.totalBudget.toLocaleString()}</p>
+                                    <p className="text-xs text-gray-500 font-medium">₹{ad.dailyBudget}/day</p>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-2xl font-black text-gray-900 dark:text-white">₹{ad.totalBudget}</p>
-                                <p className="text-xs text-gray-400 font-medium">₹{ad.dailyBudget}/day</p>
+
+                            <div className="flex items-center gap-4 mb-6 text-sm font-medium text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50 p-3 rounded-xl border border-gray-100 dark:border-slate-800">
+                                <Calendar size={16} className="text-gray-400" />
+                                {ad.startDate} — {ad.endDate}
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 mb-8">
+                                <div className="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-2xl flex flex-col gap-1 border border-indigo-100 dark:border-indigo-900/30">
+                                    <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1"><Eye size={12}/> Impressions</p>
+                                    <p className="text-lg font-black text-indigo-900 dark:text-indigo-300">{ad.impressions.toLocaleString()}</p>
+                                </div>
+                                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-4 rounded-2xl flex flex-col gap-1 border border-emerald-100 dark:border-emerald-900/30">
+                                    <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1"><MousePointer2 size={12}/> Clicks</p>
+                                    <p className="text-lg font-black text-emerald-900 dark:text-emerald-300">{ad.clicks.toLocaleString()}</p>
+                                </div>
+                                <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-2xl flex flex-col gap-1 border border-amber-100 dark:border-amber-900/30">
+                                    <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1"><Activity size={12}/> CTR</p>
+                                    <p className="text-lg font-black text-amber-900 dark:text-amber-300">
+                                        {ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(1) : '0.0'}%
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4">
-                                <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm text-indigo-500"><Eye size={20}/></div>
-                                <div>
-                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Impressions</p>
-                                    <p className="text-lg font-black text-gray-900 dark:text-white">{ad.impressions}</p>
-                                </div>
-                            </div>
-                            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4">
-                                <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm text-indigo-500"><MousePointer2 size={20}/></div>
-                                <div>
-                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Clicks</p>
-                                    <p className="text-lg font-black text-gray-900 dark:text-white">{ad.clicks}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="pt-6 border-t border-gray-50 dark:border-slate-800 flex gap-3">
+                        <div className="pt-6 border-t border-gray-100 dark:border-slate-800 flex gap-3">
                             {ad.status === 'pending' && (
                                 <>
-                                    <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-500 text-white rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
+                                    <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <CheckCircle size={18} /> Approve
                                     </button>
-                                    <button onClick={() => updateAdStatus(ad.id, 'rejected')} className="flex-1 h-12 bg-red-50 text-red-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
+                                    <button onClick={() => updateAdStatus(ad.id, 'rejected')} className="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <XCircle size={18} /> Reject
                                     </button>
                                 </>
                             )}
                             {ad.status === 'active' && (
-                                <button onClick={() => updateAdStatus(ad.id, 'paused')} className="flex-1 h-12 bg-amber-50 text-amber-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
+                                <button onClick={() => updateAdStatus(ad.id, 'paused')} className="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <PauseCircle size={18} /> Pause Campaign
                                 </button>
                             )}
                             {(ad.status === 'paused' || ad.status === 'rejected') && (
-                                <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 h-12 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-sm   flex items-center justify-center gap-2">
+                                <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <Activity size={18} /> Resume Campaign
                                 </button>
                             )}
@@ -157,15 +172,6 @@ const Advertisements: React.FC = () => {
                     </div>
                 ))}
             </div>
-
-            {filteredAds.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <div className="p-8 bg-neutral-50 dark:bg-slate-900 rounded-[40px] mb-4">
-                        <DollarSign size={48} className="text-gray-300 dark:text-slate-700" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">No advertisements found</h3>
-                </div>
-            )}
         </div>
     );
 };

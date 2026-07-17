@@ -1,154 +1,203 @@
 import React, { useState } from 'react';
-import { AlertCircle, Flag, Trash2, Eye, ShieldAlert, CheckCircle, XCircle, Search, Filter, Mail, User, Store } from 'lucide-react';
-
-interface Report {
-    id: string;
-    type: 'Review' | 'Listing' | 'User' | 'Message';
-    reporter: string;
-    target: string;
-    reason: string;
-    status: 'Pending' | 'Resolved' | 'Dismissed';
-    date: string;
-}
+import { BarChart, DollarSign, TrendingUp, Download, Calendar, Filter, Star, MapPin } from 'lucide-react';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 
 const Reports: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('All');
+    const [timeRange, setTimeRange] = useState('Month');
+    const [reportType, setReportType] = useState<'Revenue' | 'Engagement'>('Revenue');
 
-    const reportsData: Report[] = [
-        { id: 'R001', type: 'Review', reporter: 'Rahul S.', target: 'Grand Ballroom', reason: 'Abusive language and fake pictures.', status: 'Pending', date: '2024-03-20' },
-        { id: 'R002', type: 'Listing', reporter: 'Priya K.', target: 'Dream Photography', reason: 'Owner using my personal wedding photos without permission.', status: 'Pending', date: '2024-03-18' },
-        { id: 'R003', type: 'User', reporter: 'Amit V.', target: 'Suresh Kumar', reason: 'Suspicious activity and spamming inbox.', status: 'Resolved', date: '2024-03-15' },
-        { id: 'R004', type: 'Review', reporter: 'Neha G.', target: 'Glow makeup Studio', reason: 'Inaccurate pricing information.', status: 'Dismissed', date: '2024-03-10' },
+    // Mock Data
+    const revenueData = [
+        { name: 'Week 1', adRevenue: 4000, subRevenue: 2400, commission: 2400 },
+        { name: 'Week 2', adRevenue: 3000, subRevenue: 1398, commission: 2210 },
+        { name: 'Week 3', adRevenue: 2000, subRevenue: 9800, commission: 2290 },
+        { name: 'Week 4', adRevenue: 2780, subRevenue: 3908, commission: 2000 },
     ];
 
-    const filteredReports = reportsData.filter(r => {
-        const matchesSearch = r.reporter.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             r.target.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             r.reason.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === 'All' || r.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+    const conversionData = [
+        { name: 'Wedding', rate: 85 },
+        { name: 'Corporate', rate: 65 },
+        { name: 'Birthday', rate: 45 },
+        { name: 'Engagement', rate: 75 },
+    ];
 
-    const getStatusStyles = (status: Report['status']) => {
-        switch (status) {
-            case 'Pending': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
-            case 'Resolved': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
-            case 'Dismissed': return 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-400';
-            default: return 'bg-gray-100 text-gray-700';
-        }
-    };
-
-    const getTypeIcon = (type: Report['type']) => {
-        switch (type) {
-            case 'Review': return <Mail size={14} className="text-blue-500" />;
-            case 'Listing': return <Store size={14} className="text-red-500" />;
-            case 'User': return <User size={14} className="text-purple-500" />;
-            case 'Message': return <AlertCircle size={14} className="text-orange-500" />;
-        }
-    };
+    const topVendors = [
+        { id: 1, name: 'Glow Makeup Studio', revenue: '₹4.5L', bookings: 45, rating: 4.9, city: 'Mumbai' },
+        { id: 2, name: 'Royal Palace Banquet', revenue: '₹12.2L', bookings: 22, rating: 4.8, city: 'Delhi' },
+        { id: 3, name: 'Flash Moments', revenue: '₹2.8L', bookings: 38, rating: 4.7, city: 'Bangalore' },
+    ];
 
     return (
-        <div className="space-y-6 ">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="fade-in pb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Content Moderation</h1>
-                    <p className="text-gray-500 dark:text-slate-400">Reports and Flagged content waiting for review</p>
+                    <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Analytics & Reports</h1>
+                    <p className="text-sm font-medium text-[var(--ease2event-text-secondary)] mt-1">Platform performance and revenue insights</p>
                 </div>
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search reports..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-red-500/20 text-gray-900 dark:text-white"
-                        />
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-1">
+                        {['Week', 'Month', 'Year'].map(range => (
+                            <button
+                                key={range}
+                                onClick={() => setTimeRange(range)}
+                                className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
+                                    timeRange === range 
+                                    ? 'bg-gray-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400' 
+                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                }`}
+                            >
+                                {range}
+                            </button>
+                        ))}
+                    </div>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all">
+                        <Download size={18} />
+                        <span>Export CSV</span>
+                    </button>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm">
+                        <Download size={18} />
+                        <span>Export PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Quick KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                    <div>
+                        <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Total Revenue</p>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">₹24.8L</h3>
+                        <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
+                            <TrendingUp size={12} /> +12.5% vs last {timeRange.toLowerCase()}
+                        </p>
+                    </div>
+                    <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <DollarSign size={28} />
+                    </div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                    <div>
+                        <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Commission Earned</p>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">₹4.2L</h3>
+                        <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
+                            <TrendingUp size={12} /> +8.2% vs last {timeRange.toLowerCase()}
+                        </p>
+                    </div>
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <BarChart size={28} />
+                    </div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                    <div>
+                        <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Avg. Conversion Rate</p>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">68%</h3>
+                        <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
+                            <TrendingUp size={12} /> +2.1% vs last {timeRange.toLowerCase()}
+                        </p>
+                    </div>
+                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <TrendingUp size={28} />
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-red-500/10 shadow-sm flex items-center gap-4 border-l-4 border-l-red-500">
-                    <div className="w-12 h-12 bg-red-50 dark:bg-red-950/30 rounded-2xl flex items-center justify-center text-red-500"><Flag size={24} /></div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Flags</p>
-                        <p className="text-2xl font-black text-gray-900 dark:text-white leading-none">12</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                {/* Main Revenue Chart */}
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Breakdown</h2>
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => setReportType('Revenue')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Revenue' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}>Revenue</button>
+                            <button onClick={() => setReportType('Engagement')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Engagement' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}>Engagement</button>
+                        </div>
+                    </div>
+                    <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                            {reportType === 'Revenue' ? (
+                                <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorAd" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                                        </linearGradient>
+                                        <linearGradient id="colorSub" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                                    <RechartsTooltip 
+                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                    />
+                                    <Area type="monotone" dataKey="adRevenue" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorAd)" name="Ad Revenue" />
+                                    <Area type="monotone" dataKey="subRevenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorSub)" name="Subscriptions" />
+                                </AreaChart>
+                            ) : (
+                                <LineChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                                    <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                    <Line type="monotone" dataKey="adRevenue" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} name="Active Users" />
+                                </LineChart>
+                            )}
+                        </ResponsiveContainer>
                     </div>
                 </div>
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-yellow-500/10 shadow-sm flex items-center gap-4 border-l-4 border-l-yellow-500">
-                    <div className="w-12 h-12 bg-yellow-50 dark:bg-yellow-950/30 rounded-2xl flex items-center justify-center text-yellow-500"><ShieldAlert size={24} /></div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pending Review</p>
-                        <p className="text-2xl font-black text-gray-900 dark:text-white leading-none">08</p>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-green-500/10 shadow-sm flex items-center gap-4 border-l-4 border-l-green-500">
-                    <div className="w-12 h-12 bg-green-50 dark:bg-green-950/30 rounded-2xl flex items-center justify-center text-green-500"><CheckCircle size={24} /></div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Resolved Today</p>
-                        <p className="text-2xl font-black text-gray-900 dark:text-white leading-none">24</p>
-                    </div>
-                </div>
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-500/10 shadow-sm flex items-center gap-4 border-l-4 border-l-slate-400">
-                    <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-500"><AlertCircle size={24} /></div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Average TAT</p>
-                        <p className="text-2xl font-black text-gray-900 dark:text-white leading-none">2.4h</p>
+
+                {/* Conversion Rates by Occasion */}
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Conversion Rates</h2>
+                    <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RechartsBarChart data={conversionData} layout="vertical" margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#334155" opacity={0.2} />
+                                <XAxis type="number" hide />
+                                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} width={80} />
+                                <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                <Bar dataKey="rate" fill="#4f46e5" radius={[0, 4, 4, 0]} barSize={20} name="Conv. Rate %" />
+                            </RechartsBarChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
+            {/* Top Performing Vendors Leaderboard */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Top Performing Vendors</h2>
+                    <button className="text-sm font-bold text-indigo-600 hover:text-indigo-700">View All</button>
+                </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Type</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Reporter</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Target</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Reason</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Status</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Actions</th>
+                            <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Rank</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Revenue</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Bookings</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Rating</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50 dark:divide-slate-800/50">
-                            {filteredReports.map((report) => (
-                                <tr key={report.id} className="/50 dark:/20   group">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 font-bold text-xs uppercase dark:text-slate-300">
-                                            {getTypeIcon(report.type)}
-                                            {report.type}
+                        <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                            {topVendors.map((vendor, i) => (
+                                <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-amber-100 text-amber-600' : i === 1 ? 'bg-gray-200 text-gray-600' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                                            #{i + 1}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tight">
-                                        {report.reporter}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold uppercase tracking-tight">
-                                        {report.target}
-                                    </td>
                                     <td className="px-6 py-4">
-                                        <p className="text-sm text-gray-600 dark:text-slate-400 line-clamp-1 italic">
-                                            "{report.reason}"
-                                        </p>
+                                        <div className="font-bold text-gray-900 dark:text-white">{vendor.name}</div>
+                                        <div className="text-xs text-gray-500 flex items-center gap-1 mt-1"><MapPin size={10} /> {vendor.city}</div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tight ${getStatusStyles(report.status)}`}>
-                                            {report.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 opacity-0  ">
-                                            <button className="p-2  dark: rounded-xl text-gray-500 " title="View Details">
-                                                <Eye size={18} />
-                                            </button>
-                                            <button className="p-2  dark:/30 rounded-xl text-green-500 " title="Resolve">
-                                                <CheckCircle size={18} />
-                                            </button>
-                                            <button className="p-2  dark:/30 rounded-xl text-red-500 " title="Delete Content">
-                                                <Trash2 size={18} />
-                                            </button>
+                                    <td className="px-6 py-4 font-bold text-emerald-600">{vendor.revenue}</td>
+                                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{vendor.bookings}</td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-1 font-bold text-gray-900 dark:text-white">
+                                            {vendor.rating} <Star size={14} className="text-amber-500 fill-amber-500" />
                                         </div>
                                     </td>
                                 </tr>

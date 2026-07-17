@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { AlertTriangle } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import { Skeleton, SkeletonText } from '@ease2event/ui';
@@ -23,9 +24,25 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className=" fade-in  pb-12">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Dashboard</h1>
-                <div className="text-xs font-medium text-[var(--ease2event-text-secondary)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">All systems normal</div>
+                <div className="text-xs font-medium text-[var(--ease2event-text-secondary)] bg-[var(--ease2event-bg-elevated)] px-3 py-1.5 rounded-lg border border-[var(--ease2event-border-subtle)]">Live Updates</div>
+            </div>
+
+            {/* Warning Banner for Suspicious Activity */}
+            <div className="mb-8 p-4 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-100 text-orange-600 rounded-xl">
+                        <AlertTriangle size={20} />
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-bold text-orange-800">Suspicious Activity Detected</h4>
+                        <p className="text-xs font-medium text-orange-600 mt-0.5">3 multiple failed login attempts from unknown IPs in the last hour.</p>
+                    </div>
+                </div>
+                <button className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-colors">
+                    Review Logs
+                </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -182,6 +199,39 @@ const Dashboard: React.FC = () => {
                                         <span className="font-bold text-[var(--ease2event-text-primary)]">{activity.user}</span> {activity.type === 'profile_view' ? 'viewed' : activity.type === 'save_bookmark' ? 'bookmarked' : 'explored'} <span className="text-indigo-600 font-bold">{activity.target}</span>
                                     </p>
                                     <p className="text-[10px] font-medium text-[var(--ease2event-text-secondary)] mt-1">{activity.time}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div className="card-premium border border-orange-100 dark:border-orange-900/30 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[50px] rounded-full pointer-events-none"></div>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                            Suspicious Users
+                        </h2>
+                        <button className="text-xs font-bold text-orange-600 hover:text-orange-700">View All</button>
+                    </div>
+                    <div className="space-y-3">
+                        {[
+                            { name: 'Unknown Device', ip: '192.168.x.x', reason: 'Failed logins (5)', risk: 'High' },
+                            { name: 'John Doe', ip: '10.0.x.x', reason: 'Multiple IP jump', risk: 'Medium' },
+                        ].map((user, i) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                                        <AlertTriangle size={16} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-[var(--ease2event-text-primary)]">{user.name}</p>
+                                        <p className="text-[10px] text-[var(--ease2event-text-secondary)] font-medium">{user.reason} • {user.ip}</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-[10px] font-bold transition-colors">Block</button>
                                 </div>
                             </div>
                         ))}

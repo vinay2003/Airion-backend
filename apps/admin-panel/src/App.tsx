@@ -17,6 +17,10 @@ import Settings from './pages/Settings';
 import AdminLogin from './pages/AdminLogin';
 import Subscriptions from './pages/Subscriptions';
 import Advertisements from './pages/Advertisements';
+import Reports from './pages/Reports';
+import Coupons from './pages/Coupons';
+import Categories from './pages/Categories';
+import SupportTickets from './pages/SupportTickets';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -47,6 +51,10 @@ const App: React.FC = () => {
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="subscriptions" element={<Subscriptions />} />
                   <Route path="advertisements" element={<Advertisements />} />
+                  <Route path="reports" element={<Reports />} />
+                  <Route path="coupons" element={<Coupons />} />
+                  <Route path="categories" element={<Categories />} />
+                  <Route path="support" element={<SupportTickets />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>

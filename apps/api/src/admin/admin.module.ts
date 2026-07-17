@@ -12,7 +12,7 @@ import { Location } from '../categories/entities/location.entity';
 import { SupportTicket } from './entities/support-ticket.entity';
 import { Ad } from '../ads/entities/ad.entity';
 import { Coupon } from '../coupons/entities/coupon.entity';
-import { AuditLog } from './entities/audit-log.entity';
+import { AuditLog } from '../auth/entities/audit-log.entity';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Dispute, Vendor, User, Booking, Category, Location, SupportTicket, Ad, Coupon, AuditLog])],

@@ -10,7 +10,7 @@ import { Location } from '../categories/entities/location.entity';
 import { SupportTicket } from './entities/support-ticket.entity';
 import { Ad } from '../ads/entities/ad.entity';
 import { Coupon } from '../coupons/entities/coupon.entity';
-import { AuditLog } from './entities/audit-log.entity';
+import { AuditLog } from '../auth/entities/audit-log.entity';
 
 @Injectable()
 export class AdminService {
@@ -49,12 +49,17 @@ export class AdminService {
     ) {
         if (!adminId) return; // For unauthenticated fallback if any
         const log = this.auditLogRepository.create({
-            adminId,
+            userId: adminId,
             action,
-            resource,
+            resourceType: resource,
             resourceId,
-            previousValue,
-            newValue
+            ipAddress: '127.0.0.1',
+            userAgent: 'Admin Panel',
+            success: true,
+            metadata: {
+                previousValue,
+                newValue
+            }
         });
         await queryRunner.manager.save(log);
     }

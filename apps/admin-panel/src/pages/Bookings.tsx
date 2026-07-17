@@ -1,66 +1,76 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle, RefreshCcw, ExternalLink } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useAdminBookings, useUpdateBookingStatus } from '../hooks/useBookings';
 
 interface Booking {
     id: string;
+    bookingCode: string;
     userName: string;
     vendorName: string;
     eventDate: string;
+    city: string;
+    category: string;
     amount: string;
-    status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+    status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Refunded' | string;
 }
 
 const Bookings: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
-
-    // Mock Bookings Data
-    const bookingsData: Booking[] = [
-        { id: '1001', userName: 'Rahul Sharma', vendorName: 'Grand Hotel', eventDate: '2026-05-12', amount: '₹50,000', status: 'Confirmed' },
-        { id: '1002', userName: 'Priya Kapoor', vendorName: 'Sunset Resort', eventDate: '2026-06-04', amount: '₹80,000', status: 'Pending' },
-        { id: '1003', userName: 'Amit Mishra', vendorName: 'Flash Moments', eventDate: '2026-04-20', amount: '₹25,000', status: 'Completed' },
-        { id: '1004', userName: 'Neha Verma', vendorName: 'Glow makeup Studio', eventDate: '2026-05-18', amount: '₹15,000', status: 'Cancelled' },
-        { id: '1005', userName: 'Suresh Kumar', vendorName: 'Royal Palace Banket', eventDate: '2026-07-02', amount: '₹1,50,000', status: 'Confirmed' },
-    ];
+    const [cityFilter, setCityFilter] = useState('All');
+    
+    const [page, setPage] = useState(1);
+    const { data: bookingsResponse, isLoading } = useAdminBookings(page, 50);
+    const updateStatusMutation = useUpdateBookingStatus();
+    
+    const bookingsData: Booking[] = bookingsResponse?.data || [];
+    const totalBookings = bookingsResponse?.total || 0;
 
     const stats = [
-        { label: 'Total Bookings', value: '142', icon: Calendar, color: 'blue' },
-        { label: 'Confirmed', value: '84', icon: CheckCircle, color: 'green' },
-        { label: 'Pending Approval', value: '24', icon: Clock, color: 'yellow' },
-        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'purple' },
+        { label: 'Total Bookings', value: totalBookings.toString(), icon: Calendar, color: 'blue' },
+        { label: 'Confirmed', value: bookingsData.filter(b => b.status === 'Confirmed').length.toString(), icon: CheckCircle, color: 'emerald' },
+        { label: 'Pending Approval', value: bookingsData.filter(b => b.status === 'Pending').length.toString(), icon: Clock, color: 'amber' },
+        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'indigo' }, // Keep static until full transactions tracking is active
     ];
 
     const filteredBookings = bookingsData.filter(b => {
         const matchesSearch = b.userName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             b.vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             b.id.includes(searchTerm);
+                              b.vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                              b.id.includes(searchTerm);
         const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
-        return matchesSearch && matchesStatus;
+        const matchesCity = cityFilter === 'All' || b.city === cityFilter;
+        return matchesSearch && matchesStatus && matchesCity;
     });
 
     const getStatusStyles = (status: Booking['status']) => {
         switch (status) {
-            case 'Confirmed': return 'bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400';
-            case 'Pending': return 'bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
-            case 'Completed': return 'bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400';
-            case 'Cancelled': return 'bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400';
-            default: return 'bg-gray-100 text-gray-700';
+            case 'Confirmed': return 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 border border-emerald-200 dark:border-emerald-500/20';
+            case 'Pending': return 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 border border-amber-200 dark:border-amber-500/20';
+            case 'Completed': return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 border border-blue-200 dark:border-blue-500/20';
+            case 'Cancelled': return 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 border border-rose-200 dark:border-rose-500/20';
+            case 'Refunded': return 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 border border-purple-200 dark:border-purple-500/20';
+            default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
     };
 
+    const updateStatus = async (id: string, newStatus: Booking['status']) => {
+        await updateStatusMutation.mutateAsync({ id, status: newStatus });
+    };
+
     return (
-        <div className="p-1">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Booking Management</h1>
+        <div className="fade-in pb-12">
+            <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-8">Booking Management</h1>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {stats.map((stat, idx) => (
                     <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between">
                         <div>
-                            <p className="text-gray-500 dark:text-slate-400 text-sm mb-1">{stat.label}</p>
-                            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</h3>
+                            <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">{stat.label}</p>
+                            <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
                         </div>
-                        <div className={`p-4 rounded-2xl bg-${stat.color}-50 dark:bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400`}>
+                        <div className={`p-4 rounded-2xl bg-${stat.color}-50 dark:bg-${stat.color}-900/30 text-${stat.color}-600 dark:text-${stat.color}-400`}>
                             <stat.icon size={24} />
                         </div>
                     </div>
@@ -76,22 +86,28 @@ const Bookings: React.FC = () => {
                         placeholder="Search User, Vendor or ID..." 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500/20 text-gray-900 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900 dark:text-white"
                     />
                 </div>
-                <div className="flex gap-3 w-full md:w-auto">
+                <div className="flex flex-wrap gap-3 w-full md:w-auto">
                     <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
                         <Filter size={16} />
-                        <select 
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="bg-transparent outline-none cursor-pointer"
-                        >
+                        <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
+                            <option value="All">All Cities</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Bangalore">Bangalore</option>
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
+                        <Filter size={16} />
+                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
                             <option value="All">All Statuses</option>
                             <option value="Pending">Pending</option>
                             <option value="Confirmed">Confirmed</option>
                             <option value="Completed">Completed</option>
                             <option value="Cancelled">Cancelled</option>
+                            <option value="Refunded">Refunded</option>
                         </select>
                     </div>
                 </div>
@@ -102,43 +118,69 @@ const Bookings: React.FC = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Booking ID</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">User</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Vendor</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Event Date</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Amount</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Status</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-500 uppercase">Actions</th>
+                            <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Booking ID</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Event Details</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {filteredBookings.map((booking, i) => (
-                                <tr key={i} className=" dark:/30 ">
-                                    <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">#{booking.id}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-slate-300 font-medium">{booking.userName}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-slate-300 font-medium">{booking.vendorName}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-slate-400">{booking.eventDate}</td>
-                                    <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">{booking.amount}</td>
-                                    <td className="px-6 py-4 text-sm">
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getStatusStyles(booking.status)}`}>
+                            {filteredBookings.map((booking) => (
+                                <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className="text-sm font-black text-gray-900 dark:text-white">#{booking.id}</span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center gap-1 group cursor-pointer">
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.userName}</span>
+                                            <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center gap-1 group cursor-pointer">
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.vendorName}</span>
+                                            <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
+                                        </div>
+                                        <span className="text-xs text-gray-500">{booking.category}</span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
+                                        <div className="text-xs text-gray-500">{booking.eventDate}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{booking.amount}</span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getStatusStyles(booking.status)}`}>
                                             {booking.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex gap-2">
-                                            <button className="p-1.5  dark: rounded-lg text-gray-500  dark: " title="View Details">
-                                                <Eye size={18} />
+                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button className="p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 rounded-lg text-gray-500" title="View Details">
+                                                <Eye size={16} />
                                             </button>
+                                            
                                             {booking.status === 'Pending' && (
-                                                <>
-                                                    <button className="p-1.5  dark:/20 rounded-lg text-gray-400  " title="Approve">
-                                                        <CheckCircle size={18} />
-                                                    </button>
-                                                    <button className="p-1.5  dark:/20 rounded-lg text-gray-400  " title="Cancel">
-                                                        <XCircle size={18} />
-                                                    </button>
-                                                </>
+                                                <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Confirm Booking">
+                                                    <CheckCircle size={16} />
+                                                </button>
+                                            )}
+                                            
+                                            {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
+                                                <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Cancel Booking">
+                                                    <XCircle size={16} />
+                                                </button>
+                                            )}
+
+                                            {booking.status === 'Cancelled' && (
+                                                <button onClick={() => updateStatus(booking.id, 'Refunded')} className="p-1.5 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg" title="Process Refund">
+                                                    <RefreshCcw size={16} />
+                                                </button>
                                             )}
                                         </div>
                                     </td>
@@ -147,6 +189,9 @@ const Bookings: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
+                {filteredBookings.length === 0 && (
+                    <div className="p-12 text-center text-gray-500">No bookings match your filters.</div>
+                )}
             </div>
         </div>
     );

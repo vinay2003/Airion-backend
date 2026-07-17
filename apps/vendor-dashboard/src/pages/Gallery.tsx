@@ -76,15 +76,15 @@ const Gallery: React.FC = () => {
  }
  }
 
- toast.success(`Gallery synchronized: ${files.length} image${files.length > 1 ? 's' : ''} added`);
+ toast.success(`Images uploaded successfully: ${files.length} image${files.length > 1 ? 's' : ''} added`);
  setOptimisticImages([]);
  refreshUser();
  } catch (err: any) {
- console.error('[Gallery Sync failure]:', err);
+ console.error('[Gallery upload failure]:', err);
  // Keep previews visible but mark them as failed (not uploading)
  setOptimisticImages(prev => prev.map(img => ({ ...img, isUploading: false })));
- const errorMessage = err.response?.data?.message || err.message || String(err);
- toast.error('Sync failed: ' + errorMessage + ' — previews kept locally.');
+ const errorMessage = err.error || err.response?.data?.message || err.message || String(err);
+ toast.error('Upload failed: ' + errorMessage);
  } finally {
  setUploading(false);
  if (fileInputRef.current) fileInputRef.current.value = '';
@@ -135,7 +135,7 @@ const Gallery: React.FC = () => {
  <div className="flex gap-6 w-full xl:w-auto">
  <button
  onClick={handlePurgeAll}
- className="h-12 px-6 rounded-xl font-bold text-xs uppercase tracking-widest bg-rose-600/10 text-rose-600 border-2 border-rose-600/20 hover:bg-rose-600 hover:text-white transition-all flex items-center gap-4"
+ className="h-12 px-6 rounded-xl font-bold text-xs uppercase tracking-widest bg-rose-600/10 text-rose-600 border-2 border-rose-600/20 hover:bg-rose-600 hover:text-white transition-all flex items-center gap-4 cursor-pointer"
  >
  <Trash2 size={16} />
  Clear Gallery </button>
@@ -196,14 +196,14 @@ const Gallery: React.FC = () => {
  alt={item.title || 'Registry item'}
  className={`w-full h-auto object-cover transition-transform ${!item.isUploading && ' opacity-95 group-hover:opacity-100'}`}
  onError={(e) => {
- (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/2563eb/white?text=Syncing+Asset';
+ (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/2563eb/white?text=Uploading+Image';
  }}
  />
 
  {item.isUploading ? (
  <div className="absolute inset-0 flex flex-col items-center justify-center bg-blue-900/10 backdrop-blur-[2px]">
  <Loader2 className="animate-spin text-white mb-4" size={48} />
- <span className="text-white font-black text-xs tracking-[0.3em] drop-">Synchronizing...</span>
+ <span className="text-white font-black text-xs tracking-[0.3em] drop-">Uploading...</span>
  </div>
  ) : (
  <div className="absolute inset-0 bg-gradient-to-t from-[var(--ease2event-bg-surface)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
@@ -219,11 +219,11 @@ const Gallery: React.FC = () => {
  <div className="flex gap-4">
  <button
  onClick={(e) => handleDelete(item.id, e)}
- className="w-12 h-12 flex items-center justify-center bg-rose-600 shadow-rose-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all"
+ className="w-12 h-12 flex items-center justify-center bg-rose-600 shadow-rose-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all cursor-pointer"
  >
  <Trash2 size={16} />
  </button>
- <button className="w-12 h-12 flex items-center justify-center bg-blue-600 shadow-blue-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all">
+ <button className="w-12 h-12 flex items-center justify-center bg-blue-600 shadow-blue-600/20 rounded-2xl text-white hover:scale-110 active:scale-95 transition-all cursor-pointer">
  <Maximize2 size={16} />
  </button>
  </div>
@@ -256,9 +256,24 @@ const Gallery: React.FC = () => {
  >
  {/* Controls Row */}
  <div className="flex items-center justify-end">
+ <button 
+ onClick={(e) => {
+ e.stopPropagation();
+ window.open(selectedImage.imageUrl, '_blank');
+ }}
+ className="p-2 sm:p-2.5 bg-black/50 backdrop-blur-md text-white rounded-xl hover:bg-blue-500 transition-colors shadow-lg cursor-pointer mr-3"
+ >
+ <Maximize2 size={14} className="sm:w-4 sm:h-4" />
+ </button>
+ <button
+ onClick={(e) => handleDelete(selectedImage.id, e)}
+ className="p-2 sm:p-2.5 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-colors shadow-lg cursor-pointer"
+ >
+ <Trash2 size={14} className="sm:w-4 sm:h-4" />
+ </button>
  <button
  onClick={() => setSelectedImage(null)}
- className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs tracking-[0.3em] "
+ className="flex items-center gap-3 text-[var(--ease2event-text-secondary)] hover:text-white transition-all font-bold text-xs tracking-[0.3em] ml-6"
  >
  Close <X size={38} className="p-2 bg-rose-600 text-white rounded-2xl shadow-rose-600/30" />
  </button>

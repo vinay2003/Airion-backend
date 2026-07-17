@@ -264,8 +264,8 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: whereConditions });
 
         // Enforce role check if role is provided
-        if (user && dto.role && user.role !== dto.role) {
-            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${dto.role}`);
+        if (user && (dto as any).role && user.role !== (dto as any).role) {
+            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${(dto as any).role}`);
             throw new UnauthorizedException(`Account found, but registered as ${user.role}. Please login to the correct portal.`);
         }
 
@@ -303,11 +303,15 @@ export class AuthService {
 
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Support multiple admin phone numbers (comma-separated in env)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
+        if (!adminPhones.includes(dto.phone)) {
             this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
         // Check if admin user exists in DB
@@ -452,6 +456,22 @@ export class AuthService {
         // Return user without password
         const { password, ...userWithoutPassword } = loggedInUser;
 
+        // Prevent circular reference issues during serialization
+        if (userWithoutPassword.vendor) {
+            delete (userWithoutPassword.vendor as any).user;
+            
+            if (userWithoutPassword.vendor.gallery) {
+                userWithoutPassword.vendor.gallery.forEach((item: any) => {
+                    delete item.vendor;
+                });
+            }
+            if (userWithoutPassword.vendor.ads) {
+                userWithoutPassword.vendor.ads.forEach((item: any) => {
+                    delete item.vendor;
+                });
+            }
+        }
+
         // 🔐 SECURE REFRESH SYSTEM: Generate Entropy-Rich Token
         const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
         const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
@@ -474,10 +494,14 @@ export class AuthService {
 
     // Verify OTP for Admin
     async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Support multiple admin phone numbers (comma-separated in env)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+        if (!adminPhones.includes(dto.phone)) {
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
         const identifier = dto.phone.trim();

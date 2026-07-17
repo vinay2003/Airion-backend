@@ -38,8 +38,7 @@ export class SmsService {
                 const response = await axios.post(
                     'https://www.fast2sms.com/dev/bulkV2',
                     {
-                        route: 'v3',
-                        sender_id: 'TXTIND', // Default sender ID
+                        route: 'q',
                         message: `Your Ease2event verification code is: ${otp}. Do not share this with anyone.`,
                         language: 'english',
                         flash: 0,

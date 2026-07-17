@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone, BarChart, Ticket, Map, LifeBuoy } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@ease2event/shared';
 
@@ -15,11 +15,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: Store, label: 'Vendors', path: '/vendors' },
         { icon: Users, label: 'Users', path: '/users' },
+        { icon: Store, label: 'Vendors', path: '/vendors' },
         { icon: Calendar, label: 'Bookings', path: '/bookings' },
-        { icon: Star, label: 'Subscriptions', path: '/subscriptions' },
+        { icon: BarChart, label: 'Reports & Analytics', path: '/reports' },
         { icon: Megaphone, label: 'Advertisements', path: '/advertisements' },
+        { icon: Star, label: 'Subscriptions', path: '/subscriptions' },
+        { icon: Ticket, label: 'Coupons', path: '/coupons' },
+        { icon: Map, label: 'Categories & Regions', path: '/categories' },
+        { icon: LifeBuoy, label: 'Support Tickets', path: '/support' },
         { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 

@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Filter, Calendar as CalendarIcon, Clock, MapPin, Users, MoreVertical, PlusCircle, Target, Activity } from 'lucide-react';
-import { Button, Badge, Skeleton } from '@ease2event/ui';
+import { Button, Badge, Skeleton, Modal, notify } from '@ease2event/ui';
 import { useAuth } from '@ease2event/shared';
 import { bookingService } from '@ease2event/shared/lib/services/bookingService';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchVendorSchedule, blockDate, unblockDate } from '../lib/api';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * 🗓 Operational Matrix (Calendar)
@@ -16,6 +17,15 @@ const CalendarPage: React.FC = () => {
  const [currentDate, setCurrentDate] = useState(new Date());
  const [selectedDate, setSelectedDate] = useState<number | null>(new Date().getDate());
  const [activeView, setActiveView] = useState('portal');
+ const [isModalOpen, setIsModalOpen] = useState(false);
+ const [blockReason, setBlockReason] = useState('');
+ const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+ 
+ useEffect(() => {
+ const closeMenu = () => setActiveMenuId(null);
+ document.addEventListener('click', closeMenu);
+ return () => document.removeEventListener('click', closeMenu);
+ }, []);
 
  const queryClient = useQueryClient();
 
@@ -34,8 +44,20 @@ const CalendarPage: React.FC = () => {
  const isLoading = bookingsLoading || availabilityLoading;
 
  const blockMutation = useMutation({
- mutationFn: (d: string) => blockDate(d, 'Personal Block'),
- onSuccess: () => queryClient.invalidateQueries({ queryKey: ['vendor-availability'] })
+ mutationFn: (d: {date: string, reason: string}) => blockDate(d.date, d.reason),
+ onSuccess: () => {
+   queryClient.invalidateQueries({ queryKey: ['vendor-availability'] });
+   setIsModalOpen(false);
+   notify.success('Calendar updated successfully!');
+ }
+ });
+
+ const unblockMutation = useMutation({
+ mutationFn: (date: string) => unblockDate(date),
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ['vendor-availability'] });
+ notify.success('Event deleted successfully!');
+ }
  });
 
  const daysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
@@ -103,7 +125,8 @@ const CalendarPage: React.FC = () => {
  time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
  client: (b as any).user?.name || b.userName || 'Customer',
  status: b.status ? (b.status.charAt(0).toUpperCase() + b.status.slice(1)) : 'Pending',
- type: 'booking'
+ type: 'booking',
+ dateStr: b.eventDate || ''
  });
  }
  });
@@ -127,7 +150,8 @@ const CalendarPage: React.FC = () => {
  title: ab.reason || 'Personal Block',
  time: 'Full Day',
  status: 'Blocked',
- type: 'block'
+ type: 'block',
+ dateStr: ab.date
  });
  }
  }
@@ -203,7 +227,7 @@ const CalendarPage: React.FC = () => {
  variant="secondary"
  className="h-10 px-5 rounded-2xl font-bold text-xs tracking-widest  active:scale-95 transition-all"
  leftIcon={<Filter size={16} />}
- onClick={() => alert('Filter system coming soon! You will be able to filter by event type, status, and client.')}
+ onClick={() => notify.error('Filter system coming soon!')}
  >
  Filter Events
  </Button>
@@ -212,12 +236,10 @@ const CalendarPage: React.FC = () => {
  leftIcon={<PlusCircle size={16} />}
  onClick={() => {
  if (selectedDate) {
- const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
- if (confirm(`Would you like to block ${dateStr} for personal use?`)) {
- blockMutation.mutate(dateStr);
- }
+ setBlockReason('');
+ setIsModalOpen(true);
  } else {
- alert('Please select a date on the calendar first to add an event.');
+ notify.error('Please select a date on the calendar first to add an event.');
  }
  }}
  >
@@ -288,7 +310,51 @@ const CalendarPage: React.FC = () => {
  <div key={ev.id || i} className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[var(--ease2event-brand-primary)] before:rounded-full group hover:bg-[var(--ease2event-bg-elevated)]/50 p-5 rounded-lg transition-all cursor-pointer border border-[var(--ease2event-border-subtle)] ">
  <div className="flex justify-between items-start mb-3">
  <h4 className="font-bold text-md text-[var(--ease2event-text-primary)] group-hover:text-[var(--ease2event-brand-primary)] transition-colors leading-tight">{ev.title}</h4>
- <button className="text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-colors"><MoreVertical size={16} /></button>
+ <div className="relative">
+ <button onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === ev.id ? null : ev.id); }} className="text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-colors p-1"><MoreVertical size={16} /></button>
+ <AnimatePresence>
+ {activeMenuId === ev.id && (
+ <motion.div
+ initial={{ opacity: 0, y: -5, scale: 0.95 }}
+ animate={{ opacity: 1, y: 0, scale: 1 }}
+ exit={{ opacity: 0, y: -5, scale: 0.95 }}
+ className="absolute right-0 top-full mt-1 w-36 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-xl shadow-xl z-50 py-1 overflow-hidden"
+ >
+ <button
+ onClick={(e) => { 
+ e.stopPropagation(); 
+ setActiveMenuId(null); 
+ if (ev.type === 'block') {
+ setBlockReason(ev.title);
+ const day = parseInt(ev.dateStr.split('-')[2], 10);
+ if (!isNaN(day)) setSelectedDate(day);
+ setIsModalOpen(true);
+ } else {
+ notify.info('Bookings must be managed from the Bookings page.');
+ }
+ }}
+ className="w-full text-left px-4 py-3 text-xs font-bold text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-brand-primary)]/10 hover:text-[var(--ease2event-brand-primary)] transition-colors border-b border-[var(--ease2event-border-subtle)]"
+ >
+ Edit Event
+ </button>
+ <button
+ onClick={(e) => { 
+ e.stopPropagation(); 
+ setActiveMenuId(null); 
+ if (ev.type === 'block') {
+ unblockMutation.mutate(ev.dateStr); 
+ } else {
+ notify.info('Cannot delete bookings directly from calendar');
+ }
+ }}
+ className="w-full text-left px-4 py-3 text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
+ >
+ Delete Event
+ </button>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ </div>
  </div>
  <div className="space-y-3">
  <div className="flex items-center gap-3 text-sm text-[var(--ease2event-text-secondary)] font-bold tracking-widest">
@@ -317,8 +383,8 @@ const CalendarPage: React.FC = () => {
  <button
  onClick={() => {
  if (selectedDate) {
- const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
- blockMutation.mutate(dateStr);
+ setBlockReason('');
+ setIsModalOpen(true);
  }
  }}
  className="text-sm font-bold text-[var(--ease2event-brand-primary)] hover:text-[var(--ease2event-brand-secondary)] tracking-widest transition-all underline decoration-2 underline-offset-8"
@@ -333,16 +399,14 @@ const CalendarPage: React.FC = () => {
  className="w-full !h-12 text-xs font-bold tracking-widest rounded-lg bg-[var(--ease2event-brand-primary)] text-white shadow-indigo-500/20 active:scale-95 transition-all"
  onClick={() => {
  if (!vendorId) {
- alert('Vendor profile not found. Please complete onboarding.');
+ notify.error('Vendor profile not found. Please complete onboarding.');
  return;
  }
  if (selectedDate) {
- const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
- if (confirm(`Add a new availability block for ${dateStr}?`)) {
- blockMutation.mutate(dateStr);
- }
+ setBlockReason('');
+ setIsModalOpen(true);
  } else {
- alert('Please select a date first.');
+ notify.error('Please select a date first.');
  }
  }}
  >
@@ -351,6 +415,34 @@ const CalendarPage: React.FC = () => {
  </div>
  </div>
  </div>
+
+ <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add Calendar Event">
+ <div className="space-y-4 p-2">
+ <p className="text-sm text-[var(--ease2event-text-secondary)]">
+ Block this date in your calendar to prevent new bookings or set a personal reminder.
+ </p>
+ <div>
+ <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Date Selected</label>
+ <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-bold text-slate-800 dark:text-slate-200">
+ {selectedDate ? `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}` : 'None'}
+ </div>
+ </div>
+ <div>
+ <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Reason / Title</label>
+ <input type="text" value={blockReason} onChange={(e) => setBlockReason(e.target.value)} className="w-full text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-slate-900 dark:text-white" placeholder="e.g. Personal Holiday, Maintenance" />
+ </div>
+ <div className="flex justify-end gap-3 mt-6">
+ <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+ <Button onClick={() => {
+ if (!selectedDate) return;
+ const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+ blockMutation.mutate({date: dateStr, reason: blockReason});
+ }} disabled={blockMutation.isPending}>
+ {blockMutation.isPending ? 'Saving...' : 'Save Event'}
+ </Button>
+ </div>
+ </div>
+ </Modal>
  </div>
  );
 };

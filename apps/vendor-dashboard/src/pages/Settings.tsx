@@ -31,7 +31,10 @@ const Settings: React.FC = () => {
  const [personalData, setPersonalData] = useState({
  name: '',
  phone: '',
- profileImage: ''
+ profileImage: '',
+ aadharNumber: '',
+ panNumber: '',
+ gstNumber: ''
  });
 
  const [businessData, setBusinessData] = useState({
@@ -122,7 +125,10 @@ const Settings: React.FC = () => {
  setPersonalData({
  name: user.name || '',
  phone: user.phoneNumber || '',
- profileImage: (user as any).avatar || user.vendor?.logo || ''
+ profileImage: (user as any).avatar || user.vendor?.logo || '',
+ aadharNumber: user.vendor?.aadharNumber || '',
+ panNumber: user.vendor?.panNumber || '',
+ gstNumber: user.vendor?.gstNumber || ''
  });
 
  const v = user.vendor;
@@ -156,10 +162,19 @@ const Settings: React.FC = () => {
  setSubmitting(true);
  try {
  await api.patch('/auth/profile', {
- name: personalData.name || undefined,
- phoneNumber: personalData.phone || undefined,
- avatar: personalData.profileImage || undefined
+ name: personalData.name,
+ phoneNumber: personalData.phone,
+ avatar: personalData.profileImage
  });
+ 
+ if (user?.vendor?.id) {
+ await api.put('/vendors/me', {
+ aadharNumber: personalData.aadharNumber,
+ panNumber: personalData.panNumber,
+ gstNumber: personalData.gstNumber
+ });
+ }
+
  toast.success('Profile updated successfully!');
  refreshUser();
  } catch (err: any) {
@@ -171,8 +186,8 @@ const Settings: React.FC = () => {
  };
 
  const handleSaveBusiness = async () => {
- if (!businessData.businessName || !businessData.description) {
- toast.error('Please fill in all required fields (Name & Description).');
+ if (!businessData.businessName) {
+ toast.error('Please fill in the Business Name.');
  return;
  }
 
@@ -281,15 +296,12 @@ const Settings: React.FC = () => {
  
  className="space-y-6 px-6 w-full max-w-7xl mx-auto pb-32"
  >
- {/* Header: Matrix Genesis */}
+ {/* Header: Settings Dashboard */}
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
  <div className="relative z-10 space-y-3">
  <h1 className="text-xl font-bold tracking-tight leading-normal">Settings</h1>
  <div className="flex items-center gap-3">
- <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-brand-primary)] text-sm font-semibold rounded-full border border-[var(--ease2event-brand-primary)]/20">
- Dashboard Settings
- </span>
- <p className="text-base font-semibold tracking-normal flex items-center gap-2">Manage your account</p>
+ <p className="text-base font-semibold tracking-normal flex items-center gap-2 text-[var(--ease2event-text-secondary)]">Manage your account</p>
  </div>
  </div>
 
@@ -298,14 +310,14 @@ const Settings: React.FC = () => {
  </div>
  </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
- {/* 🧭 Navigation Matrix */}
+ <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+ {/* 🧭 Navigation */}
  <div className="lg:col-span-1 space-y-3">
  {tabs.map((tab) => (
  <button
  key={tab.id}
  onClick={() => setActiveTab(tab.id as any)}
- className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all group relative overflow-hidden ${activeTab === tab.id
+ className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all group relative overflow-hidden cursor-pointer ${activeTab === tab.id
  ? 'bg-[var(--ease2event-brand-primary)] text-white /30 scale-105 z-10'
  : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-muted)] border border-[var(--ease2event-border-base)]  hover:text-[var(--ease2event-text-primary)]'
  }`}
@@ -348,8 +360,8 @@ const Settings: React.FC = () => {
  </div>
  </div>
 
- {/* 🛰️ Registry Content Flow */}
- <div className="lg:col-span-3">
+ {/* 🛰️ Profile Details */}
+ <div className="md:col-span-3">
  <AnimatePresence mode="wait">
  <motion.div
  key={activeTab}
@@ -359,7 +371,7 @@ const Settings: React.FC = () => {
  transition={{ duration: 0.2 }}
  className="card-minimal p-6 sm:!p-12 space-y-5 sm:space-y-16 bg-[var(--ease2event-bg-surface)] border-x-0 sm:border-x border-y border-[var(--ease2event-border-base)] overflow-hidden rounded-none sm:rounded-xl -mx-4 sm:mx-0"
  >
- {/* 👤 Identity Interface */}
+ {/* 👤 Personal Info */}
  {activeTab === 'personal' && (
  <div className="space-y-5">
  <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-8">
@@ -434,6 +446,39 @@ const Settings: React.FC = () => {
  </div>
  </div>
 
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+ <div className="space-y-3">
+ <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Aadhar Number</label>
+ <input
+ type="text"
+ value={personalData.aadharNumber}
+ onChange={(e: any) => setPersonalData({ ...personalData, aadharNumber: e.target.value })}
+ className="w-full h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl px-6 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--ease2event-text-primary)]"
+ placeholder="Optional"
+ />
+ </div>
+ <div className="space-y-3">
+ <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">PAN Number</label>
+ <input
+ type="text"
+ value={personalData.panNumber}
+ onChange={(e: any) => setPersonalData({ ...personalData, panNumber: e.target.value })}
+ className="w-full h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl px-6 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--ease2event-text-primary)]"
+ placeholder="Optional"
+ />
+ </div>
+ <div className="space-y-3">
+ <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">GST Number</label>
+ <input
+ type="text"
+ value={personalData.gstNumber}
+ onChange={(e: any) => setPersonalData({ ...personalData, gstNumber: e.target.value })}
+ className="w-full h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl px-6 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--ease2event-text-primary)]"
+ placeholder="Optional"
+ />
+ </div>
+ </div>
+
  <div className="pt-12 border-t border-[var(--ease2event-border-subtle)]">
  <Button onClick={handleSavePersonal} disabled={submitting} className="h-12 px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] font-bold tracking-widest rounded-2xl hover:/40  transition-all active:scale-[0.98]">
  {submitting ? <Loader2 className="animate-spin" /> : <><Save size={16} className="mr-4" /> SAVE CHANGES</>}
@@ -469,9 +514,9 @@ const Settings: React.FC = () => {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-sm font-semibold text-[var(--ease2event-text-secondary)] tracking-wide ml-1">Specialized Logic Node</label>
+ <label className="text-sm font-semibold text-[var(--ease2event-text-secondary)] tracking-wide ml-1">Specialization</label>
  <select disabled={!businessData.categoryId} value={businessData.subcategoryId} onChange={(e: any) => setBusinessData({ ...businessData, subcategoryId: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-black text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all appearance-none cursor-pointer disabled:opacity-30">
- <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialty Node...</option>
+ <option value="" className="bg-[var(--ease2event-bg-surface)]">Select Specialization...</option>
  {subcategories.map((s: any, i: number) => <option key={s._id || s.id || i} value={s._id || s.id} className="bg-[var(--ease2event-bg-surface)]">{s.name}</option>)}
  </select>
  </div>
@@ -501,7 +546,7 @@ const Settings: React.FC = () => {
  className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] relative group transition-all active:scale-95"
  >
  <img src={img} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
- <button onClick={() => setBusinessData(p => ({ ...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i) }))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Trash2 size={16} /></button>
+ <button onClick={() => setBusinessData(p => ({ ...p, portfolioImages: p.portfolioImages.filter((_, idx) => idx !== i) }))} className="absolute inset-0 bg-rose-600/90 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"><Trash2 size={16} /></button>
  </div>
  ))}
  <label className="aspect-square rounded-xl sm:rounded-2xl border-2 border-dashed border-[var(--ease2event-border-base)] flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)]  hover:bg-[var(--ease2event-brand-primary)]/5 transition-all gap-2 sm:gap-3 group cursor-pointer">
@@ -513,16 +558,16 @@ const Settings: React.FC = () => {
  const file = e.target.files?.[0];
  if (!file) return;
 
- const loaderId = toast.loading('Synchronizing asset...');
+ const loaderId = toast.loading('Uploading image...');
  try {
  const data = await uploadImage(file);
  const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
  if (imageUrl) {
  setBusinessData(prev => ({ ...prev, portfolioImages: [...prev.portfolioImages, imageUrl] }));
- toast.success('Asset synchronized', { id: loaderId });
+ toast.success('Image uploaded successfully', { id: loaderId });
  }
  } catch (err) {
- toast.error('Sync failure', { id: loaderId });
+ toast.error('Upload failed', { id: loaderId });
  }
  }}
  />
@@ -661,9 +706,7 @@ const Settings: React.FC = () => {
  </thead>
  <tbody className="divide-y divide-[var(--ease2event-border-subtle)]">
  {[
- { node: 'CHROME_OS_NODE_01', type: 'LOGIN_AUTH', time: 'OCT 15, 14:24', status: 'AUTHORIZED' },
- { node: 'MOBILE_IOS_NX_04', type: 'CIPHER_ROTATION', time: 'OCT 12, 09:15', status: 'AUTHORIZED' },
- { node: 'UNKNOWN_TERMINAL', type: 'FAILED_SYNC', time: 'OCT 10, 23:58', status: 'REJECTED' },
+ { node: 'CURRENT_DEVICE', type: 'LOGIN_AUTH', time: (user as any)?.lastLoginAt ? new Date((user as any).lastLoginAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).toUpperCase() : 'RECENT', status: 'AUTHORIZED' },
  ].map((log, i) => (
  <tr key={i} className="hover:bg-[var(--ease2event-brand-primary)]/[0.03] transition-all cursor-pointer group">
  <td className="px-6 sm:px-6 py-5 sm:py-7 font-bold text-[10px] sm:text-[11px] text-[var(--ease2event-text-primary)] tracking-tight group-hover:translate-x-2 transition-transform ">{log.node}</td>

@@ -83,17 +83,7 @@ const Home: React.FC = () => {
     const [subscribeEmail, setSubscribeEmail] = useState('');
     const [subscribeError, setSubscribeError] = useState('');
 
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            if (user.role === 'admin') {
-                window.location.href = getPortalUrl('admin');
-            } else if (user.role === 'vendor') {
-                window.location.href = getPortalUrl('vendor');
-            } else if (user.role === 'user') {
-                navigate('/dashboard');
-            }
-        }
-    }, [isAuthenticated, user, navigate]);
+
 
     useEffect(() => {
         fetchEvents()

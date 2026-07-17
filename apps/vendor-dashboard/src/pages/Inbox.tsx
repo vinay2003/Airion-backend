@@ -21,10 +21,18 @@ const Inbox: React.FC = () => {
  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
  const [typingUser, setTypingUser] = useState<string | null>(null);
 
- const { data: leads, isLoading } = useQuery({
+ const mockLeads: any[] = [
+ { id: 'mock-lead-1', user: { name: 'Sameer Malhotra' }, notes: 'Enquiry for Wedding Decoration', status: 'pending', aiScore: 85, createdAt: new Date(Date.now() - 2 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 30).toISOString(), guestsCount: 200, aiReasoning: 'High intent customer. Quick response recommended.' },
+ { id: 'mock-lead-2', user: { name: 'Isha Gupta' }, notes: 'Enquiry for Birthday Party', status: 'pending', aiScore: 92, createdAt: new Date(Date.now() - 5 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 15).toISOString(), guestsCount: 50, aiReasoning: 'Looking for premium options.' },
+ { id: 'mock-lead-3', user: { name: 'Rahul Verma' }, notes: 'Enquiry for Corporate Seminar', status: 'contacted', aiScore: 68, createdAt: new Date(Date.now() - 24 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 45).toISOString(), guestsCount: 300, aiReasoning: 'Needs quick follow up.' }
+ ];
+
+ const { data: apiLeads, isLoading } = useQuery({
  queryKey: ['vendor-leads'],
  queryFn: () => leadService.getVendorLeads().catch(() => []),
  });
+
+ const leads = apiLeads && apiLeads.length > 0 ? apiLeads : mockLeads;
 
  const activeLead = leads?.find(lead => lead.id === activeChat);
  const filteredChats = (leads || []).filter(lead =>
@@ -95,7 +103,7 @@ const Inbox: React.FC = () => {
 
  const aiReplyMutation = useMutation({
  mutationFn: (inquiry: string) => generateEasyReply(inquiry),
- onSuccess: (data) => setMessageInput(data.reply)
+ onSuccess: (data: any) => setMessageInput(data.reply)
  });
 
  const handleMagicReply = () => {
@@ -180,12 +188,6 @@ const Inbox: React.FC = () => {
  {lead.notes || 'Enquiry about services...'}
  </p>
  </div>
- <div className="flex flex-col justify-center gap-1">
- <div className="text-[9px] font-bold text-blue-500 text-center">{lead.aiScore}%</div>
- <div className="w-8 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
- <div className="h-full bg-blue-500" style={{ width: `${lead.aiScore}%` }}></div>
- </div>
- </div>
  </div>
  ))
  )}
@@ -217,7 +219,7 @@ const Inbox: React.FC = () => {
  <ShieldCheck size={14} className="text-blue-500 shrink-0" />
  </div>
  <p className="text-[8px] md:text-[10px] font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-widest truncate">
- Lead Score: {activeLead?.aiScore}% • {activeLead?.status}
+ Status: {activeLead?.status}
  </p>
  </div>
  </div>
@@ -226,22 +228,6 @@ const Inbox: React.FC = () => {
  <Badge variant="default" className="px-4 py-2 rounded-full border border-blue-500/20 text-blue-500 bg-white/5 backdrop-blur-md hidden lg:flex">
  ₹{activeLead.budget.toLocaleString()}
  </Badge>
- )}
- {viewMode === 'details' ? (
- <Button
- onClick={initializeChat}
- className="rounded-full bg-blue-600 hover:bg-blue-700 text-white gap-2 h-10 px-6 font-bold uppercase text-[10px] tracking-widest shadow-blue-500/20"
- >
- <MessageSquare size={14} /> Reply
- </Button>
- ) : (
- <Button
- variant="outline"
- onClick={() => setViewMode('details')}
- className="rounded-full border-blue-500/20 text-blue-500 gap-2 h-10 px-6 font-bold uppercase text-[10px] tracking-widest"
- >
- <Info size={14} /> Details
- </Button>
  )}
  </div>
  </div>

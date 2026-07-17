@@ -179,12 +179,17 @@ const UnifiedAuth: React.FC = () => {
                     phoneNumber = '+91' + phoneNumber;
                 }
 
+                let response: any;
                 if (mode === 'signup') {
-                    await otpAuth.sendSignupOTP({ phone: phoneNumber, role: selectedRole });
+                    response = await otpAuth.sendSignupOTP({ phone: phoneNumber, role: selectedRole });
                 } else {
-                    await otpAuth.sendLoginOTP({ phone: phoneNumber, role: selectedRole });
+                    response = await otpAuth.sendLoginOTP({ phone: phoneNumber, role: selectedRole });
                 }
                 toast.success('Verification code sent to ' + phoneNumber);
+                if (response?._dev_otp) {
+                    console.warn('🛠️ [DEV OTP]:', response._dev_otp);
+                    toast.success(`[DEV] Your OTP is: ${response._dev_otp}`, { duration: 10000 });
+                }
             }
 
             setStep('otp');

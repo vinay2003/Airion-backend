@@ -2,13 +2,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '@ease2event/shared/auth/api';
 import toast from 'react-hot-toast';
 
-// Categories
 export const useAdminCategories = () => {
     return useQuery({
         queryKey: ['adminCategories'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/categories');
-            return data;
+            return data.data || data;
         },
     });
 };
@@ -64,13 +63,12 @@ export const useDeleteCategory = () => {
     });
 };
 
-// Locations
 export const useAdminLocations = () => {
     return useQuery({
         queryKey: ['adminLocations'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/locations');
-            return data;
+            return data.data || data;
         },
     });
 };

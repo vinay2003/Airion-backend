@@ -7,7 +7,7 @@ export const useAdminAdvertisements = () => {
         queryKey: ['adminAdvertisements'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/advertisements');
-            return data;
+            return data.data || data; // fallback to data if backend format changes
         },
     });
 };

@@ -7,7 +7,7 @@ export const useAdminTickets = () => {
         queryKey: ['adminTickets'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/tickets');
-            return data;
+            return data.data || data;
         },
     });
 };

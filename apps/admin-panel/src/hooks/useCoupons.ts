@@ -7,7 +7,7 @@ export const useAdminCoupons = () => {
         queryKey: ['adminCoupons'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/coupons');
-            return data;
+            return data.data || data;
         },
     });
 };

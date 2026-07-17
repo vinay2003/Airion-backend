@@ -4,6 +4,7 @@ import { Category } from '../../categories/entities/category.entity';
 import { Subcategory } from '../../categories/entities/subcategory.entity';
 import { VendorAd } from './vendor-ad.entity';
 import { VendorGallery } from './vendor-gallery.entity';
+import { VendorProfileView } from './vendor-profile-view.entity';
 
 @Entity('vendors')
 export class Vendor {
@@ -120,4 +121,7 @@ export class Vendor {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+
+    @OneToMany(() => VendorProfileView, view => view.vendor)
+    profileViews: VendorProfileView[];
 }

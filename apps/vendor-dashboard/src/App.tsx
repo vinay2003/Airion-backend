@@ -18,6 +18,7 @@ import VendorSignupForm from './pages/VendorSignup';
 import Bookings from './pages/Bookings';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 import EventPlanning from './pages/EventPlanning';
 import Promotions from './pages/Promotions';
 import Calendar from './pages/Calendar';
@@ -58,6 +59,7 @@ const App: React.FC = () => {
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="profile" element={<Profile />} />
 
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />

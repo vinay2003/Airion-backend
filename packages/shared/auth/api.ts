@@ -337,3 +337,29 @@ export const poster = async (url: string, data?: Record<string, any>) => {
     const response = await authApi.post(url, data);
     return response.data;
 };
+
+/**
+ * Vendor Analytics APIs
+ */
+export const vendorAnalyticsApi = {
+    /**
+     * Record a profile view for a vendor
+     */
+    recordProfileView: async (vendorId: string, guestVisitorId?: string): Promise<{ success: boolean; counted: boolean }> => {
+        const response = await authApi.post(`/vendors/${vendorId}/profile-view`, { guestVisitorId });
+        return response.data;
+    },
+
+    /**
+     * Get profile view analytics for the currently authenticated vendor
+     */
+    getMyProfileViews: async (): Promise<{
+        totalUniqueViews: number;
+        todayUniqueViews: number;
+        weekUniqueViews: number;
+        monthUniqueViews: number;
+    }> => {
+        const response = await authApi.get('/vendors/me/profile-views');
+        return response.data;
+    },
+};

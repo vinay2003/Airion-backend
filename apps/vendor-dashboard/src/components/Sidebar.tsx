@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
  {/* Sidebar Container */}
  <aside
- className={`fixed md:static inset-y-0 left-0 z-40 w-64 glass-panel border-r border-[var(--ease2event-border-subtle)] transform transition-transform ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+ className={`fixed md:static inset-y-0 left-0 z-40 w-64 glass-panel border-y-0 border-l-0 border-r border-[var(--ease2event-border-subtle)] transform transition-transform ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
  } flex flex-col`}
  >
  <div className="h-[70px] border-b border-[var(--ease2event-border-subtle)] flex justify-between items-center px-6">
@@ -77,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  </nav>
 
  <div className="p-4 border-t border-[var(--ease2event-border-subtle)]">
- <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)]">
+ <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
  <Avatar
  src={user?.vendor?.logo}
  name={user?.name || user?.email || 'Vendor'}
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>
  <p className="text-xs text-[var(--ease2event-text-muted)] truncate">View Profile</p>
  </div>
- </div>
+ </NavLink>
  </div>
  </aside>
  </>

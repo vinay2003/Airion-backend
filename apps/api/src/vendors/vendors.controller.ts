@@ -7,6 +7,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/guards/roles.decorator';
 import { UserRole } from '../auth/entities/user.entity';
 import { ActivityType } from './entities/activity.entity';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('vendors')
 export class VendorsController {
@@ -60,6 +62,32 @@ export class VendorsController {
         const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) return [];
         return vendor.gallery || [];
+    }
+
+    @Get('me/profile-views')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.VENDOR)
+    async getMyProfileViews(@Request() req: any) {
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
+        if (!vendor) {
+            throw new NotFoundException('Vendor profile not found');
+        }
+        return this.vendorsService.getVendorViewAnalytics(vendor.id);
+    }
+
+    @Post(':id/profile-view')
+    @UseGuards(OptionalJwtAuthGuard, ThrottlerGuard)
+    async recordProfileView(
+        @Param('id') vendorId: string,
+        @Request() req: any,
+        @Body() body: { guestVisitorId?: string }
+    ) {
+        let viewerUserId = undefined;
+        if (req.user) {
+            viewerUserId = req.user.userId || req.user.sub;
+        }
+        return this.vendorsService.recordProfileView(vendorId, viewerUserId, body.guestVisitorId);
     }
 
     @Get(':id')
@@ -121,8 +149,8 @@ export class VendorsController {
 
     @Get(':id/earnings')
     @UseGuards(JwtAuthGuard)
-    async getEarnings(@Param('id') id: string) {
-        return this.vendorsService.getDetailedEarnings(id);
+    async getEarnings(@Param('id') id: string, @Query('year') year?: string) {
+        return this.vendorsService.getDetailedEarnings(id, year ? parseInt(year, 10) : undefined);
     }
 
     // --- ADS ENDPOINTS ---

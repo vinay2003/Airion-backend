@@ -73,7 +73,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  }, []);
 
  return (
- <header className="glass-panel h-[75px] flex items-center justify-between px-7 sticky top-0 z-50 transition-colors border-x-0 border-t-0">
+ <header className="glass-panel h-[70px] flex items-center justify-between px-7 sticky top-0 z-50 transition-colors border-x-0 border-t-0 border-b border-[var(--ease2event-border-subtle)]">
  <div className="flex items-center gap-3 md:gap-4 flex-1">
  <button
  onClick={onMenuClick}
@@ -160,7 +160,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  <p className="text-xs text-[var(--ease2event-text-muted)] truncate">{user?.email || 'vendor@ease2event.in'}</p>
  </div>
  <div className="p-2 space-y-1">
- <button onClick={() => { setIsProfileOpen(false); navigate('/settings'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
+ <button onClick={() => { setIsProfileOpen(false); navigate('/profile'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">
  Account Settings
  </button>
  <button onClick={() => { setIsProfileOpen(false); navigate('/'); }} className="block w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors">

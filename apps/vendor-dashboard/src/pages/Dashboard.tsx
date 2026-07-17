@@ -17,6 +17,11 @@ const MOCK_CHART_DATA = [
  { name: 'May', revenue: 4800 },
  { name: 'Jun', revenue: 3800 },
  { name: 'Jul', revenue: 4300 },
+ { name: 'Aug', revenue: 5200 },
+ { name: 'Sep', revenue: 6100 },
+ { name: 'Oct', revenue: 3200 },
+ { name: 'Nov', revenue: 8400 },
+ { name: 'Dec', revenue: 9500 },
 ];
 
 /**
@@ -59,7 +64,8 @@ const Dashboard = () => {
  const navigate = useNavigate();
  const { user } = useAuth();
  const vendorId = user?.vendor?.id || 'mock-id';
- const [chartView, setChartView] = React.useState<'live' | 'history'>('live');
+ const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear());
+ const availableYears = [new Date().getFullYear(), new Date().getFullYear() - 1, new Date().getFullYear() - 2, new Date().getFullYear() - 3, new Date().getFullYear() - 4];
 
  const { data: stats, isLoading: statsLoading } = useQuery({
  queryKey: ['vendor-stats', vendorId],
@@ -82,11 +88,25 @@ const Dashboard = () => {
  });
 
  const { data: earningsData } = useQuery({
- queryKey: ['vendor-earnings', vendorId],
+ queryKey: ['vendor-earnings', vendorId, selectedYear],
  queryFn: async () => {
  if (!vendorId || vendorId === 'mock-id') return null;
  try {
- const res: any = await api.get(`/vendors/${vendorId}/earnings`);
+ const res: any = await api.get(`/vendors/${vendorId}/earnings?year=${selectedYear}`);
+ return res;
+ } catch (e) {
+ return null;
+ }
+ },
+ enabled: vendorId !== 'mock-id',
+ });
+
+ const { data: profileViewsData } = useQuery({
+ queryKey: ['vendor-profile-views', vendorId],
+ queryFn: async () => {
+ if (!vendorId || vendorId === 'mock-id') return null;
+ try {
+ const res: any = await api.get('/vendors/me/profile-views');
  return res;
  } catch (e) {
  return null;
@@ -204,36 +224,32 @@ const Dashboard = () => {
  </Button>
  </div>
 
- {/* Visibility Index */}
+ {/* Profile Analytics */}
  <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900 space-y-6 relative overflow-hidden">
  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2" />
 
  <div className="space-y-2 z-10 relative">
- <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Store Profile Ranking</h2>
- <p className="text-xs font-medium text-[var(--ease2event-text-secondary)]">Your performance ranking on Airion</p>
+ <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Profile View Analytics</h2>
+ <p className="text-xs font-medium text-[var(--ease2event-text-secondary)]">Unique visitors to your vendor profile</p>
  </div>
 
- <div className="space-y-6 z-10 relative">
- <div className="flex justify-between items-end h-24 gap-2">
- {[40, 60, 45, 90, 65, 80, 70].map((h, i) => (
- <div key={i} className="flex-1 bg-slate-50 dark:bg-slate-800 rounded-t-md relative overflow-hidden border-x border-t border-slate-200 dark:border-slate-700">
- <div
- style={{ height: `${h}%` }}
- className={`absolute bottom-0 left-0 right-0 bg-blue-500/80`}
- />
- </div>
- ))}
- </div>
-
- <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
- <div className="space-y-1">
- <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none">Growth Delta</p>
- <p className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)] leading-none">+24.8%</p>
- </div>
- <div className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-lg border border-emerald-500/20">
- <Activity size={20} />
- </div>
- </div>
+ <div className="grid grid-cols-2 gap-4 z-10 relative mt-4">
+    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none mb-2">Total Unique Views</span>
+        <span className="text-2xl font-black text-[var(--ease2event-text-primary)] leading-none">{profileViewsData?.totalUniqueViews || 0}</span>
+    </div>
+    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none mb-2">Today's Unique Views</span>
+        <span className="text-2xl font-black text-blue-600 leading-none">{profileViewsData?.todayUniqueViews || 0}</span>
+    </div>
+    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none mb-2">This Week</span>
+        <span className="text-xl font-bold text-[var(--ease2event-text-primary)] leading-none">{profileViewsData?.weekUniqueViews || 0}</span>
+    </div>
+    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none mb-2">This Month</span>
+        <span className="text-xl font-bold text-[var(--ease2event-text-primary)] leading-none">{profileViewsData?.monthUniqueViews || 0}</span>
+    </div>
  </div>
  </div>
 
@@ -268,24 +284,26 @@ const Dashboard = () => {
  <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)]">Earnings tracking over time</p>
  </div>
  <div className="flex bg-[var(--ease2event-bg-elevated)] p-1 rounded-lg border border-[var(--ease2event-border-subtle)]">
- <button 
- onClick={() => setChartView('live')}
- className={`cursor-pointer px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'live' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+ <select
+ value={selectedYear}
+ onChange={(e) => setSelectedYear(Number(e.target.value))}
+ className="bg-transparent text-[var(--ease2event-text-primary)] text-xs font-bold px-3 py-1.5 outline-none cursor-pointer appearance-none rounded-md hover:bg-[var(--ease2event-bg-surface)] transition-colors"
  >
- Live
- </button>
- <button 
- onClick={() => setChartView('history')}
- className={`cursor-pointer px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'history' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
- >
- History
- </button>
+ {availableYears.map(year => (
+ <option key={year} value={year} className="bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-primary)]">
+ {year}
+ </option>
+ ))}
+ </select>
+ <div className="px-2 flex items-center pointer-events-none text-[var(--ease2event-text-secondary)]">
+ <CalendarIcon size={14} />
+ </div>
  </div>
  </div>
 
  <div className="h-[280px] w-full mt-4">
  <ResponsiveContainer width="100%" height="100%">
- <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+ <AreaChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 20 }}>
  <defs>
  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
@@ -293,7 +311,7 @@ const Dashboard = () => {
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--ease2event-border-subtle)" />
- <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-secondary)', fontSize: 11, fontWeight: 700 }} dy={15} />
+ <XAxis dataKey="name" interval={0} axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-secondary)', fontSize: 11, fontWeight: 700 }} dy={15} />
  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--ease2event-text-secondary)', fontSize: 11, fontWeight: 700 }} />
  <Tooltip
  contentStyle={{ backgroundColor: 'var(--ease2event-bg-surface)', borderRadius: '16px', border: '1px solid var(--ease2event-border-subtle)', padding: '16px' }}

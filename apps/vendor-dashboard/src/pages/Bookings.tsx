@@ -26,6 +26,7 @@ import api from '../lib/api';
  venueName: string;
  clientName: string;
  date: string;
+ rawDate: string;
  time: string;
  guests: number;
  amount: string;
@@ -54,6 +55,7 @@ const Bookings: React.FC = () => {
  venueName: b.service?.title || 'Main Hub',
  clientName: b.user?.name || 'Customer',
  date: b.eventDate ? new Date(b.eventDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD',
+ rawDate: b.eventDate,
  time: '10:00 AM - 06:00 PM', // Placeholder unless stored in DB
  guests: 100, // Placeholder
  amount: `₹${Number(b.totalAmount || 0).toLocaleString()}`,
@@ -70,7 +72,7 @@ const Bookings: React.FC = () => {
  { label: 'Total Revenue', value: `₹${bookings.reduce((sum: number, b: Booking) => sum + parseInt(b.amount.replace(/[^0-9.-]+/g,"")), 0).toLocaleString()}`, icon: Target, trend: '+18%' },
  ];
 
- const [viewMode, setViewMode] = useState<'daily' | 'weekly'>('daily');
+ const [viewMode, setViewMode] = useState<'weekly' | 'monthly'>('weekly');
 
 
 
@@ -101,11 +103,28 @@ const Bookings: React.FC = () => {
  };
 
  const filteredBookings = bookings.filter((booking: Booking) => {
- const matchesFilter = filter === 'all' || booking.status.toLowerCase() === filter.toLowerCase();
- const matchesSearch = booking.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
- booking.venueName.toLowerCase().includes(searchQuery.toLowerCase());
- return matchesFilter && matchesSearch;
- });
+  const matchesFilter = filter === 'all' || booking.status.toLowerCase() === filter.toLowerCase();
+  const matchesSearch = booking.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  booking.venueName.toLowerCase().includes(searchQuery.toLowerCase());
+  
+  let matchesTimeframe = true;
+  if (booking.rawDate) {
+      const eventDate = new Date(booking.rawDate);
+      const now = new Date();
+      if (viewMode === 'weekly') {
+          const startOfWeek = new Date(now);
+          startOfWeek.setDate(now.getDate() - now.getDay());
+          startOfWeek.setHours(0,0,0,0);
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 7);
+          matchesTimeframe = eventDate >= startOfWeek && eventDate < endOfWeek;
+      } else if (viewMode === 'monthly') {
+          matchesTimeframe = eventDate.getMonth() === now.getMonth() && eventDate.getFullYear() === now.getFullYear();
+      }
+  }
+
+  return matchesFilter && matchesSearch && matchesTimeframe;
+  });
 
  return (
  <div
@@ -127,26 +146,26 @@ const Bookings: React.FC = () => {
  </div>
  </div>
 
- <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] ">
- <button
- onClick={() => setViewMode('daily')}
- className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'daily'
- ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
- : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
- }`}
- >
- Daily
- </button>
- <button
- onClick={() => setViewMode('weekly')}
- className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'weekly'
- ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
- : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
- }`}
- >
- Weekly
- </button>
- </div>
+  <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] ">
+  <button
+  onClick={() => setViewMode('weekly')}
+  className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'weekly'
+  ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
+  : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
+  }`}
+  >
+  Weekly
+  </button>
+  <button
+  onClick={() => setViewMode('monthly')}
+  className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'monthly'
+  ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
+  : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
+  }`}
+  >
+  Monthly
+  </button>
+  </div>
  </div>
 
  {/* Smart Stats Grid */}
@@ -193,59 +212,13 @@ const Bookings: React.FC = () => {
  />
  </div>
  </div>
-
- {/* Registry Flow (The \"Table\" replacement) */}
+ {/* Registry Flow (The "Table" replacement) */}
  <div className="grid grid-cols-1 gap-6">
- {viewMode === 'weekly' ? (
- <div
- key="weekly-timeline"
- className="bg-[var(--ease2event-bg-elevated)]/30 rounded-xl border border-[var(--ease2event-border-subtle)] p-6 "
- >
- <div className="flex items-center justify-between mb-10">
- <h2 className="text-lg font-bold tracking-tighter text-[var(--ease2event-text-primary)]">Weekly Timeline</h2>
- <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl border border-emerald-500/20 text-[10px] font-black tracking-widest">
- <Clock size={14} /> Real-time Sync
- </div>
- </div>
- <div className="overflow-x-auto pb-6 scrollbar-hide">
- <div className="grid grid-cols-7 gap-6 min-w-[1000px] lg:min-w-0">
- {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
- <div key={day} className="flex flex-col gap-6">
- <div className="text-center py-4 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] ">
- <p className="text-[11px] font-black text-[var(--ease2event-brand-primary)] tracking-[0.2em]">{day}</p>
- </div>
- <div className="flex-1 min-h-[250px] bg-[var(--ease2event-bg-elevated)]/40 rounded-3xl border border-dashed border-[var(--ease2event-border-subtle)]/40 flex flex-col items-center justify-start p-3 gap-4">
- {day === 'Wed' || day === 'Sat' ? (
- <div className="w-full p-5 bg-white dark:bg-slate-800 rounded-2xl border border-[var(--ease2event-border-subtle)] hover:scale-[1.05] transition-all cursor-pointer ">
- <div className="flex items-center gap-2 mb-2">
- <Clock size={12} className="text-[var(--ease2event-brand-primary)]" />
- <p className="text-[9px] font-black text-[var(--ease2event-text-secondary)] tracking-widest">10:00 AM</p>
- </div>
- <p className="text-xs font-bold text-[var(--ease2event-text-primary)] leading-tight">Wedding Reception</p>
- <p className="text-[8px] font-bold text-[var(--ease2event-text-muted)] mt-2">Grand Ballroom</p>
- </div>
- ) : (
- <div className="mt-20 w-10 h-10 rounded-full border-2 border-dashed border-[var(--ease2event-text-muted)]/10 flex items-center justify-center">
- <Plus size={14} className="text-[var(--ease2event-text-muted)]/20" />
- </div>
- )}
- </div>
- </div>
- ))}
- </div>
- </div>
- <div className="mt-10 p-6 bg-[var(--ease2event-brand-primary)]/5 rounded-2xl border border-[var(--ease2event-brand-primary)]/20">
- <p className="text-sm font-bold text-[var(--ease2event-brand-primary)] flex items-center gap-2">
- <AlertCircle size={18} /> PRO TIP: Your weekly capacity is at 85% for this cluster.
- </p>
- </div>
- </div>
- ) : (
- <>
  {isLoading ? (
  <div className="text-center py-24 text-[var(--ease2event-text-secondary)]">Loading bookings...</div>
  ) : (
- filteredBookings.map((booking: Booking) => (
+ <>
+ {filteredBookings.map((booking: Booking) => (
  <div
  key={booking.id}
  className="card-minimal !p-0 overflow-hidden  transition-all group bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)] "
@@ -336,7 +309,7 @@ const Bookings: React.FC = () => {
  </div>
  </div>
  </div>
- )))}
+ ))}
 
  {filteredBookings.length === 0 && (
   <div

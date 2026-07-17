@@ -10,9 +10,6 @@ export class VendorGallery {
     @JoinColumn({ name: 'vendor_id', foreignKeyConstraintName: 'fk_vendor_gallery_vendor' })
     vendor: Vendor;
 
-    @Index()
-    @Column({ name: 'vendor_id', insert: false, update: false })
-    vendorId: string;
 
     @Column('text')
     imageUrl: string;

@@ -193,11 +193,36 @@ export class VendorsService {
             .where('booking.vendorId = :vendorId', { vendorId })
             .getRawOne();
 
+        const topServicesRaw = await this.bookingRepository
+            .createQueryBuilder('booking')
+            .leftJoin('booking.service', 'service')
+            .select([
+                'service.title as name',
+                'COUNT(*) as bookings',
+                'SUM(booking.total_amount) as revenue',
+                'service.is_active as status'
+            ])
+            .where('booking.vendorId = :vendorId', { vendorId })
+            .andWhere('service.id IS NOT NULL')
+            .groupBy('service.id')
+            .orderBy('revenue', 'DESC')
+            .limit(3)
+            .getRawMany();
+
+        const topServices = topServicesRaw.map(s => ({
+            name: s.name,
+            bookings: Number(s.bookings || 0),
+            revenue: `₹${Number(s.revenue || 0).toLocaleString('en-IN')}`,
+            occupancy: Math.floor(Math.random() * 20) + 70, // Mock occupancy for now
+            status: s.status ? 'Active' : 'Inactive'
+        }));
+
         return {
             pendingBookings: Number(stats.pending || 0),
             totalEvents: Number(stats.completed || 0),
             upcomingBookings: Number(stats.upcoming || 0),
-            totalEarnings: Number(stats.revenue || 0).toLocaleString('en-IN')
+            totalEarnings: Number(stats.revenue || 0).toLocaleString('en-IN'),
+            topNodes: topServices
         };
     }
 
@@ -262,8 +287,8 @@ export class VendorsService {
                 title: adData.title,
                 imageUrl: adData.imageUrl,
                 budget: Number(adData.budget) || 0,
-                vendor: vendor
             });
+            ad.vendor = vendor;
 
             const savedAd = await this.adRepository.save(ad);
             // @ts-ignore: Prevent circular JSON errors when serializing
@@ -278,7 +303,7 @@ export class VendorsService {
     async updateAd(userId: string, adId: string, updateData: any): Promise<VendorAd> {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
-        const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
+        const ad = await this.adRepository.findOne({ where: { id: adId, vendor: { id: vendor.id } } });
         if (!ad) throw new NotFoundException('Ad not found');
 
         Object.assign(ad, updateData);
@@ -288,7 +313,7 @@ export class VendorsService {
     async deleteAd(userId: string, adId: string): Promise<void> {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
-        const ad = await this.adRepository.findOne({ where: { id: adId, vendorId: vendor.id } });
+        const ad = await this.adRepository.findOne({ where: { id: adId, vendor: { id: vendor.id } } });
         if (!ad) throw new NotFoundException('Ad not found');
         await this.adRepository.remove(ad);
     }
@@ -332,7 +357,7 @@ export class VendorsService {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
         
-        const item = await this.galleryRepository.findOne({ where: { id: itemId, vendorId: vendor.id } });
+        const item = await this.galleryRepository.findOne({ where: { id: itemId, vendor: { id: vendor.id } } });
         if (!item) throw new NotFoundException('Asset not found in your gallery');
 
         await this.galleryRepository.remove(item);
@@ -342,7 +367,7 @@ export class VendorsService {
         const vendor = await this.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
         
-        await this.galleryRepository.delete({ vendorId: vendor.id });
+        await this.galleryRepository.delete({ vendor: { id: vendor.id } });
     }
 
     /**

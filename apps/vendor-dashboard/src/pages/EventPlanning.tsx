@@ -131,7 +131,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  Choose the event type that best matches your requirements
  </p>
  </div>
- <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
+ <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
  {eventTypes.map((type) => (
  <button
  key={type.id}
@@ -172,7 +172,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  Choose one or more catering styles for your event
  </p>
  </div>
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {cateringOptions.map((option) => (
  <button
  key={option}
@@ -361,7 +361,7 @@ const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  return (
  <div className="min-h-screen bg-[var(--ease2event-bg-base)] transition-colors pb-16">
  <div className="max-w-[1400px] mx-auto px-6 py-10">
- <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
  {/* Sidebar Navigator */}
  <div className="lg:col-span-1">
  <div className="card-minimal p-6 rounded-2xl border-[var(--ease2event-border-base)] sticky top-24 space-y-5">

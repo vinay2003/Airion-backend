@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
- Plus, Search, Filter, Edit3, X, Loader2,
+ Plus, Search, Filter, Edit3, Trash2, X, Loader2, Upload, IndianRupee,
  CheckCircle2, Info, Sparkles, Package as PackageIcon, Zap, DollarSign,
  Box, Layers, ArrowUpRight, ChevronRight, Activity, MapPin, Users,
  Globe, ShieldCheck, Star
@@ -28,7 +28,8 @@ const Products: React.FC = () => {
  const vendorId = user?.vendor?.id || '';
  const [searchTerm, setSearchTerm] = useState('');
  const [isAdding, setIsAdding] = useState(false);
- const [activeTab, setActiveTab] = useState('ALL_NODES');
+ const [editingId, setEditingId] = useState<string | null>(null);
+ const [activeTab, setActiveTab] = useState('ALL_SERVICES');
  const [submitting, setSubmitting] = useState(false);
  const [loading, setLoading] = useState(true);
  const [products, setProducts] = useState<any[]>([]);
@@ -57,8 +58,8 @@ const Products: React.FC = () => {
  const fetchData = async () => {
  if (!vendorId) return;
  try {
- const res = await api.get(`/services?vendorId=${vendorId}`) as { data: any[] };
- setProducts(res.data || []);
+ const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ setProducts(res || []);
  } catch (err) {
  console.error('Failed to load initial data');
  } finally {
@@ -69,6 +70,7 @@ const Products: React.FC = () => {
  }, [vendorId]);
 
  const resetForm = () => {
+ setEditingId(null);
  setFormData({
  title: '',
  description: '',
@@ -90,7 +92,47 @@ const Products: React.FC = () => {
  });
  };
 
- const handleCreateService = async () => {
+ const handleEditProduct = (product: any) => {
+ setEditingId(product.id);
+ setFormData({
+ title: product.title || '',
+ description: product.description || '',
+ basePrice: String(product.basePrice || ''),
+ categoryId: product.categoryId || '',
+ subcategoryId: product.subcategoryId || '',
+ guestCapacity: String(product.guestCapacity || ''),
+ locationType: product.locationType || 'onsite',
+ address: product.address || '',
+ city: product.city || '',
+ state: product.state || '',
+ images: product.images || [],
+ features: product.features || [],
+ packages: product.packages && product.packages.length > 0 ? product.packages.map((p: any) => ({
+ ...p,
+ price: String(p.price || '')
+ })) : [
+ { name: 'Silver', price: '', description: 'Basic tier with essential features', features: [], isPopular: false },
+ { name: 'Gold', price: '', description: 'Most popular choice for premium events', features: [], isPopular: true },
+ { name: 'Platinum', price: '', description: 'Luxury all-inclusive experience', features: [], isPopular: false },
+ ]
+ });
+ setIsAdding(true);
+ };
+
+ const handleDeleteProduct = async (id: string) => {
+ if (!window.confirm('Are you sure you want to delete this service?')) return;
+ try {
+ await api.delete(`/services/${id}`);
+ toast.success('Service deleted successfully!');
+ const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ setProducts(res || []);
+ } catch (err) {
+ console.error('Deletion failed:', err);
+ toast.error('Failed to delete service.');
+ }
+ };
+
+ const handleSaveService = async () => {
  if (!formData.title || !formData.basePrice) {
  toast.error('Product Title and Base Price are required.');
  return;
@@ -113,15 +155,20 @@ const Products: React.FC = () => {
  }))
  };
 
+ if (editingId) {
+ await api.put(`/services/${editingId}`, submission);
+ toast.success('Service updated successfully!');
+ } else {
  await api.post('/services', submission);
- toast.success('Inventory node synchronized!');
+ toast.success('Service created successfully!');
+ }
  resetForm();
  setIsAdding(false);
- const res = await api.get(`/services?vendorId=${vendorId}`) as { data: any[] };
- setProducts(res.data || []);
+ const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ setProducts(res || []);
  } catch (err) {
  console.error('Submission failed:', err);
- toast.error('Failed to synchronize node. Please check your connection.');
+ toast.error('Failed to save service. Please check your connection.');
  } finally {
  setSubmitting(false);
  }
@@ -131,7 +178,7 @@ const Products: React.FC = () => {
  const file = e.target.files?.[0];
  if (!file) return;
 
- toast.loading('Synchronizing Visual Node...', { id: 'upload' });
+ toast.loading('Uploading Image...', { id: 'upload' });
  try {
  const data = await uploadImage(file);
  const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
@@ -153,8 +200,8 @@ const Products: React.FC = () => {
  const filteredProducts = products.filter(p => {
  const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase());
  let matchesTab = true;
- if (activeTab === 'ACTIVE_SYNC') matchesTab = p.isActive !== false;
- if (activeTab === 'ARCHIVE_CMD') matchesTab = p.isActive === false;
+ if (activeTab === 'ACTIVE') matchesTab = p.isActive !== false;
+ if (activeTab === 'ARCHIVED') matchesTab = p.isActive === false;
  return matchesSearch && matchesTab;
  });
 
@@ -183,27 +230,27 @@ const Products: React.FC = () => {
  <div className="flex items-center gap-3 mt-4">
  <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded-full border border-blue-500/20">
  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
- Product Sync Active
+ Service Active
  </span>
- <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] tracking-widest leading-none">Asset Definition • Pricing Matrix</p>
+ <p className="text-[var(--ease2event-text-secondary)] font-bold text-[10px] tracking-widest leading-none">Service & Pricing Details</p>
  </div>
  </div>
 
  <div className="flex items-center gap-4">
- <Button onClick={() => { resetForm(); setIsAdding(false); }} className="px-5 h-12 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl font-bold text-xs tracking-widest text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] transition-all">
+ <Button onClick={() => { resetForm(); setIsAdding(false); }} className="cursor-pointer flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-secondary)] hover:bg-[var(--ease2event-bg-surface)] hover:text-[var(--ease2event-text-primary)] transition-all active:scale-95 whitespace-nowrap">
  Discard
  </Button>
  <Button
- onClick={handleCreateService}
+ onClick={handleSaveService}
  disabled={submitting}
- className="px-6 h-12 bg-[var(--ease2event-brand-primary)] text-white /20 rounded-2xl font-bold text-xs tracking-widest  transition-all active:scale-95"
+ className="cursor-pointer px-6 h-12 bg-[var(--ease2event-brand-primary)] text-white rounded-2xl font-bold text-xs tracking-widest transition-all active:scale-95 hover:opacity-90 flex items-center justify-center"
  >
- {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Register Product'}
+ {submitting ? <Loader2 size={18} className="animate-spin" /> : (editingId ? 'Update Service' : 'Save Service')}
  </Button>
  </div>
  </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
  {/* Section: Basic Intelligence */}
  <div className="card-minimal p-6 space-y-6 bg-[var(--ease2event-bg-surface)] ">
@@ -251,7 +298,7 @@ const Products: React.FC = () => {
  <div className="space-y-3">
  <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Base Price (₹)</label>
  <div className="relative">
- <DollarSign size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-brand-primary)]" />
+ <IndianRupee size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--ease2event-brand-primary)]" />
  <input
  type="number"
  value={formData.basePrice}
@@ -278,7 +325,7 @@ const Products: React.FC = () => {
  <div className="space-y-6">
  {/* Section: Asset Visuals */}
  <div className="card-minimal p-5 space-y-5 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.05] to-transparent ">
- <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] font-display tracking-tight">Node Visuals</h3>
+ <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] font-display tracking-tight">Service Images</h3>
  <div className="grid grid-cols-2 gap-4">
  {formData.images.map((img, i) => (
  <div key={i} className="aspect-square rounded-2xl overflow-hidden relative group border border-[var(--ease2event-border-subtle)]">
@@ -291,11 +338,29 @@ const Products: React.FC = () => {
  </button>
  </div>
  ))}
- <label className="aspect-square rounded-2xl border-2 border-dashed border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/30 flex flex-col items-center justify-center text-center p-4 group cursor-pointer hover:bg-[var(--ease2event-bg-elevated)]  transition-all">
+ </div>
+ <div className="flex flex-col gap-3 col-span-2">
+ <div className="flex flex-col sm:flex-row gap-3">
+ <input
+ placeholder="https://image-url..."
+ className="w-full bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-2xl py-3 px-4 font-bold text-sm text-[var(--ease2event-text-primary)] focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 outline-none placeholder:text-[var(--ease2event-text-secondary)] transition-all"
+ onKeyDown={(e) => {
+ if (e.key === 'Enter') {
+ e.preventDefault();
+ const val = (e.target as HTMLInputElement).value;
+ if (val) {
+ setFormData(prev => ({ ...prev, images: [...prev.images, val] }));
+ (e.target as HTMLInputElement).value = '';
+ }
+ }
+ }}
+ />
+ <label className="cursor-pointer bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] hover:border-[var(--ease2event-brand-primary)]/50 hover:bg-[var(--ease2event-brand-primary)]/10 text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] font-semibold text-xs sm:text-sm h-12 sm:h-auto px-6 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-all shrink-0">
+ <Upload size={16} /> Upload Image
  <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
- <Plus size={16} className="text-[var(--ease2event-text-muted)] group-hover:text-[var(--ease2event-brand-primary)] group-hover:scale-125 transition-all mb-2" />
- <p className="text-[8px] font-black text-[var(--ease2event-text-muted)] tracking-[0.1em]">Sync Link</p>
  </label>
+ </div>
+ <p className="text-xs text-[var(--ease2event-text-secondary)] font-semibold">Press enter to add URL or upload directly from device.</p>
  </div>
  </div>
 
@@ -307,7 +372,7 @@ const Products: React.FC = () => {
  <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6 tracking-tight relative z-10">Registry Status</h3>
  <div className="space-y-6 relative z-10">
  <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
- <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Sync Level</span>
+ <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Status</span>
  <span className="text-sm font-bold text-[var(--ease2event-brand-primary)]">ALPHA_CMD_01</span>
  </div>
  <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
@@ -337,7 +402,7 @@ const Products: React.FC = () => {
  <div className="space-y-6 relative z-10">
  <div className="flex justify-between items-center">
  <span className="text-xl font-bold text-[var(--ease2event-text-primary)]">{pkg.name}</span>
- {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold non-italic px-4 py-1.5 rounded-full /30">Priority Node</Badge>}
+ {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold non-italic px-4 py-1.5 rounded-full /30">Popular</Badge>}
  </div>
  <div className="space-y-3">
  <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Tier Capture (₹)</label>
@@ -387,22 +452,22 @@ const Products: React.FC = () => {
  {/* Header Section */}
  <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)]">
  <div >
- <h1 className="text-xl font-bold normal-case tracking-normal leading-normal">Inventory Registry</h1>
+ <h1 className="text-xl font-bold normal-case tracking-normal leading-normal">Services List</h1>
  <div className="flex items-center gap-3 mt-4">
  <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold rounded-full border border-emerald-500/20">
  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
- Registry Active
+ Active
  </span>
- <p className="text-base font-semibold normal-case tracking-normal flex items-center gap-2">Asset Throughput • Portfolio Matrix</p>
+ <p className="text-base font-semibold normal-case tracking-normal flex items-center gap-2">Grid View</p>
  </div>
  </div>
  <div >
  <Button
  onClick={() => setIsAdding(true)}
- className="h-10 px-6 bg-[var(--ease2event-brand-primary)] text-white /30 rounded-2xl font-bold text-xs tracking-widest  transition-all active:scale-95"
+ className="cursor-pointer flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
  leftIcon={<Plus size={18} />}
  >
- Register New Node
+ Add New Service
  </Button>
  </div>
  </div>
@@ -413,18 +478,18 @@ const Products: React.FC = () => {
  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-muted)] group-focus-within:text-[var(--ease2event-brand-primary)] transition-colors" size={16} />
  <input
  type="text"
- placeholder="SEARCH_REGISTRY_NODES..."
+ placeholder="Search Services..."
  className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] tracking-widest transition-all"
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
  />
  </div>
  <div className="flex flex-wrap gap-5 items-center px-4">
- {['ALL_NODES', 'ACTIVE_SYNC', 'ARCHIVE_CMD'].map(tab => (
+ {['ALL_SERVICES', 'ACTIVE', 'ARCHIVED'].map(tab => (
  <button
  key={tab}
  onClick={() => setActiveTab(tab)}
- className={`py-4 text-sm font-bold tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
+ className={`cursor-pointer py-4 text-sm font-bold tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
  >
  <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-'}`}>
  {tab.replace('_', ' ')}
@@ -434,7 +499,7 @@ const Products: React.FC = () => {
  </div>
  </div>
 
- {/* Asset Node Grid */}
+ {/* Service Grid */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {loading ? (
  [1, 2, 3].map(i => (
@@ -460,8 +525,9 @@ const Products: React.FC = () => {
  {prod.guestCapacity ? 'Operational Venue' : 'Service Unit'}
  </Badge>
  </div>
- <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all ">
- <button className="p-3 bg-white/10 backdrop-blur-xl text-white rounded-2xl border border-white/20 hover:bg-white/20 transition-all "><Edit3 size={16} /></button>
+ <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all flex flex-col gap-2">
+ <button onClick={(e) => { e.stopPropagation(); handleEditProduct(prod); }} className="cursor-pointer p-3 bg-white/10 backdrop-blur-xl text-white rounded-2xl border border-white/20 hover:bg-white/20 transition-all shadow-sm"><Edit3 size={16} /></button>
+ <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(prod.id); }} className="cursor-pointer p-3 bg-red-500/80 backdrop-blur-xl text-white rounded-2xl border border-red-500/20 hover:bg-red-500 transition-all shadow-sm"><Trash2 size={16} /></button>
  </div>
  </div>
  <div className="p-5 flex-1 flex flex-col space-y-6">

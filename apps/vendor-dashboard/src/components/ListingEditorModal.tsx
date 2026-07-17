@@ -4,71 +4,70 @@ import api, { uploadImage } from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ListingEditorModalProps {
- isOpen: boolean;
- onClose: () => void;
- listing?: any; // If null, means 'Add New'
- onSave: (data: any) => Promise<void>;
+    isOpen: boolean;
+    onClose: () => void;
+    listing?: any; // If null, means 'Add New'
+    onSave: (data: any) => Promise<void>;
 }
 
 const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose, listing, onSave }) => {
- const [loading, setLoading] = useState(false);
- const [success, setSuccess] = useState(false);
- const [formData, setFormData] = useState({
- title: '',
- description: '',
- price: '',
- location: '',
- capacity: '',
- category: 'Venue',
- image: '',
- images: [] as string[]
- });
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        price: '',
+        location: '',
+        capacity: '',
+        category: 'Venue',
+        image: '',
+        images: [] as string[]
+    });
 
- useEffect(() => {
- if (listing) {
- setFormData({
- title: listing.title || '',
- description: listing.description || '',
- price: listing.price || '',
- location: listing.location || '',
- capacity: listing.capacity || '',
- category: listing.category || 'Venue',
- image: listing.image || '',
- images: listing.images || []
- });
- } else {
- setFormData({ title: '', description: '', price: '', location: '', capacity: '', category: 'Venue', image: '', images: [] });
- }
- }, [listing, isOpen]);
+    useEffect(() => {
+        if (listing) {
+            setFormData({
+                title: listing.title || '',
+                description: listing.description || '',
+                price: listing.price || '',
+                location: listing.location || '',
+                capacity: listing.capacity || '',
+                category: listing.category || 'Venue',
+                image: listing.image || '',
+                images: listing.images || []
+            });
+        } else {
+            setFormData({ title: '', description: '', price: '', location: '', capacity: '', category: 'Venue', image: '', images: [] });
+        }
+    }, [listing, isOpen]);
 
- const handleSubmit = async (e: React.FormEvent) => {
- e.preventDefault();
- setLoading(true);
- try {
- await onSave(formData);
- setSuccess(true);
- setTimeout(() => {
- setSuccess(false);
- onClose();
- }, 1000);
- } catch (error) {
- console.error(error);
- alert("Failed to save listing");
- } finally {
- setLoading(false);
- }
- };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await onSave(formData);
+            setSuccess(true);
+            setTimeout(() => {
+                setSuccess(false);
+                onClose();
+            }, 1000);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save listing");
+        } finally {
+            setLoading(false);
+        }
+    };
 
- return (
+    return (
  <AnimatePresence>
  {isOpen && (
- <div key="modal-backdrop" className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-sm">
- <div
- 
- 
- 
- 
- className="bg-white dark:bg-slate-950 w-full max-w-xl h-full shadow-2xl flex flex-col border-l border-slate-200 dark:border-slate-800"
+ <div key="modal-backdrop" className="fixed inset-0 z-[999] flex items-center justify-center pt-[100px] pb-6 px-4 sm:px-8 bg-slate-900/60 backdrop-blur-md">
+ <motion.div
+ initial={{ opacity: 0, scale: 0.95, y: 20 }}
+ animate={{ opacity: 1, scale: 1, y: 0 }}
+ exit={{ opacity: 0, scale: 0.95, y: 20 }}
+ className="bg-white dark:bg-slate-950 w-full max-w-2xl max-h-[calc(100vh-120px)] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800"
  >
  {/* Header */}
  <div className="flex justify-between items-center p-4 border-b border-slate-100 dark:border-slate-800">
@@ -289,7 +288,7 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  <button
  type="button"
  onClick={onClose}
- className="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+ className="cursor-pointer px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
  >
  Cancel
  </button>
@@ -297,7 +296,7 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  type="submit"
  form="listing-form"
  disabled={loading || success}
- className={`px-6 py-2.5 rounded-lg text-sm font-bold text-white transition-all flex items-center justify-center min-w-[120px] shadow-md ${success
+ className={`cursor-pointer px-6 py-2.5 rounded-lg text-sm font-bold text-white transition-all flex items-center justify-center min-w-[120px] shadow-md ${success
  ? 'bg-emerald-500 shadow-emerald-500/30'
  : 'bg-red-500 hover:bg-red-600 shadow-red-500/30 .5'
  } disabled:opacity-70 disabled:hover:translate-y-0`}
@@ -307,11 +306,11 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  ) : success ? (
  <><CheckCircle size={20} className="mr-2" /> Saved!</>
  ) : (
- <><Save size={20} className="mr-2" /> Save Listing</>
+ <><Save size={20} className="mr-2" /> Save Service</>
  )}
  </button>
  </div>
- </div>
+ </motion.div>
  <style key="modal-styles">{`
  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }

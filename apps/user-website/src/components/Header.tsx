@@ -7,7 +7,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useAuth } from '@ease2event/shared/auth';
+import { useAuth, getPortalUrl } from '@ease2event/shared/auth';
 import { getSocket } from '@shared/auth/socket';
 
 // ─────────────────────────────────────────────
@@ -57,14 +57,25 @@ const UserProfileMenu = ({
                         <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email}</p>
                     </div>
                     <div className="p-2">
-                        <Link
-                            to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
-                            onClick={() => setIsUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
-                        >
-                            <LayoutDashboard size={18} />
-                            {user?.role === 'vendor' ? 'Vendor Dashboard' : (user?.role === 'admin' ? 'Admin Panel' : 'User Dashboard')}
-                        </Link>
+                        {user?.role === 'user' ? (
+                            <Link
+                                to="/dashboard"
+                                onClick={() => setIsUserMenuOpen(false)}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                            >
+                                <LayoutDashboard size={18} />
+                                User Dashboard
+                            </Link>
+                        ) : (
+                            <a
+                                href={getPortalUrl(user?.role as any)}
+                                onClick={() => setIsUserMenuOpen(false)}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                            >
+                                <LayoutDashboard size={18} />
+                                {user?.role === 'vendor' ? 'Vendor Dashboard' : 'Admin Panel'}
+                            </a>
+                        )}
                         <Link
                             to="/dashboard/settings"
                             onClick={() => setIsUserMenuOpen(false)}
@@ -255,14 +266,25 @@ const Header: React.FC = () => {
                     </Link>
                 )}
                 {isAuthenticated && (
-                    <Link
-                        to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
-                        onClick={() => setHasNewNotifications(false)}
-                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative group"
-                        title={user?.role === 'vendor' ? 'Go to Vendor Dashboard' : (user?.role === 'admin' ? 'Go to Admin Panel' : 'Go to User Dashboard')}
-                    >
-                        <LayoutDashboard size={20} className="group-hover:scale-110 transition-transform" />
-                    </Link>
+                    user?.role === 'user' ? (
+                        <Link
+                            to="/dashboard"
+                            onClick={() => setHasNewNotifications(false)}
+                            className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative group"
+                            title="Go to User Dashboard"
+                        >
+                            <LayoutDashboard size={20} className="group-hover:scale-110 transition-transform" />
+                        </Link>
+                    ) : (
+                        <a
+                            href={getPortalUrl(user?.role as any)}
+                            onClick={() => setHasNewNotifications(false)}
+                            className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative group"
+                            title={user?.role === 'vendor' ? 'Go to Vendor Dashboard' : 'Go to Admin Panel'}
+                        >
+                            <LayoutDashboard size={20} className="group-hover:scale-110 transition-transform" />
+                        </a>
+                    )
                 )}
                 {isAuthenticated && (
                     <Link
@@ -452,14 +474,25 @@ const Header: React.FC = () => {
                                                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Member ID: #2384</span>
                                             </div>
                                         </div>
-                                        <Link
-                                            to={user?.role === 'vendor' ? '/vendor/' : (user?.role === 'admin' ? '/admin/' : '/dashboard')}
-                                            onClick={toggleMenu}
-                                            className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
-                                        >
-                                            <LayoutDashboard size={18} />
-                                            {user?.role === 'vendor' ? 'Vendor Portal' : (user?.role === 'admin' ? 'Admin Node' : 'User Dashboard')}
-                                        </Link>
+                                        {user?.role === 'user' ? (
+                                            <Link
+                                                to="/dashboard"
+                                                onClick={toggleMenu}
+                                                className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
+                                            >
+                                                <LayoutDashboard size={18} />
+                                                User Dashboard
+                                            </Link>
+                                        ) : (
+                                            <a
+                                                href={getPortalUrl(user?.role as any)}
+                                                onClick={toggleMenu}
+                                                className="flex items-center justify-center gap-2 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02]"
+                                            >
+                                                <LayoutDashboard size={18} />
+                                                {user?.role === 'vendor' ? 'Vendor Portal' : 'Admin Node'}
+                                            </a>
+                                        )}
                                         <button
                                             onClick={async () => {
                                                 toggleMenu();

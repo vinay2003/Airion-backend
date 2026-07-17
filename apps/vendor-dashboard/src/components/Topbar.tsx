@@ -1,9 +1,11 @@
 import React from 'react';
-import { Bell, Search, ChevronDown, Menu, Moon, Sun } from 'lucide-react';
+import { Bell, Search, ChevronDown, Menu, Moon, Sun, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
 import { useTheme } from '../context/ThemeContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '../lib/api';
 
 
 interface TopbarProps {
@@ -17,6 +19,45 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  const navigate = useNavigate();
  const [isNotifOpen, setIsNotifOpen] = React.useState(false);
  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+ const queryClient = useQueryClient();
+
+ const { data: notifications = [] } = useQuery({
+ queryKey: ['notifications'],
+ queryFn: async () => {
+ const res = await api.get('/notifications') as any;
+ return res.data || res;
+ },
+ enabled: !!user
+ });
+
+ const markAsRead = useMutation({
+ mutationFn: async (id: string) => await api.patch(`/notifications/${id}/read`),
+ onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] })
+ });
+
+ const markAllAsRead = useMutation({
+ mutationFn: async () => await api.post('/notifications/read-all'),
+ onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] })
+ });
+
+ const unreadCount = Array.isArray(notifications) ? notifications.filter((n: any) => !n.isRead).length : 0;
+
+ const handleNotificationClick = (notif: any) => {
+ if (!notif.isRead) markAsRead.mutate(notif.id);
+ setIsNotifOpen(false);
+ 
+ if (notif.type?.includes('booking')) {
+ navigate('/bookings');
+ } else if (notif.type === 'message_received' || notif.type?.includes('enquiry')) {
+ navigate('/enquiries');
+ } else if (notif.type === 'review_added') {
+ navigate('/analytics');
+ } else if (notif.type?.includes('listing') || notif.type?.includes('service')) {
+ navigate('/events');
+ } else if (notif.data?.url) {
+ navigate(notif.data.url);
+ }
+ };
 
  // Close menus when clicking outside
  const navRef = React.useRef<HTMLDivElement>(null);
@@ -54,17 +95,20 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  </div>
 
  <div ref={navRef} className="flex items-center justify-end gap-3 md:gap-6 flex-1 relative">
- <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent ">
+ <button onClick={() => window.location.href = 'http://localhost:5173'} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer">
+ <Home size={20} />
+ </button>
+ <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer">
  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
  </button>
 
  <div className="relative">
  <button
  onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); }}
- className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent  ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
+ className={`relative p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer ${isNotifOpen ? 'bg-[rgba(108,99,255,0.08)] text-[var(--ease2event-brand-primary)]' : ''}`}
  >
  <Bell size={20} />
- <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--ease2event-bg-surface)] z-10 animate-pulse"></span>
+ {unreadCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--ease2event-bg-surface)] z-10 animate-pulse"></span>}
  </button>
 
  {isNotifOpen && (
@@ -73,23 +117,21 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  <h3 className="font-bold text-[var(--ease2event-text-primary)]">Notifications</h3>
  </div>
  <div className="max-h-[300px] overflow-y-auto">
- {[
- { title: 'New Booking Request', time: '5m ago', desc: 'Riya sent a request for your venue.', unread: true },
- { title: 'Payment Received', time: '2h ago', desc: 'You received ₹50,000 for the Corporate Event.', unread: false },
- { title: 'Listing Approved', time: '1d ago', desc: 'Your new listing is now live!', unread: false },
- ].map((notif, i) => (
- <div key={i} className={`p-4 border-b border-[var(--ease2event-border-subtle)] last:border-0 hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer ${notif.unread ? 'bg-[var(--ease2event-brand-primary)]/5' : ''}`}>
+ {Array.isArray(notifications) && notifications.length > 0 ? notifications.map((notif: any, i: number) => (
+ <div key={i} onClick={() => handleNotificationClick(notif)} className={`p-4 border-b border-[var(--ease2event-border-subtle)] last:border-0 hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer ${!notif.isRead ? 'bg-[var(--ease2event-brand-primary)]/5' : ''}`}>
  <div className="flex justify-between items-start mb-1">
- <h4 className={`text-sm font-bold ${notif.unread ? 'text-[var(--ease2event-text-primary)]' : 'text-[var(--ease2event-text-secondary)]'}`}>{notif.title}</h4>
- <span className="text-xs font-bold text-[var(--ease2event-text-muted)]">{notif.time}</span>
+ <h4 className={`text-sm font-bold ${!notif.isRead ? 'text-[var(--ease2event-text-primary)]' : 'text-[var(--ease2event-text-secondary)]'}`}>{notif.title || 'Notification'}</h4>
+ <span className="text-xs font-bold text-[var(--ease2event-text-muted)]">{new Date(notif.createdAt).toLocaleDateString()}</span>
  </div>
- <p className="text-sm text-[var(--ease2event-text-muted)] font-semibold">{notif.desc}</p>
+ <p className="text-sm text-[var(--ease2event-text-muted)] font-semibold">{notif.message}</p>
  </div>
- ))}
+ )) : <div className="p-6 text-center text-sm font-bold text-[var(--ease2event-text-muted)]">No notifications</div>}
  </div>
- <div className="p-3 border-t border-[var(--ease2event-border-subtle)] text-center cursor-pointer hover:text-[var(--ease2event-brand-primary)]">
+ {unreadCount > 0 && (
+ <div onClick={() => markAllAsRead.mutate()} className="p-3 border-t border-[var(--ease2event-border-subtle)] text-center cursor-pointer hover:text-[var(--ease2event-brand-primary)]">
  <span className="text-xs font-bold text-[var(--ease2event-text-secondary)]">Mark all as read</span>
  </div>
+ )}
  </div>
  )}
  </div>

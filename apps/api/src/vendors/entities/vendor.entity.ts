@@ -35,6 +35,12 @@ export class Vendor {
     @Column('varchar', { name: 'gst_number', nullable: true })
     gstNumber: string | null;
 
+    @Column('varchar', { name: 'pan_number', nullable: true })
+    panNumber: string | null;
+
+    @Column('varchar', { name: 'aadhar_number', nullable: true })
+    aadharNumber: string | null;
+
     @Column('text', { name: 'acquisition_channels', array: true, nullable: true })
     acquisitionChannels: string[];
 

@@ -7,12 +7,90 @@ import toast from 'react-hot-toast';
 import { fetchProductById } from '../lib/api';
 
 const MOCK_PRODUCTS: Product[] = [
-    { id: 'm1', title: 'Premium LED Fairy Lights (50m)', price: 1200, category: 'Decor', image: 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600' },
-    { id: 'm2', title: 'Elegant Floral Centerpiece Set', price: 4500, category: 'Decor', image: 'https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600' },
-    { id: 'm3', title: 'Personalized Welcome Sign (Acrylic)', price: 3000, category: 'Signage', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600' },
-    { id: 'm4', title: 'Bridal Squad Satin Robes (Pack of 5)', price: 7500, category: 'Apparel', image: 'https://images.unsplash.com/photo-1516041042571-063943ed2949?q=80&w=600' },
-    { id: 'm5', title: 'Vintage Photo Booth Props Kit', price: 800, category: 'Entertainment', image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=600' },
-    { id: 'm6', title: 'Custom Engraved Champagne Flutes', price: 2200, category: 'Gifts', image: 'https://images.unsplash.com/photo-1510657158737-1424a520a23e?q=80&w=600' },
+    {
+        id: 'm1',
+        title: 'Premium LED Fairy Lights (50m)',
+        price: 1200,
+        category: 'Decor',
+        image: 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600',
+    },
+    {
+        id: 'm2',
+        title: 'Elegant Floral Centerpiece Set',
+        price: 4500,
+        category: 'Decor',
+        image: 'https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600',
+    },
+    {
+        id: 'm3',
+        title: 'Personalized Welcome Sign (Acrylic)',
+        price: 3000,
+        category: 'Signage',
+        image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600',
+    },
+    {
+        id: 'm4',
+        title: 'Bridal Squad Satin Robes (Pack of 5)',
+        price: 7500,
+        category: 'Apparel',
+        image: 'https://images.unsplash.com/photo-1516041042571-063943ed2949?q=80&w=600',
+    },
+    {
+        id: 'm5',
+        title: 'Vintage Photo Booth Props Kit',
+        price: 800,
+        category: 'Entertainment',
+        image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=600',
+    },
+    {
+        id: 'm6',
+        title: 'Custom Engraved Champagne Flutes',
+        price: 2200,
+        category: 'Gifts',
+        image: 'https://images.unsplash.com/photo-1510657158737-1424a520a23e?q=80&w=600',
+    },
+    {
+        id: 'm7',
+        title: 'Vintage Metal Lantern Candle Holder',
+        price: 1500,
+        category: 'Decor',
+        image: 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=600',
+    },
+    {
+        id: 'm8',
+        title: 'Groom & Groomsmen Bow Tie Set (Pack of 5)',
+        price: 3500,
+        category: 'Apparel',
+        image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600',
+    },
+    {
+        id: 'm9',
+        title: 'Golden Table Number Stands (Set of 1-20)',
+        price: 2500,
+        category: 'Signage',
+        image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=600',
+    },
+    {
+        id: 'm10',
+        title: 'Handmade Scented Soy Candles (Box of 4)',
+        price: 1800,
+        category: 'Gifts',
+        image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=600',
+    },
+    {
+        id: 'm11',
+        title: 'Wireless LED Party Uplighter (Rechargeable)',
+        price: 5200,
+        category: 'Entertainment',
+        image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600',
+    },
+    {
+        id: 'm12',
+        title: 'Custom Wooden Photo Guestbook',
+        price: 2800,
+        category: 'Gifts',
+        image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600',
+    }
 ];
 
 const ProductDetails: React.FC = () => {

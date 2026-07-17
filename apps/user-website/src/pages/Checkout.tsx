@@ -3,10 +3,13 @@ import { useCart } from '../context/CartContext';
 import { CreditCard, Wallet, Smartphone, Sparkles, Receipt, ArrowRight, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useRazorpay } from '../hooks/useRazorpay';
+import { checkoutMerchandise } from '../lib/api';
 
 const Checkout: React.FC = () => {
     const { items, totalPrice, clearCart } = useCart();
     const navigate = useNavigate();
+    const { openCheckout, loading: rzpLoading } = useRazorpay();
 
     // Form inputs
     const [name, setName] = useState('');
@@ -36,31 +39,97 @@ const Checkout: React.FC = () => {
 
     const finalPrice = Math.max(0, totalPrice - discount);
 
-    const handlePlaceOrder = (e: React.FormEvent) => {
+    const completeOrder = async (finalPaymentMethod: string) => {
+        const orderPayload = {
+            items: items.map(item => ({ productId: item.id, quantity: item.quantity })),
+            shippingAddress: `${address}, PIN: ${zip}`,
+            phone,
+            paymentMethod: finalPaymentMethod,
+        };
+
+        try {
+            await checkoutMerchandise(orderPayload);
+            toast.success('Order placed successfully!');
+            clearCart();
+            navigate('/booking-confirmation', {
+                state: {
+                    isMerchandise: true,
+                    orderTotal: finalPrice,
+                    paymentMethod: finalPaymentMethod,
+                    emiTenure: finalPaymentMethod === 'emi' ? emiTenure : undefined,
+                }
+            });
+        } catch (err: any) {
+            console.warn('Backend order placement failed, falling back to local storage', err);
+            // Fallback for mock products
+            try {
+                const mockOrders = JSON.parse(localStorage.getItem('ease2event_mock_orders') || '[]');
+                const newOrder = {
+                    id: `ord_${Date.now()}`,
+                    userId: 'mock-user-id',
+                    items: items.map(item => ({
+                        product: { title: item.title, price: item.price, image: item.image, category: item.category },
+                        quantity: item.quantity,
+                    })),
+                    totalAmount: finalPrice,
+                    shippingAddress: `${address}, PIN: ${zip}`,
+                    phone,
+                    paymentMethod: finalPaymentMethod,
+                    status: 'processing',
+                    createdAt: new Date().toISOString(),
+                };
+                mockOrders.push(newOrder);
+                localStorage.setItem('ease2event_mock_orders', JSON.stringify(mockOrders));
+
+                toast.success('Order placed successfully!');
+                clearCart();
+                navigate('/booking-confirmation', {
+                    state: {
+                        isMerchandise: true,
+                        orderTotal: finalPrice,
+                        paymentMethod: finalPaymentMethod,
+                        emiTenure: finalPaymentMethod === 'emi' ? emiTenure : undefined,
+                    }
+                });
+            } catch (e) {
+                toast.error('Failed to place order');
+            }
+        }
+    };
+
+    const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !phone || !address || !zip) {
             toast.error('Please fill in all shipping details!');
             return;
         }
 
-        if (paymentMethod === 'wallet' && walletBalance < finalPrice) {
-            toast.error('Insufficient wallet balance!');
-            return;
-        }
-
-        // Complete checkout
-        toast.success('Payment authorized successfully!');
-        clearCart();
-
-        // Redirect to booking confirmation layout or success page
-        navigate('/booking-confirmation', {
-            state: {
-                isMerchandise: true,
-                orderTotal: finalPrice,
-                paymentMethod,
-                emiTenure: paymentMethod === 'emi' ? emiTenure : undefined,
+        if (paymentMethod === 'wallet') {
+            if (walletBalance < finalPrice) {
+                toast.error('Insufficient wallet balance!');
+                return;
             }
-        });
+            // Complete checkout using wallet
+            toast.success('Wallet balance debited successfully!');
+            await completeOrder('wallet');
+        } else {
+            // Trigger Razorpay for 'gateway' or 'emi'
+            try {
+                await openCheckout(finalPrice, {
+                    description: `Event Merchandise Purchase (${items.length} items)`,
+                    userName: name,
+                    userPhone: phone,
+                    onSuccess: () => {
+                        completeOrder(paymentMethod);
+                    },
+                    onCancel: () => {
+                        toast.error('Payment cancelled by user');
+                    }
+                });
+            } catch (err: any) {
+                toast.error('Failed to launch Razorpay gateway');
+            }
+        }
     };
 
     return (
@@ -214,9 +283,10 @@ const Checkout: React.FC = () => {
 
                         <button
                             type="submit"
-                            className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black uppercase tracking-wider text-sm transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2"
+                            disabled={rzpLoading}
+                            className="w-full py-4 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white rounded-2xl font-black uppercase tracking-wider text-sm transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 cursor-pointer"
                         >
-                            Authorize Payment & Place Order <ArrowRight size={18} />
+                            {rzpLoading ? 'Opening Razorpay...' : 'Place Order'} <ArrowRight size={18} />
                         </button>
                     </form>
 

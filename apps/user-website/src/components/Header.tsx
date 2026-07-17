@@ -337,6 +337,19 @@ const Header: React.FC = () => {
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
 
+                <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
+                    aria-label="Open cart"
+                >
+                    <ShoppingCart size={18} />
+                    {totalItems > 0 && (
+                        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white dark:border-slate-900">
+                            {totalItems}
+                        </span>
+                    )}
+                </button>
+
                 <span className="hidden">
                     <button
                         onClick={toggleMenu}

@@ -21,6 +21,7 @@ const Vendors: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [page, setPage] = useState(1);
+    const [sortConfig, setSortConfig] = useState<{key: string, direction: 'asc' | 'desc'}>({key: '', direction: 'asc'});
     const { data: response, isLoading: loading } = useAdminVendors(page, 20, searchQuery, filter, 'all');
     const vendors: Vendor[] = response?.data || [];
     

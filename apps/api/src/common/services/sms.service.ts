@@ -20,56 +20,51 @@ export class SmsService {
     async sendOtpSms(phoneNumber: string, otp: string, context: string): Promise<void> {
         this.logger.log(`Dispatching SMS OTP [${context}] to ${phoneNumber}`);
 
-        // Strip the +91 if it exists since Fast2SMS usually takes 10-digit numbers for India
+        // Strip +91 prefix — Fast2SMS OTP route takes 10-digit Indian numbers
         const cleanNumber = phoneNumber.replace(/^\+91/, '').trim();
-        
+
         const apiKey = this.configService.get<string>('FAST2SMS_API_KEY');
 
-        // Send real SMS if we are in production OR if an API key is provided (for dev testing)
-        if (this.isProduction || (apiKey && apiKey !== 'your_fast2sms_api_key_here' && apiKey.length > 20)) {
-            
-            if (!apiKey) {
-                this.logger.error('❌ FAST2SMS_API_KEY is missing. SMS not sent.');
-                throw new InternalServerErrorException('SMS service is not configured properly.');
-            }
-
+        // Send real SMS if API key is configured (works in both dev and prod)
+        if (apiKey && apiKey !== 'your_fast2sms_api_key_here' && apiKey.length > 20) {
             try {
-                // Using Fast2SMS Quick Transactional Route
-                const response = await axios.post(
+                // Use Fast2SMS OTP route — does NOT require DLT registration
+                const response = await axios.get(
                     'https://www.fast2sms.com/dev/bulkV2',
                     {
-                        route: 'q',
-                        message: `Your Ease2event verification code is: ${otp}. Do not share this with anyone.`,
-                        language: 'english',
-                        flash: 0,
-                        numbers: cleanNumber,
-                    },
-                    {
-                        headers: {
+                        params: {
                             authorization: apiKey,
-                            'Content-Type': 'application/json',
+                            route: 'otp',
+                            variables_values: otp,
+                            flash: 0,
+                            numbers: cleanNumber,
                         },
                     }
                 );
 
+                this.logger.log(`📡 [FAST2SMS] Response: ${JSON.stringify(response.data)}`);
+
                 if (response.data.return === true) {
-                    this.logger.log(`✅ SMS dispatched to ${phoneNumber} successfully.`);
+                    this.logger.log(`✅ SMS dispatched to ${cleanNumber} successfully.`);
                 } else {
-                    throw new Error(response.data.message || 'Fast2SMS API failed');
+                    const errorMsg = Array.isArray(response.data.message)
+                        ? response.data.message.join(', ')
+                        : response.data.message || 'Fast2SMS API failed';
+                    throw new Error(errorMsg);
                 }
             } catch (error: any) {
                 const errorMsg = error?.response?.data?.message || error.message;
-                this.logger.error(`❌ [SMS_ERROR] Failed to send OTP to ${phoneNumber}: ${errorMsg}`);
-                
-                if (!this.isProduction) {
-                    this.logger.warn(`⚠️ SMS failed, but allowing dev flow to continue. USE THIS OTP: ${otp}`);
-                    return;
+                this.logger.error(`❌ [SMS_ERROR] Failed to send OTP to ${cleanNumber}: ${errorMsg}`);
+
+                if (this.configService.get('NODE_ENV') !== 'production') {
+                    this.logger.warn(`⚠️ [DEV] SMS failed — OTP for ${cleanNumber} is: ${otp}`);
+                    return; // Allow dev flow to continue
                 }
-                throw new InternalServerErrorException(errorMsg.includes('100 INR') ? 'SMS API requires ₹100 wallet balance.' : 'Failed to send SMS OTP. Please try again later.');
+                throw new InternalServerErrorException('Failed to send SMS OTP. Please try again later.');
             }
         } else {
-            // In development with no API key, just log the OTP for easy testing
-            this.logger.debug(`[DEV SMS MOCK] 📱 -> To: ${phoneNumber} | Code: ${otp} | Context: ${context}`);
+            // No API key configured — log OTP for dev testing
+            this.logger.warn(`[DEV SMS MOCK] 📱 -> To: ${cleanNumber} | Code: ${otp} | Context: ${context}`);
         }
     }
 }

@@ -21,10 +21,6 @@ const AdminLogin: React.FC = () => {
         try {
             const res = await adminAuth.sendOtp(phone.trim());
             toast.success(res.message || 'OTP sent to your phone');
-            // In dev mode, backend returns _dev_otp — show it in a toast for easy testing
-            if (res._dev_otp) {
-                toast(`Dev OTP: ${res._dev_otp}`, { icon: '🔑', duration: 15000 });
-            }
             setShowOTP(true);
         } catch (err: any) {
             const message = err?.response?.data?.message || 'Failed to send OTP';

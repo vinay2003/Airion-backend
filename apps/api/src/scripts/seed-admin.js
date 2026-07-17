@@ -2,7 +2,8 @@ const { Client } = require('pg');
 const crypto = require('crypto');
 
 async function seedAdmins() {
-    const databaseUrl = 'postgresql://neondb_owner:npg_MQvRIeE8u1NP@ep-bitter-bar-ahyodkz1-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require';
+    // Read database URL from active environment or fall back to the active NeonDB instance (ep-aged-frost)
+    const databaseUrl = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_UHIlwOxX0a2T@ep-aged-frost-aif42cf4-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
     const client = new Client({
         connectionString: databaseUrl,
         ssl: { rejectUnauthorized: false },

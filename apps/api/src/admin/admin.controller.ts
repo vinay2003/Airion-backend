@@ -186,6 +186,13 @@ export class AdminController {
         return { data };
     }
 
+    @Post('advertisements')
+    @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.MODERATOR)
+    async createAdvertisement(@Request() req: any, @Body() body: any) {
+        const data = await this.adminService.createAdvertisement(body, req.user.userId);
+        return { success: true, message: 'Advertisement created', data };
+    }
+
     @Patch('advertisements/:id/status')
     @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.MODERATOR)
     async updateAdvertisementStatus(

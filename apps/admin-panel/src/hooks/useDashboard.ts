@@ -21,7 +21,7 @@ export const useAdminDashboard = () => {
         queryKey: ['adminDashboard'],
         queryFn: async () => {
             const { data } = await authApi.get('/admin/dashboard');
-            return data;
+            return data.data || data;
         },
     });
 };

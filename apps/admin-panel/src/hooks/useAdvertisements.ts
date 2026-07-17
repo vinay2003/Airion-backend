@@ -28,3 +28,29 @@ export const useUpdateAdvertisementStatus = () => {
         }
     });
 };
+
+export const useCreateAdvertisement = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (adData: {
+            vendorId: string;
+            campaignName: string;
+            adType: string;
+            dailyBudget: number;
+            totalBudget: number;
+            startDate: string;
+            endDate: string;
+            mediaUrls?: string[];
+        }) => {
+            const { data } = await authApi.post('/admin/advertisements', adData);
+            return data;
+        },
+        onSuccess: () => {
+            toast.success('Campaign created successfully');
+            queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
+        },
+        onError: (err: any) => {
+            toast.error(err.response?.data?.message || 'Failed to create campaign');
+        }
+    });
+};

@@ -6,7 +6,7 @@ export const useAdminReports = (timeRange: string) => {
         queryKey: ['adminReports', timeRange],
         queryFn: async () => {
             const { data } = await authApi.get(`/admin/reports?timeRange=${timeRange}`);
-            return data;
+            return data.data || data;
         },
     });
 };

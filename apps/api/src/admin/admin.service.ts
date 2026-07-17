@@ -366,6 +366,58 @@ export class AdminService {
         }));
     }
 
+    async createAdvertisement(dto: {
+        vendorId: string;
+        campaignName: string;
+        adType: string;
+        dailyBudget: number;
+        totalBudget: number;
+        startDate: string;
+        endDate: string;
+        mediaUrls?: string[];
+    }, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const ad = this.adRepository.create({
+                vendorId: dto.vendorId,
+                campaignName: dto.campaignName,
+                adType: dto.adType.toLowerCase() as any,
+                dailyBudget: dto.dailyBudget,
+                totalBudget: dto.totalBudget,
+                startDate: new Date(dto.startDate),
+                endDate: new Date(dto.endDate),
+                mediaUrls: dto.mediaUrls || [],
+                status: 'active' as any, // Admin created ads are active by default
+                impressions: 0,
+                clicks: 0,
+            });
+
+            const savedAd = await queryRunner.manager.save(ad);
+
+            if (adminId) {
+                await this.logAdminAction(
+                    queryRunner,
+                    adminId,
+                    'CREATE_AD',
+                    'Advertisement',
+                    savedAd.id,
+                    null,
+                    savedAd
+                );
+            }
+
+            await queryRunner.commitTransaction();
+            return savedAd;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
     async updateAdvertisementStatus(id: string, status: string, adminId?: string) {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();

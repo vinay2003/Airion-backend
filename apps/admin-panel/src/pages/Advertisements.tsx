@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { Search, CheckCircle, XCircle, PauseCircle, Activity, DollarSign, Eye, MousePointer2, Image as ImageIcon, Calendar, Plus, UploadCloud } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Search, CheckCircle, XCircle, PauseCircle, Activity, Image as ImageIcon, Calendar, Plus, UploadCloud, Eye, MousePointer2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useAdminAdvertisements, useUpdateAdvertisementStatus } from '../hooks/useAdvertisements';
+import { useAdminAdvertisements, useUpdateAdvertisementStatus, useCreateAdvertisement } from '../hooks/useAdvertisements';
+import { useAdminVendors } from '../hooks/useVendors';
+import { authApi } from '@ease2event/shared/auth/api';
 
 interface Ad {
     id: string;
     campaignName: string;
     vendorName: string;
-    adType: 'Banner' | 'Native' | 'Video';
+    adType: 'Banner' | 'Native' | 'Video' | 'Featured' | 'Category' | 'City' | 'Event';
     status: 'pending' | 'active' | 'paused' | 'rejected';
     dailyBudget: number;
     totalBudget: number;
@@ -19,13 +21,117 @@ interface Ad {
 
 const Advertisements: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [uploading, setUploading] = useState(false);
+
+    // Form State
+    const [vendorId, setVendorId] = useState('');
+    const [campaignName, setCampaignName] = useState('');
+    const [adType, setAdType] = useState('Banner');
+    const [dailyBudget, setDailyBudget] = useState('');
+    const [totalBudget, setTotalBudget] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const { data: adsData, isLoading } = useAdminAdvertisements();
+    const { data: vendorsResponse } = useAdminVendors(1, 100, '', 'all', 'all');
+    const createAdMutation = useCreateAdvertisement();
     const updateStatusMutation = useUpdateAdvertisementStatus();
 
     const ads: Ad[] = adsData || [];
+    const vendors = vendorsResponse?.data || [];
 
     const updateAdStatus = async (id: string, status: Ad['status']) => {
         await updateStatusMutation.mutateAsync({ id, status });
+    };
+
+    const handleFileUpload = async (file: File) => {
+        if (!file.type.startsWith('image/')) {
+            return toast.error('Please upload an image file');
+        }
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await authApi.post('/uploads/image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            if (response.data?.url) {
+                setImageUrl(response.data.url);
+                toast.success('Banner uploaded successfully!');
+            } else {
+                throw new Error('No URL returned from upload');
+            }
+        } catch (err: any) {
+            toast.error('File upload failed. Using mock URL fallback.');
+            // Fallback for development/testing if Cloudinary config is missing
+            setImageUrl(URL.createObjectURL(file));
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) handleFileUpload(file);
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) handleFileUpload(file);
+    };
+
+    const handleBrowseClick = () => {
+        if (isModalOpen) {
+            fileInputRef.current?.click();
+        } else {
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!vendorId) return toast.error('Select a vendor');
+        if (!campaignName.trim()) return toast.error('Enter campaign name');
+        if (!dailyBudget || !totalBudget) return toast.error('Enter budget details');
+        if (!startDate || !endDate) return toast.error('Enter campaign dates');
+        if (!imageUrl) return toast.error('Please upload a campaign banner');
+
+        try {
+            await createAdMutation.mutateAsync({
+                vendorId,
+                campaignName: campaignName.trim(),
+                adType,
+                dailyBudget: parseFloat(dailyBudget),
+                totalBudget: parseFloat(totalBudget),
+                startDate,
+                endDate,
+                mediaUrls: [imageUrl],
+            });
+            setIsModalOpen(false);
+            // Reset form
+            setVendorId('');
+            setCampaignName('');
+            setAdType('Banner');
+            setDailyBudget('');
+            setTotalBudget('');
+            setStartDate('');
+            setEndDate('');
+            setImageUrl('');
+        } catch (err) {
+            // Error toast handled by hook
+        }
     };
 
     const filteredAds = ads.filter(ad => 
@@ -53,12 +159,23 @@ const Advertisements: React.FC = () => {
 
     return (
         <div className="fade-in pb-12">
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/*"
+                onChange={handleFileSelect} 
+            />
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                 <div>
                     <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Advertisements</h1>
                     <p className="text-sm font-medium text-[var(--ease2event-text-secondary)] mt-1">Manage vendor ad campaigns and monitor performance</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all">
+                <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                >
                     <Plus size={18} />
                     <span>Create Campaign</span>
                 </button>
@@ -79,14 +196,23 @@ const Advertisements: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Create Ad Card (Drag & Drop Preview) */}
-                <div className="bg-gray-50 dark:bg-slate-900/50 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-[32px] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group min-h-[400px]">
+                <div 
+                    onClick={() => setIsModalOpen(true)}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    className="bg-gray-50 dark:bg-slate-900/50 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-[32px] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group min-h-[400px]"
+                >
                     <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
                         <UploadCloud size={28} className="text-indigo-500" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Drag & Drop Media</h3>
-                    <p className="text-sm text-gray-500 max-w-sm mb-6">Upload banner images or promotional videos to preview ad placement instantly.</p>
-                    <button className="px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-bold rounded-xl shadow-sm hover:border-indigo-500 transition-colors">
-                        Browse Files
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Create New Ad Campaign</h3>
+                    <p className="text-sm text-gray-500 max-w-sm mb-6">Click to build a campaign, select a vendor, set target budget, and upload ad banner assets.</p>
+                    <button 
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
+                        className="px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-bold rounded-xl shadow-sm hover:border-indigo-500 transition-colors"
+                    >
+                        Start Campaign Builder
                     </button>
                 </div>
 
@@ -161,6 +287,171 @@ const Advertisements: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Campaign Creator Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-8">
+                        <button 
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                        >
+                            <X size={24} />
+                        </button>
+
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Ad Campaign</h2>
+                        <p className="text-sm text-gray-500 mb-6">Launch a new advertisement campaign on behalf of a vendor.</p>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Select Vendor</label>
+                                    <select
+                                        required
+                                        value={vendorId}
+                                        onChange={(e) => setVendorId(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    >
+                                        <option value="" className="text-gray-900 dark:bg-slate-900">Choose vendor...</option>
+                                        {vendors.map((v: any) => (
+                                            <option key={v.id} value={v.id} className="text-gray-900 dark:bg-slate-900">
+                                                {v.businessName || v.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Campaign Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="e.g. Summer Bridal Promo"
+                                        value={campaignName}
+                                        onChange={(e) => setCampaignName(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Ad Type</label>
+                                    <select
+                                        value={adType}
+                                        onChange={(e) => setAdType(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    >
+                                        <option value="Banner">Banner</option>
+                                        <option value="Native">Native</option>
+                                        <option value="Video">Video</option>
+                                        <option value="Featured">Featured</option>
+                                        <option value="Category">Category</option>
+                                        <option value="City">City</option>
+                                        <option value="Event">Event</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Daily Budget (₹)</label>
+                                    <input
+                                        type="number"
+                                        required
+                                        min="0"
+                                        placeholder="e.g. 500"
+                                        value={dailyBudget}
+                                        onChange={(e) => setDailyBudget(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Total Budget (₹)</label>
+                                    <input
+                                        type="number"
+                                        required
+                                        min="0"
+                                        placeholder="e.g. 5000"
+                                        value={totalBudget}
+                                        onChange={(e) => setTotalBudget(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Start Date</label>
+                                    <input
+                                        type="date"
+                                        required
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">End Date</label>
+                                    <input
+                                        type="date"
+                                        required
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Banner Asset Uploader */}
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Campaign Banner / Image</label>
+                                <div 
+                                    onDragOver={handleDragOver}
+                                    onDrop={handleDrop}
+                                    onClick={handleBrowseClick}
+                                    className="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl p-6 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors flex flex-col items-center justify-center gap-2"
+                                >
+                                    {uploading ? (
+                                        <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                                    ) : imageUrl ? (
+                                        <div className="relative group w-full max-h-48 overflow-hidden rounded-xl">
+                                            <img src={imageUrl} alt="Banner Preview" className="w-full h-full object-cover max-h-40" />
+                                            <button 
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); setImageUrl(''); }}
+                                                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 shadow hover:bg-red-700 transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <UploadCloud size={32} className="text-gray-400" />
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">Click or Drag & Drop image file here</p>
+                                            <p className="text-xs text-gray-500">Supports PNG, JPG, JPEG up to 5MB</p>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
+                                <button
+                                    type="submit"
+                                    disabled={createAdMutation.isPending || uploading}
+                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                >
+                                    {createAdMutation.isPending ? 'Creating Campaign...' : 'Launch Campaign'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -96,13 +96,13 @@ const Merchandise: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200/60 dark:border-slate-800 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                            className="bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200/60 dark:border-slate-800 overflow-hidden group transition-all duration-300"
                         >
                             <Link to={`/merchandise/${product.id}`} className="block relative aspect-square overflow-hidden bg-neutral-100 dark:bg-slate-800">
                                 <img
                                     src={product.image}
                                     alt={product.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover transition-transform duration-500"
                                     loading="lazy"
                                 />
                                 <div className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm">

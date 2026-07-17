@@ -174,12 +174,11 @@ const DashboardOverview: React.FC = () => {
                         {recentBookings.length > 0 ? recentBookings.map((booking: any) => (
                             <motion.div
                                 key={booking.id}
-                                whileHover={{ y: -5 }}
-                                className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all group relative overflow-hidden"
+                                className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-8 transition-all group relative overflow-hidden"
                             >
                                 <div className="w-full sm:w-40 sm:h-40 aspect-square rounded-[2rem] overflow-hidden flex-shrink-0 bg-neutral-100 dark:bg-slate-800 shadow-xl relative">
-                                    <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                    <img src={booking.imageUrl} alt={booking.vendorName} className="w-full h-full object-cover transition-transform duration-700" />
+                                    <div className="absolute inset-0 bg-black/10 transition-colors" />
                                 </div>
                                 <div className="flex-1 flex flex-col justify-between py-2">
                                     <div className="space-y-3">
@@ -270,12 +269,11 @@ const DashboardOverview: React.FC = () => {
                     {trendingVendors.map((vendor: any) => (
                         <motion.div
                             key={vendor.id}
-                            whileHover={{ y: -10 }}
                             className="flex-shrink-0 w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-neutral-300 dark:border-slate-800 shadow-xl group cursor-pointer"
                         >
                             <div className="relative h-48 overflow-hidden">
-                                <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 blur-[0.5px] group-hover:blur-0" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
+                                <img src={vendor.image} alt={vendor.name} className="w-full h-full object-cover transition-transform duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 transition-opacity" />
                                 <div className="absolute top-5 left-5 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl px-4 py-1.5 rounded-full text-[9px] font-black text-neutral-900 dark:text-white tracking-widest shadow-xl border border-white/20">
                                     {vendor.category}
                                 </div>

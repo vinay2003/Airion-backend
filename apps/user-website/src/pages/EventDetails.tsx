@@ -373,7 +373,7 @@ const EventDetails: React.FC = () => {
                                     { title: 'Premium', price: '₹99,999', desc: 'Premium event layout including professional photography and DJ.', features: ['Venue Access (8 hours)', 'Premium Floral Decor', 'Photography', 'DJ & Sound System'] },
                                     { title: 'Luxury', price: '₹1,49,999', desc: 'The ultimate luxury experience with full-end event planning.', features: ['Full Day Access', 'Luxury Themed Decor', 'Cinematic Videography', 'Gourmet Catering', 'Live Band'] }
                                 ]).map((pkg: any, idx: number) => (
-                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border-2 transition-all border-gray-100 dark:border-slate-800/80 hover:border-red-500/20 hover:shadow-xl hover:shadow-red-500/5 relative overflow-hidden group flex flex-col h-full">
+                                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border-2 transition-all border-gray-100 dark:border-slate-800/80 relative overflow-hidden group flex flex-col h-full">
                                         {idx === 1 && (
                                             <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
                                                 Most Popular

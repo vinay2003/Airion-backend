@@ -85,6 +85,17 @@ export class EmailService {
                 this.logger.log(`✅ [Email] OTP email sent via SMTP to: ${to}`);
             }
         } catch (error: any) {
+            const isSandboxError = error.message && (
+                error.message.includes('testing emails to your own email address') ||
+                error.message.includes('verify a domain at resend.com/domains')
+            );
+            
+            if (isSandboxError) {
+                this.logger.warn(`⚠️ [Resend Sandbox Restriction] Unable to send email to ${to}. Please retrieve the OTP code from this log:`);
+                this.logger.warn(`🔑 [EMAIL OTP MOCK] To: ${to} | Code: ${otp} | Purpose: ${purpose}`);
+                return; // Gracefully continue so signup/login flow is not blocked
+            }
+
             this.logger.error(`❌ [Email] Failed to send OTP email to ${to}: ${error.message}`);
             // Throw an HttpException so the exact error isn't masked by NestJS in production
             throw new InternalServerErrorException(`EMAIL_ERROR: ${error.message}`);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     Star, MapPin, ShieldCheck, Mail, Phone,
     Share2, Heart, Info, CheckCircle2,
@@ -13,9 +13,12 @@ import { Badge } from '@/components/ui/badge';
 import toast from 'react-hot-toast';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { useBookingCart } from '../context/BookingCartContext';
 
 const VendorProfile: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const { addToCart, isInCart } = useBookingCart();
     const [vendor, setVendor] = useState<any>(null);
     const [services, setServices] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([]);
@@ -186,8 +189,39 @@ const VendorProfile: React.FC = () => {
                                         <div className="flex items-center gap-2"><Star size={14} className="text-amber-400 fill-amber-400" /> {vendor.rating || '5.0'} <span className="text-[8px] text-slate-300">({vendor.totalReviews || 0})</span></div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4">
-                                    <Button className="h-10 px-8 rounded-lg font-black text-[10px] uppercase tracking-widest bg-primary text-white  transition-soft shadow-xl shadow-primary/20">
+                                <div className="flex items-center gap-3">
+                                    <Button
+                                        onClick={() => {
+                                            addToCart({
+                                                vendorId: id || vendor.id,
+                                                vendorName: vendor.businessName,
+                                                vendorImage: vendor.portfolioImages?.[0] || '',
+                                                vendorCategory: vendor.category?.name || 'Vendor',
+                                                vendorCity: vendor.city || '',
+                                                eventDate: '',
+                                                eventTime: '10:00',
+                                                guestCount: '50',
+                                                occasion: 'Wedding',
+                                                selectedPackage: 'Standard',
+                                                packagePrice: vendor.startingPrice || 50000,
+                                                selectedAddons: [],
+                                                addOnServices: [],
+                                                specialInstructions: '',
+                                            });
+                                            toast.success(`${vendor.businessName} added to booking cart!`);
+                                        }}
+                                        className={`h-10 px-6 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all ${
+                                            isInCart(id || vendor.id)
+                                                ? 'bg-green-600 text-white'
+                                                : 'bg-red-600 text-white hover:bg-red-700'
+                                        }`}
+                                    >
+                                        {isInCart(id || vendor.id) ? '✓ In Cart' : '+ Add to Booking Cart'}
+                                    </Button>
+                                    <Button
+                                        onClick={() => navigate('/booking-cart')}
+                                        className="h-10 px-6 rounded-lg font-black text-[10px] uppercase tracking-widest bg-neutral-900 text-white hover:bg-neutral-800 transition-all"
+                                    >
                                         Book Consultation
                                     </Button>
                                 </div>

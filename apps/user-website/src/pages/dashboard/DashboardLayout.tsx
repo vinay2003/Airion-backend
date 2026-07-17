@@ -18,7 +18,8 @@ import {
     Moon,
     Sun,
     Search,
-    Sparkles
+    Sparkles,
+    Home
 } from 'lucide-react';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { useAuth } from '@shared/auth/AuthContext';
@@ -218,6 +219,17 @@ const DashboardLayout: React.FC = () => {
                 </nav>
 
                 <div className="p-4 border-t border-neutral-200 dark:border-slate-800 space-y-2">
+                    <button
+                        onClick={() => {
+                            const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+                            window.location.href = landingUrl;
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all font-medium text-sm"
+                    >
+                        <Home size={20} />
+                        Go to Homepage
+                    </button>
+
                     <button
                         onClick={toggleTheme}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-neutral-600 dark:text-slate-400 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-all font-medium text-sm"

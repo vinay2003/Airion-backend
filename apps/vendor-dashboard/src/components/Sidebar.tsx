@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
 
@@ -76,19 +76,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  ))}
  </nav>
 
- <div className="p-4 border-t border-[var(--ease2event-border-subtle)]">
- <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
- <Avatar
- src={user?.vendor?.logo}
- name={user?.name || user?.email || 'Vendor'}
- size="md"
- />
- <div className="flex-1 min-w-0">
- <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>
- <p className="text-xs text-[var(--ease2event-text-muted)] truncate">View Profile</p>
- </div>
- </NavLink>
- </div>
+ <div className="p-4 border-t border-[var(--ease2event-border-subtle)] space-y-2">
+  <button
+   onClick={() => {
+    const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+    window.location.href = landingUrl;
+   }}
+   className="flex items-center gap-3 px-3 py-3 w-full rounded-lg text-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-primary)]/10 transition-all font-semibold text-sm"
+  >
+   <Home size={20} />
+   Go to Homepage
+  </button>
+  <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
+  <Avatar
+  src={user?.vendor?.logo}
+  name={user?.name || user?.email || 'Vendor'}
+  size="md"
+  />
+  <div className="flex-1 min-w-0">
+  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>
+  <p className="text-xs text-[var(--ease2event-text-muted)] truncate">View Profile</p>
+  </div>
+  </NavLink>
+  </div>
  </aside>
  </>
  );

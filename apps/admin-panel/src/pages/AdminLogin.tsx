@@ -5,7 +5,7 @@ import { useAuth } from '@ease2event/shared';
 import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
-    const { login } = useAuth();
+    const { loginWithResponse } = useAuth();
     const navigate = useNavigate();
     
     const [email, setEmail] = useState('');
@@ -41,7 +41,10 @@ const AdminLogin: React.FC = () => {
         setTimeout(() => {
             setLoading(false);
             // Simulate successful login
-            login('dummy-token', { id: 'admin1', name: 'Super Admin', email: 'admin@airion.com', role: 'admin' });
+            loginWithResponse({
+                access_token: 'dummy-token', 
+                user: { id: 'admin1', name: 'Super Admin', email: 'admin@airion.com', role: 'admin' }
+            });
             toast.success('Login successful');
             navigate('/');
         }, 1000);

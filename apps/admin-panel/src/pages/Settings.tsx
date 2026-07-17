@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { 
-    User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, 
-    Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw, X 
-} from 'lucide-react';
+import { User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
@@ -109,11 +106,10 @@ const Settings: React.FC = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                                    activeTab === tab.id
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
                                     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium'
-                                }`}
+                                    }`}
                             >
                                 <tab.icon size={18} />
                                 <span>{tab.label}</span>
@@ -125,7 +121,7 @@ const Settings: React.FC = () => {
                 {/* Content Area */}
                 <div className="flex-1 min-w-0">
                     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-8">
-                        
+
                         {activeTab === 'general' && (
                             <div className="space-y-8 animate-in fade-in">
                                 <div>
@@ -168,7 +164,7 @@ const Settings: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="pt-4 flex justify-end">
-                                    <button 
+                                    <button
                                         onClick={handleSaveGeneral}
                                         className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
                                     >
@@ -220,7 +216,7 @@ const Settings: React.FC = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleDeleteAdmin(admin.id)}
                                                             className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 rounded-lg transition-colors"
                                                             title="Delete admin"
@@ -363,7 +359,7 @@ const Settings: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="pt-4 flex justify-end">
-                                    <button 
+                                    <button
                                         onClick={handleSavePlatform}
                                         className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
                                     >
@@ -388,7 +384,7 @@ const Settings: React.FC = () => {
                                             <p className="text-sm text-rose-600 dark:text-rose-500/80 mt-1">Make platform temporarily inaccessible to users and vendors. Admins can still log in normally.</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => setSystemMaintenance(e.target.checked)} className="sr-only peer" />
+                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => setNotifySupport(e.target.checked)} className="sr-only peer" />
                                             <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                                         </label>
                                     </div>
@@ -399,7 +395,7 @@ const Settings: React.FC = () => {
                                                 <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5"><Database size={16} /> Database Backup</h3>
                                                 <p className="text-sm text-gray-500 mt-1">Export a full backup of the relational SQL database.</p>
                                             </div>
-                                            <button 
+                                            <button
                                                 onClick={handleBackupDatabase}
                                                 className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 transition-colors font-bold text-sm text-gray-700 dark:text-slate-200 shadow-sm flex items-center justify-center gap-2"
                                             >
@@ -412,7 +408,7 @@ const Settings: React.FC = () => {
                                                 <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5"><RefreshCw size={16} /> Clear Cache</h3>
                                                 <p className="text-sm text-gray-500 mt-1">Reset system memory caches and load active configuration.</p>
                                             </div>
-                                            <button 
+                                            <button
                                                 onClick={handleClearCache}
                                                 className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 transition-colors font-bold text-sm text-gray-700 dark:text-slate-200 shadow-sm flex items-center justify-center gap-2"
                                             >
@@ -436,7 +432,7 @@ const Settings: React.FC = () => {
                         </button>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Administrative Account</h2>
                         <p className="text-sm text-gray-500 mb-6 font-medium">Add a user with portal configuration control.</p>
-                        
+
                         <form onSubmit={handleAddAdmin} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Admin Name</label>

@@ -20,15 +20,15 @@ interface Plan {
     priority: number;
 }
 
-const EMPTY_FORM: Omit<Plan, 'id'> = {
+const EMPTY_FORM: Omit<Plan, 'id' | 'price' | 'priority'> & { price: number | ''; priority: number | '' } = {
     name: '',
     description: '',
     type: 'vendor',
-    price: 0,
+    price: '',
     billingCycle: 'monthly',
     features: [],
     isActive: true,
-    priority: 0,
+    priority: '',
 };
 
 const inputCls =
@@ -45,7 +45,7 @@ export default function Subscriptions() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
-    const [form, setForm] = useState<Omit<Plan, 'id'>>(EMPTY_FORM);
+    const [form, setForm] = useState<Omit<Plan, 'id' | 'price' | 'priority'> & { price: number | ''; priority: number | '' }>(EMPTY_FORM);
     const [featureInput, setFeatureInput] = useState('');
     const featureRef = useRef<HTMLInputElement>(null);
 
@@ -106,12 +106,17 @@ export default function Subscriptions() {
         if (form.features.length === 0) { toast.error('Add at least one feature'); return; }
         setSaving(true);
         try {
+            const payload = {
+                ...form,
+                price: form.price === '' ? 0 : Number(form.price),
+                priority: form.priority === '' ? 0 : Number(form.priority),
+            };
             if (editingPlan) {
-                const updated = await api.put(`/subscriptions/admin/plans/${editingPlan.id}`, form) as Plan;
+                const updated = await api.put(`/subscriptions/admin/plans/${editingPlan.id}`, payload) as Plan;
                 setPlans(prev => prev.map(p => p.id === editingPlan.id ? updated : p));
                 toast.success('Plan updated');
             } else {
-                const created = await api.post('/subscriptions/admin/plans', form) as Plan;
+                const created = await api.post('/subscriptions/admin/plans', payload) as Plan;
                 setPlans(prev => [...prev, created]);
                 toast.success('Plan created');
             }
@@ -410,7 +415,7 @@ export default function Subscriptions() {
                                             className={inputCls}
                                             placeholder="0"
                                             value={form.price}
-                                            onChange={e => setForm(f => ({ ...f, price: Number(e.target.value) }))}
+                                            onChange={e => setForm(f => ({ ...f, price: e.target.value === '' ? '' : Number(e.target.value) }))}
                                         />
                                     </div>
                                     <div>
@@ -420,7 +425,7 @@ export default function Subscriptions() {
                                             className={inputCls}
                                             placeholder="0"
                                             value={form.priority}
-                                            onChange={e => setForm(f => ({ ...f, priority: Number(e.target.value) }))}
+                                            onChange={e => setForm(f => ({ ...f, priority: e.target.value === '' ? '' : Number(e.target.value) }))}
                                         />
                                     </div>
                                 </div>

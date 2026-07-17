@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle, RefreshCcw, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAdminBookings, useUpdateBookingStatus } from '../hooks/useBookings';
+import { useAdminLocations } from '../hooks/useCategories';
 
 interface Booking {
     id: string;
@@ -26,6 +27,11 @@ const Bookings: React.FC = () => {
     
     const bookingsData: Booking[] = bookingsResponse?.data || [];
     const totalBookings = bookingsResponse?.total || 0;
+
+    const { data: locations = [] } = useAdminLocations();
+    const locationCities = (locations || []).map((l: any) => l.city).filter(Boolean);
+    const bookingCities = bookingsData.map(b => b.city).filter(Boolean);
+    const uniqueCities = Array.from(new Set([...locationCities, ...bookingCities])).sort();
 
     const stats = [
         { label: 'Total Bookings', value: totalBookings.toString(), icon: Calendar, color: 'blue' },
@@ -92,11 +98,11 @@ const Bookings: React.FC = () => {
                 <div className="flex flex-wrap gap-3 w-full md:w-auto">
                     <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
                         <Filter size={16} />
-                        <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
-                            <option value="All">All Cities</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Bangalore">Bangalore</option>
+                        <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold text-gray-900 dark:text-white">
+                            <option value="All" className="text-gray-900 dark:text-white dark:bg-slate-900">All Cities</option>
+                            {uniqueCities.map(city => (
+                                <option key={city} value={city} className="text-gray-900 dark:text-white dark:bg-slate-900">{city}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
@@ -134,13 +140,13 @@ const Bookings: React.FC = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="text-sm font-black text-gray-900 dark:text-white">#{booking.id}</span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4">
                                         <div className="flex items-center gap-1 group cursor-pointer">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.userName}</span>
                                             <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4">
                                         <div className="flex items-center gap-1 group cursor-pointer">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.vendorName}</span>
                                             <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />

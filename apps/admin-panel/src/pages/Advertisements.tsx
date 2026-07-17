@@ -9,7 +9,7 @@ interface Ad {
     id: string;
     campaignName: string;
     vendorName: string;
-    adType: 'Banner' | 'Native' | 'Video' | 'Featured' | 'Category' | 'City' | 'Event';
+    adType: 'Banner' | 'Featured' | 'Category' | 'City' | 'Event';
     status: 'pending' | 'active' | 'paused' | 'rejected';
     dailyBudget: number;
     totalBudget: number;
@@ -342,8 +342,6 @@ const Advertisements: React.FC = () => {
                                         className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
                                     >
                                         <option value="Banner">Banner</option>
-                                        <option value="Native">Native</option>
-                                        <option value="Video">Video</option>
                                         <option value="Featured">Featured</option>
                                         <option value="Category">Category</option>
                                         <option value="City">City</option>

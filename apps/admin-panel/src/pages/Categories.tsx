@@ -33,6 +33,18 @@ const Categories: React.FC = () => {
     // Modals
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+    const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+
+    // Languages State
+    const [languages, setLanguages] = useState([
+        { id: '1', name: 'English', code: 'en', isDefault: true, isActive: true },
+        { id: '2', name: 'Hindi', code: 'hi', isDefault: false, isActive: true },
+        { id: '3', name: 'Spanish', code: 'es', isDefault: false, isActive: false },
+    ]);
+
+    // Language Form States
+    const [newLangName, setNewLangName] = useState('');
+    const [newLangCode, setNewLangCode] = useState('');
 
     // Form States
     const [categoryName, setCategoryName] = useState('');
@@ -104,6 +116,67 @@ const Categories: React.FC = () => {
         }
     };
 
+    const handleAddLanguage = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newLangName.trim() || !newLangCode.trim()) {
+            return toast.error('Please enter both name and code');
+        }
+        if (languages.some(l => l.code.toLowerCase() === newLangCode.trim().toLowerCase())) {
+            return toast.error('Language code already exists');
+        }
+        const newLang = {
+            id: Date.now().toString(),
+            name: newLangName.trim(),
+            code: newLangCode.trim().toLowerCase(),
+            isDefault: false,
+            isActive: true,
+        };
+        setLanguages([...languages, newLang]);
+        setNewLangName('');
+        setNewLangCode('');
+        setIsLanguageModalOpen(false);
+        toast.success(`${newLang.name} added successfully!`);
+    };
+
+    const toggleLanguageStatus = (id: string) => {
+        setLanguages(languages.map(l => {
+            if (l.id === id) {
+                if (l.isDefault) {
+                    toast.error('Cannot deactivate default language');
+                    return l;
+                }
+                toast.success(`Language ${l.name} ${!l.isActive ? 'activated' : 'deactivated'}`);
+                return { ...l, isActive: !l.isActive };
+            }
+            return l;
+        }));
+    };
+
+    const setDefaultLanguage = (id: string) => {
+        setLanguages(languages.map(l => {
+            if (l.id === id) {
+                if (!l.isActive) {
+                    toast.error('Please activate this language first');
+                    return l;
+                }
+                toast.success(`${l.name} set as default language`);
+                return { ...l, isDefault: true };
+            }
+            return { ...l, isDefault: false };
+        }));
+    };
+
+    const handleDeleteLanguage = (id: string) => {
+        const lang = languages.find(l => l.id === id);
+        if (lang?.isDefault) {
+            return toast.error('Cannot delete default language');
+        }
+        if (confirm(`Are you sure you want to remove ${lang?.name}?`)) {
+            setLanguages(languages.filter(l => l.id !== id));
+            toast.success('Language removed');
+        }
+    };
+
     return (
         <div className="fade-in pb-12">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -112,15 +185,17 @@ const Categories: React.FC = () => {
                     <p className="text-sm font-medium text-[var(--ease2event-text-secondary)] mt-1">Manage categories, regions and languages</p>
                 </div>
                 
-                {activeTab !== 'languages' && (
-                    <button 
-                        onClick={() => activeTab === 'categories' ? setIsCategoryModalOpen(true) : setIsLocationModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
-                    >
-                        <Plus size={18} />
-                        {activeTab === 'categories' ? 'Add New Category' : 'Add New Region'}
-                    </button>
-                )}
+                <button 
+                    onClick={() => {
+                        if (activeTab === 'categories') setIsCategoryModalOpen(true);
+                        else if (activeTab === 'locations') setIsLocationModalOpen(true);
+                        else setIsLanguageModalOpen(true);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                >
+                    <Plus size={18} />
+                    {activeTab === 'categories' ? 'Add New Category' : activeTab === 'locations' ? 'Add New Region' : 'Add New Language'}
+                </button>
             </div>
 
             {/* Tabs */}
@@ -230,15 +305,71 @@ const Categories: React.FC = () => {
             )}
 
             {activeTab === 'languages' && (
-                <div className="flex flex-col items-center justify-center p-12 text-center bg-gray-50 dark:bg-slate-900/50 rounded-2xl border border-gray-200 dark:border-slate-800 border-dashed">
-                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                        <Languages size={24} className="text-gray-400" />
+                <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Language</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Code</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Default</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                {languages.map((lang) => (
+                                    <tr key={lang.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="font-bold text-gray-900 dark:text-white">{lang.name}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 rounded-lg text-xs font-bold font-mono uppercase">
+                                                {lang.code}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <button 
+                                                onClick={() => toggleLanguageStatus(lang.id)}
+                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase border transition-colors ${
+                                                    lang.isActive 
+                                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
+                                                        : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                                                }`}
+                                            >
+                                                {lang.isActive ? 'Active' : 'Inactive'}
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {lang.isDefault ? (
+                                                <span className="px-2.5 py-1 bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20 rounded-full text-xs font-bold uppercase">
+                                                    Default
+                                                </span>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => setDefaultLanguage(lang.id)}
+                                                    className="text-xs font-bold text-indigo-650 dark:text-indigo-400 hover:text-indigo-850 dark:hover:text-indigo-300"
+                                                >
+                                                    Set Default
+                                                </button>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button 
+                                                    onClick={() => handleDeleteLanguage(lang.id)} 
+                                                    disabled={lang.isDefault}
+                                                    className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-40 rounded-lg transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Language Localization</h3>
-                    <p className="text-sm text-gray-500 max-w-md">Currently the platform operates in English (Default). Add additional languages here to support localization for Vendors and Users.</p>
-                    <button className="mt-6 px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        Configure Languages
-                    </button>
                 </div>
             )}
 
@@ -337,6 +468,57 @@ const Categories: React.FC = () => {
                                     {createLocationMutation.isPending ? 'Creating...' : 'Add Location'}
                                 </button>
                                 <button type="button" onClick={() => setIsLocationModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Language Creator Modal */}
+            {isLanguageModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
+                        <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                            <X size={24} />
+                        </button>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add New Language</h2>
+                        <p className="text-sm text-gray-500 mb-6 font-medium">Add a language code to support multiple localizations.</p>
+                        
+                        <form onSubmit={handleAddLanguage} className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Language Name</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. Hindi, Spanish, French"
+                                    value={newLangName}
+                                    onChange={(e) => setNewLangName(e.target.value)}
+                                    className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Language Code</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. hi, es, fr"
+                                    value={newLangCode}
+                                    onChange={(e) => setNewLangCode(e.target.value)}
+                                    className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white font-mono"
+                                />
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
+                                <button
+                                    type="submit"
+                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                >
+                                    Add Language
+                                </button>
+                                <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                                     Cancel
                                 </button>
                             </div>

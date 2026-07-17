@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -8,6 +8,7 @@ import { useAdminDashboard } from '../hooks/useDashboard';
 
 const Dashboard: React.FC = () => {
     const { data: dashboardData, isLoading: statsLoading } = useAdminDashboard();
+    const [isLogsModalOpen, setIsLogsModalOpen] = useState(false);
 
     const stats = [
         { label: 'Total Revenue', value: `₹${((dashboardData?.revenue || 0) / 100000).toFixed(2)}L`, change: '+12%', icon: 'DollarSign', color: 'emerald' },
@@ -57,7 +58,10 @@ const Dashboard: React.FC = () => {
                         <p className="text-xs font-medium text-orange-600 mt-0.5">3 multiple failed login attempts from unknown IPs in the last hour.</p>
                     </div>
                 </div>
-                <button className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-colors">
+                <button 
+                    onClick={() => setIsLogsModalOpen(true)}
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-colors"
+                >
                     Review Logs
                 </button>
             </div>
@@ -108,9 +112,9 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="card-premium">
+                <div className="card-premium flex flex-col justify-between">
                     <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Categories</h3>
-                    <div className="h-80">
+                    <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
@@ -129,14 +133,14 @@ const Dashboard: React.FC = () => {
                                 <Tooltip />
                             </PieChart>
                         </ResponsiveContainer>
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                            {categoryData.map((entry: any, index: number) => (
-                                <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--ease2event-text-secondary)]">
-                                    <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
-                                    {entry.name}
-                                </div>
-                            ))}
-                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                        {categoryData.map((entry: any, index: number) => (
+                            <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--ease2event-text-secondary)]">
+                                <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                                {entry.name}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -255,6 +259,66 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Review Logs Modal */}
+            {isLogsModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-2xl relative p-8">
+                        <button 
+                            type="button" 
+                            onClick={() => setIsLogsModalOpen(false)} 
+                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                        >
+                            <Icons.X size={24} />
+                        </button>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Suspicious Security Logs</h2>
+                        <p className="text-sm text-gray-500 mb-6 font-medium">Review detailed system login events flagged by intrusion detection.</p>
+                        
+                        <div className="overflow-x-auto max-h-[50vh] border border-gray-200 dark:border-slate-800 rounded-xl">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-800">
+                                        <th className="px-4 py-3 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase">User</th>
+                                        <th className="px-4 py-3 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase">Event</th>
+                                        <th className="px-4 py-3 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase">IP Address</th>
+                                        <th className="px-4 py-3 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase">Time</th>
+                                        <th className="px-4 py-3 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase text-right">Risk</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                    {[
+                                        { name: 'Unknown Device', ip: '192.168.1.55', event: 'Failed login (5)', time: '10 mins ago', risk: 'High', riskColor: 'text-red-650 bg-red-50 dark:bg-red-500/10' },
+                                        { name: 'John Doe', ip: '10.0.4.12', event: 'Multiple IP jump', time: '25 mins ago', risk: 'Medium', riskColor: 'text-amber-600 bg-amber-50 dark:bg-amber-500/10' },
+                                        { name: 'Rahul S.', ip: '172.16.89.2', event: 'Brute-force blocked', time: '1 hour ago', risk: 'High', riskColor: 'text-red-650 bg-red-50 dark:bg-red-500/10' },
+                                        { name: 'Priya K.', ip: '192.168.1.102', event: 'Mismatched user agent', time: '3 hours ago', risk: 'Low', riskColor: 'text-gray-600 bg-gray-50 dark:bg-slate-800' }
+                                    ].map((log, i) => (
+                                        <tr key={i} className="hover:bg-gray-50 dark:hover:bg-slate-800/25 transition-colors">
+                                            <td className="px-4 py-3 text-sm font-bold text-gray-900 dark:text-white">{log.name}</td>
+                                            <td className="px-4 py-3 text-xs text-gray-500">{log.event}</td>
+                                            <td className="px-4 py-3 text-xs font-mono text-gray-700 dark:text-slate-350">{log.ip}</td>
+                                            <td className="px-4 py-3 text-xs text-gray-500">{log.time}</td>
+                                            <td className="px-4 py-3 text-right whitespace-nowrap">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${log.riskColor}`}>
+                                                    {log.risk}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="pt-6 border-t border-gray-200 dark:border-slate-800 flex justify-end gap-3 mt-6">
+                            <button 
+                                onClick={() => setIsLogsModalOpen(false)}
+                                className="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
+                            >
+                                Close Logs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

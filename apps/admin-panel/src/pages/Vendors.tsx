@@ -132,7 +132,7 @@ const Vendors: React.FC = () => {
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {filteredVendors.map((vendor) => (
                                 <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
                                                 {vendor.businessName[0]}
@@ -147,7 +147,7 @@ const Vendors: React.FC = () => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4">
                                         <div className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
                                             <MapPin size={14} className="text-gray-400" /> {vendor.city || 'Not Provided'}
                                         </div>

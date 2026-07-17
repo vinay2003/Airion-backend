@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Lock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw } from 'lucide-react';
+import { User, Bell, Lock, Unlock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
@@ -26,6 +26,7 @@ const Settings: React.FC = () => {
     const [newAdminName, setNewAdminName] = useState('');
     const [newAdminEmail, setNewAdminEmail] = useState('');
     const [newAdminPhone, setNewAdminPhone] = useState('');
+    const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(true);
 
     // Notification Settings State
     const [notifyNewBooking, setNotifyNewBooking] = useState(true);
@@ -298,8 +299,27 @@ const Settings: React.FC = () => {
                                             <h3 className="font-bold text-gray-900 dark:text-white mb-1">Two-Factor Authentication (2FA)</h3>
                                             <p className="text-sm text-gray-500">Enforce OTP verification for all admin logins</p>
                                         </div>
-                                        <button className="px-5 py-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl text-sm font-bold transition-colors border border-emerald-200 flex items-center gap-2">
-                                            <Lock size={16} /> Enabled
+                                        <button 
+                                            onClick={() => {
+                                                const next = !isTwoFactorEnabled;
+                                                setIsTwoFactorEnabled(next);
+                                                toast.success(`Two-Factor Authentication ${next ? 'enabled' : 'disabled'} successfully`);
+                                            }}
+                                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-colors border flex items-center gap-2 ${
+                                                isTwoFactorEnabled 
+                                                    ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-450 dark:border-emerald-500/20' 
+                                                    : 'bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-200 dark:bg-rose-500/10 dark:text-rose-450 dark:border-rose-500/20'
+                                            }`}
+                                        >
+                                            {isTwoFactorEnabled ? (
+                                                <>
+                                                    <Lock size={16} /> Enabled
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Unlock size={16} /> Disabled
+                                                </>
+                                            )}
                                         </button>
                                     </div>
                                     <div className="p-5 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800">
@@ -384,7 +404,7 @@ const Settings: React.FC = () => {
                                             <p className="text-sm text-rose-600 dark:text-rose-500/80 mt-1">Make platform temporarily inaccessible to users and vendors. Admins can still log in normally.</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => setNotifySupport(e.target.checked)} className="sr-only peer" />
+                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => { setSystemMaintenance(e.target.checked); toast.success(`System Maintenance Mode ${e.target.checked ? 'activated' : 'deactivated'}`); }} className="sr-only peer" />
                                             <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                                         </label>
                                     </div>

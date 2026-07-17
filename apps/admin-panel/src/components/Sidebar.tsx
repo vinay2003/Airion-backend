@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone, BarChart, Ticket, Map, LifeBuoy } from 'lucide-react';
+import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone, BarChart, Ticket, Map, LifeBuoy, Home } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@ease2event/shared';
 
@@ -12,6 +12,11 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { theme, toggleTheme } = useTheme();
     const { logout } = useAuth();
+
+    const handleGoToLanding = () => {
+        const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace('5175', '5173').replace('admin.', '');
+        window.location.href = landingUrl;
+    };
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -54,6 +59,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                    {/* View Website Redirect */}
+                    <button
+                        onClick={handleGoToLanding}
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all cursor-pointer text-sm"
+                    >
+                        <Home size={20} />
+                        View Website
+                    </button>
+                    <div className="h-px bg-gray-250 dark:bg-slate-800 my-2" />
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Home } from 'lucide-react';
 import Sidebar from './Sidebar';
 
 const Layout: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const handleGoToLanding = () => {
+        const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace('5175', '5173').replace('admin.', '');
+        window.location.href = landingUrl;
+    };
 
     return (
         <div className="flex min-h-screen bg-gray-100 dark:bg-slate-950 font-sans  ">
@@ -20,10 +25,16 @@ const Layout: React.FC = () => {
                         <Menu size={24} />
                     </button>
                     <span className="font-bold text-gray-900 dark:text-white">Admin Panel</span>
-                    <div className="w-8" /> {/* Spacer for centering */}
+                    <button 
+                        onClick={handleGoToLanding}
+                        className="p-2 -mr-2 text-gray-600 dark:text-slate-400 rounded-lg"
+                        title="View Website"
+                    >
+                        <Home size={20} />
+                    </button>
                 </div>
 
-                <div className="flex-1 p-4 md:p-8 overflow-y-auto ">
+                <div className="flex-1 p-4 md:p-8 overflow-y-auto overflow-x-hidden min-w-0 w-full max-w-full">
                     <Outlet />
                 </div>
             </main>

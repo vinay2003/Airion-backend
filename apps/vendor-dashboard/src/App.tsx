@@ -24,7 +24,6 @@ import Promotions from './pages/Promotions';
 import Calendar from './pages/Calendar';
 import Earnings from './pages/Earnings';
 import Products from './pages/Products';
-import Ads from './pages/Ads';
 import Gallery from './pages/Gallery';
 
 const PageLoader = () => (
@@ -64,11 +63,10 @@ const App: React.FC = () => {
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />
                   <Route path="products" element={<Products />} />
-                  <Route path="ads" element={<Ads />} />
-                  <Route path="gallery" element={<Gallery />} />
-
-                  <Route path="plan-event" element={<EventPlanning />} />
+                  <Route path="ads" element={<Promotions />} />
                   <Route path="promotions" element={<Promotions />} />
+                  <Route path="plan-event" element={<EventPlanning />} />
+                  <Route path="gallery" element={<Gallery />} />
                 </Route>
 
                 {/* Catch-all - redirect within the basename context */}

@@ -259,9 +259,10 @@ const BookingConfirmation: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                </div>
 
                 <p className="mt-8 text-center text-neutral-500 dark:text-slate-400 font-medium text-sm">
-                    A detailed receipt has been sent to your registered email & phone.
+                    A detailed receipt has been sent to your registered email &amp; phone.
                 </p>
             </motion.div>
         </div>

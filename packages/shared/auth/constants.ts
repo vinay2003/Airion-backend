@@ -48,6 +48,8 @@ export const AUTH_ENDPOINTS = {
     // Admin Authentication
     ADMIN_LOGIN: '/auth/admin/login',
     ADMIN_SIGNUP: '/auth/admin/signup',
+    ADMIN_SEND_OTP: '/auth/admin/send-otp',
+    ADMIN_VERIFY_OTP: '/auth/admin/verify-otp',
 
     // Common
     CHECK_AUTH: '/auth/me',

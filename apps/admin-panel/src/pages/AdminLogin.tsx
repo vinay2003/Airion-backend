@@ -1,53 +1,56 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
-import { useAuth, UserRole } from '@ease2event/shared';
+import { Shield, Phone, ArrowRight } from 'lucide-react';
+import { useAuth, adminAuth } from '@ease2event/shared';
 import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
     const { loginWithResponse } = useAuth();
     const navigate = useNavigate();
-    
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
-    const [loading, setLoading] = useState(false);
-    
-    const [showOTP, setShowOTP] = useState(false);
-    const [otp, setOtp] = useState(['', '', '', '', '', '']);
-    
-    const [isForgotPassword, setIsForgotPassword] = useState(false);
 
-    const handleLoginSubmit = async (e: React.FormEvent) => {
+    const [phone, setPhone] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const [showOTP, setShowOTP] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    // Step 1: Send OTP to admin phone
+    const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!phone.trim()) return toast.error('Enter your admin phone number');
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-            if (email === 'admin@airion.com' && password === 'admin') {
-                setShowOTP(true);
-            } else {
-                toast.error('Invalid credentials');
+        try {
+            const res = await adminAuth.sendOtp(phone.trim());
+            toast.success(res.message || 'OTP sent to your phone');
+            // In dev mode, backend returns _dev_otp — show it in a toast for easy testing
+            if (res._dev_otp) {
+                toast(`Dev OTP: ${res._dev_otp}`, { icon: '🔑', duration: 15000 });
             }
-        }, 1000);
+            setShowOTP(true);
+        } catch (err: any) {
+            const message = err?.response?.data?.message || 'Failed to send OTP';
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
     };
 
+    // Step 2: Verify OTP and login
     const handleVerifyOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         const code = otp.join('');
-        if (code.length < 6) return toast.error('Enter 6-digit OTP');
-        
+        if (code.length < 6) return toast.error('Enter the complete 6-digit OTP');
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            // Simulate successful login
-            loginWithResponse({
-                access_token: 'dummy-token', 
-                user: { id: 'admin1', name: 'Super Admin', email: 'admin@airion.com', role: UserRole.ADMIN }
-            });
-            toast.success('Login successful');
+        try {
+            const response = await adminAuth.verifyOtp(phone.trim(), code);
+            loginWithResponse(response);
+            toast.success('Login successful!');
             navigate('/');
-        }, 1000);
+        } catch (err: any) {
+            const message = err?.response?.data?.message || 'Invalid OTP';
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleOtpChange = (index: number, value: string) => {
@@ -56,72 +59,53 @@ const AdminLogin: React.FC = () => {
         newOtp[index] = value;
         setOtp(newOtp);
         if (value !== '' && index < 5) {
-            const nextInput = document.getElementById(`otp-${index + 1}`);
-            nextInput?.focus();
+            document.getElementById(`otp-${index + 1}`)?.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            document.getElementById(`otp-${index - 1}`)?.focus();
         }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
-            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-200 dark:border-slate-800 overflow-hidden relative">
-                
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <div className="p-8">
                     <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                         <Shield size={32} />
                     </div>
-                    
+
                     <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-                        {showOTP ? 'Two-Factor Auth' : isForgotPassword ? 'Reset Password' : 'Admin Portal'}
+                        {showOTP ? 'Two-Factor Auth' : 'Admin Portal'}
                     </h2>
                     <p className="text-center text-sm text-gray-500 dark:text-slate-400 mb-8">
-                        {showOTP ? 'Enter the 6-digit code sent to your device' : isForgotPassword ? 'Enter your email to receive a reset link' : 'Secure access for Airion administrators'}
+                        {showOTP
+                            ? `Enter the 6-digit OTP sent to ${phone}`
+                            : 'Secure access for Airion administrators'}
                     </p>
 
-                    {/* Login Form */}
-                    {!showOTP && !isForgotPassword && (
-                        <form onSubmit={handleLoginSubmit} className="space-y-5">
+                    {/* Step 1: Phone Number */}
+                    {!showOTP && (
+                        <form onSubmit={handleSendOTP} className="space-y-5">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Email address</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <Mail size={18} />
-                                    </div>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="pl-10 w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
-                                        placeholder="admin@airion.com"
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Password</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <Lock size={18} />
-                                    </div>
-                                    <input
-                                        type="password"
-                                        required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="pl-10 w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
-                                        placeholder="••••••••"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="rounded text-red-600 focus:ring-red-500 bg-gray-100 dark:bg-slate-800 border-gray-300 dark:border-slate-600" />
-                                    <span className="text-sm text-gray-600 dark:text-slate-400">Remember me</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
+                                    Admin Phone Number
                                 </label>
-                                <button type="button" onClick={() => setIsForgotPassword(true)} className="text-sm font-medium text-red-600 hover:text-red-500">
-                                    Forgot password?
-                                </button>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <Phone size={18} />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        className="pl-10 w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
+                                        placeholder="e.g. 9876543210"
+                                    />
+                                </div>
                             </div>
 
                             <button
@@ -129,12 +113,14 @@ const AdminLogin: React.FC = () => {
                                 disabled={loading}
                                 className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
                             >
-                                {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Secure Login'}
+                                {loading
+                                    ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    : <><span>Send OTP</span><ArrowRight size={16} /></>}
                             </button>
                         </form>
                     )}
 
-                    {/* OTP Form */}
+                    {/* Step 2: OTP Verification */}
                     {showOTP && (
                         <form onSubmit={handleVerifyOTP} className="space-y-6">
                             <div className="flex justify-between gap-2">
@@ -143,43 +129,32 @@ const AdminLogin: React.FC = () => {
                                         key={i}
                                         id={`otp-${i}`}
                                         type="text"
+                                        inputMode="numeric"
                                         maxLength={1}
                                         value={digit}
                                         onChange={(e) => handleOtpChange(i, e.target.value)}
+                                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
                                         className="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
                                     />
                                 ))}
                             </div>
+
                             <button
                                 type="submit"
                                 disabled={loading}
                                 className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
                             >
-                                {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Verify & Proceed'}
+                                {loading
+                                    ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    : 'Verify & Login'}
                             </button>
-                            <button type="button" onClick={() => setShowOTP(false)} className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300">
-                                Back to login
-                            </button>
-                        </form>
-                    )}
 
-                    {/* Forgot Password */}
-                    {isForgotPassword && (
-                        <form onSubmit={(e) => { e.preventDefault(); toast.success('Reset link sent!'); setIsForgotPassword(false); }} className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Email address</label>
-                                <input
-                                    type="email"
-                                    required
-                                    className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
-                                    placeholder="admin@airion.com"
-                                />
-                            </div>
-                            <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold">
-                                Send Reset Link
-                            </button>
-                            <button type="button" onClick={() => setIsForgotPassword(false)} className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300">
-                                Back to login
+                            <button
+                                type="button"
+                                onClick={() => { setShowOTP(false); setOtp(['', '', '', '', '', '']); }}
+                                className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300"
+                            >
+                                ← Back / Resend OTP
                             </button>
                         </form>
                     )}

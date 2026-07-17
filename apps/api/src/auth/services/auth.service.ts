@@ -303,11 +303,15 @@ export class AuthService {
 
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Support multiple admin phone numbers (comma-separated in env)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
+        if (!adminPhones.includes(dto.phone)) {
             this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
         // Check if admin user exists in DB
@@ -490,10 +494,14 @@ export class AuthService {
 
     // Verify OTP for Admin
     async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Support multiple admin phone numbers (comma-separated in env)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+        if (!adminPhones.includes(dto.phone)) {
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
         const identifier = dto.phone.trim();

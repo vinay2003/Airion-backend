@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Ticket, Calendar, Users, Copy, CheckCircle, Clock, Trash2, Edit2, Percent, DollarSign } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAdminCoupons, useDeleteCoupon } from '../hooks/useCoupons';
 
 interface Coupon {
     id: string;
@@ -17,22 +18,18 @@ interface Coupon {
 const Coupons: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     
-    // Mock Data
-    const [coupons, setCoupons] = useState<Coupon[]>([
-        { id: '1', code: 'SUMMER26', type: 'percentage', value: 15, usageLimit: 100, usedCount: 45, expiryDate: '2026-08-31', status: 'Active', applicableTo: 'All' },
-        { id: '2', code: 'WEDDING5K', type: 'fixed', value: 5000, usageLimit: 50, usedCount: 50, expiryDate: '2026-12-31', status: 'Depleted', applicableTo: 'Venue' },
-        { id: '3', code: 'PHOTO10', type: 'percentage', value: 10, usageLimit: 200, usedCount: 180, expiryDate: '2026-05-01', status: 'Expired', applicableTo: 'Photography' },
-        { id: '4', code: 'NEWUSER20', type: 'percentage', value: 20, usageLimit: 500, usedCount: 120, expiryDate: '2026-12-31', status: 'Active', applicableTo: 'All' },
-    ]);
+    const { data: couponsData, isLoading } = useAdminCoupons();
+    const deleteMutation = useDeleteCoupon();
+
+    const coupons: Coupon[] = couponsData || [];
 
     const copyCode = (code: string) => {
         navigator.clipboard.writeText(code);
         toast.success(`Coupon code ${code} copied!`);
     };
 
-    const deleteCoupon = (id: string) => {
-        setCoupons(prev => prev.filter(c => c.id !== id));
-        toast.success('Coupon deleted successfully');
+    const deleteCoupon = async (id: string) => {
+        await deleteMutation.mutateAsync(id);
     };
 
     const filteredCoupons = coupons.filter(c => c.code.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -45,6 +42,14 @@ const Coupons: React.FC = () => {
             default: return 'bg-gray-50 text-gray-600 border-gray-200';
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-[60vh]">
+                <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="fade-in pb-12">

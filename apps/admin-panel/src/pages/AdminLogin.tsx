@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
-import { useAuth } from '@ease2event/shared';
+import { useAuth, UserRole } from '@ease2event/shared';
 import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
@@ -43,7 +43,7 @@ const AdminLogin: React.FC = () => {
             // Simulate successful login
             loginWithResponse({
                 access_token: 'dummy-token', 
-                user: { id: 'admin1', name: 'Super Admin', email: 'admin@airion.com', role: 'admin' }
+                user: { id: 'admin1', name: 'Super Admin', email: 'admin@airion.com', role: UserRole.ADMIN }
             });
             toast.success('Login successful');
             navigate('/');

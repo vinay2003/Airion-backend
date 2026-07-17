@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle, RefreshCcw, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAdminBookings, useUpdateBookingStatus } from '../hooks/useBookings';
 
 interface Booking {
     id: string;
+    bookingCode: string;
     userName: string;
     vendorName: string;
     eventDate: string;
     city: string;
     category: string;
     amount: string;
-    status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Refunded';
+    status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Refunded' | string;
 }
 
 const Bookings: React.FC = () => {
@@ -18,20 +20,18 @@ const Bookings: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('All');
     const [cityFilter, setCityFilter] = useState('All');
     
-    // Mock Bookings Data with v2.0 fields
-    const [bookingsData, setBookingsData] = useState<Booking[]>([
-        { id: '1001', userName: 'Rahul Sharma', vendorName: 'Grand Hotel', category: 'Venue', city: 'Mumbai', eventDate: '2026-05-12', amount: '₹50,000', status: 'Confirmed' },
-        { id: '1002', userName: 'Priya Kapoor', vendorName: 'Sunset Resort', category: 'Venue', city: 'Delhi', eventDate: '2026-06-04', amount: '₹80,000', status: 'Pending' },
-        { id: '1003', userName: 'Amit Mishra', vendorName: 'Flash Moments', category: 'Photography', city: 'Bangalore', eventDate: '2026-04-20', amount: '₹25,000', status: 'Completed' },
-        { id: '1004', userName: 'Neha Verma', vendorName: 'Glow makeup Studio', category: 'Makeup Artist', city: 'Mumbai', eventDate: '2026-05-18', amount: '₹15,000', status: 'Cancelled' },
-        { id: '1005', userName: 'Suresh Kumar', vendorName: 'Royal Palace Banquet', category: 'Venue', city: 'Delhi', eventDate: '2026-07-02', amount: '₹1,50,000', status: 'Confirmed' },
-    ]);
+    const [page, setPage] = useState(1);
+    const { data: bookingsResponse, isLoading } = useAdminBookings(page, 50);
+    const updateStatusMutation = useUpdateBookingStatus();
+    
+    const bookingsData: Booking[] = bookingsResponse?.data || [];
+    const totalBookings = bookingsResponse?.total || 0;
 
     const stats = [
-        { label: 'Total Bookings', value: '142', icon: Calendar, color: 'blue' },
-        { label: 'Confirmed', value: '84', icon: CheckCircle, color: 'emerald' },
-        { label: 'Pending Approval', value: '24', icon: Clock, color: 'amber' },
-        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'indigo' },
+        { label: 'Total Bookings', value: totalBookings.toString(), icon: Calendar, color: 'blue' },
+        { label: 'Confirmed', value: bookingsData.filter(b => b.status === 'Confirmed').length.toString(), icon: CheckCircle, color: 'emerald' },
+        { label: 'Pending Approval', value: bookingsData.filter(b => b.status === 'Pending').length.toString(), icon: Clock, color: 'amber' },
+        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'indigo' }, // Keep static until full transactions tracking is active
     ];
 
     const filteredBookings = bookingsData.filter(b => {
@@ -54,9 +54,8 @@ const Bookings: React.FC = () => {
         }
     };
 
-    const updateStatus = (id: string, newStatus: Booking['status']) => {
-        setBookingsData(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
-        toast.success(`Booking #${id} status updated to ${newStatus}`);
+    const updateStatus = async (id: string, newStatus: Booking['status']) => {
+        await updateStatusMutation.mutateAsync({ id, status: newStatus });
     };
 
     return (
@@ -149,8 +148,8 @@ const Bookings: React.FC = () => {
                                         <span className="text-xs text-gray-500">{booking.category}</span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900 dark:text-white">{booking.eventDate}</div>
-                                        <div className="text-xs text-gray-500">{booking.city}</div>
+                                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
+                                        <div className="text-xs text-gray-500">{booking.eventDate}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{booking.amount}</span>

@@ -264,8 +264,8 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: whereConditions });
 
         // Enforce role check if role is provided
-        if (user && dto.role && user.role !== dto.role) {
-            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${dto.role}`);
+        if (user && (dto as any).role && user.role !== (dto as any).role) {
+            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${(dto as any).role}`);
             throw new UnauthorizedException(`Account found, but registered as ${user.role}. Please login to the correct portal.`);
         }
 

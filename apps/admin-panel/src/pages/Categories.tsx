@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Search, Plus, MapPin, Grid, Languages, Edit2, Trash2, MoreVertical, Map } from 'lucide-react';
+import { useAdminCategories, useDeleteCategory, useUpdateCategory, useAdminLocations, useDeleteLocation, useUpdateLocation } from '../hooks/useCategories';
 import toast from 'react-hot-toast';
 
 interface Category {
     id: string;
     name: string;
     vendorsCount: number;
-    status: 'Active' | 'Inactive';
+    isActive: boolean;
 }
 
 interface Location {
@@ -14,35 +15,38 @@ interface Location {
     city: string;
     state: string;
     vendorsCount: number;
-    status: 'Active' | 'Inactive';
+    isActive: boolean;
 }
 
 const Categories: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'categories' | 'locations' | 'languages'>('categories');
     
-    // Mock Data
-    const [categories, setCategories] = useState<Category[]>([
-        { id: '1', name: 'Venue', vendorsCount: 45, status: 'Active' },
-        { id: '2', name: 'Photography', vendorsCount: 120, status: 'Active' },
-        { id: '3', name: 'Makeup Artist', vendorsCount: 85, status: 'Active' },
-        { id: '4', name: 'Decor', vendorsCount: 30, status: 'Active' },
-        { id: '5', name: 'Catering', vendorsCount: 50, status: 'Inactive' },
-    ]);
+    const { data: categories = [], isLoading: isLoadingCategories } = useAdminCategories();
+    const { data: locations = [], isLoading: isLoadingLocations } = useAdminLocations();
+    
+    const deleteCategoryMutation = useDeleteCategory();
+    const deleteLocationMutation = useDeleteLocation();
+    const updateCategoryMutation = useUpdateCategory();
+    const updateLocationMutation = useUpdateLocation();
 
-    const [locations, setLocations] = useState<Location[]>([
-        { id: '1', city: 'Mumbai', state: 'Maharashtra', vendorsCount: 150, status: 'Active' },
-        { id: '2', city: 'Delhi', state: 'Delhi', vendorsCount: 200, status: 'Active' },
-        { id: '3', city: 'Bangalore', state: 'Karnataka', vendorsCount: 120, status: 'Active' },
-    ]);
-
-    const handleDeleteCategory = (id: string) => {
-        setCategories(prev => prev.filter(c => c.id !== id));
-        toast.success('Category deleted');
+    const handleDeleteCategory = async (id: string) => {
+        if (confirm('Are you sure you want to delete this category?')) {
+            await deleteCategoryMutation.mutateAsync(id);
+        }
     };
 
-    const handleDeleteLocation = (id: string) => {
-        setLocations(prev => prev.filter(l => l.id !== id));
-        toast.success('Location deleted');
+    const handleDeleteLocation = async (id: string) => {
+        if (confirm('Are you sure you want to delete this location?')) {
+            await deleteLocationMutation.mutateAsync(id);
+        }
+    };
+
+    const toggleCategoryStatus = async (id: string, isActive: boolean) => {
+        await updateCategoryMutation.mutateAsync({ id, data: { isActive } });
+    };
+
+    const toggleLocationStatus = async (id: string, isActive: boolean) => {
+        await updateLocationMutation.mutateAsync({ id, data: { isActive } });
     };
 
     return (
@@ -83,7 +87,7 @@ const Categories: React.FC = () => {
             {/* Content Area */}
             {activeTab === 'categories' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {categories.map(category => (
+                    {categories.map((category: Category) => (
                         <div key={category.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm group">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl">
@@ -96,10 +100,13 @@ const Categories: React.FC = () => {
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">{category.name}</h3>
                             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-slate-800">
-                                <span className="text-sm font-medium text-gray-500">{category.vendorsCount} Vendors</span>
-                                <span className={`px-2 py-1 rounded-md text-xs font-bold ${category.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-600'}`}>
-                                    {category.status}
-                                </span>
+                                <span className="text-sm font-medium text-gray-500">{category.vendorsCount || 0} Vendors</span>
+                                <button 
+                                    onClick={() => toggleCategoryStatus(category.id, !category.isActive)}
+                                    className={`px-2 py-1 rounded-md text-xs font-bold transition-colors ${category.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                >
+                                    {category.isActive ? 'Active' : 'Inactive'}
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -119,7 +126,7 @@ const Categories: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {locations.map((loc) => (
+                            {locations.map((loc: Location) => (
                                 <tr key={loc.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
@@ -135,9 +142,12 @@ const Categories: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${loc.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-600'}`}>
-                                            {loc.status}
-                                        </span>
+                                        <button 
+                                            onClick={() => toggleLocationStatus(loc.id, !loc.isActive)}
+                                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${loc.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                        >
+                                            {loc.isActive ? 'Active' : 'Inactive'}
+                                        </button>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex justify-end gap-2">

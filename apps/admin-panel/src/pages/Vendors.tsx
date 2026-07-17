@@ -1,53 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, MoreVertical, Check, X, Eye, Building2, MapPin, Calendar, ShieldCheck, Zap, Star, AlertTriangle, ArrowUpDown } from 'lucide-react';
-import api from '../lib/api';
+import { useAdminVendors, useVerifyVendor, useSuspendVendor } from '../hooks/useVendors';
 import toast from 'react-hot-toast';
 
 interface Vendor {
     id: string;
     businessName: string;
-    businessType: string;
+    category?: { name: string };
     city: string;
     yearsInBusiness: string;
     isVerified: boolean;
     verificationStatus: 'pending' | 'approved' | 'rejected';
     createdAt: string;
-    plan: string;
-    earnings: number;
-    bookings: number;
-    isFeatured: boolean;
+    pricingTier: string;
+    totalReviews: number;
+    rating: number;
 }
 
 const Vendors: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
     const [searchQuery, setSearchQuery] = useState('');
-    const [vendors, setVendors] = useState<Vendor[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [sortConfig, setSortConfig] = useState<{ key: 'earnings' | 'bookings' | null, direction: 'asc' | 'desc' }>({ key: null, direction: 'desc' });
-
-    useEffect(() => {
-        const fetchVendors = async () => {
-            try {
-                // Mocking data for v2.0 UI
-                const mockVendors: Vendor[] = [
-                    { id: '1', businessName: 'Glow Makeup Studio', businessType: 'Makeup Artist', city: 'Mumbai', yearsInBusiness: '5', isVerified: true, verificationStatus: 'approved', createdAt: '2023-01-01', plan: 'Premium', earnings: 150000, bookings: 45, isFeatured: true },
-                    { id: '2', businessName: 'Royal Palace Banquet', businessType: 'Venue', city: 'Delhi', yearsInBusiness: '12', isVerified: false, verificationStatus: 'pending', createdAt: '2023-06-15', plan: 'Basic', earnings: 0, bookings: 0, isFeatured: false },
-                    { id: '3', businessName: 'Flash Moments', businessType: 'Photography', city: 'Bangalore', yearsInBusiness: '3', isVerified: true, verificationStatus: 'approved', createdAt: '2022-11-20', plan: 'Pro', earnings: 85000, bookings: 22, isFeatured: false },
-                    { id: '4', businessName: 'Elite Decorators', businessType: 'Decor', city: 'Mumbai', yearsInBusiness: '8', isVerified: false, verificationStatus: 'rejected', createdAt: '2023-08-01', plan: 'Basic', earnings: 0, bookings: 0, isFeatured: false },
-                ];
-                setTimeout(() => {
-                    setVendors(mockVendors);
-                    setLoading(false);
-                }, 800);
-            } catch (error: any) {
-                setError(error.message);
-                setLoading(false);
-            }
-        };
-
-        fetchVendors();
-    }, []);
+    const [page, setPage] = useState(1);
+    const { data: response, isLoading: loading } = useAdminVendors(page, 20, searchQuery, filter, 'all');
+    const vendors: Vendor[] = response?.data || [];
+    
+    const verifyMutation = useVerifyVendor();
+    const suspendMutation = useSuspendVendor();
 
     const getStatusStyles = (status: string) => {
         switch (status) {
@@ -58,47 +36,32 @@ const Vendors: React.FC = () => {
         }
     };
 
-    const handleSort = (key: 'earnings' | 'bookings') => {
+    const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'desc';
         if (sortConfig.key === key && sortConfig.direction === 'desc') {
             direction = 'asc';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({ key: key as any, direction });
     };
 
-    const handleAction = async (id: string, action: 'approve' | 'reject' | 'feature' | 'flag' | 'kyc') => {
-        setVendors(prev => prev.map(v => {
-            if (v.id === id) {
-                if (action === 'approve') return { ...v, verificationStatus: 'approved', isVerified: true };
-                if (action === 'reject') return { ...v, verificationStatus: 'rejected', isVerified: false };
-                if (action === 'feature') return { ...v, isFeatured: !v.isFeatured };
-                if (action === 'kyc') return { ...v, isVerified: true };
+    const handleAction = async (id: string, action: 'approve' | 'reject' | 'kyc') => {
+        try {
+            if (action === 'approve' || action === 'reject') {
+                await verifyMutation.mutateAsync({ vendorId: id, status: action });
+            } else if (action === 'kyc') {
+                await verifyMutation.mutateAsync({ vendorId: id, status: 'approved' });
             }
-            return v;
-        }));
-        
-        if (action === 'flag') {
-            toast.success('Vendor flagged for inappropriate content');
-        } else if (action === 'feature') {
-            toast.success('Featured status updated');
-        } else if (action === 'kyc') {
-            toast.success('Instant KYC verification successful');
-        } else {
-            toast.success(`Vendor ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
+        } catch (err) {
+            console.error(err);
         }
     };
 
-    let filteredVendors = vendors.filter((vendor) => {
-        const matchesFilter = filter === 'all' || vendor.verificationStatus === filter;
-        const query = searchQuery.toLowerCase();
-        const matchesSearch = vendor.businessName.toLowerCase().includes(query) || vendor.city.toLowerCase().includes(query) || vendor.businessType.toLowerCase().includes(query);
-        return matchesFilter && matchesSearch;
-    });
+    let filteredVendors = vendors; // The backend handles filtering now
 
     if (sortConfig.key) {
         filteredVendors.sort((a, b) => {
-            const aVal = a[sortConfig.key as 'earnings' | 'bookings'];
-            const bVal = b[sortConfig.key as 'earnings' | 'bookings'];
+            const aVal = (a as any)[sortConfig.key as any] || 0;
+            const bVal = (b as any)[sortConfig.key as any] || 0;
             if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
             if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
@@ -155,11 +118,11 @@ const Vendors: React.FC = () => {
                             <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Business</th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Details</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onClick={() => handleSort('earnings')}>
-                                    <div className="flex items-center gap-1">Earnings <ArrowUpDown size={14} /></div>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onClick={() => handleSort('rating')}>
+                                    <div className="flex items-center gap-1">Rating <ArrowUpDown size={14} /></div>
                                 </th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onClick={() => handleSort('bookings')}>
-                                    <div className="flex items-center gap-1">Bookings <ArrowUpDown size={14} /></div>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onClick={() => handleSort('totalReviews')}>
+                                    <div className="flex items-center gap-1">Reviews <ArrowUpDown size={14} /></div>
                                 </th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
@@ -176,27 +139,26 @@ const Vendors: React.FC = () => {
                                             <div>
                                                 <div className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                                     {vendor.businessName}
-                                                    {vendor.isFeatured && <Star size={14} className="text-amber-500 fill-amber-500" />}
                                                 </div>
                                                 <div className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                                                    <Building2 size={12} /> {vendor.businessType}
+                                                    <Building2 size={12} /> {vendor.category?.name || 'Uncategorized'}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
-                                            <MapPin size={14} className="text-gray-400" /> {vendor.city}
+                                            <MapPin size={14} className="text-gray-400" /> {vendor.city || 'Not Provided'}
                                         </div>
                                         <div className="text-xs text-gray-500 mt-1">
-                                            Plan: <span className="font-bold text-indigo-600">{vendor.plan}</span>
+                                            Tier: <span className="font-bold text-indigo-600">{vendor.pricingTier || 'Standard'}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="font-bold text-emerald-600">₹{vendor.earnings.toLocaleString()}</div>
+                                        <div className="font-bold text-emerald-600">{vendor.rating} ★</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="font-bold text-gray-900 dark:text-white">{vendor.bookings}</div>
+                                        <div className="font-bold text-gray-900 dark:text-white">{vendor.totalReviews}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col gap-2">
@@ -212,20 +174,14 @@ const Vendors: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex justify-end gap-2">
-                                            <button className="p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 rounded-lg text-gray-500" title="View Logs">
+                                            <button className="p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 rounded-lg text-gray-500" title="View Details">
                                                 <Eye size={16} />
                                             </button>
-                                            {!vendor.isVerified && (
+                                            {!vendor.isVerified && vendor.verificationStatus !== 'rejected' && (
                                                 <button onClick={() => handleAction(vendor.id, 'kyc')} className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg" title="Instant KYC Verify">
                                                     <ShieldCheck size={16} />
                                                 </button>
                                             )}
-                                            <button onClick={() => handleAction(vendor.id, 'feature')} className={`p-1.5 rounded-lg ${vendor.isFeatured ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`} title="Feature Vendor">
-                                                <Star size={16} />
-                                            </button>
-                                            <button onClick={() => handleAction(vendor.id, 'flag')} className="p-1.5 bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-lg" title="Flag Content">
-                                                <AlertTriangle size={16} />
-                                            </button>
                                             {vendor.verificationStatus === 'pending' && (
                                                 <>
                                                     <button onClick={() => handleAction(vendor.id, 'approve')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Approve">

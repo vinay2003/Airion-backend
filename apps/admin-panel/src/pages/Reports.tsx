@@ -1,31 +1,47 @@
 import React, { useState } from 'react';
 import { BarChart, DollarSign, TrendingUp, Download, Calendar, Filter, Star, MapPin } from 'lucide-react';
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
+import { exportToCSV } from '../utils/exportCsv';
+import { exportToPDF } from '../utils/exportPdf';
+import { useAdminReports } from '../hooks/useReports';
 
 const Reports: React.FC = () => {
     const [timeRange, setTimeRange] = useState('Month');
     const [reportType, setReportType] = useState<'Revenue' | 'Engagement'>('Revenue');
 
-    // Mock Data
-    const revenueData = [
-        { name: 'Week 1', adRevenue: 4000, subRevenue: 2400, commission: 2400 },
-        { name: 'Week 2', adRevenue: 3000, subRevenue: 1398, commission: 2210 },
-        { name: 'Week 3', adRevenue: 2000, subRevenue: 9800, commission: 2290 },
-        { name: 'Week 4', adRevenue: 2780, subRevenue: 3908, commission: 2000 },
-    ];
+    const { data: reportData, isLoading } = useAdminReports(timeRange);
 
-    const conversionData = [
-        { name: 'Wedding', rate: 85 },
-        { name: 'Corporate', rate: 65 },
-        { name: 'Birthday', rate: 45 },
-        { name: 'Engagement', rate: 75 },
-    ];
+    const revenueData = reportData?.revenueData || [];
+    const conversionData = reportData?.conversionData || [];
+    const topVendors = reportData?.topVendors || [];
+    const totalRevenue = reportData?.totalRevenue || 0;
+    const commissionEarned = reportData?.commissionEarned || 0;
+    const avgConversionRate = reportData?.avgConversionRate || 0;
 
-    const topVendors = [
-        { id: 1, name: 'Glow Makeup Studio', revenue: '₹4.5L', bookings: 45, rating: 4.9, city: 'Mumbai' },
-        { id: 2, name: 'Royal Palace Banquet', revenue: '₹12.2L', bookings: 22, rating: 4.8, city: 'Delhi' },
-        { id: 3, name: 'Flash Moments', revenue: '₹2.8L', bookings: 38, rating: 4.7, city: 'Bangalore' },
-    ];
+    const formatCurrency = (val: number) => {
+        if (val >= 100000) return `₹${(val / 100000).toFixed(1)}L`;
+        if (val >= 1000) return `₹${(val / 1000).toFixed(1)}K`;
+        return `₹${val}`;
+    };
+
+    const handleExportCSV = () => {
+        exportToCSV(revenueData, 'Revenue_Report');
+    };
+
+    const handleExportPDF = () => {
+        exportToPDF({
+            filename: 'Revenue_Report',
+            title: 'Platform Revenue Report',
+            subtitle: `Data for the last ${timeRange.toLowerCase()}`,
+            data: revenueData,
+            columns: [
+                { header: 'Period', dataKey: 'name' },
+                { header: 'Ad Revenue (₹)', dataKey: 'adRevenue' },
+                { header: 'Subscriptions (₹)', dataKey: 'subRevenue' },
+                { header: 'Commission (₹)', dataKey: 'commission' },
+            ]
+        });
+    };
 
     return (
         <div className="fade-in pb-12">
@@ -50,11 +66,17 @@ const Reports: React.FC = () => {
                             </button>
                         ))}
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all">
+                    <button 
+                        onClick={handleExportCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                    >
                         <Download size={18} />
                         <span>Export CSV</span>
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm">
+                    <button 
+                        onClick={handleExportPDF}
+                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm"
+                    >
                         <Download size={18} />
                         <span>Export PDF</span>
                     </button>
@@ -66,7 +88,7 @@ const Reports: React.FC = () => {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Total Revenue</p>
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">₹24.8L</h3>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{formatCurrency(totalRevenue)}</h3>
                         <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
                             <TrendingUp size={12} /> +12.5% vs last {timeRange.toLowerCase()}
                         </p>
@@ -78,7 +100,7 @@ const Reports: React.FC = () => {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Commission Earned</p>
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">₹4.2L</h3>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{formatCurrency(commissionEarned)}</h3>
                         <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
                             <TrendingUp size={12} /> +8.2% vs last {timeRange.toLowerCase()}
                         </p>
@@ -90,7 +112,7 @@ const Reports: React.FC = () => {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Avg. Conversion Rate</p>
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">68%</h3>
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{avgConversionRate}%</h3>
                         <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-2">
                             <TrendingUp size={12} /> +2.1% vs last {timeRange.toLowerCase()}
                         </p>

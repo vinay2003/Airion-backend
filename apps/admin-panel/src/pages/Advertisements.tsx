@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, CheckCircle, XCircle, PauseCircle, Activity, DollarSign, Eye, MousePointer2, Image as ImageIcon, Calendar, Plus, UploadCloud } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAdminAdvertisements, useUpdateAdvertisementStatus } from '../hooks/useAdvertisements';
 
 interface Ad {
     id: string;
@@ -18,25 +19,13 @@ interface Ad {
 
 const Advertisements: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [ads, setAds] = useState<Ad[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: adsData, isLoading } = useAdminAdvertisements();
+    const updateStatusMutation = useUpdateAdvertisementStatus();
 
-    useEffect(() => {
-        // Mock data
-        const mockAds: Ad[] = [
-            { id: '1', campaignName: 'Summer Wedding Promo', vendorName: 'Grand Hotel', adType: 'Banner', status: 'active', dailyBudget: 500, totalBudget: 15000, startDate: '2026-05-01', endDate: '2026-05-30', impressions: 45000, clicks: 1250 },
-            { id: '2', campaignName: 'Premium Decor Showcase', vendorName: 'Elite Decorators', adType: 'Video', status: 'pending', dailyBudget: 1000, totalBudget: 30000, startDate: '2026-06-01', endDate: '2026-06-30', impressions: 0, clicks: 0 },
-            { id: '3', campaignName: 'Bridal Makeup Special', vendorName: 'Glow Makeup Studio', adType: 'Native', status: 'paused', dailyBudget: 300, totalBudget: 9000, startDate: '2026-04-15', endDate: '2026-05-15', impressions: 22000, clicks: 840 },
-        ];
-        setTimeout(() => {
-            setAds(mockAds);
-            setLoading(false);
-        }, 500);
-    }, []);
+    const ads: Ad[] = adsData || [];
 
-    const updateAdStatus = (id: string, status: Ad['status']) => {
-        setAds(prev => prev.map(ad => ad.id === id ? { ...ad, status } : ad));
-        toast.success(`Ad status updated to ${status}`);
+    const updateAdStatus = async (id: string, status: Ad['status']) => {
+        await updateStatusMutation.mutateAsync({ id, status });
     };
 
     const filteredAds = ads.filter(ad => 
@@ -54,7 +43,7 @@ const Advertisements: React.FC = () => {
         }
     };
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex justify-center items-center h-[60vh]">
                 <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>

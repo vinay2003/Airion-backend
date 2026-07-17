@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter, MessageSquare, AlertCircle, CheckCircle, Clock, MoreVertical, Send, User, Reply, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAdminTickets, useUpdateTicketStatus, useReplyToTicket } from '../hooks/useTickets';
 
 interface Ticket {
     id: string;
@@ -17,14 +18,11 @@ const SupportTickets: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('All');
     const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
     const [replyText, setReplyText] = useState('');
-    
-    // Mock Data
-    const [tickets, setTickets] = useState<Ticket[]>([
-        { id: 'TKT-1042', user: 'Amit Sharma', type: 'Vendor', subject: 'Payout not received for booking #1003', priority: 'High', status: 'Open', lastUpdated: '10 mins ago' },
-        { id: 'TKT-1043', user: 'Priya Patel', type: 'User', subject: 'Unable to reset password', priority: 'Medium', status: 'In Progress', lastUpdated: '1 hour ago' },
-        { id: 'TKT-1044', user: 'Grand Hotel', type: 'Vendor', subject: 'Listing images getting cropped', priority: 'Low', status: 'Resolved', lastUpdated: '1 day ago' },
-        { id: 'TKT-1045', user: 'Rahul Kumar', type: 'User', subject: 'Vendor canceled last minute', priority: 'Critical', status: 'Open', lastUpdated: '2 mins ago' },
-    ]);
+    const { data: ticketsData, isLoading } = useAdminTickets();
+    const updateStatusMutation = useUpdateTicketStatus();
+    const replyMutation = useReplyToTicket();
+
+    const tickets: Ticket[] = ticketsData || [];
 
     const filteredTickets = tickets.filter(t => {
         const matchesSearch = t.subject.toLowerCase().includes(searchQuery.toLowerCase()) || t.user.toLowerCase().includes(searchQuery.toLowerCase());
@@ -50,18 +48,17 @@ const SupportTickets: React.FC = () => {
         }
     };
 
-    const handleSendReply = () => {
-        if (!replyText.trim()) return;
-        toast.success('Reply sent successfully');
+    const handleSendReply = async () => {
+        if (!replyText.trim() || !selectedTicket) return;
+        await replyMutation.mutateAsync({ id: selectedTicket.id, reply: replyText });
         setReplyText('');
     };
 
-    const updateStatus = (id: string, newStatus: Ticket['status']) => {
-        setTickets(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    const updateStatus = async (id: string, newStatus: Ticket['status']) => {
+        await updateStatusMutation.mutateAsync({ id, status: newStatus });
         if (selectedTicket && selectedTicket.id === id) {
             setSelectedTicket({ ...selectedTicket, status: newStatus });
         }
-        toast.success(`Ticket marked as ${newStatus}`);
     };
 
     return (

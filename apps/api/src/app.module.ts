@@ -99,7 +99,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
                     },
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     autoLoadEntities: true,
-                    synchronize: !isProd,
+                    synchronize: false,
                     logging: !isProd ? ['error', 'warn'] : false,
                     retryAttempts: 20,
                     retryDelay: 5000,

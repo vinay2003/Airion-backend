@@ -4,21 +4,38 @@ import { AlertTriangle } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import { Skeleton, SkeletonText } from '@ease2event/ui';
-import api from '../lib/api';
+import { useAdminDashboard } from '../hooks/useDashboard';
 
 const Dashboard: React.FC = () => {
-    const { data, isLoading: statsLoading } = useQuery<any>({
-        queryKey: ['admin-stats'],
-        queryFn: async () => {
-            const res = await api.get<any>('/analytics/admin/global-stats');
-            return res.data?.data || res.data;
-        }
-    });
+    const { data: dashboardData, isLoading: statsLoading } = useAdminDashboard();
 
-    const stats = data?.stats || [];
-    const growthData = data?.growthData || [];
-    const categoryData = data?.categoryData || [];
-    const revenueData = data?.revenueData || [];
+    const stats = [
+        { label: 'Total Revenue', value: `₹${((dashboardData?.revenue || 0) / 100000).toFixed(2)}L`, change: '+12%', icon: 'DollarSign', color: 'emerald' },
+        { label: 'Active Vendors', value: dashboardData?.vendors || 0, change: '+8%', icon: 'Store', color: 'blue' },
+        { label: 'Total Users', value: dashboardData?.users || 0, change: '+24%', icon: 'Users', color: 'purple' },
+        { label: 'Total Bookings', value: dashboardData?.bookings || 0, change: '+2%', icon: 'Calendar', color: 'rose' },
+    ];
+    
+    // We still need some mock data for charts since backend is not fully tracking historical growth yet.
+    // In Phase 5, this will be completely dynamic.
+    const growthData = [
+        { name: 'Jan', users: 4000, vendors: 240 },
+        { name: 'Feb', users: 3000, vendors: 139 },
+        { name: 'Mar', users: 2000, vendors: 980 },
+        { name: 'Apr', users: 2780, vendors: 390 },
+        { name: 'May', users: 1890, vendors: 480 },
+        { name: 'Jun', users: 2390, vendors: 380 },
+        { name: 'Jul', users: dashboardData?.users || 3490, vendors: dashboardData?.vendors || 430 },
+    ];
+    
+    const categoryData = [
+        { name: 'Venues', value: 400 },
+        { name: 'Catering', value: 300 },
+        { name: 'Decor', value: 300 },
+        { name: 'Photo', value: 200 },
+    ];
+    
+    const revenueData = dashboardData?.charts?.revenue || [];
 
     const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -158,26 +175,26 @@ const Dashboard: React.FC = () => {
                 <div className="card-premium">
                     <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6">Pending vendors</h2>
                     <div className="space-y-4">
-                        {[
-                            { name: 'Glow Makeup Studio', type: 'Makeup Artist', city: 'Mumbai' },
-                            { name: 'Royal Palace Banquet', type: 'Venue', city: 'Delhi' },
-                            { name: 'Flash Moments', type: 'Photography', city: 'Bangalore' }
-                        ].map((vendor, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm  ">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
-                                        {vendor.name[0]}
+                        {dashboardData?.pendingApprovals?.length ? (
+                            dashboardData.pendingApprovals.map((vendor, i) => (
+                                <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm  ">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
+                                            {vendor.businessName?.[0] || 'V'}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-[var(--ease2event-text-primary)]">{vendor.businessName || 'Unnamed Vendor'}</p>
+                                            <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium">Pending Approval</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-[var(--ease2event-text-primary)]">{vendor.name}</p>
-                                        <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium">{vendor.type} • {vendor.city}</p>
+                                    <div className="flex gap-2">
+                                        <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold  ">Review</button>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold  ">Review</button>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className="text-sm text-[var(--ease2event-text-secondary)]">No pending vendors found.</p>
+                        )}
                     </div>
                 </div>
 

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, MoreHorizontal, Mail, Phone, Calendar, Shield, User as UserIcon, AlertCircle, Clock, MapPin, Activity, X, Ban, Unlock } from 'lucide-react';
-import api from '../lib/api';
-import toast from 'react-hot-toast';
+import { useAdminUsers, useBlockUser, useUnblockUser } from '../hooks/useUsers';
 
 interface User {
     id: string;
@@ -10,55 +9,39 @@ interface User {
     phoneNumber: string;
     createdAt: string;
     role: string;
-    status?: 'Active' | 'Inactive' | 'Blocked';
-    lastLogin?: string;
+    isBlocked: boolean;
+    lastLoginAt?: string;
     device?: string;
 }
 
 const Users: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [page, setPage] = useState(1);
+    
+    // Instead of mock data, we fetch real data using the hook
+    const { data: response, isLoading: loading, error } = useAdminUsers(page, 20, searchQuery, 'all', 'newest');
+    const users: User[] = response?.data || [];
+    
+    const blockMutation = useBlockUser();
+    const unblockMutation = useUnblockUser();
 
-    useEffect(() => {
-        // Simulating the API fetch with enriched mock data for v2.0
-        const fetchUsers = async () => {
-            try {
-                // Mocking data since API might not have all fields yet
-                const mockUsers: User[] = [
-                    { id: '1', name: 'Amit Sharma', email: 'amit@example.com', phoneNumber: '+91 9876543210', createdAt: '2023-01-15T10:00:00Z', role: 'user', status: 'Active', lastLogin: '2 mins ago', device: 'iPhone 14 Pro' },
-                    { id: '2', name: 'Priya Patel', email: 'priya@example.com', phoneNumber: '+91 8765432109', createdAt: '2023-03-22T14:30:00Z', role: 'user', status: 'Inactive', lastLogin: '2 weeks ago', device: 'Windows PC' },
-                    { id: '3', name: 'Rahul Kumar', email: 'rahul@example.com', phoneNumber: '+91 7654321098', createdAt: '2023-05-10T09:15:00Z', role: 'user', status: 'Blocked', lastLogin: '1 month ago', device: 'MacBook Air' },
-                    { id: '4', name: 'Sneha Gupta', email: 'sneha@example.com', phoneNumber: '+91 6543210987', createdAt: '2023-08-05T16:45:00Z', role: 'user', status: 'Active', lastLogin: '5 hours ago', device: 'Android' },
-                ];
-                setTimeout(() => {
-                    setUsers(mockUsers);
-                    setLoading(false);
-                }, 800);
-            } catch (error: any) {
-                setError(error.message);
-                setLoading(false);
+    // The filtering is now handled server-side through the query hook search param.
+    // However, for immediate UI feedback we can map the data directly.
+    const filteredUsers = users;
+
+    const toggleBlockStatus = async (user: User) => {
+        try {
+            if (user.isBlocked) {
+                await unblockMutation.mutateAsync(user.id);
+                setSelectedUser({ ...user, isBlocked: false });
+            } else {
+                await blockMutation.mutateAsync(user.id);
+                setSelectedUser({ ...user, isBlocked: true });
             }
-        };
-        fetchUsers();
-    }, []);
-
-    const filteredUsers = users.filter(user => {
-        const query = searchQuery.toLowerCase();
-        return user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query) || user.phoneNumber.includes(query);
-    });
-
-    const toggleBlockStatus = (user: User) => {
-        setUsers(users.map(u => {
-            if (u.id === user.id) {
-                return { ...u, status: u.status === 'Blocked' ? 'Active' : 'Blocked' };
-            }
-            return u;
-        }));
-        setSelectedUser(prev => prev && prev.id === user.id ? { ...prev, status: prev.status === 'Blocked' ? 'Active' : 'Blocked' } : prev);
-        toast.success(`User ${user.status === 'Blocked' ? 'unblocked' : 'blocked'} successfully`);
+        } catch (err) {
+            console.error('Failed to toggle block status', err);
+        }
     };
 
     if (loading) {
@@ -74,7 +57,7 @@ const Users: React.FC = () => {
             <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
                 <AlertCircle className="text-red-500" size={48} />
                 <h3 className="text-xl font-bold">Error loading users</h3>
-                <p className="text-gray-500">{error}</p>
+                <p className="text-gray-500">{error instanceof Error ? error.message : String(error)}</p>
             </div>
         );
     }
@@ -118,10 +101,10 @@ const Users: React.FC = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-sm">
-                                                {user.name[0]}
+                                                {user.name?.[0] || 'U'}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-sm text-gray-900 dark:text-white">{user.name}</p>
+                                                <p className="font-bold text-sm text-gray-900 dark:text-white">{user.name || 'Unnamed'}</p>
                                                 <p className="text-xs text-gray-500">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
@@ -132,16 +115,15 @@ const Users: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-bold ${
-                                            user.status === 'Active' ? 'bg-emerald-50 text-emerald-600' :
-                                            user.status === 'Blocked' ? 'bg-red-50 text-red-600' :
-                                            'bg-gray-100 text-gray-600'
+                                            !user.isBlocked ? 'bg-emerald-50 text-emerald-600' :
+                                            'bg-red-50 text-red-600'
                                         }`}>
-                                            {user.status}
+                                            {user.isBlocked ? 'Blocked' : 'Active'}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <p className="text-sm text-gray-900 dark:text-white font-medium">{user.lastLogin}</p>
-                                        <p className="text-xs text-gray-500">{user.device}</p>
+                                        <p className="text-sm text-gray-900 dark:text-white font-medium">{user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString() : 'Never'}</p>
+                                        <p className="text-xs text-gray-500">{user.device || 'Unknown Device'}</p>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onClick={(e) => { e.stopPropagation(); setSelectedUser(user); }}>
@@ -173,16 +155,15 @@ const Users: React.FC = () => {
                         <div className="flex-1 overflow-y-auto p-6">
                             <div className="flex items-center gap-4 mb-8">
                                 <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-2xl">
-                                    {selectedUser.name[0]}
+                                    {selectedUser.name?.[0] || 'U'}
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{selectedUser.name}</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{selectedUser.name || 'Unnamed'}</h3>
                                     <span className={`inline-flex mt-1 px-2.5 py-0.5 rounded-md text-xs font-bold ${
-                                            selectedUser.status === 'Active' ? 'bg-emerald-50 text-emerald-600' :
-                                            selectedUser.status === 'Blocked' ? 'bg-red-50 text-red-600' :
-                                            'bg-gray-100 text-gray-600'
+                                            !selectedUser.isBlocked ? 'bg-emerald-50 text-emerald-600' :
+                                            'bg-red-50 text-red-600'
                                         }`}>
-                                        {selectedUser.status}
+                                        {selectedUser.isBlocked ? 'Blocked' : 'Active'}
                                     </span>
                                 </div>
                             </div>
@@ -211,11 +192,11 @@ const Users: React.FC = () => {
                                     <div className="space-y-3 bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl border border-gray-100 dark:border-slate-800">
                                         <div className="flex items-center gap-3">
                                             <Clock size={16} className="text-gray-400" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Last login: {selectedUser.lastLogin}</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Last login: {selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : 'Never'}</span>
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <Shield size={16} className="text-gray-400" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Device: {selectedUser.device}</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Device: {selectedUser.device || 'Unknown Device'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -236,13 +217,13 @@ const Users: React.FC = () => {
                             <button 
                                 onClick={() => toggleBlockStatus(selectedUser)}
                                 className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${
-                                    selectedUser.status === 'Blocked' 
+                                    selectedUser.isBlocked 
                                     ? 'bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900' 
                                     : 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'
                                 }`}
                             >
-                                {selectedUser.status === 'Blocked' ? <Unlock size={18} /> : <Ban size={18} />}
-                                {selectedUser.status === 'Blocked' ? 'Unblock User' : 'Block User'}
+                                {selectedUser.isBlocked ? <Unlock size={18} /> : <Ban size={18} />}
+                                {selectedUser.isBlocked ? 'Unblock User' : 'Block User'}
                             </button>
                         </div>
                     </div>

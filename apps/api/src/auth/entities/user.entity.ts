@@ -8,6 +8,10 @@ export enum UserRole {
     USER = 'user',
     VENDOR = 'vendor',
     ADMIN = 'admin',
+    SUPER_ADMIN = 'super_admin',
+    FINANCE = 'finance',
+    SUPPORT = 'support',
+    MODERATOR = 'moderator',
 }
 
 @Entity('users')
@@ -59,6 +63,9 @@ export class User {
 
     @Column({ name: 'login_attempts', type: 'int', default: 0 })
     loginAttempts: number;
+
+    @Column({ name: 'is_blocked', type: 'boolean', default: false })
+    isBlocked: boolean;
 
     @Column({ name: 'locked_until', type: 'timestamp', nullable: true })
     lockedUntil?: Date;

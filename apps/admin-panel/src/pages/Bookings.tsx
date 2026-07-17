@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle, RefreshCcw, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, DollarSign, Search, Filter, Eye, CheckCircle, XCircle, RefreshCcw, ExternalLink, X, MapPin, User, Building2, Phone, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAdminBookings, useUpdateBookingStatus } from '../hooks/useBookings';
 import { useAdminLocations } from '../hooks/useCategories';
@@ -16,15 +16,101 @@ interface Booking {
     status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Refunded' | string;
 }
 
+const BookingDetailPanel: React.FC<{ booking: Booking; onClose: () => void }> = ({ booking, onClose }) => (
+    <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 z-10">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Booking Details</h2>
+                    <p className="text-sm text-indigo-600 font-mono font-bold mt-0.5">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</p>
+                </div>
+                <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800">
+                    <X size={20} />
+                </button>
+            </div>
+
+            <div className="p-6 space-y-6 flex-1">
+                {/* Status Badge */}
+                <div className="flex items-center gap-3">
+                    <span className={`px-4 py-2 rounded-xl text-sm font-bold ${
+                        booking.status === 'Confirmed' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        booking.status === 'Pending' ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        booking.status === 'Completed' ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        booking.status === 'Cancelled' ? 'bg-rose-50 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400' :
+                        'bg-purple-50 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
+                    }`}>
+                        {booking.status}
+                    </span>
+                    <span className="text-2xl font-black text-gray-900 dark:text-white">{booking.amount}</span>
+                </div>
+
+                {/* Key Details */}
+                <div className="grid grid-cols-2 gap-4">
+                    {[
+                        { label: 'Customer', value: booking.userName, icon: User },
+                        { label: 'Vendor', value: booking.vendorName, icon: Building2 },
+                        { label: 'Event Date', value: new Date(booking.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }), icon: Calendar },
+                        { label: 'City', value: booking.city || 'N/A', icon: MapPin },
+                        { label: 'Category', value: booking.category || 'General', icon: Building2 },
+                        { label: 'Booking ID', value: `#${booking.id.substring(0, 8).toUpperCase()}`, icon: Clock },
+                    ].map(({ label, value, icon: Icon }) => (
+                        <div key={label} className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-xl border border-gray-100 dark:border-slate-800">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Icon size={14} className="text-indigo-500" />
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{label}</p>
+                            </div>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{value}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Timeline */}
+                <div className="space-y-3">
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider">Status Timeline</h3>
+                    {['Pending', 'Confirmed', 'Completed'].map((step, i) => {
+                        const steps = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'Refunded'];
+                        const currentIdx = steps.indexOf(booking.status);
+                        const isDone = i <= currentIdx && !['Cancelled', 'Refunded'].includes(booking.status);
+                        return (
+                            <div key={step} className="flex items-center gap-3">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-400'}`}>
+                                    {isDone ? '✓' : i + 1}
+                                </div>
+                                <span className={`text-sm font-medium ${isDone ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>{step}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-6 border-t border-gray-200 dark:border-slate-800 flex gap-3">
+                <button onClick={onClose} className="flex-1 py-3 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 rounded-xl font-bold text-sm">
+                    Close
+                </button>
+                <button
+                    onClick={() => { toast.success('Invoice downloaded'); onClose(); }}
+                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+                >
+                    Download Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+);
+
 const Bookings: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [cityFilter, setCityFilter] = useState('All');
-    
     const [page, setPage] = useState(1);
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
     const { data: bookingsResponse, isLoading } = useAdminBookings(page, 50);
     const updateStatusMutation = useUpdateBookingStatus();
-    
+
     const bookingsData: Booking[] = bookingsResponse?.data || [];
     const totalBookings = bookingsResponse?.total || 0;
 
@@ -37,13 +123,13 @@ const Bookings: React.FC = () => {
         { label: 'Total Bookings', value: totalBookings.toString(), icon: Calendar, color: 'blue' },
         { label: 'Confirmed', value: bookingsData.filter(b => b.status === 'Confirmed').length.toString(), icon: CheckCircle, color: 'emerald' },
         { label: 'Pending Approval', value: bookingsData.filter(b => b.status === 'Pending').length.toString(), icon: Clock, color: 'amber' },
-        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'indigo' }, // Keep static until full transactions tracking is active
+        { label: 'Revenue Generated', value: '₹12.4L', icon: DollarSign, color: 'indigo' },
     ];
 
     const filteredBookings = bookingsData.filter(b => {
-        const matchesSearch = b.userName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                              b.vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              b.id.includes(searchTerm);
+        const matchesSearch = b.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                              b.vendorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                              b.id?.includes(searchTerm);
         const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
         const matchesCity = cityFilter === 'All' || b.city === cityFilter;
         return matchesSearch && matchesStatus && matchesCity;
@@ -51,12 +137,12 @@ const Bookings: React.FC = () => {
 
     const getStatusStyles = (status: Booking['status']) => {
         switch (status) {
-            case 'Confirmed': return 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 border border-emerald-200 dark:border-emerald-500/20';
-            case 'Pending': return 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 border border-amber-200 dark:border-amber-500/20';
-            case 'Completed': return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 border border-blue-200 dark:border-blue-500/20';
-            case 'Cancelled': return 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 border border-rose-200 dark:border-rose-500/20';
-            case 'Refunded': return 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 border border-purple-200 dark:border-purple-500/20';
-            default: return 'bg-gray-100 text-gray-700 border-gray-200';
+            case 'Confirmed': return 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20';
+            case 'Pending': return 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20';
+            case 'Completed': return 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20';
+            case 'Cancelled': return 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20';
+            case 'Refunded': return 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20';
+            default: return 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700';
         }
     };
 
@@ -65,55 +151,66 @@ const Bookings: React.FC = () => {
     };
 
     return (
-        <div className="fade-in pb-12">
-            <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-8">Booking Management</h1>
+        <div className="fade-in pb-12 space-y-6">
+            <h1 className="text-2xl font-bold text-[var(--ease2event-text-primary)]">Booking Management</h1>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between">
+                    <div key={idx} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">{stat.label}</p>
-                            <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
+                            <p className="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1">{stat.label}</p>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
                         </div>
-                        <div className={`p-4 rounded-2xl bg-${stat.color}-50 dark:bg-${stat.color}-900/30 text-${stat.color}-600 dark:text-${stat.color}-400`}>
-                            <stat.icon size={24} />
+                        <div className={`p-3 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-900/30 text-${stat.color}-600 dark:text-${stat.color}-400`}>
+                            <stat.icon size={22} />
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* Filters bar */}
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div className="relative w-full md:w-96">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+                <div className="relative flex-1 min-w-0">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="Search User, Vendor or ID..." 
+                    <input
+                        type="text"
+                        placeholder="Search user, vendor or booking ID..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500"
                     />
                 </div>
-                <div className="flex flex-wrap gap-3 w-full md:w-auto">
-                    <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
-                        <Filter size={16} />
-                        <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold text-gray-900 dark:text-white">
-                            <option value="All" className="text-gray-900 dark:text-white dark:bg-slate-900">All Cities</option>
+                <div className="flex flex-wrap gap-3">
+                    {/* City Filter */}
+                    <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm">
+                        <Filter size={16} className="text-gray-400 shrink-0" />
+                        <select
+                            value={cityFilter}
+                            onChange={(e) => setCityFilter(e.target.value)}
+                            className="bg-transparent outline-none cursor-pointer font-bold text-gray-900 dark:text-white"
+                        >
+                            <option value="All" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">All Cities</option>
                             {uniqueCities.map(city => (
-                                <option key={city} value={city} className="text-gray-900 dark:text-white dark:bg-slate-900">{city}</option>
+                                <option key={city} value={city} className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">{city}</option>
                             ))}
                         </select>
                     </div>
-                    <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-slate-300">
-                        <Filter size={16} />
-                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
-                            <option value="All">All Statuses</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Refunded">Refunded</option>
+
+                    {/* Status Filter - fixed dark mode */}
+                    <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm">
+                        <Filter size={16} className="text-gray-400 shrink-0" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="bg-transparent outline-none cursor-pointer font-bold text-gray-900 dark:text-white"
+                        >
+                            <option value="All" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">All Status</option>
+                            <option value="Pending" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Pending</option>
+                            <option value="Confirmed" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Confirmed</option>
+                            <option value="Completed" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Completed</option>
+                            <option value="Cancelled" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Cancelled</option>
+                            <option value="Refunded" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Refunded</option>
                         </select>
                     </div>
                 </div>
@@ -122,67 +219,79 @@ const Bookings: React.FC = () => {
             {/* Table */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Booking ID</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Event Details</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Booking</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Customer</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Vendor</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Event Date</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {filteredBookings.map((booking) => (
+                            {isLoading ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        {Array.from({ length: 7 }).map((_, j) => (
+                                            <td key={j} className="px-5 py-4">
+                                                <div className="h-4 bg-gray-100 dark:bg-slate-800 rounded w-3/4" />
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            ) : filteredBookings.map((booking) => (
                                 <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="text-sm font-black text-gray-900 dark:text-white">#{booking.id}</span>
+                                    <td className="px-5 py-4 whitespace-nowrap">
+                                        <div className="text-sm font-black text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
+                                        <div className="text-xs text-gray-400 mt-0.5">{booking.category}</div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-1 group cursor-pointer">
+                                    <td className="px-5 py-4">
+                                        <div className="flex items-center gap-1.5 group cursor-pointer">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.userName}</span>
                                             <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-1 group cursor-pointer">
+                                    <td className="px-5 py-4">
+                                        <div className="flex items-center gap-1.5 group cursor-pointer">
                                             <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.vendorName}</span>
                                             <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
                                         </div>
-                                        <span className="text-xs text-gray-500">{booking.category}</span>
+                                        {booking.city && <div className="text-xs text-gray-400 flex items-center gap-1 mt-0.5"><MapPin size={10} />{booking.city}</div>}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
-                                        <div className="text-xs text-gray-500">{booking.eventDate}</div>
+                                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                        {booking.eventDate ? new Date(booking.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{booking.amount}</span>
+                                    <td className="px-5 py-4 whitespace-nowrap">
+                                        <span className="text-sm font-black text-gray-900 dark:text-white">{booking.amount}</span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-5 py-4 whitespace-nowrap">
                                         <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getStatusStyles(booking.status)}`}>
                                             {booking.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                    <td className="px-5 py-4 whitespace-nowrap text-right">
                                         <div className="flex justify-end gap-2">
-                                            <button className="p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 rounded-lg text-gray-500" title="View Details">
+                                            {/* View Details — now functional */}
+                                            <button
+                                                onClick={() => setSelectedBooking(booking)}
+                                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg text-indigo-500"
+                                                title="View Details"
+                                            >
                                                 <Eye size={16} />
                                             </button>
-                                            
                                             {booking.status === 'Pending' && (
-                                                <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Confirm Booking">
+                                                <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Confirm">
                                                     <CheckCircle size={16} />
                                                 </button>
                                             )}
-                                            
                                             {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
-                                                <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Cancel Booking">
+                                                <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Cancel">
                                                     <XCircle size={16} />
                                                 </button>
                                             )}
-
                                             {booking.status === 'Cancelled' && (
                                                 <button onClick={() => updateStatus(booking.id, 'Refunded')} className="p-1.5 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg" title="Process Refund">
                                                     <RefreshCcw size={16} />
@@ -195,10 +304,28 @@ const Bookings: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-                {filteredBookings.length === 0 && (
-                    <div className="p-12 text-center text-gray-500">No bookings match your filters.</div>
+                {!isLoading && filteredBookings.length === 0 && (
+                    <div className="p-12 text-center text-gray-500 dark:text-slate-400">No bookings match your filters.</div>
                 )}
             </div>
+
+            {/* Pagination */}
+            {totalBookings > 50 && (
+                <div className="flex justify-center gap-2">
+                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-bold disabled:opacity-40">
+                        Previous
+                    </button>
+                    <span className="px-4 py-2 text-sm font-bold text-gray-600 dark:text-slate-400">Page {page}</span>
+                    <button onClick={() => setPage(p => p + 1)} className="px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-bold">
+                        Next
+                    </button>
+                </div>
+            )}
+
+            {/* Booking Detail Panel */}
+            {selectedBooking && (
+                <BookingDetailPanel booking={selectedBooking} onClose={() => setSelectedBooking(null)} />
+            )}
         </div>
     );
 };

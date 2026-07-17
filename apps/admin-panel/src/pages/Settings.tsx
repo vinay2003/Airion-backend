@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Lock, Unlock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw } from 'lucide-react';
+import { User, Bell, Lock, Unlock, Shield, Globe, Moon, Sun, Save, Server, Trash2, Key, Mail, Phone, Plus, Database, AlertTriangle, RefreshCw, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 
@@ -36,6 +36,8 @@ const Settings: React.FC = () => {
 
     // Advanced settings state
     const [systemMaintenance, setSystemMaintenance] = useState(false);
+    const [maintenanceConfirmOpen, setMaintenanceConfirmOpen] = useState(false);
+    const [pendingMaintenanceState, setPendingMaintenanceState] = useState(false);
 
     const handleAddAdmin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -398,15 +400,31 @@ const Settings: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-6">
-                                    <div className="p-5 bg-rose-50/50 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900 rounded-2xl flex justify-between items-center">
-                                        <div className="max-w-xl">
-                                            <h3 className="font-bold text-rose-700 dark:text-rose-400 flex items-center gap-1.5"><AlertTriangle size={18} /> System Maintenance Mode</h3>
-                                            <p className="text-sm text-rose-600 dark:text-rose-500/80 mt-1">Make platform temporarily inaccessible to users and vendors. Admins can still log in normally.</p>
+                                    <div className="p-5 bg-rose-50/50 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900 rounded-2xl">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <div className="flex-1">
+                                                <h3 className="font-bold text-rose-700 dark:text-rose-400 flex items-center gap-1.5"><AlertTriangle size={18} /> System Maintenance Mode</h3>
+                                                <p className="text-sm text-rose-600 dark:text-rose-500/80 mt-1">Make platform temporarily inaccessible to users and vendors. Admins can still log in normally.</p>
+                                            </div>
+                                            <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={systemMaintenance}
+                                                    onChange={(e) => {
+                                                        setPendingMaintenanceState(e.target.checked);
+                                                        setMaintenanceConfirmOpen(true);
+                                                    }}
+                                                    className="sr-only peer"
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600" />
+                                            </label>
                                         </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" checked={systemMaintenance} onChange={(e) => { setSystemMaintenance(e.target.checked); toast.success(`System Maintenance Mode ${e.target.checked ? 'activated' : 'deactivated'}`); }} className="sr-only peer" />
-                                            <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
-                                        </label>
+                                        {systemMaintenance && (
+                                            <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
+                                                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                                                <span className="text-xs font-bold text-rose-700 dark:text-rose-400">Platform is currently in Maintenance Mode — users cannot access the site.</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -502,6 +520,51 @@ const Settings: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Maintenance Mode Confirmation Modal */}
+            {maintenanceConfirmOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md p-8 relative">
+                        <button onClick={() => setMaintenanceConfirmOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                            <X size={22} />
+                        </button>
+                        <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center mb-5">
+                            <AlertTriangle size={28} className="text-rose-600" />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                            {pendingMaintenanceState ? 'Enable Maintenance Mode?' : 'Disable Maintenance Mode?'}
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">
+                            {pendingMaintenanceState
+                                ? 'This will make the platform inaccessible to all users and vendors. Only admins will be able to log in. Are you sure?'
+                                : 'This will restore full public access to the platform. Confirm to proceed.'
+                            }
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setSystemMaintenance(pendingMaintenanceState);
+                                    setMaintenanceConfirmOpen(false);
+                                    toast.success(`Maintenance Mode ${pendingMaintenanceState ? 'activated' : 'deactivated'} successfully`);
+                                }}
+                                className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
+                                    pendingMaintenanceState
+                                        ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                }`}
+                            >
+                                {pendingMaintenanceState ? 'Yes, Enable' : 'Yes, Disable'}
+                            </button>
+                            <button
+                                onClick={() => setMaintenanceConfirmOpen(false)}
+                                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold text-sm"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

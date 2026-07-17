@@ -15,12 +15,16 @@ import { AuthController } from './controllers/auth.controller';
 import { UsersController } from './controllers/users.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { Vendor } from '../vendors/entities/vendor.entity';
+import { VendorAd } from '../vendors/entities/vendor-ad.entity';
+import { VendorGallery } from '../vendors/entities/vendor-gallery.entity';
+import { Category } from '../categories/entities/category.entity';
+import { Subcategory } from '../categories/entities/subcategory.entity';
 import { EmailService } from '../common/services/email.service';
 import { SmsService } from '../common/services/sms.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Otp, Session, AuditLog, Vendor, RefreshToken]),
+        TypeOrmModule.forFeature([User, Otp, Session, AuditLog, Vendor, RefreshToken, VendorAd, VendorGallery, Category, Subcategory]),
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],

@@ -5,6 +5,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@ease2event/shared';
 import ListingEditorModal from '../components/ListingEditorModal';
 import { Button, Badge, Skeleton } from '@ease2event/ui';
+import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 const Listings: React.FC = () => {
  const { user } = useAuth();
@@ -16,14 +18,16 @@ const Listings: React.FC = () => {
  // Modal State
  const [isEditorOpen, setIsEditorOpen] = useState(false);
  const [editingListing, setEditingListing] = useState<any>(null);
+ const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
 
  const { data: listings = [], isLoading: loading, error } = useQuery({
  queryKey: ['services', vendorId],
  queryFn: async () => {
  if (vendorId === 'mock-id') return [];
- const response: any = await api.get(`/services?vendorId=${vendorId}`);
+ const response: any = await api.get(`/services?vendorId=${vendorId}&limit=100`);
  
- return response.data.map((service: any) => ({
+ const dataList = Array.isArray(response) ? response : (response?.data || []);
+ return dataList.map((service: any) => ({
  id: service.id,
  title: service.title,
  image: service.images?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80',
@@ -40,11 +44,12 @@ const Listings: React.FC = () => {
  const saveMutation = useMutation({
  mutationFn: async (data: any) => {
  const payload = {
+ vendorId,
  title: data.title,
  description: data.description,
  basePrice: Number(data.price),
  availableLocations: [data.location],
- guestCapacity: Number(data.capacity) || 0,
+ guestCapacity: Number(data.capacity) || 1,
  images: data.image ? [data.image] : [],
  locationType: 'onsite'
  };
@@ -74,13 +79,20 @@ const Listings: React.FC = () => {
  await saveMutation.mutateAsync(data);
  };
 
- const handleDelete = async (id: string) => {
- if (!confirm('Are you sure you want to delete this listing?')) return;
+ const handleDelete = (id: string) => {
+ setDeleteConfirmation(id);
+ };
+
+ const confirmDelete = async () => {
+ if (!deleteConfirmation) return;
  try {
- await deleteMutation.mutateAsync(id);
+ await deleteMutation.mutateAsync(deleteConfirmation);
+ toast.success('Service deleted successfully.');
  } catch (error: any) {
  console.error('Failed to delete listing:', error);
- alert('Failed to delete listing from server.');
+ toast.error('Failed to delete listing from server.');
+ } finally {
+ setDeleteConfirmation(null);
  }
  };
 
@@ -101,9 +113,9 @@ const Listings: React.FC = () => {
  </div>
  <Button
  onClick={() => { setEditingListing(null); setIsEditorOpen(true); }}
- className="h-10 px-6 rounded-lg font-bold text-xs transition-shadow"
- leftIcon={<Plus size={16} />}
+ className="cursor-pointer flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
  >
+ <Plus size={14} className="mr-2 sm:mr-3" />
  Create New Listing
  </Button>
  </div>
@@ -111,7 +123,7 @@ const Listings: React.FC = () => {
  {/* Quick Stats Bar */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  {[
- { label: 'Active Listings', value: listings.filter((l: any) => l.status === 'Active').length, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+ { label: 'Total Active Services', value: listings.filter((l: any) => l.status === 'Active').length, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
  { label: 'Total Reach', value: '1.2k', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
  { label: 'Avg. Rating', value: '4.8', icon: Star, color: 'text-amber-500', bg: 'bg-amber-500/10' },
  { label: 'Pending Reviews', value: '12', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-500/10' },
@@ -141,7 +153,7 @@ const Listings: React.FC = () => {
  />
  </div>
  <div className="flex gap-4 w-full md:w-auto">
- <Button variant="secondary" className="h-10 px-4 rounded-lg border-[var(--ease2event-border-subtle)] font-bold text-xs bg-[var(--ease2event-bg-surface)]" leftIcon={<Filter size={16} />}>
+ <Button variant="secondary" onClick={() => alert('More filters coming soon!')} className="cursor-pointer h-10 px-4 rounded-lg border-[var(--ease2event-border-subtle)] font-bold text-xs bg-[var(--ease2event-bg-surface)]" leftIcon={<Filter size={16} />}>
  More Filters
  </Button>
  </div>
@@ -225,6 +237,44 @@ const Listings: React.FC = () => {
  listing={editingListing}
  onSave={handleSaveListing}
  />
+
+ <AnimatePresence>
+ {deleteConfirmation && (
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+ <motion.div
+ initial={{ opacity: 0, scale: 0.95, y: 10 }}
+ animate={{ opacity: 1, scale: 1, y: 0 }}
+ exit={{ opacity: 0, scale: 0.95, y: 10 }}
+ className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800"
+ >
+ <div className="p-6 text-center space-y-4">
+ <div className="w-16 h-16 bg-red-100 dark:bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
+ <Trash2 size={32} />
+ </div>
+ <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Delete Service?</h3>
+ <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+ This action cannot be undone. This service will be permanently removed from your active listings.
+ </p>
+ </div>
+ <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex gap-3">
+ <button
+ onClick={() => setDeleteConfirmation(null)}
+ className="flex-1 cursor-pointer px-4 py-2.5 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+ >
+ Cancel
+ </button>
+ <button
+ onClick={confirmDelete}
+ disabled={deleteMutation.isPending}
+ className="flex-1 cursor-pointer px-4 py-2.5 rounded-lg text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md shadow-red-500/20 transition-colors disabled:opacity-70 flex justify-center items-center"
+ >
+ {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+ </button>
+ </div>
+ </motion.div>
+ </div>
+ )}
+ </AnimatePresence>
  </div>
  );
 };

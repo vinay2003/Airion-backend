@@ -18,10 +18,6 @@ export class VendorAd {
     @JoinColumn({ name: 'vendor_id', foreignKeyConstraintName: 'fk_vendor_ads_vendor' })
     vendor: Vendor;
 
-    @Index()
-    @Column({ name: 'vendor_id', insert: false, update: false })
-    vendorId: string;
-
     @Column('varchar', { length: 255 })
     title: string;
 

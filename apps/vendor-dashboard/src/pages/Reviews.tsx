@@ -59,7 +59,7 @@ const Reviews: React.FC = () => {
  <p className="text-lg font-semibold text-[var(--ease2event-text-secondary)]">Manage your reputation and interact with your clients performance.</p>
  </header>
 
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {/* Stats Sidebar */}
  <div className="lg:col-span-1 space-y-5">
  <div className="card-minimal p-6 rounded-xl border-[var(--ease2event-border-base)] text-center space-y-6">

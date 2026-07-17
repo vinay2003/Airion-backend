@@ -430,6 +430,22 @@ export class AuthService {
         // Return user without password
         const { password, ...userWithoutPassword } = loggedInUser;
 
+        // Prevent circular reference issues during serialization
+        if (userWithoutPassword.vendor) {
+            delete (userWithoutPassword.vendor as any).user;
+            
+            if (userWithoutPassword.vendor.gallery) {
+                userWithoutPassword.vendor.gallery.forEach((item: any) => {
+                    delete item.vendor;
+                });
+            }
+            if (userWithoutPassword.vendor.ads) {
+                userWithoutPassword.vendor.ads.forEach((item: any) => {
+                    delete item.vendor;
+                });
+            }
+        }
+
         // 🔐 SECURE REFRESH SYSTEM: Generate Entropy-Rich Token
         const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
         const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);

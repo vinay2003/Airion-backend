@@ -48,25 +48,26 @@ const Bookings: React.FC = () => {
  queryKey: ['vendor-bookings'],
  queryFn: async () => {
  const res: any = await api.get('/bookings/vendor');
- return res.data.map((b: any) => ({
+ const bookingsList = Array.isArray(res) ? res : (res?.data || []);
+ return bookingsList.map((b: any) => ({
  id: b.id,
  venueName: b.service?.title || 'Main Hub',
- clientName: b.user?.name || 'Customer Node',
+ clientName: b.user?.name || 'Customer',
  date: b.eventDate ? new Date(b.eventDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD',
  time: '10:00 AM - 06:00 PM', // Placeholder unless stored in DB
  guests: 100, // Placeholder
- amount: `₹${Number(b.totalAmount).toLocaleString()}`,
- status: b.status.charAt(0).toUpperCase() + b.status.slice(1),
+ amount: `₹${Number(b.totalAmount || 0).toLocaleString()}`,
+ status: b.status ? b.status.charAt(0).toUpperCase() + b.status.slice(1) : 'Pending',
  eventType: b.service?.title || 'General Booking'
  }));
  }
  });
 
  const stats = [
- { label: 'Total Volume', value: bookings.length.toString(), icon: Activity, trend: '+12%' },
- { label: 'Active Pipeline', value: bookings.filter((b: Booking) => b.status === 'Confirmed').length.toString(), icon: Zap, trend: '+5%' },
- { label: 'Pending Nodes', value: bookings.filter((b: Booking) => b.status === 'Pending').length.toString(), icon: Clock, trend: '-2%' },
- { label: 'Target Capture', value: `₹${bookings.reduce((sum: number, b: Booking) => sum + parseInt(b.amount.replace(/[^0-9.-]+/g,"")), 0).toLocaleString()}`, icon: Target, trend: '+18%' },
+ { label: 'Total Bookings', value: bookings.length.toString(), icon: Activity, trend: '+12%' },
+ { label: 'Confirmed Bookings', value: bookings.filter((b: Booking) => b.status === 'Confirmed').length.toString(), icon: Zap, trend: '+5%' },
+ { label: 'Pending Bookings', value: bookings.filter((b: Booking) => b.status === 'Pending').length.toString(), icon: Clock, trend: '-2%' },
+ { label: 'Total Revenue', value: `₹${bookings.reduce((sum: number, b: Booking) => sum + parseInt(b.amount.replace(/[^0-9.-]+/g,"")), 0).toLocaleString()}`, icon: Target, trend: '+18%' },
  ];
 
  const [viewMode, setViewMode] = useState<'daily' | 'weekly'>('daily');
@@ -74,10 +75,10 @@ const Bookings: React.FC = () => {
 
 
  const tabsData = [
- { id: 'all', label: 'All Clusters' },
+ { id: 'all', label: 'All Bookings' },
  { id: 'Confirmed', label: 'Confirmed' },
- { id: 'Pending', label: 'In_Hold' },
- { id: 'Cancelled', label: 'Terminated' },
+ { id: 'Pending', label: 'On Hold' },
+ { id: 'Cancelled', label: 'Cancelled' },
  ];
 
  const updateStatusMutation = useMutation({
@@ -113,7 +114,7 @@ const Bookings: React.FC = () => {
  
  className="space-y-6 pb-6 px-6 w-full max-w-7xl mx-auto"
  >
- {/* Header: Operational Matrix */}
+ {/* Header: Bookings Management */}
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)]">
  <div >
  <h1 className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)]">Bookings Manager</h1>
@@ -122,14 +123,14 @@ const Bookings: React.FC = () => {
  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
  Connected
  </span>
- <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] tracking-widest leading-none">Manage your upcoming events and client coordination</p>
+ <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] tracking-widest leading-none">Manage your upcoming events and client bookings</p>
  </div>
  </div>
 
  <div className="flex bg-[var(--ease2event-bg-elevated)] p-1.5 rounded-2xl border border-[var(--ease2event-border-subtle)] ">
  <button
  onClick={() => setViewMode('daily')}
- className={`px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'daily'
+ className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'daily'
  ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
  : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
  }`}
@@ -138,7 +139,7 @@ const Bookings: React.FC = () => {
  </button>
  <button
  onClick={() => setViewMode('weekly')}
- className={`px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'weekly'
+ className={`cursor-pointer px-6 py-2.5 text-sm font-bold tracking-widest rounded-xl transition-all ${viewMode === 'weekly'
  ? 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-brand-primary)] border border-[var(--ease2event-border-base)]'
  : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
  }`}
@@ -165,9 +166,6 @@ const Bookings: React.FC = () => {
  <p className="text-[var(--ease2event-text-secondary)] font-bold text-xs tracking-widest mb-2 group-hover:text-[var(--ease2event-brand-primary)] transition-all">{stat.label}</p>
  <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">{stat.value}</h3>
  </div>
- <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
- <stat.icon size={110} />
- </div>
  </div>
  ))}
  </div>
@@ -179,7 +177,7 @@ const Bookings: React.FC = () => {
  <button
  key={tab.id}
  onClick={() => setFilter(tab.id as any)}
- className={`flex-1 sm:flex-none px-5 py-3 text-sm font-bold tracking-widest rounded-xl transition-all whitespace-nowrap ${filter === tab.id ? 'bg-[var(--ease2event-brand-primary)] text-white /20' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+ className={`cursor-pointer flex-1 sm:flex-none px-5 py-3 text-sm font-bold tracking-widest rounded-xl transition-all whitespace-nowrap ${filter === tab.id ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-md' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
  >
  {tab.label}
  </button>
@@ -345,8 +343,8 @@ const Bookings: React.FC = () => {
     className="text-center py-24 bg-[var(--ease2event-bg-elevated)]/30 rounded-3xl border border-[var(--ease2event-border-subtle)] border-dashed"
   >
  <AlertCircle size={48} className="mx-auto text-[var(--ease2event-text-secondary)] mb-6 opacity-40 animate-pulse" />
- <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] font-display tracking-tight">Registry Node Empty</h3>
- <p className="text-sm text-[var(--ease2event-text-secondary)] font-black tracking-widest mt-3 opacity-100">Modify filters for new unit synchronization</p>
+ <h3 className="text-lg font-black text-[var(--ease2event-text-primary)] font-display tracking-tight">No Bookings Found</h3>
+ <p className="text-sm text-[var(--ease2event-text-secondary)] font-bold tracking-widest mt-3 opacity-100">Try changing your filters or check back later.</p>
  </div>
  )}
  </>
@@ -364,7 +362,7 @@ const Bookings: React.FC = () => {
  <div className="space-y-5 py-4">
  <div className="grid grid-cols-2 gap-5">
  <div className="space-y-1.5">
- <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] tracking-[0.2em] opacity-60">Venue Node</p>
+ <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] tracking-[0.2em] opacity-60">Venue</p>
  <p className="text-sm font-black text-[var(--ease2event-text-primary)]">{selectedBooking.venueName}</p>
  </div>
  <div className="space-y-1.5">
@@ -380,10 +378,10 @@ const Bookings: React.FC = () => {
  <p className="text-sm font-black text-[var(--ease2event-text-primary)] ">{selectedBooking.eventType}</p>
  </div>
  <div className="space-y-1.5">
- <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] tracking-[0.2em] opacity-60">Guest Payload</p>
+ <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] tracking-[0.2em] opacity-60">Guests</p>
  <div className="flex items-center gap-2">
  <Users size={14} className="text-[var(--ease2event-brand-primary)]" />
- <p className="text-sm font-black text-[var(--ease2event-text-primary)]">{selectedBooking.guests} Nodes</p>
+ <p className="text-sm font-black text-[var(--ease2event-text-primary)]">{selectedBooking.guests} Guests</p>
  </div>
  </div>
  <div className="space-y-1.5">

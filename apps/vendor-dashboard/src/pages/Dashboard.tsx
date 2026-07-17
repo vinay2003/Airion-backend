@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
-import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity } from 'lucide-react';
+import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
 import api from '../lib/api';
@@ -104,6 +104,23 @@ const Dashboard = () => {
  { name: 'Rahul Verma', event: 'Corporate Seminar', time: '1d ago', avatar: 'R' },
  ];
 
+ const handleExport = () => {
+ const csvHeader = "Month,Revenue\n";
+ const csvRows = chartData.map((data: any) => `${data.name},${data.revenue}`).join("\n");
+ const csvString = csvHeader + csvRows;
+ 
+ const blob = new Blob([csvString], { type: 'text/csv' });
+ const url = window.URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.setAttribute('href', url);
+ a.setAttribute('download', 'vendor_earnings_report.csv');
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ 
+ toast.success('Data exported successfully! Check your downloads.');
+ };
+
  return (
  <div className=" space-y-8 pb-12 w-full max-w-7xl mx-auto px-6">
  {/* Top Header */}
@@ -114,10 +131,7 @@ const Dashboard = () => {
  </div>
  <div className="flex items-center gap-4">
  <Button
- onClick={() => {
- // Mock export functionality
- toast.success('Data exported successfully! Check your downloads.');
- }}
+ onClick={handleExport}
  variant="secondary"
  className="h-10 px-6 rounded-lg text-xs font-bold"
  >
@@ -125,8 +139,9 @@ const Dashboard = () => {
  </Button>
  <Button
  onClick={() => navigate('/events')}
- className="h-10 px-6 rounded-lg text-xs font-bold "
+ className="cursor-pointer flex-1 sm:flex-none flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
  >
+ <Plus size={14} className="mr-2 sm:mr-3" />
  Add Service
  </Button>
  </div>
@@ -135,13 +150,115 @@ const Dashboard = () => {
  {/* KPI Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  <StatCard title="Active Enquiries" value={stats?.activeEnquiries} trend="+24.2%" direction="up" icon={FileText} isLoading={statsLoading} />
- <StatCard title="Total Listings" value={stats?.totalListings} icon={Package} isLoading={statsLoading} />
+ <StatCard title="Total Services Listed" value={stats?.totalListings} icon={Package} isLoading={statsLoading} />
  <StatCard title="Confirmed Bookings" value={stats?.confirmedBookings} trend="+8.4%" direction="up" icon={CheckCircle2} isLoading={statsLoading} />
  <StatCard title="Revenue" value={stats?.revenue} currency="₹" trend="+12.8%" direction="up" icon={DollarSign} isLoading={statsLoading} />
  </div>
 
  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
- {/* Left Column: Charts and Performance Metrics */}
+
+ {/* Right Column: Registry Feed (Now on the left) */}
+ <div className="space-y-6">
+ {/* Recent Signals */}
+ <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900 space-y-6">
+ <div className="flex justify-between items-center">
+ <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Recent Enquiries</h2>
+ <span className="chip px-3 py-1 text-[10px] font-bold rounded-full border border-blue-500/30 text-blue-600 bg-blue-50 dark:bg-blue-500/10">4 Active</span>
+ </div>
+
+ <div className="space-y-4">
+ {enquiriesList.length > 0 ? (
+ enquiriesList.map((e: any, i: number) => (
+ <div key={i} onClick={() => navigate('/enquiries')} className="cursor-pointer flex items-center gap-4 p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-sm text-[var(--ease2event-text-primary)]">
+ {e.client?.charAt(0) || 'C'}
+ </div>
+ <div className="flex-1 min-w-0">
+ <h4 className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight truncate">{e.client || 'Customer'}</h4>
+ <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium truncate">{e.service} • <span className="text-blue-600 font-semibold">{e.amount}</span></p>
+ </div>
+
+ </div>
+ ))
+ ) : (
+ mockEnquiries.map((e, i) => (
+ <div key={i} onClick={() => navigate('/enquiries')} className="cursor-pointer flex items-center gap-4 p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-sm text-[var(--ease2event-text-primary)]">
+ {e.avatar}
+ </div>
+ <div className="flex-1 min-w-0">
+ <h4 className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight truncate">{e.name}</h4>
+ <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium truncate">{e.event} • <span className="text-blue-600 font-semibold">{e.time}</span></p>
+ </div>
+
+ </div>
+ ))
+ )}
+ </div>
+
+ <Button
+ onClick={() => navigate('/enquiries')}
+ variant="outline" className="w-full h-10 text-xs font-bold text-[var(--ease2event-text-secondary)] rounded-lg"
+ >
+ View All Enquiries
+ </Button>
+ </div>
+
+ {/* Visibility Index */}
+ <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900 space-y-6 relative overflow-hidden">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2" />
+
+ <div className="space-y-2 z-10 relative">
+ <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Store Profile Ranking</h2>
+ <p className="text-xs font-medium text-[var(--ease2event-text-secondary)]">Your performance ranking on Airion</p>
+ </div>
+
+ <div className="space-y-6 z-10 relative">
+ <div className="flex justify-between items-end h-24 gap-2">
+ {[40, 60, 45, 90, 65, 80, 70].map((h, i) => (
+ <div key={i} className="flex-1 bg-slate-50 dark:bg-slate-800 rounded-t-md relative overflow-hidden border-x border-t border-slate-200 dark:border-slate-700">
+ <div
+ style={{ height: `${h}%` }}
+ className={`absolute bottom-0 left-0 right-0 bg-blue-500/80`}
+ />
+ </div>
+ ))}
+ </div>
+
+ <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+ <div className="space-y-1">
+ <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none">Growth Delta</p>
+ <p className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)] leading-none">+24.8%</p>
+ </div>
+ <div className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-lg border border-emerald-500/20">
+ <Activity size={20} />
+ </div>
+ </div>
+ </div>
+ </div>
+
+ {/* Target Tracker */}
+ <div className="space-y-4">
+ <div className="flex items-center gap-2">
+ <Target size={18} className="text-amber-500" />
+ <h2 className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-wider">Pending Tasks</h2>
+ </div>
+ <div className="bg-white dark:bg-slate-900 border border-[var(--ease2event-border-subtle)] p-5 rounded-xl space-y-4 transition-colors ">
+ <div className="flex justify-between items-start">
+ <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight">Setup Decoration Flow</p>
+ <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">JAN 18</span>
+ </div>
+ <div className="flex items-center gap-3">
+ <div className="w-4 h-4 rounded-full border border-blue-600/30 flex items-center justify-center">
+ <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+ </div>
+ <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium">Awaiting Vendor Approval</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ {/* Left Column: Charts and Performance Metrics (Now on the right) */}
  <div className="xl:col-span-2 space-y-6">
  {/* Revenue Chart */}
  <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900">
@@ -153,13 +270,13 @@ const Dashboard = () => {
  <div className="flex bg-[var(--ease2event-bg-elevated)] p-1 rounded-lg border border-[var(--ease2event-border-subtle)]">
  <button 
  onClick={() => setChartView('live')}
- className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'live' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+ className={`cursor-pointer px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'live' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
  >
  Live
  </button>
  <button 
  onClick={() => setChartView('history')}
- className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'history' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
+ className={`cursor-pointer px-4 py-1.5 rounded-md text-xs font-bold transition-all ${chartView === 'history' ? 'bg-[var(--ease2event-brand-primary)] text-white ' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
  >
  History
  </button>
@@ -224,7 +341,7 @@ const Dashboard = () => {
  </div>
  <button
  onClick={() => navigate('/bookings')}
- className="flex items-center justify-between w-full h-10 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg px-4 text-sm font-bold transition-all backdrop-blur-sm z-10"
+ className="cursor-pointer flex items-center justify-between w-full h-10 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg px-4 text-sm font-bold transition-all backdrop-blur-sm z-10"
  >
  View Details <ChevronRight size={18} />
  </button>
@@ -232,110 +349,6 @@ const Dashboard = () => {
  </div>
  </div>
 
- {/* Right Column: Registry Feed */}
- <div className="space-y-6">
- {/* Recent Signals */}
- <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900 space-y-6">
- <div className="flex justify-between items-center">
- <h2 className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Recent Enquiries</h2>
- <span className="chip px-3 py-1 text-[10px] font-bold rounded-full border border-blue-500/30 text-blue-600 bg-blue-50 dark:bg-blue-500/10">4 Active</span>
- </div>
-
- <div className="space-y-4">
- {enquiriesList.length > 0 ? (
- enquiriesList.map((e: any, i: number) => (
- <div key={i} onClick={() => navigate('/bookings')} className="flex items-center gap-4 cursor-pointer p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-sm text-[var(--ease2event-text-primary)]">
- {e.client?.charAt(0) || 'C'}
- </div>
- <div className="flex-1 min-w-0">
- <h4 className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight truncate">{e.client || 'Customer'}</h4>
- <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium truncate">{e.service} • <span className="text-blue-600 font-semibold">{e.amount}</span></p>
- </div>
- <button onClick={(ev) => { ev.stopPropagation(); navigate('/bookings'); }} className="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
- <MoreVertical size={16} />
- </button>
- </div>
- ))
- ) : (
- mockEnquiries.map((e, i) => (
- <div key={i} className="flex items-center gap-4 cursor-pointer p-2 -mx-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
- <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-sm text-[var(--ease2event-text-primary)]">
- {e.avatar}
- </div>
- <div className="flex-1 min-w-0">
- <h4 className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight truncate">{e.name}</h4>
- <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium truncate">{e.event} • <span className="text-blue-600 font-semibold">{e.time}</span></p>
- </div>
- <button className="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
- <MoreVertical size={16} />
- </button>
- </div>
- ))
- )}
- </div>
-
- <Button
- onClick={() => navigate('/enquiries')}
- variant="outline" className="w-full h-10 text-xs font-bold text-[var(--ease2event-text-secondary)] rounded-lg"
- >
- View All Enquiries
- </Button>
- </div>
-
- {/* Visibility Index */}
- <div className="card-minimal p-5 rounded-xl border border-[var(--ease2event-border-subtle)] bg-white dark:bg-slate-900 space-y-6 relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2" />
-
- <div className="space-y-2 z-10 relative">
- <h2 className="text-lg font-bold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Store Visibility</h2>
- <p className="text-xs font-medium text-[var(--ease2event-text-secondary)]">Your performance ranking on Airion</p>
- </div>
-
- <div className="space-y-6 z-10 relative">
- <div className="flex justify-between items-end h-24 gap-2">
- {[40, 60, 45, 90, 65, 80, 70].map((h, i) => (
- <div key={i} className="flex-1 bg-slate-50 dark:bg-slate-800 rounded-t-md relative overflow-hidden border-x border-t border-slate-200 dark:border-slate-700">
- <div
- style={{ height: `${h}%` }}
- className={`absolute bottom-0 left-0 right-0 bg-blue-500/80`}
- />
- </div>
- ))}
- </div>
-
- <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
- <div className="space-y-1">
- <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none">Growth Delta</p>
- <p className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)] leading-none">+24.8%</p>
- </div>
- <div className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-lg border border-emerald-500/20">
- <Activity size={20} />
- </div>
- </div>
- </div>
- </div>
-
- {/* Target Tracker */}
- <div className="space-y-4">
- <div className="flex items-center gap-2">
- <Target size={18} className="text-amber-500" />
- <h2 className="text-xs font-bold text-[var(--ease2event-text-secondary)] uppercase tracking-wider">Pending Tasks</h2>
- </div>
- <div className="bg-white dark:bg-slate-900 border border-[var(--ease2event-border-subtle)] p-5 rounded-xl space-y-4 transition-colors ">
- <div className="flex justify-between items-start">
- <p className="text-sm font-bold text-[var(--ease2event-text-primary)] tracking-tight">Setup Decoration Flow</p>
- <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">JAN 18</span>
- </div>
- <div className="flex items-center gap-3">
- <div className="w-4 h-4 rounded-full border border-blue-600/30 flex items-center justify-center">
- <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
- </div>
- <p className="text-xs text-[var(--ease2event-text-secondary)] font-medium">Awaiting Vendor Approval</p>
- </div>
- </div>
- </div>
- </div>
  </div>
  </div>
  );

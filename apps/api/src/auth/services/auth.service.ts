@@ -303,7 +303,7 @@ export class AuthService {
 
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
-        // Support multiple admin phone numbers (comma-separated in env)
+        // Authorized admin phone numbers (comma-separated in ADMIN_PHONE_NUMBERS env var)
         const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
             .split(',')
             .map((p: string) => p.trim())
@@ -314,16 +314,8 @@ export class AuthService {
             throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
-        // Check if admin user exists in DB
-        const adminUser = await this.userRepository.findOne({
-            where: { phoneNumber: dto.phone, role: UserRole.ADMIN }
-        });
-
-        if (!adminUser) {
-            this.logger.warn(`🚨 SECURITY ALERT: Admin record missing for verified number ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized user: No admin record found in database');
-        }
-
+        // Phone is authorized — generate and send OTP
+        // (DB record check happens at verifyAdminOtp when issuing the JWT)
         const identifier = dto.phone.trim();
         await this.otpRepository.delete({ identifier });
 
@@ -340,16 +332,15 @@ export class AuthService {
 
         await this.otpRepository.save(otp);
 
-        // Send SMS via provider
         this.logger.log(`🔑 [OTP_DEBUG] Admin OTP for ${identifier}: ${otpCode}`);
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
-        const isProduction = this.configService.get('NODE_ENV') === 'production';
-        
+
         await this.smsService.sendOtpSms(identifier, otpCode, 'admin_login');
 
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
         return {
             message: 'OTP sent successfully to admin number',
-            _dev_otp: otpCode, // Temporarily visible for testing
+            ...(!isProduction && { _dev_otp: otpCode }),
         };
     }
 

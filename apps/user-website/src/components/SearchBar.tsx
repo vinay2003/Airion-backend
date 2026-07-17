@@ -141,24 +141,133 @@ const SearchBar = () => {
     const [eventType, setEventType] = useState("");
     const [openEventType, setOpenEventType] = useState(false);
 
+    // AI Search States
+    const [searchMode, setSearchMode] = useState<'standard' | 'ai'>('standard');
+    const [aiQuery, setAiQuery] = useState('');
+    const [isListening, setIsListening] = useState(false);
+    
+    // Voice Recognition setup
+    const startListening = () => {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert('Speech recognition is not supported in this browser.');
+            return;
+        }
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-IN'; // Indian English optimization
+        
+        recognition.onstart = () => {
+            setIsListening(true);
+        };
+        
+        recognition.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+                .map((result: any) => result[0])
+                .map(result => result.transcript)
+                .join('');
+            setAiQuery(transcript);
+        };
+        
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error', event.error);
+            setIsListening(false);
+        };
+        
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+        
+        recognition.start();
+    };
+
     const handleSearch = () => {
         const params = new URLSearchParams();
-        if (location) params.append('location', location);
-        if (eventType) params.append('category', eventType); // VendorDiscovery reads 'category'
-        if (date?.from) params.append('check_in', date.from.toISOString());
-        if (date?.to) params.append('check_out', date.to.toISOString());
-        if (guests > 0) params.append('guests', guests.toString());
+        if (searchMode === 'ai' && aiQuery) {
+            params.append('ai_query', aiQuery);
+        } else {
+            if (location) params.append('location', location);
+            if (eventType) params.append('category', eventType); // VendorDiscovery reads 'category'
+            if (date?.from) params.append('check_in', date.from.toISOString());
+            if (date?.to) params.append('check_out', date.to.toISOString());
+            if (guests > 0) params.append('guests', guests.toString());
+        }
         navigate(`/search?${params.toString()}`);
     };
 
     return (
-        <div className="relative z-[100] bg-white dark:bg-slate-900 p-1.5 rounded-[2rem] shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 max-w-4xl mx-auto transition-shadow duration-500 overflow-hidden">
-            {/* Location Selector */}
-            <div className="w-full md:w-[230px] md:flex-shrink-0 relative group/input border-b md:border-b-0 border-gray-100 dark:border-slate-800">
-                <Popover open={openLocation} onOpenChange={(open) => {
-                    setOpenLocation(open);
-                    if (!open) setLocationSearch(""); // reset search when closed
-                }}>
+        <div className="flex flex-col items-center w-full gap-4 relative z-[100]">
+            {/* Search Mode Toggle */}
+            <div className="flex items-center gap-2 p-1 bg-white/20 dark:bg-slate-800/50 backdrop-blur-md rounded-full shadow-sm border border-white/30 dark:border-slate-700/50">
+                <button
+                    type="button"
+                    onClick={() => setSearchMode('standard')}
+                    className={cn(
+                        "px-4 py-1.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300",
+                        searchMode === 'standard' ? "bg-white text-gray-900 shadow-md" : "text-white/80 hover:text-white"
+                    )}
+                >
+                    Standard Search
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setSearchMode('ai')}
+                    className={cn(
+                        "px-4 py-1.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 flex items-center gap-1.5",
+                        searchMode === 'ai' ? "bg-red-500 text-white shadow-md shadow-red-500/20" : "text-white/80 hover:text-white"
+                    )}
+                >
+                    <Sparkles size={14} className={searchMode === 'ai' ? "text-white" : "text-red-400"} />
+                    AI Assistant
+                </button>
+            </div>
+
+            <div className={cn(
+                "relative bg-white dark:bg-slate-900 p-1.5 shadow-airbnb-hover hover:shadow-[0_20px_50px_-12px_rgba(225,29,72,0.3)] border border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-0 md:gap-2 w-full mx-auto transition-all duration-500 overflow-hidden",
+                searchMode === 'ai' ? "rounded-[2rem] md:rounded-full max-w-2xl" : "rounded-[2rem] max-w-4xl"
+            )}>
+                {searchMode === 'ai' ? (
+                    <div className="flex items-center w-full px-2">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                            {isListening ? (
+                                <div className="relative flex items-center justify-center w-8 h-8">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <Mic2 className="w-5 h-5 text-red-500 relative z-10 animate-pulse" />
+                                </div>
+                            ) : (
+                                <Sparkles className="w-5 h-5 text-red-500" />
+                            )}
+                        </div>
+                        <input 
+                            type="text" 
+                            value={aiQuery}
+                            onChange={(e) => setAiQuery(e.target.value)}
+                            placeholder="Describe your dream event... e.g., 'A beach wedding in Goa for 200 guests next month'"
+                            className="flex-1 bg-transparent border-none outline-none text-sm md:text-base font-medium text-gray-900 dark:text-white placeholder-gray-400 px-2 h-14"
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        />
+                        <button
+                            type="button"
+                            onClick={startListening}
+                            className={cn(
+                                "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all mr-2",
+                                isListening ? "bg-red-100 text-red-600" : "hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500"
+                            )}
+                        >
+                            <Mic2 size={18} />
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        {/* Location Selector */}
+                        <div className="w-full md:w-[230px] md:flex-shrink-0 relative group/input border-b md:border-b-0 border-gray-100 dark:border-slate-800">
+                            <Popover open={openLocation} onOpenChange={(open) => {
+                                setOpenLocation(open);
+                                if (!open) setLocationSearch(""); // reset search when closed
+                            }}>
                     <PopoverTrigger asChild>
                         <div className="h-full px-4 md:px-5 py-3 md:py-3 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800 md:rounded-full rounded-2xl cursor-pointer transition-colors flex items-center gap-3 active:ring-2 active:ring-red-500 overflow-hidden">
                             <MapPin className={`w-5 h-5 shrink-0 ${location ? "text-red-500" : "text-gray-400 group-hover/input:text-red-500"} transition-colors`} />
@@ -457,15 +566,18 @@ const SearchBar = () => {
                 </Popover>
             </div>
 
-            {/* Search Button */}
-            <div className="p-2 md:p-2 pt-0 md:pt-2">
-                <button
-                    onClick={handleSearch}
-                    className="w-full md:w-[60px] h-14 md:h-[60px] bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all  active:scale-95 group/btn"
-                >
-                    <Search className="h-6 w-6 group-hover/btn:scale-110 transition-transform" />
-                    <span className="md:hidden ml-2 font-bold text-lg">Search</span>
-                </button>
+                    </>
+                )}
+                {/* Search Button */}
+                <div className="p-2 md:p-2 pt-0 md:pt-2">
+                    <button
+                        onClick={handleSearch}
+                        className="w-full md:w-[60px] h-14 md:h-[60px] bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg transform transition-all  active:scale-95 group/btn"
+                    >
+                        <Search className="h-6 w-6 group-hover/btn:scale-110 transition-transform" />
+                        <span className="md:hidden ml-2 font-bold text-lg">Search</span>
+                    </button>
+                </div>
             </div>
         </div>
     );

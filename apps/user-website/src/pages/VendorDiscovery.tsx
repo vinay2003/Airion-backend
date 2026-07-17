@@ -21,7 +21,7 @@ const SORT_OPTIONS = [
 const VendorDiscovery: React.FC = () => {
     const [vendors, setVendors] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isMapView, setIsMapView] = useState(false);
+    const [viewMode, setViewMode] = useState<'list' | 'map' | 'swipe'>('list');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [sortBy, setSortBy] = useState('recommended');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -300,17 +300,17 @@ const VendorDiscovery: React.FC = () => {
                             </AnimatePresence>
                         </div>
 
-                        {/* Map/List Toggle */}
+                        {/* Map/List/Swipe Toggle */}
                         <div className="flex items-center gap-6 px-1">
                             <button
-                                onClick={() => setIsMapView(false)}
-                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${!isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
+                                onClick={() => setViewMode('list')}
+                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${viewMode === 'list' ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
                                 <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
-                                    <List size={16} className={!isMapView ? 'text-red-500' : ''} />
+                                    <List size={16} className={viewMode === 'list' ? 'text-red-500' : ''} />
                                     List
                                 </div>
-                                {!isMapView && (
+                                {viewMode === 'list' && (
                                     <motion.div
                                         layoutId="viewUnderline"
                                         className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
@@ -318,14 +318,29 @@ const VendorDiscovery: React.FC = () => {
                                 )}
                             </button>
                             <button
-                                onClick={() => setIsMapView(true)}
-                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${isMapView ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
+                                onClick={() => setViewMode('map')}
+                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${viewMode === 'map' ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
                             >
                                 <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
-                                    <Map size={16} className={isMapView ? 'text-red-500' : ''} />
+                                    <Map size={16} className={viewMode === 'map' ? 'text-red-500' : ''} />
                                     Map
                                 </div>
-                                {isMapView && (
+                                {viewMode === 'map' && (
+                                    <motion.div
+                                        layoutId="viewUnderline"
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
+                                    />
+                                )}
+                            </button>
+                            <button
+                                onClick={() => setViewMode('swipe')}
+                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${viewMode === 'swipe' ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
+                            >
+                                <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
+                                    <Layers size={16} className={viewMode === 'swipe' ? 'text-red-500' : ''} />
+                                    Swipe
+                                </div>
+                                {viewMode === 'swipe' && (
                                     <motion.div
                                         layoutId="viewUnderline"
                                         className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { fetchEventById, checkAvailability } from '../lib/api';
 import { useAuth } from '@shared/auth';
+import { useWishlist } from '../context/WishlistContext';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext';
 import type { Event } from '../types';
 import {
     Star, MapPin, Users, Clock, Check, ArrowLeft, Share2, Heart,
@@ -25,6 +27,8 @@ const EventDetails: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { addRecentlyViewed } = useRecentlyViewed();
 
     const [event, setEvent] = useState<Event | undefined>(undefined);
     const [loading, setLoading] = useState(true);
@@ -41,7 +45,8 @@ const EventDetails: React.FC = () => {
     const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined);
     const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
     const [checkingAvailability, setCheckingAvailability] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
+
+    const isLiked = event ? isInWishlist(event.id) : false;
 
     const handleShare = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -68,10 +73,12 @@ const EventDetails: React.FC = () => {
 
     const handleLike = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setIsLiked(!isLiked);
+        if (!event) return;
         if (!isLiked) {
+            addToWishlist(event);
             toast.success('Added to your wishlist!');
         } else {
+            removeFromWishlist(event.id);
             toast('Removed from wishlist');
         }
     };
@@ -92,6 +99,9 @@ const EventDetails: React.FC = () => {
             if (id) {
                 const data = await fetchEventById(id);
                 setEvent(data);
+                if (data) {
+                    addRecentlyViewed(data);
+                }
             }
             setLoading(false);
         };

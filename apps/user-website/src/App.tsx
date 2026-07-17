@@ -4,6 +4,11 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import { ToastProvider } from './context/ToastContext';
+import { WishlistProvider } from './context/WishlistContext';
+import { RecentlyViewedProvider } from './context/RecentlyViewedContext';
+import { CompareProvider } from './context/CompareContext';
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/CartDrawer';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
@@ -81,87 +86,92 @@ const App: React.FC = () => {
         <Toaster position="top-right" toastOptions={{ duration: 5000, style: { background: '#171717', color: '#fff', borderRadius: '12px' }, success: { iconTheme: { primary: '#dc2626', secondary: '#fff' } } }} />
         <Router>
           <AuthProvider>
-            <ScrollToTop />
-            <Routes>
-              {/* Full-screen routes - No Header/Footer */}
-              <Route path="/splash" element={
-                <Suspense fallback={<PageLoader />}>
-                  <SplashScreen />
-                </Suspense>
-              } />
-              <Route path="/onboarding" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Onboarding />
-                </Suspense>
-              } />
-              <Route path="/login" element={
-                <Suspense fallback={<PageLoader />}>
-                  <UnifiedAuth />
-                </Suspense>
-              } />
-              <Route path="/signup" element={
-                <Suspense fallback={<PageLoader />}>
-                  <UnifiedAuth />
-                </Suspense>
-              } />
-              <Route path="/onboarding/interests" element={
-                <Suspense fallback={<PageLoader />}>
-                  <InterestSelection />
-                </Suspense>
-              } />
-
-              {/* vendor/admin are served as separate apps from dist/vendor and dist/admin - not handled by user-website */}
-
-              {/* Dashboard Routes */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute allowedRoles={['user']}>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<DashboardOverview />} />
-                <Route path="bookings" element={<MyBookings />} />
-                <Route path="saved" element={<SavedVendors />} />
-                <Route path="inbox" element={<Inbox />} />
-                <Route path="budget" element={<BudgetPlanner />} />
-                <Route path="payments" element={<Payments />} />
-                <Route path="settings" element={<ProfileSettings />} />
-
-                <Route path="guests" element={<GuestList />} />
-                <Route path="invites" element={<DigitalInvites />} />
-                <Route path="support" element={<Support />} />
-              </Route>
-
-
-              {/* Main Website Routes with Header/Footer */}
-              <Route path="*" element={
-                <div className="min-h-screen bg-white dark:bg-slate-950 grid-bg flex flex-col transition-colors duration-300">
-                  <Header />
-                  <div className="flex-grow">
+            <CompareProvider>
+              <CartProvider>
+                <ScrollToTop />
+                <CartDrawer />
+                <Routes>
+                  {/* Full-screen routes - No Header/Footer */}
+                  <Route path="/splash" element={
                     <Suspense fallback={<PageLoader />}>
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/marketplace" element={<VendorDiscovery />} />
-                        <Route path="/search" element={<VendorDiscovery />} />
-                        <Route path="/event/:id" element={<EventDetails />} />
-                        <Route path="/vendors/:id" element={<EventDetails />} />
-                        <Route path="/category/:category" element={<CategoryPage />} />
-                        <Route path="/trending-weddings" element={<TrendingWeddings />} />
-                        <Route path="/plan-event" element={<PlanEvent />} />
-                        <Route path="/inspiration" element={<Inspiration />} />
-                        <Route path="/booking-confirmation" element={<BookingConfirmation />} />
-                        <Route path="/about" element={<AboutUs />} />
-                        <Route path="/contact" element={<ContactUs />} />
-                        <Route path="/packages" element={<Packages />} />
-                        <Route path="/become-vendor" element={<BecomeVendor />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                      </Routes>
+                      <SplashScreen />
                     </Suspense>
-                  </div>
-                  <Footer />
-                </div>
-              } />
-            </Routes>
+                  } />
+                  <Route path="/onboarding" element={
+                    <Suspense fallback={<PageLoader />}>
+                      <Onboarding />
+                    </Suspense>
+                  } />
+                  <Route path="/login" element={
+                    <Suspense fallback={<PageLoader />}>
+                      <UnifiedAuth />
+                    </Suspense>
+                  } />
+                  <Route path="/signup" element={
+                    <Suspense fallback={<PageLoader />}>
+                      <UnifiedAuth />
+                    </Suspense>
+                  } />
+                  <Route path="/onboarding/interests" element={
+                    <Suspense fallback={<PageLoader />}>
+                      <InterestSelection />
+                    </Suspense>
+                  } />
+
+                  {/* vendor/admin are served as separate apps from dist/vendor and dist/admin - not handled by user-website */}
+
+                  {/* Dashboard Routes */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute allowedRoles={['user']}>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }>
+                    <Route index element={<DashboardOverview />} />
+                    <Route path="bookings" element={<MyBookings />} />
+                    <Route path="saved" element={<SavedVendors />} />
+                    <Route path="inbox" element={<Inbox />} />
+                    <Route path="budget" element={<BudgetPlanner />} />
+                    <Route path="payments" element={<Payments />} />
+                    <Route path="settings" element={<ProfileSettings />} />
+
+                    <Route path="guests" element={<GuestList />} />
+                    <Route path="invites" element={<DigitalInvites />} />
+                    <Route path="support" element={<Support />} />
+                  </Route>
+
+
+                  {/* Main Website Routes with Header/Footer */}
+                  <Route path="*" element={
+                    <div className="min-h-screen bg-white dark:bg-slate-950 grid-bg flex flex-col transition-colors duration-300">
+                      <Header />
+                      <div className="flex-grow">
+                        <Suspense fallback={<PageLoader />}>
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/marketplace" element={<VendorDiscovery />} />
+                            <Route path="/search" element={<VendorDiscovery />} />
+                            <Route path="/event/:id" element={<EventDetails />} />
+                            <Route path="/vendors/:id" element={<EventDetails />} />
+                            <Route path="/category/:category" element={<CategoryPage />} />
+                            <Route path="/trending-weddings" element={<TrendingWeddings />} />
+                            <Route path="/plan-event" element={<PlanEvent />} />
+                            <Route path="/inspiration" element={<Inspiration />} />
+                            <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+                            <Route path="/about" element={<AboutUs />} />
+                            <Route path="/contact" element={<ContactUs />} />
+                            <Route path="/packages" element={<Packages />} />
+                            <Route path="/become-vendor" element={<BecomeVendor />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                          </Routes>
+                        </Suspense>
+                      </div>
+                      <Footer />
+                    </div>
+                  } />
+                </Routes>
+              </CartProvider>
+            </CompareProvider>
           </AuthProvider>
         </Router>
       </ToastProvider>

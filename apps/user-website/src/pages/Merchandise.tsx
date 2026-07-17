@@ -174,26 +174,25 @@ const Merchandise: React.FC = () => {
 
     return (
         <main className="min-h-screen bg-neutral-50 dark:bg-slate-950 pt-20 pb-16">
-            {/* Premium Hero Banner */}
-            <div className="relative overflow-hidden bg-neutral-900 text-white py-16 sm:py-20 mb-12">
-                {/* Neon glow effect background */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(239,68,68,0.15),transparent_40%)]" />
-                <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-500/10 rounded-full blur-[100px]" />
-                
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div className="lg:col-span-7 space-y-6">
-                        <span className="px-3.5 py-1.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest rounded-full">
+            {/* Simple Hero Banner (No Gradients, No Animations) */}
+            <div className="bg-neutral-900 text-white py-12 sm:py-16 mb-12 border-b border-neutral-800">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    {/* Left Section */}
+                    <div className="lg:col-span-7 space-y-4">
+                        <div className="inline-block px-3 py-1 bg-neutral-800 border border-neutral-700 text-neutral-300 text-xs font-bold uppercase tracking-widest rounded">
                             Airion Event Store
-                        </span>
-                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-none">
-                            Elevate Your Event <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">With Premium Goods</span>
+                        </div>
+                        <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none text-white">
+                            Elevate Your Event With Premium Goods
                         </h1>
-                        <p className="text-neutral-400 text-base max-w-xl leading-relaxed">
-                            Discover handpicked luxury centerpieces, custom signs, custom matching apparel, and lighting setups to make your special day absolutely flawless.
+                        <p className="text-neutral-400 text-sm max-w-xl leading-relaxed">
+                            Discover handpicked luxury centerpieces, custom acrylic signage, matching squad apparel, and smart lighting setups. Delivered straight to your venue.
                         </p>
                         <div className="flex flex-wrap gap-4 pt-2">
-                            <a href="#store-grid" className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 text-sm">
+                            <a 
+                                href="#store-grid" 
+                                className="px-6 py-3 bg-red-650 text-white font-bold rounded-lg text-xs tracking-wider uppercase"
+                            >
                                 Browse Collection
                             </a>
                             <button 
@@ -202,30 +201,41 @@ const Merchandise: React.FC = () => {
                                     addToCart(spotlight);
                                     toast.success('Spotlight item added to cart!');
                                 }}
-                                className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-bold rounded-xl border border-neutral-700 transition-colors text-sm"
+                                className="px-6 py-3 bg-neutral-800 text-white font-bold rounded-lg border border-neutral-700 text-xs tracking-wider uppercase"
                             >
                                 Get Featured Lights (₹1,200)
                             </button>
                         </div>
                     </div>
 
-                    {/* Spotlight Product Banner Card (Glassmorphism) */}
-                    <div className="lg:col-span-5 hidden lg:block">
-                        <div className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl flex gap-4 items-center">
-                            <div className="w-28 h-28 rounded-2xl overflow-hidden bg-neutral-800 flex-shrink-0">
-                                <img src="https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600" alt="Spotlight item" className="w-full h-full object-cover" />
+                    {/* Right Section: Flat Spotlight Card (No Hover / Animation) */}
+                    <div className="lg:col-span-5">
+                        <div className="p-6 bg-neutral-850 border border-neutral-850 rounded-2xl flex flex-col sm:flex-row gap-4 items-center">
+                            <div className="w-28 h-28 rounded-xl overflow-hidden bg-neutral-800 flex-shrink-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600" 
+                                    alt="Spotlight item" 
+                                    className="w-full h-full object-cover" 
+                                />
                             </div>
-                            <div className="space-y-2">
-                                <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Store Spotlight</span>
-                                <h3 className="font-bold text-white text-sm line-clamp-1">Premium LED Fairy Lights (50m)</h3>
-                                <p className="text-neutral-400 text-xs line-clamp-2">Ambient warm lighting for weddings, birthdays, and canopy setups.</p>
+                            
+                            <div className="space-y-2 flex-1 text-center sm:text-left">
+                                <span className="px-2 py-0.5 bg-red-950 text-[9px] font-bold text-red-400 uppercase tracking-widest rounded">
+                                    Best Seller
+                                </span>
+                                <h3 className="font-bold text-white text-sm line-clamp-1">
+                                    Premium LED Fairy Lights (50m)
+                                </h3>
+                                <p className="text-neutral-400 text-xs line-clamp-2">
+                                    Ambient warm lighting for weddings, birthdays, and canopy setups. Perfect for backdrops.
+                                </p>
                                 <div className="flex items-center justify-between pt-1">
-                                    <span className="font-black text-white text-sm">₹1,200</span>
+                                    <span className="font-bold text-sm text-white">₹1,200</span>
                                     <button 
-                                        onClick={() => addToCart(MOCK_PRODUCTS[0])}
-                                        className="text-xs font-bold text-red-400 hover:text-red-300"
+                                        onClick={() => { addToCart(MOCK_PRODUCTS[0]); toast.success('Added to Cart 🛒'); }}
+                                        className="px-3 py-1.5 bg-red-650 text-white text-xs font-bold rounded"
                                     >
-                                        Add to Cart →
+                                        Add to Cart
                                     </button>
                                 </div>
                             </div>
@@ -236,9 +246,9 @@ const Merchandise: React.FC = () => {
 
             <div id="store-grid" className="max-w-7xl mx-auto px-4 sm:px-6">
                 {/* Search & Filter Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b border-neutral-200/50 dark:border-slate-800">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b border-neutral-200 dark:border-slate-800">
                     <div>
-                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Our Collection</h2>
+                        <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight">Our Collection</h2>
                         <p className="text-xs text-neutral-500 dark:text-slate-400 mt-1">{filteredProducts.length} items available in category "{selectedCategory}"</p>
                     </div>
 
@@ -249,7 +259,7 @@ const Merchandise: React.FC = () => {
                             placeholder="Search products..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-sm font-semibold text-neutral-950 dark:text-white"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-850 rounded-xl focus:ring-1 focus:ring-neutral-400 outline-none text-sm font-medium text-neutral-900 dark:text-white"
                         />
                     </div>
                 </div>
@@ -262,16 +272,16 @@ const Merchandise: React.FC = () => {
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                                className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 cursor-pointer ${
                                     selectedCategory === cat
-                                        ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
-                                        : 'bg-white dark:bg-slate-900 text-neutral-600 dark:text-slate-300 hover:bg-neutral-50 dark:hover:bg-slate-800 border border-neutral-200 dark:border-slate-800'
+                                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                                        : 'bg-white dark:bg-slate-900 text-neutral-600 dark:text-slate-300 border border-neutral-200 dark:border-slate-800'
                                 }`}
                             >
                                 {cat}
-                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                                     selectedCategory === cat 
-                                        ? 'bg-white/20 text-white' 
+                                        ? 'bg-neutral-800 text-white dark:bg-neutral-100 dark:text-neutral-900' 
                                         : 'bg-neutral-100 dark:bg-slate-800 text-neutral-500 dark:text-slate-400'
                                 }`}>
                                     {count}
@@ -281,82 +291,78 @@ const Merchandise: React.FC = () => {
                     })}
                 </div>
 
-                {/* Products Grid */}
+                {/* Products Grid (Standard Divs, No Framer Motion animations or scale hovers) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredProducts.map((product, idx) => {
+                    {filteredProducts.map((product) => {
                         const productStock = (product as any).stock || 10;
                         const productRating = (product as any).rating || 4.8;
                         const reviews = (product as any).reviewsCount || 100;
                         return (
-                            <motion.div
+                            <div
                                 key={product.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.05 }}
-                                className="bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200/60 dark:border-slate-800 overflow-hidden group hover:shadow-xl hover:border-red-100 dark:hover:border-red-950/20 transition-all duration-300 flex flex-col justify-between"
+                                className="bg-white dark:bg-slate-900 rounded-xl border border-neutral-200 dark:border-slate-800 overflow-hidden flex flex-col justify-between"
                             >
                                 <div>
                                     <Link to={`/merchandise/${product.id}`} className="block relative aspect-square overflow-hidden bg-neutral-100 dark:bg-slate-800">
                                         <img
                                             src={product.image}
                                             alt={product.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            className="w-full h-full object-cover"
                                             loading="lazy"
                                         />
-                                        <div className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm text-red-650 dark:text-red-400">
+                                        <div className="absolute top-2 left-2 bg-neutral-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">
                                             {product.category}
                                         </div>
                                         
                                         {/* Stock Badge */}
-                                        <div className={`absolute bottom-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur shadow-sm ${
+                                        <div className={`absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded ${
                                             productStock <= 15
-                                                ? 'bg-amber-500/90 text-white'
-                                                : 'bg-emerald-500/90 text-white'
+                                                ? 'bg-amber-500 text-white'
+                                                : 'bg-emerald-500 text-white'
                                         }`}>
-                                            {productStock <= 15 ? `Only ${productStock} left!` : 'In Stock'}
+                                            {productStock <= 15 ? `Only ${productStock} left` : 'In Stock'}
                                         </div>
                                     </Link>
                                     
-                                    <div className="p-5 space-y-2">
+                                    <div className="p-4 space-y-1">
                                         <div className="flex items-center gap-1">
-                                            <Star className="text-yellow-400 fill-yellow-400 animate-pulse" size={14} />
-                                            <span className="text-xs font-bold text-neutral-800 dark:text-slate-350">{productRating}</span>
-                                            <span className="text-[10px] text-neutral-400">({reviews} reviews)</span>
+                                            <Star className="text-yellow-400 fill-yellow-400" size={12} />
+                                            <span className="text-xs font-bold text-neutral-800 dark:text-slate-300">{productRating}</span>
+                                            <span className="text-[10px] text-neutral-450">({reviews})</span>
                                         </div>
                                         <Link to={`/merchandise/${product.id}`}>
-                                            <h3 className="font-bold text-neutral-900 dark:text-white line-clamp-2 hover:text-red-500 transition-colors text-sm min-h-[40px] leading-tight">
+                                            <h3 className="font-bold text-neutral-900 dark:text-white line-clamp-2 text-xs min-h-[36px] leading-tight">
                                                 {product.title}
                                             </h3>
                                         </Link>
-                                        <p className="text-xs text-neutral-500 dark:text-slate-400 line-clamp-2 min-h-[32px] leading-relaxed">
+                                        <p className="text-[11px] text-neutral-500 dark:text-slate-450 line-clamp-2 min-h-[32px] leading-relaxed">
                                             {(product as any).description || 'Elevate your event with this high-quality product.'}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="px-5 pb-5 pt-2 flex items-center justify-between border-t border-neutral-100 dark:border-slate-800/60 mt-auto">
+                                <div className="px-4 pb-4 pt-2 flex items-center justify-between border-t border-neutral-100 dark:border-slate-800 mt-auto">
                                     <div className="flex flex-col">
-                                        <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Price</span>
-                                        <span className="text-lg font-black text-neutral-900 dark:text-white leading-none mt-0.5">₹{product.price.toLocaleString()}</span>
+                                        <span className="text-[10px] font-bold text-neutral-900 dark:text-white">₹{product.price.toLocaleString()}</span>
                                     </div>
                                     <button
                                         onClick={(e) => { e.preventDefault(); addToCart(product); toast.success('Added to Cart 🛒'); }}
-                                        className="p-3 bg-red-50 dark:bg-red-500/10 text-red-650 hover:bg-red-500 hover:text-white rounded-xl transition-all cursor-pointer border border-red-200/20"
+                                        className="p-2 bg-neutral-100 hover:bg-neutral-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-neutral-800 dark:text-neutral-200 rounded cursor-pointer"
                                         title="Add to Cart"
                                     >
-                                        <ShoppingBag size={18} />
+                                        <ShoppingBag size={16} />
                                     </button>
                                 </div>
-                            </motion.div>
+                            </div>
                         );
                     })}
                 </div>
 
                 {filteredProducts.length === 0 && (
-                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border border-neutral-200/60 dark:border-slate-800">
-                        <ShoppingBag className="mx-auto text-neutral-300 dark:text-slate-700 mb-4" size={48} />
-                        <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">No products found</h3>
-                        <p className="text-neutral-500 text-sm">Try adjusting your filters or search query.</p>
+                    <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-neutral-200 dark:border-slate-800">
+                        <ShoppingBag className="mx-auto text-neutral-300 dark:text-slate-750 mb-3" size={40} />
+                        <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-1">No products found</h3>
+                        <p className="text-neutral-500 text-xs">Try adjusting your filters or search query.</p>
                     </div>
                 )}
             </div>

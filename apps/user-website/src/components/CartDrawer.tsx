@@ -8,6 +8,7 @@ const CartDrawer: React.FC = () => {
     const { items, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice } = useCart();
     const navigate = useNavigate();
 
+    return null;
     return (
         <AnimatePresence>
             {isCartOpen && (

@@ -46,6 +46,7 @@ import VendorProfile from './pages/VendorProfile';
 import Merchandise from './pages/Merchandise';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
+import Cart from './pages/Cart';
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -165,6 +166,7 @@ const App: React.FC = () => {
                             <Route path="/merchandise" element={<Merchandise />} />
                             <Route path="/merchandise/:id" element={<ProductDetails />} />
                             <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/cart" element={<Cart />} />
                             <Route path="/about" element={<AboutUs />} />
                             <Route path="/contact" element={<ContactUs />} />
                             <Route path="/packages" element={<Packages />} />

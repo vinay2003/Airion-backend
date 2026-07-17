@@ -305,8 +305,8 @@ const Header: React.FC = () => {
                         )}
                     </Link>
                 )}
-                <button
-                    onClick={() => setIsCartOpen(true)}
+                <Link
+                    to="/cart"
                     className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
                 >
                     <ShoppingCart size={20} />
@@ -319,7 +319,7 @@ const Header: React.FC = () => {
                             {totalItems}
                         </motion.span>
                     )}
-                </button>
+                </Link>
                 <button
                     onClick={toggleTheme}
                     className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
@@ -337,8 +337,8 @@ const Header: React.FC = () => {
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
 
-                <button
-                    onClick={() => setIsCartOpen(true)}
+                <Link
+                    to="/cart"
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
                     aria-label="Open cart"
                 >
@@ -348,7 +348,7 @@ const Header: React.FC = () => {
                             {totalItems}
                         </span>
                     )}
-                </button>
+                </Link>
 
                 <span className="hidden">
                     <button

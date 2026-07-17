@@ -11,11 +11,17 @@ const Checkout: React.FC = () => {
     const navigate = useNavigate();
     const { openCheckout, loading: rzpLoading } = useRazorpay();
 
-    // Form inputs
+    // Form inputs (Flipkart style details)
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-    const [zip, setZip] = useState('');
+    const [altPhone, setAltPhone] = useState('');
+    const [zip, setZip] = useState(''); // PIN code
+    const [locality, setLocality] = useState('');
+    const [address, setAddress] = useState(''); // Flat/House No
+    const [city, setCity] = useState('');
+    const [stateName, setStateName] = useState('');
+    const [landmark, setLandmark] = useState('');
+    const [addressType, setAddressType] = useState<'home' | 'work'>('home');
 
     // Payment Methods
     const [paymentMethod, setPaymentMethod] = useState<'gateway' | 'wallet' | 'emi'>('gateway');
@@ -40,10 +46,13 @@ const Checkout: React.FC = () => {
     const finalPrice = Math.max(0, totalPrice - discount);
 
     const completeOrder = async (finalPaymentMethod: string) => {
+        const fullShippingAddress = `${address} (Flat/House No), ${locality} (Colony/Street), ${landmark ? `Landmark: ${landmark}, ` : ''}${city}, ${stateName} - ${zip} [Type: ${addressType.toUpperCase()}]`;
+        const contactPhone = altPhone ? `${phone} (Alt: ${altPhone})` : phone;
+
         const orderPayload = {
             items: items.map(item => ({ productId: item.id, quantity: item.quantity })),
-            shippingAddress: `${address}, PIN: ${zip}`,
-            phone,
+            shippingAddress: fullShippingAddress,
+            phone: contactPhone,
             paymentMethod: finalPaymentMethod,
         };
 
@@ -72,8 +81,8 @@ const Checkout: React.FC = () => {
                         quantity: item.quantity,
                     })),
                     totalAmount: finalPrice,
-                    shippingAddress: `${address}, PIN: ${zip}`,
-                    phone,
+                    shippingAddress: fullShippingAddress,
+                    phone: contactPhone,
                     paymentMethod: finalPaymentMethod,
                     status: 'processing',
                     createdAt: new Date().toISOString(),
@@ -99,8 +108,38 @@ const Checkout: React.FC = () => {
 
     const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name || !phone || !address || !zip) {
-            toast.error('Please fill in all shipping details!');
+
+        // Standard address validation
+        if (!name.trim()) {
+            toast.error('Please enter Full Name');
+            return;
+        }
+        if (!phone.trim() || !/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
+            toast.error('Please enter a valid 10-digit Phone Number');
+            return;
+        }
+        if (altPhone && !/^\d{10}$/.test(altPhone.replace(/\D/g, ''))) {
+            toast.error('Please enter a valid 10-digit Alternative Phone Number');
+            return;
+        }
+        if (!zip.trim() || !/^\d{6}$/.test(zip)) {
+            toast.error('Please enter a valid 6-digit PIN Code');
+            return;
+        }
+        if (!locality.trim()) {
+            toast.error('Please enter Road/Colony/Area Locality');
+            return;
+        }
+        if (!address.trim()) {
+            toast.error('Please enter Flat/House No/Apartment Details');
+            return;
+        }
+        if (!city.trim()) {
+            toast.error('Please enter City/Town/District');
+            return;
+        }
+        if (!stateName.trim()) {
+            toast.error('Please enter State/Region');
             return;
         }
 
@@ -145,46 +184,134 @@ const Checkout: React.FC = () => {
                         {/* Shipping Details */}
                         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-neutral-200/60 dark:border-slate-800">
                             <h2 className="text-xl font-black text-neutral-900 dark:text-white mb-6">Shipping Address</h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                {/* Name and Phone */}
+                                <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Full Name</label>
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
-                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm"
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
                                         placeholder="John Doe"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Phone Number</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">10-Digit Phone Number</label>
                                     <input
                                         type="tel"
                                         value={phone}
                                         onChange={e => setPhone(e.target.value)}
-                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm"
-                                        placeholder="+91 98765 43210"
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="9876543210"
                                     />
                                 </div>
-                                <div className="sm:col-span-2 space-y-2">
-                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Address Line</label>
-                                    <input
-                                        type="text"
-                                        value={address}
-                                        onChange={e => setAddress(e.target.value)}
-                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm"
-                                        placeholder="Flat, House no., Apartment, Street"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">PIN Code</label>
+
+                                {/* PIN Code and Locality */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">6-Digit PIN Code</label>
                                     <input
                                         type="text"
                                         value={zip}
                                         onChange={e => setZip(e.target.value)}
-                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm"
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
                                         placeholder="400001"
                                     />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Locality / Area / Colony</label>
+                                    <input
+                                        type="text"
+                                        value={locality}
+                                        onChange={e => setLocality(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="Andheri East, Sector 5"
+                                    />
+                                </div>
+
+                                {/* Address Flat / House No */}
+                                <div className="sm:col-span-2 space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Flat, House No., Building, Apartment</label>
+                                    <input
+                                        type="text"
+                                        value={address}
+                                        onChange={e => setAddress(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="Flat 402, Royal Palms, A-Wing"
+                                    />
+                                </div>
+
+                                {/* City and State */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">City / District / Town</label>
+                                    <input
+                                        type="text"
+                                        value={city}
+                                        onChange={e => setCity(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="Mumbai"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">State</label>
+                                    <input
+                                        type="text"
+                                        value={stateName}
+                                        onChange={e => setStateName(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="Maharashtra"
+                                    />
+                                </div>
+
+                                {/* Landmark and Alt Phone */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Landmark (Optional)</label>
+                                    <input
+                                        type="text"
+                                        value={landmark}
+                                        onChange={e => setLandmark(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="Near Metro Station"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Alternate Phone (Optional)</label>
+                                    <input
+                                        type="tel"
+                                        value={altPhone}
+                                        onChange={e => setAltPhone(e.target.value)}
+                                        className="w-full px-4 py-3 bg-neutral-50 dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-red-500 outline-none text-sm font-semibold text-neutral-900 dark:text-white"
+                                        placeholder="e.g. 9876543211"
+                                    />
+                                </div>
+
+                                {/* Address Type Selector */}
+                                <div className="sm:col-span-2 space-y-2.5">
+                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Address Type</label>
+                                    <div className="flex gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setAddressType('home')}
+                                            className={`flex-1 py-3 px-4 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                                                addressType === 'home'
+                                                    ? 'border-red-500 bg-red-50/50 dark:bg-red-500/10 text-red-650'
+                                                    : 'border-neutral-200 dark:border-slate-800 text-neutral-700 dark:text-slate-300 hover:bg-neutral-50 dark:hover:bg-slate-800'
+                                            }`}
+                                        >
+                                            🏠 Home (All day delivery)
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setAddressType('work')}
+                                            className={`flex-1 py-3 px-4 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                                                addressType === 'work'
+                                                    ? 'border-red-500 bg-red-50/50 dark:bg-red-500/10 text-red-650'
+                                                    : 'border-neutral-200 dark:border-slate-800 text-neutral-700 dark:text-slate-300 hover:bg-neutral-50 dark:hover:bg-slate-800'
+                                            }`}
+                                        >
+                                            🏢 Work (10 AM - 5 PM delivery)
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

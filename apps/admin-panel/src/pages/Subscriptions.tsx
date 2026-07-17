@@ -230,7 +230,7 @@ export default function Subscriptions() {
                                     key={plan.id}
                                     layout
                                     initial={{ opacity: 0, y: 12 }}
-                                    animateanimate={{ opacity: 1, y: 0 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     className={`group relative bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] ${a.ring} rounded-2xl p-6 flex flex-col gap-4   ${!plan.isActive ? 'opacity-60' : ''}`}
                                 >

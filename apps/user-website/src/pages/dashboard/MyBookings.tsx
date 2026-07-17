@@ -44,6 +44,78 @@ const MOCK_BOOKINGS = [
     }
 ];
 
+/* ─── Refund Modal ─── */
+const RefundModal: React.FC<{
+    booking: any;
+    loading: boolean;
+    onClose: () => void;
+    onSubmit: (details: { bank: string; ifsc: string; account: string }) => void;
+}> = ({ booking, loading, onClose, onSubmit }) => {
+    const [bank, setBank] = React.useState('');
+    const [ifsc, setIfsc] = React.useState('');
+    const [account, setAccount] = React.useState('');
+    const [agreed, setAgreed] = React.useState(false);
+    const refundAmount = (parseFloat(booking.totalAmount) * 0.8).toLocaleString();
+
+    return (
+        <>
+            <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 bg-purple-50 dark:bg-purple-500/20 rounded-full flex items-center justify-center">
+                    <RefreshCw size={20} className="text-purple-600" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-black text-neutral-900 dark:text-white">Request Refund</h3>
+                    <p className="text-sm text-neutral-500">#{booking.bookingCode}</p>
+                </div>
+                <button onClick={onClose} className="ml-auto text-neutral-400 hover:text-neutral-700"><X size={20} /></button>
+            </div>
+
+            <div className="bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 rounded-xl p-4 mb-5">
+                <p className="text-sm text-purple-700 dark:text-purple-300 font-bold">Refund Amount</p>
+                <p className="text-2xl font-black text-purple-600 dark:text-purple-400">₹{refundAmount}</p>
+                <p className="text-xs text-purple-500 mt-1">80% of ₹{parseFloat(booking.totalAmount).toLocaleString()} (20% cancellation fee applies)</p>
+            </div>
+
+            <div className="space-y-3 mb-5">
+                {[
+                    { label: 'Bank Name', value: bank, set: setBank, placeholder: 'e.g. State Bank of India' },
+                    { label: 'Account Number', value: account, set: setAccount, placeholder: 'Enter account number' },
+                    { label: 'IFSC Code', value: ifsc, set: setIfsc, placeholder: 'e.g. SBIN0001234' },
+                ].map(({ label, value, set, placeholder }) => (
+                    <div key={label}>
+                        <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1">{label}</label>
+                        <input value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
+                            className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 text-sm text-neutral-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none" />
+                    </div>
+                ))}
+            </div>
+
+            <div className="mb-5 p-4 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                <p className="text-xs text-amber-700 dark:text-amber-400 font-medium leading-relaxed">
+                    <strong>Terms & Conditions:</strong> Refunds are processed within 5–7 business days. The 20% cancellation fee is non-refundable. Ensure bank details are correct — Ease2Event is not liable for transfer errors due to incorrect details.
+                </p>
+            </div>
+
+            <label className="flex items-start gap-3 mb-5 cursor-pointer">
+                <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="mt-0.5 accent-purple-600 w-4 h-4" />
+                <span className="text-xs text-neutral-600 dark:text-slate-400 font-medium">I agree to the refund terms and confirm the bank details provided are correct.</span>
+            </label>
+
+            <div className="flex gap-3">
+                <button onClick={onClose} className="flex-1 py-3 border-2 border-neutral-200 dark:border-slate-700 rounded-xl font-bold text-sm text-neutral-700 dark:text-slate-300">Cancel</button>
+                <button
+                    onClick={() => onSubmit({ bank, ifsc, account })}
+                    disabled={!agreed || !bank || !account || !ifsc || loading}
+                    className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-sm transition-colors disabled:opacity-50"
+                >
+                    {loading ? 'Submitting...' : 'Submit Refund Request'}
+                </button>
+            </div>
+        </>
+    );
+};
+
+
 const MyBookings: React.FC = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -52,8 +124,10 @@ const MyBookings: React.FC = () => {
     const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
     const [reviewModalBooking, setReviewModalBooking] = useState<any | null>(null);
     const [cancelModalBooking, setCancelModalBooking] = useState<any | null>(null);
+    const [refundModalBooking, setRefundModalBooking] = useState<any | null>(null);
     const [cancelReason, setCancelReason] = useState('');
     const [cancelLoading, setCancelLoading] = useState(false);
+    const [refundLoading, setRefundLoading] = useState(false);
     const navigate = useNavigate();
 
     const tabs = ['All', 'Upcoming', 'Pending', 'Completed', 'Cancelled'];
@@ -128,6 +202,20 @@ const MyBookings: React.FC = () => {
             setCancelReason('');
         } finally {
             setCancelLoading(false);
+        }
+    };
+
+    const handleRefundRequest = async (accountDetails: { bank: string; ifsc: string; account: string }) => {
+        setRefundLoading(true);
+        try {
+            await new Promise(r => setTimeout(r, 1200));
+            setBookings(prev => prev.map(b =>
+                b.id === refundModalBooking.id ? { ...b, refundStatus: 'processing' } : b
+            ));
+            setRefundModalBooking(null);
+            toast.success('Refund request submitted! Will be processed in 5–7 business days.');
+        } finally {
+            setRefundLoading(false);
         }
     };
 
@@ -263,12 +351,20 @@ const MyBookings: React.FC = () => {
                                                     <Star size={17} className="fill-amber-400 text-amber-400" />
                                                 </button>
                                             )}
-                                            {booking.status === 'cancelled' && (
+                                             {booking.status === 'cancelled' && !booking.refundStatus && (
+                                                <button
+                                                    onClick={e => { e.stopPropagation(); setRefundModalBooking(booking); }}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-bold border border-purple-100 dark:border-purple-500/20 hover:bg-purple-100"
+                                                >
+                                                    <RefreshCw size={12} /> Request Refund
+                                                </button>
+                                             )}
+                                             {booking.status === 'cancelled' && booking.refundStatus && (
                                                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-bold border border-purple-100 dark:border-purple-500/20">
                                                     <RefreshCw size={12} />
-                                                    {booking.refundStatus === 'processing' ? 'Refund Processing' : 'Refund Eligible'}
+                                                    {booking.refundStatus === 'processing' ? 'Refund Processing' : 'Refunded'}
                                                 </div>
-                                            )}
+                                             )}
                                         </div>
                                     </div>
                                 </div>
@@ -417,7 +513,6 @@ const MyBookings: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Review Modal */}
             {reviewModalBooking && (
                 <ReviewModal
                     isOpen={!!reviewModalBooking}
@@ -427,6 +522,31 @@ const MyBookings: React.FC = () => {
                     onSuccess={() => setReviewModalBooking(null)}
                 />
             )}
+
+            {/* Refund Request Modal */}
+            <AnimatePresence>
+                {refundModalBooking && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setRefundModalBooking(null)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-neutral-200 dark:border-slate-800 p-8"
+                        >
+                            <RefundModal
+                                booking={refundModalBooking}
+                                loading={refundLoading}
+                                onClose={() => setRefundModalBooking(null)}
+                                onSubmit={handleRefundRequest}
+                            />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

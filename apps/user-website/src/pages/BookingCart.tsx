@@ -373,8 +373,28 @@ const BookingCart: React.FC = () => {
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-slate-950 pt-20 pb-16 transition-colors">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
+                {/* Timeline Indicator */}
+                <div className="py-6 border-b border-neutral-100 dark:border-slate-800 mb-6">
+                    <div className="flex items-center gap-4 max-w-3xl mx-auto">
+                        <div className="flex items-center gap-2 text-red-600 dark:text-red-500 font-bold text-sm">
+                            <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">1</div>
+                            Cart & Customization
+                        </div>
+                        <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
+                        <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
+                            <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">2</div>
+                            Payment
+                        </div>
+                        <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
+                        <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
+                            <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">3</div>
+                            Confirmation
+                        </div>
+                    </div>
+                </div>
+
                 {/* Page Title */}
-                <div className="py-8">
+                <div className="pb-8">
                     <h1 className="text-3xl font-black text-neutral-900 dark:text-white mb-1">Your Booking Cart</h1>
                     <p className="text-neutral-500 dark:text-slate-400 font-medium">
                         {cartItems.length} vendor{cartItems.length > 1 ? 's' : ''} selected • Review and customize before paying

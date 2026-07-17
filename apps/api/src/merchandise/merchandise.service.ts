@@ -16,11 +16,21 @@ export class MerchandiseService {
         private readonly orderItemRepository: Repository<OrderItem>,
     ) {}
 
-    async findAll(): Promise<Product[]> {
-        return this.productRepository.find({
-            where: { isActive: true },
-            order: { createdAt: 'DESC' },
-        });
+    async findAll(options?: { adminMode?: boolean; vendorId?: string }): Promise<Product[]> {
+        const query = this.productRepository.createQueryBuilder('product');
+        
+        if (options?.adminMode) {
+            // Admin sees all
+        } else if (options?.vendorId) {
+            // Vendor sees their own (all statuses)
+            query.where('product.creatorId = :vendorId', { vendorId: options.vendorId });
+        } else {
+            // Public shop sees only active & approved
+            query.where('product.isActive = :isActive', { isActive: true })
+                 .andWhere('product.approvalStatus = :status', { status: 'approved' });
+        }
+        
+        return query.orderBy('product.createdAt', 'DESC').getMany();
     }
 
     async findOne(id: string): Promise<Product> {
@@ -36,6 +46,8 @@ export class MerchandiseService {
             ...productData,
             creatorId,
             creatorRole,
+            // Admins are auto-approved, vendors are pending by default
+            approvalStatus: creatorRole === 'admin' ? 'approved' : 'pending',
         });
         return this.productRepository.save(product);
     }
@@ -49,6 +61,16 @@ export class MerchandiseService {
         }
 
         Object.assign(product, productData);
+        // If a vendor updates, reset approval to pending unless it's just stock
+        if (creatorRole === 'vendor') {
+            product.approvalStatus = 'pending';
+        }
+        return this.productRepository.save(product);
+    }
+
+    async updateApprovalStatus(id: string, status: 'approved' | 'rejected'): Promise<Product> {
+        const product = await this.findOne(id);
+        product.approvalStatus = status;
         return this.productRepository.save(product);
     }
 

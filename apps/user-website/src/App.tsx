@@ -22,7 +22,9 @@ import SavedVendors from './pages/dashboard/SavedVendors';
 import BudgetPlanner from './pages/dashboard/BudgetPlanner';
 import Inbox from './pages/dashboard/Inbox';
 import ProfileSettings from './pages/dashboard/ProfileSettings';
-import { Payments, DigitalInvites, Support, Terms, Privacy } from './pages/dashboard/Placeholders';
+import { Payments, Support, Terms, Privacy } from './pages/dashboard/Placeholders';
+import DigitalInvites from './pages/dashboard/DigitalInvites';
+import OrderHistory from './pages/dashboard/OrderHistory';
 import GuestList from './pages/dashboard/GuestList';
 
 // Page imports
@@ -92,6 +94,7 @@ const App: React.FC = () => {
                           <Route path="settings" element={<ProfileSettings />} />
                           <Route path="guests" element={<GuestList />} />
                           <Route path="invites" element={<DigitalInvites />} />
+                          <Route path="orders" element={<OrderHistory />} />
                           <Route path="support" element={<Support />} />
                         </Route>
 

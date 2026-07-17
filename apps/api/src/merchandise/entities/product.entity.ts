@@ -27,6 +27,9 @@ export class Product {
     @Column({ name: 'is_active', type: 'boolean', default: true })
     isActive: boolean;
 
+    @Column({ name: 'approval_status', type: 'varchar', length: 20, default: 'pending' })
+    approvalStatus: 'pending' | 'approved' | 'rejected';
+
     @Column({ name: 'creator_id', type: 'uuid' })
     creatorId: string;
 

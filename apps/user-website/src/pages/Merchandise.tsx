@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCart, Product } from '../context/CartContext';
 import { Filter, ShoppingBag, Search, Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../lib/api';
+import { useAuth } from '@ease2event/shared';
+import { toast } from 'react-hot-toast';
 
 const MOCK_PRODUCTS: (Product & { description: string; rating: number; reviewsCount: number; stock: number })[] = [
     {
@@ -144,9 +146,21 @@ const CATEGORIES = ['All', 'Decor', 'Apparel', 'Signage', 'Gifts', 'Entertainmen
 
 const Merchandise: React.FC = () => {
     const { addToCart } = useCart();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+
+    const handleAddToCart = (product: Product) => {
+        if (!user) {
+            toast.error('Please login to add items to cart.');
+            navigate('/login', { state: { returnTo: '/merchandise' } });
+            return;
+        }
+        addToCart(product);
+        toast.success('Added to Cart 🛒');
+    };
 
     React.useEffect(() => {
         fetchProducts()
@@ -197,9 +211,7 @@ const Merchandise: React.FC = () => {
                             </a>
                             <button 
                                 onClick={() => {
-                                    const spotlight = MOCK_PRODUCTS[0];
-                                    addToCart(spotlight);
-                                    toast.success('Spotlight item added to cart!');
+                                    handleAddToCart(MOCK_PRODUCTS[0]);
                                 }}
                                 className="px-6 py-3 bg-neutral-800 text-white font-bold rounded-lg border border-neutral-700 text-xs tracking-wider uppercase"
                             >
@@ -232,7 +244,7 @@ const Merchandise: React.FC = () => {
                                 <div className="flex items-center justify-between pt-1">
                                     <span className="font-bold text-sm text-white">₹1,200</span>
                                     <button 
-                                        onClick={() => { addToCart(MOCK_PRODUCTS[0]); toast.success('Added to Cart 🛒'); }}
+                                        onClick={() => handleAddToCart(MOCK_PRODUCTS[0])}
                                         className="px-3 py-1.5 bg-red-650 text-white text-xs font-bold rounded"
                                     >
                                         Add to Cart
@@ -346,7 +358,7 @@ const Merchandise: React.FC = () => {
                                         <span className="text-[10px] font-bold text-neutral-900 dark:text-white">₹{product.price.toLocaleString()}</span>
                                     </div>
                                     <button
-                                        onClick={(e) => { e.preventDefault(); addToCart(product); toast.success('Added to Cart 🛒'); }}
+                                        onClick={(e) => { e.preventDefault(); handleAddToCart(product); }}
                                         className="p-2 bg-neutral-100 hover:bg-neutral-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-neutral-800 dark:text-neutral-200 rounded cursor-pointer"
                                         title="Add to Cart"
                                     >

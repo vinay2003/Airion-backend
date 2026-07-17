@@ -8,13 +8,6 @@ import { useAuth } from '@shared/auth/AuthContext';
 import { updateProfile, uploadImage, changePassword } from '../../lib/api';
 import { toast } from 'react-hot-toast';
 
-const LANGUAGES = [
-    { code: 'en', name: 'English (US)' },
-    { code: 'hi', name: 'Hindi (हिंदी)' },
-    { code: 'mr', name: 'Marathi (मराठी)' },
-    { code: 'fr', name: 'French (Français)' },
-    { code: 'es', name: 'Spanish (Español)' },
-];
 
 const CURRENCIES = ['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'];
 
@@ -41,7 +34,6 @@ const ProfileSettings: React.FC = () => {
     const [email, setEmail] = useState(user?.email || '');
     const [phone, setPhone] = useState(user?.phoneNumber || '');
     const [location, setLocation] = useState(user?.location || 'Mumbai, IN');
-    const [language, setLanguage] = useState(user?.language || 'en');
     const [currency, setCurrency] = useState('INR (₹)');
 
     const handleSave = async (e: React.FormEvent) => {
@@ -52,8 +44,7 @@ const ProfileSettings: React.FC = () => {
             const updateData: any = {
                 name,
                 location,
-                language,
-                phoneNumber: phone, // Map 'phone' state to 'phoneNumber' DB field
+                phoneNumber: phone,
             };
 
             // Only send email if it's a valid string to avoid unique constraint issues with empty strings
@@ -264,49 +255,16 @@ const ProfileSettings: React.FC = () => {
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Global Preferences</h2>
 
                             <form onSubmit={handleSave} className="space-y-8">
-                                <div className="space-y-6">
-                                    <div className="border border-neutral-200 dark:border-slate-800 rounded-2xl p-6 bg-neutral-50 dark:bg-slate-800/50">
-                                        <div className="flex items-start gap-4">
-                                            <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                                                <Globe className="text-red-500" size={24} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Language</h3>
-                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Select your preferred language for the Ease2event interface.</p>
-                                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                                                    {LANGUAGES.map(lang => (
-                                                        <button
-                                                            key={lang.code}
-                                                            type="button"
-                                                            onClick={() => setLanguage(lang.code)}
-                                                            className={`p-3 rounded-xl border-2 text-sm font-bold transition-all text-left ${language === lang.code
-                                                                ? 'border-red-500 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 shadow-sm'
-                                                                : 'border-transparent bg-neutral-200/50 dark:bg-slate-900 text-neutral-600 hover:bg-white dark:text-slate-400 dark:hover:bg-slate-800  dark:'
-                                                                }`}
-                                                        >
-                                                            {lang.name}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="border border-neutral-200 dark:border-slate-800 rounded-2xl p-6 bg-neutral-50 dark:bg-slate-800/50">
-                                        <div className="flex flex-col md:flex-row gap-8">
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Currency</h3>
-                                                <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Choose the currency for displaying prices and processing payments.</p>
-                                                <select
-                                                    value={currency}
-                                                    onChange={e => setCurrency(e.target.value)}
-                                                    className="w-full max-w-xs bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-xl px-4 py-3 font-bold text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-red-500"
-                                                >
-                                                    {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="border border-neutral-200 dark:border-slate-800 rounded-2xl p-6 bg-neutral-50 dark:bg-slate-800/50">
+                                    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">Currency</h3>
+                                    <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Choose the currency for displaying prices and processing payments.</p>
+                                    <select
+                                        value={currency}
+                                        onChange={e => setCurrency(e.target.value)}
+                                        className="w-full max-w-xs bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-xl px-4 py-3 font-bold text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-red-500"
+                                    >
+                                        {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
                                 </div>
 
                                 <div className="pt-4">

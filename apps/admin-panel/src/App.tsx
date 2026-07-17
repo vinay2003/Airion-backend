@@ -10,17 +10,18 @@ const queryClient = new QueryClient();
 
 // Static imports for instant page transitions
 import Dashboard from './pages/Dashboard';
-import Vendors from './pages/Vendors';
 import Users from './pages/Users';
-import Bookings from './pages/Bookings';
+import Vendors from './pages/Vendors';
 import Settings from './pages/Settings';
-import AdminLogin from './pages/AdminLogin';
+import Bookings from './pages/Bookings';
+import CategoriesAndRegions from './pages/CategoriesAndRegions';
 import Subscriptions from './pages/Subscriptions';
 import Advertisements from './pages/Advertisements';
-import Reports from './pages/Reports';
 import Coupons from './pages/Coupons';
-import Categories from './pages/Categories';
 import SupportTickets from './pages/SupportTickets';
+import Reports from './pages/Reports';
+import AdminLogin from './pages/AdminLogin';
+import ShopAdmin from './pages/Shop';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -55,6 +56,7 @@ const App: React.FC = () => {
                   <Route path="coupons" element={<Coupons />} />
                   <Route path="categories" element={<Categories />} />
                   <Route path="support" element={<SupportTickets />} />
+                  <Route path="shop" element={<ShopAdmin />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>

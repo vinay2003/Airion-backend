@@ -4,11 +4,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchConversations, fetchMessages } from '../../lib/api';
 import { initiateSocketConnection, getSocket } from '@shared/auth/socket';
 import { useAuth } from '@shared/auth/AuthContext';
-import { Send, Search, CheckCheck, Paperclip, Mail, ArrowLeft, MoreVertical, Phone } from 'lucide-react';
+import { Send, Search, CheckCheck, Paperclip, Mail, ArrowLeft, MoreVertical, Phone, Image as ImageIcon } from 'lucide-react';
 import Skeleton from '../../components/Skeleton';
+import { useLocation } from 'react-router-dom';
 
 export const Inbox: React.FC = () => {
     const { user } = useAuth();
+    const location = useLocation();
     const queryClient = useQueryClient();
     const [selectedThreadId, setSelectedThreadId] = useState<string>('');
     const [messageText, setMessageText] = useState<string>('');
@@ -40,6 +42,25 @@ export const Inbox: React.FC = () => {
     });
 
     const messages = selectedThreadId === 'mock-support' ? mockMessages : serverMessages;
+
+    // Handle vendorId from URL
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const vendorIdParam = queryParams.get('vendorId');
+        if (vendorIdParam) {
+            // Find if there's an existing conversation with this vendor
+            const existingConvo = conversations.find((c: any) => c.participantIds?.includes(vendorIdParam));
+            if (existingConvo) {
+                setSelectedThreadId(existingConvo.id);
+                setShowMobileChat(true);
+            } else {
+                // If not, we could hit an endpoint to create one, or just set it to mock for now
+                // Setting to mock-support as a fallback
+                setSelectedThreadId('mock-support');
+                setShowMobileChat(true);
+            }
+        }
+    }, [location.search, conversations]);
 
 
 
@@ -319,6 +340,10 @@ export const Inbox: React.FC = () => {
                         {/* Input Area */}
                         <form onSubmit={handleSendMessage} className="p-4 md:p-6 border-t border-neutral-100 dark:border-slate-800 bg-white dark:bg-slate-900">
                             <div className="flex items-center gap-3 bg-neutral-100 dark:bg-slate-800 p-2 rounded-[1.5rem] border border-neutral-200/50 dark:border-slate-700/50 focus-within:ring-4 focus-within:ring-red-500/5 focus-within:border-red-500/20 transition-all">
+                                <label className="cursor-pointer p-3 text-neutral-400 hover:text-red-500 transition-colors rounded-xl shrink-0">
+                                    <ImageIcon size={20} />
+                                    <input type="file" className="hidden" accept="image/*" onChange={() => toast.success('Image sharing capability ready')} />
+                                </label>
                                 <button type="button" className="p-3 text-neutral-400 hover:text-red-500 transition-colors rounded-xl shrink-0">
                                     <Paperclip size={20} />
                                 </button>

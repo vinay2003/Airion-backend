@@ -97,7 +97,29 @@ const BookingConfirmation: React.FC = () => {
                 transition={{ duration: 0.6, ease: 'easeOut' }}
                 className="max-w-4xl w-full relative z-10"
             >
-                <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden border border-neutral-200 dark:border-slate-800 flex flex-col md:flex-row">
+                <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden border border-neutral-200 dark:border-slate-800 flex flex-col">
+                    
+                    {/* Timeline Indicator */}
+                    <div className="py-6 border-b border-neutral-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10 w-full px-8">
+                        <div className="flex items-center gap-4 max-w-3xl mx-auto">
+                            <div className="flex items-center gap-2 text-green-600 dark:text-green-500 font-bold text-sm">
+                                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center"><CheckCircle size={14} /></div>
+                                Cart & Customization
+                            </div>
+                            <div className="flex-1 h-px bg-green-200 dark:bg-green-900/50" />
+                            <div className="flex items-center gap-2 text-green-600 dark:text-green-500 font-bold text-sm">
+                                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center"><CheckCircle size={14} /></div>
+                                Payment
+                            </div>
+                            <div className="flex-1 h-px bg-green-200 dark:bg-green-900/50" />
+                            <div className="flex items-center gap-2 text-red-600 dark:text-red-500 font-bold text-sm">
+                                <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">3</div>
+                                Confirmation
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row w-full">
 
                     {/* Left: Celebration */}
                     <div className="md:w-5/12 bg-neutral-900 dark:bg-slate-800 p-8 md:p-12 text-white flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">

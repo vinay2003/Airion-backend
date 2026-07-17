@@ -344,6 +344,30 @@ const VendorProfile: React.FC = () => {
                             </section>
                         )}
 
+                        {/* Awards & Certifications */}
+                        <section className="space-y-6">
+                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <Star className="text-amber-500" size={20} />
+                                Awards & Certifications
+                            </h2>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div className="p-4 border border-gray-100 rounded-xl bg-amber-50/30 text-center">
+                                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                                        <ShieldCheck className="text-amber-600" size={20} />
+                                    </div>
+                                    <h5 className="font-bold text-sm text-gray-900">Best Decor 2024</h5>
+                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Wedding Wire</p>
+                                </div>
+                                <div className="p-4 border border-gray-100 rounded-xl bg-amber-50/30 text-center">
+                                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                                        <Star className="text-amber-600" size={20} />
+                                    </div>
+                                    <h5 className="font-bold text-sm text-gray-900">Premium Partner</h5>
+                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Ease2Event</p>
+                                </div>
+                            </div>
+                        </section>
+
                         {/* Reviews Section */}
                         <section className="space-y-8 pt-6">
                             <div className="flex items-center justify-between">
@@ -413,8 +437,19 @@ const VendorProfile: React.FC = () => {
                                     <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20  transition-soft">
                                         {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a Date'}
                                     </Button>
-                                    <Button variant="outline" className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft">
+                                    <Button 
+                                        onClick={() => navigate(`/inbox?vendorId=${id}`)}
+                                        variant="outline" 
+                                        className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft"
+                                    >
                                         Chat with Vendor
+                                    </Button>
+                                    <Button 
+                                        onClick={() => navigate(`/merchandise?vendorId=${id}`)}
+                                        variant="outline" 
+                                        className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft flex gap-2 items-center justify-center"
+                                    >
+                                        <Tag size={16} /> Visit Event Shop
                                     </Button>
                                 </div>
 

@@ -30,6 +30,7 @@ import { AvailabilityModule } from './availability/availability.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { MerchandiseModule } from './merchandise/merchandise.module';
+import { RefundsModule } from './refunds/refunds.module';
 
 @Module({
     imports: [
@@ -133,6 +134,7 @@ import { MerchandiseModule } from './merchandise/merchandise.module';
         ContactsModule,
         SubscriptionsModule,
         MerchandiseModule,
+        RefundsModule,
     ],
     controllers: [AppController],
 })

@@ -27,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { icon: Megaphone, label: 'Advertisements', path: '/advertisements' },
         { icon: Star, label: 'Subscriptions', path: '/subscriptions' },
         { icon: Ticket, label: 'Coupons', path: '/coupons' },
+        { icon: Store, label: 'Event Shop', path: '/shop' },
         { icon: Map, label: 'Categories & Regions', path: '/categories' },
         { icon: LifeBuoy, label: 'Support Tickets', path: '/support' },
         { icon: Settings, label: 'Settings', path: '/settings' },

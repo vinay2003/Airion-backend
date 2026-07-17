@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useCart, Product } from '../context/CartContext';
 import { Filter, ShoppingBag, Search, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { fetchProducts } from '../lib/api';
 
 const MOCK_PRODUCTS: Product[] = [
     { id: 'm1', title: 'Premium LED Fairy Lights (50m)', price: 1200, category: 'Decor', image: 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600' },
@@ -19,8 +20,27 @@ const Merchandise: React.FC = () => {
     const { addToCart } = useCart();
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
 
-    const filteredProducts = MOCK_PRODUCTS.filter(p => {
+    React.useEffect(() => {
+        fetchProducts()
+            .then((res: any) => {
+                if (res && res.length > 0) {
+                    setProducts(res.map((p: any) => ({
+                        id: p.id,
+                        title: p.title,
+                        price: Number(p.price),
+                        category: p.category,
+                        image: p.image || 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600'
+                    })));
+                }
+            })
+            .catch(() => {
+                // Keep mocks as fallback
+            });
+    }, []);
+
+    const filteredProducts = products.filter(p => {
         const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
         const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
         return matchCat && matchSearch;

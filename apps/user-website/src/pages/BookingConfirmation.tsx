@@ -8,16 +8,19 @@ const BookingConfirmation: React.FC = () => {
     const navigate = useNavigate();
     const [bookingId, setBookingId] = useState('');
 
-    const { eventName, date, time, guests, package: pkg, occasion, addons, total, isEmi } = location.state || {
+    const { eventName, date, time, guests, package: pkg, occasion, addons, total, isEmi, isMerchandise, orderTotal, paymentMethod, emiTenure } = location.state || {
         eventName: 'Exclusive Event', date: 'TBD', time: 'TBD', guests: '0', package: 'Standard', occasion: 'Event', addons: [], total: 0, isEmi: false
     };
+
+    const finalTotal = isMerchandise ? orderTotal : total;
+    const finalMethodLabel = paymentMethod === 'wallet' ? 'Ease2Event Wallet' : paymentMethod === 'emi' ? `EMI (${emiTenure} Months)` : 'UPI / Cards';
 
     useEffect(() => {
         if (!location.state) {
             navigate('/');
         }
-        setBookingId(`E2E-${Math.floor(Math.random() * 900000) + 100000}`);
-    }, [location.state, navigate]);
+        setBookingId(isMerchandise ? `ORD-${Math.floor(Math.random() * 900000) + 100000}` : `E2E-${Math.floor(Math.random() * 900000) + 100000}`);
+    }, [location.state, navigate, isMerchandise]);
 
     if (!location.state) return null;
 
@@ -50,12 +53,18 @@ const BookingConfirmation: React.FC = () => {
                             <CheckCircle size={48} className="text-white" />
                         </motion.div>
 
-                        <h1 className="text-3xl md:text-4xl font-black mb-3 tracking-tight">Booking Confirmed!</h1>
-                        <p className="text-neutral-300 font-medium mb-8 text-lg">Your {occasion || 'event'} is officially secured.</p>
+                        <h1 className="text-3xl font-black mb-3 tracking-tight">
+                            {isMerchandise ? 'Order Placed!' : 'Booking Confirmed!'}
+                        </h1>
+                        <p className="text-neutral-300 font-medium mb-8 text-sm">
+                            {isMerchandise ? 'Your event gear is on its way.' : `Your ${occasion || 'event'} is officially secured.`}
+                        </p>
 
                         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 w-full border border-white/10">
-                            <p className="text-sm text-neutral-400 font-medium mb-1 uppercase tracking-wider">Booking ID</p>
-                            <p className="text-white font-mono font-bold text-2xl tracking-widest">{bookingId}</p>
+                            <p className="text-[10px] text-neutral-400 font-bold mb-1 uppercase tracking-wider">
+                                {isMerchandise ? 'Order ID' : 'Booking ID'}
+                            </p>
+                            <p className="text-white font-mono font-bold text-xl tracking-widest">{bookingId}</p>
                         </div>
                     </div>
 
@@ -63,60 +72,75 @@ const BookingConfirmation: React.FC = () => {
                     <div className="md:w-7/12 p-8 md:p-12 bg-white dark:bg-slate-900 flex flex-col">
                         <div className="flex justify-between items-start mb-8">
                             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white flex items-center gap-3">
-                                <FileText className="text-red-500" /> Itinerary Summary
+                                <FileText className="text-red-500" /> {isMerchandise ? 'Receipt Summary' : 'Itinerary Summary'}
                             </h2>
                         </div>
 
                         <div className="space-y-6 grow">
-                            <div className="flex items-start gap-4">
-                                <div className="bg-red-50 dark:bg-slate-800 p-3.5 rounded-2xl text-red-500 dark:text-red-400 shrink-0">
-                                    <PartyPopper size={24} />
+                            {isMerchandise ? (
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-red-50 dark:bg-slate-800 p-3.5 rounded-2xl text-red-500 dark:text-red-400 shrink-0">
+                                        <PartyPopper size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-neutral-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-0.5">Shipping Status</p>
+                                        <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-1">Standard Delivery (3-5 days)</h3>
+                                        <p className="text-neutral-600 dark:text-slate-300 font-medium text-xs">Tracking links will be sent via SMS shortly.</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-neutral-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-0.5">Event details</p>
-                                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1">{eventName}</h3>
-                                    <p className="text-neutral-600 dark:text-slate-300 font-medium">{pkg} Package {addons?.length > 0 ? `+ ${addons.length} Add-ons` : ''}</p>
-                                </div>
-                            </div>
+                            ) : (
+                                <>
+                                    <div className="flex items-start gap-4">
+                                        <div className="bg-red-50 dark:bg-slate-800 p-3.5 rounded-2xl text-red-500 dark:text-red-400 shrink-0">
+                                            <PartyPopper size={24} />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-neutral-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-0.5">Event details</p>
+                                            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-1">{eventName}</h3>
+                                            <p className="text-neutral-600 dark:text-slate-300 font-medium">{pkg} Package {addons?.length > 0 ? `+ ${addons.length} Add-ons` : ''}</p>
+                                        </div>
+                                    </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
-                                        <Calendar size={20} />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex items-start gap-4">
+                                            <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
+                                                <Calendar size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Date</p>
+                                                <p className="font-bold text-neutral-900 dark:text-white">{date}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
+                                                <Clock size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Time</p>
+                                                <p className="font-bold text-neutral-900 dark:text-white">{time}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
+                                                <Users size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Guests</p>
+                                                <p className="font-bold text-neutral-900 dark:text-white">{guests}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-4">
+                                            <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
+                                                <MapPin size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Location</p>
+                                                <p className="font-bold text-neutral-900 dark:text-white">To be finalized</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Date</p>
-                                        <p className="font-bold text-neutral-900 dark:text-white">{date}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
-                                        <Clock size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Time</p>
-                                        <p className="font-bold text-neutral-900 dark:text-white">{time}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
-                                        <Users size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Guests</p>
-                                        <p className="font-bold text-neutral-900 dark:text-white">{guests}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl text-neutral-600 dark:text-slate-300 shrink-0">
-                                        <MapPin size={20} />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-neutral-500 dark:text-slate-400 uppercase font-bold tracking-wider mb-0.5">Location</p>
-                                        <p className="font-bold text-neutral-900 dark:text-white">To be finalized</p>
-                                    </div>
-                                </div>
-                            </div>
+                                </>
+                            )}
 
                             <div className="border-t-2 border-dashed border-neutral-200 dark:border-slate-800 my-6"></div>
 
@@ -128,22 +152,22 @@ const BookingConfirmation: React.FC = () => {
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                         </div>
-                                        <p className="text-xs font-medium text-green-600 dark:text-green-400">Payment Successful {isEmi && '(EMI mode)'}</p>
+                                        <p className="text-[11px] font-bold text-green-600 dark:text-green-400">Paid via {finalMethodLabel}</p>
                                     </div>
                                 </div>
                                 <div className="text-3xl font-black text-neutral-900 dark:text-white">
-                                    ₹{total?.toLocaleString()}
+                                    ₹{finalTotal?.toLocaleString()}
                                 </div>
                             </div>
                         </div>
 
                         <div className="mt-8 flex gap-4">
-                            <button className="flex-1 border-2 border-neutral-200 dark:border-slate-700  dark: py-4 rounded-xl font-bold text-neutral-700 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white flex items-center justify-center gap-2 transition-all">
+                            <button className="flex-1 border-2 border-neutral-200 dark:border-slate-700 py-4 rounded-xl font-bold text-neutral-700 dark:text-slate-300 hover:text-neutral-900 dark:hover:text-white flex items-center justify-center gap-2 transition-all">
                                 <Download size={18} />
-                                Invoice
+                                Receipt
                             </button>
-                            <Link to="/dashboard/bookings" className="flex-1 bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
-                                View Bookings
+                            <Link to={isMerchandise ? "/merchandise" : "/dashboard/bookings"} className="flex-1 bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
+                                {isMerchandise ? 'Continue Shop' : 'View Bookings'}
                             </Link>
                         </div>
                     </div>

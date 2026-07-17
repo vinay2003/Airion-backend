@@ -22,16 +22,26 @@ export const Inbox: React.FC = () => {
     const { data: conversations = [], isLoading: loadingConversations } = useQuery({
         queryKey: ['conversations'],
         queryFn: fetchConversations,
+        retry: false,
     });
+
+    const [mockMessages, setMockMessages] = useState<any[]>([
+        { id: 'm1', senderId: 'support', body: 'Hello! Welcome to Ease2Event Premium Support. How can we assist you today?', createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { id: 'm2', senderId: user?.id || 'user', body: 'Hi, I wanted to ask about the refunds policy for bookings.', createdAt: new Date(Date.now() - 1800000).toISOString() },
+        { id: 'm3', senderId: 'support', body: 'Sure! You get a full 100% refund if you cancel up to 14 days before your event. Let us know if you have any other questions!', createdAt: new Date(Date.now() - 600000).toISOString() }
+    ]);
 
     // Fetch Messages for selected thread
-    const { data: messages = [], isLoading: loadingMessages } = useQuery({
+    const { data: serverMessages = [], isLoading: loadingMessages } = useQuery({
         queryKey: ['messages', selectedThreadId],
         queryFn: () => fetchMessages(selectedThreadId),
-        enabled: !!selectedThreadId,
+        enabled: !!selectedThreadId && selectedThreadId !== 'mock-support',
+        retry: false,
     });
 
-    const selectedChat = conversations.find((c: any) => c.id === selectedThreadId);
+    const messages = selectedThreadId === 'mock-support' ? mockMessages : serverMessages;
+
+
 
     // Socket Setup
     useEffect(() => {
@@ -78,6 +88,33 @@ export const Inbox: React.FC = () => {
         e.preventDefault();
         if (!messageText.trim() || !selectedThreadId) return;
 
+        if (selectedThreadId === 'mock-support') {
+            const userMsg = {
+                id: `user-${Date.now()}`,
+                senderId: user?.id || 'user',
+                body: messageText,
+                createdAt: new Date().toISOString()
+            };
+            setMockMessages(prev => [...prev, userMsg]);
+            setMessageText('');
+
+            // Trigger typing effect
+            setTypingUser('Ease2Event Support AI');
+            setTimeout(() => {
+                setTypingUser(null);
+                setMockMessages(prev => [
+                    ...prev,
+                    {
+                        id: `support-${Date.now()}`,
+                        senderId: 'support',
+                        body: 'Thank you for your message. An event coordination agent will review your inquiry and get back to you shortly. Feel free to contact our toll-free support line at +91 1800-Ease2event.',
+                        createdAt: new Date().toISOString()
+                    }
+                ]);
+            }, 1800);
+            return;
+        }
+
         const socket = getSocket();
         if (socket) {
             socket.emit('sendMessage', {
@@ -116,9 +153,21 @@ export const Inbox: React.FC = () => {
         setShowMobileChat(true);
     };
 
-    const filteredConversations = conversations.filter((c: any) =>
-        c.participantIds.includes(user?.id)
-    );
+    const MOCK_CONVO = {
+        id: 'mock-support',
+        participantIds: [user?.id || 'user', 'support'],
+        lastMessage: 'Let us know if you need help with your booking!',
+        lastMessageAt: new Date().toISOString(),
+        title: 'Ease2Event Support',
+    };
+
+    const filteredConversations = conversations.length > 0 
+        ? conversations.filter((c: any) => c.participantIds?.includes(user?.id))
+        : [MOCK_CONVO];
+
+    const selectedChat = selectedThreadId === 'mock-support' 
+        ? MOCK_CONVO 
+        : conversations.find((c: any) => c.id === selectedThreadId);
 
     if (loadingConversations) {
         return (

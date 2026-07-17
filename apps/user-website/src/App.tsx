@@ -43,6 +43,9 @@ import InterestSelection from './pages/InterestSelection';
 import SplashScreen from './pages/SplashScreen';
 import Onboarding from './pages/Onboarding';
 import VendorProfile from './pages/VendorProfile';
+import Merchandise from './pages/Merchandise';
+import ProductDetails from './pages/ProductDetails';
+import Checkout from './pages/Checkout';
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -84,13 +87,15 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <ToastProvider>
         <Toaster position="top-right" toastOptions={{ duration: 5000, style: { background: '#171717', color: '#fff', borderRadius: '12px' }, success: { iconTheme: { primary: '#dc2626', secondary: '#fff' } } }} />
-        <Router>
-          <AuthProvider>
+        <WishlistProvider>
+          <RecentlyViewedProvider>
             <CompareProvider>
               <CartProvider>
-                <ScrollToTop />
-                <CartDrawer />
-                <Routes>
+                <Router>
+                  <AuthProvider>
+                    <ScrollToTop />
+                    <CartDrawer />
+                    <Routes>
                   {/* Full-screen routes - No Header/Footer */}
                   <Route path="/splash" element={
                     <Suspense fallback={<PageLoader />}>
@@ -157,6 +162,9 @@ const App: React.FC = () => {
                             <Route path="/plan-event" element={<PlanEvent />} />
                             <Route path="/inspiration" element={<Inspiration />} />
                             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+                            <Route path="/merchandise" element={<Merchandise />} />
+                            <Route path="/merchandise/:id" element={<ProductDetails />} />
+                            <Route path="/checkout" element={<Checkout />} />
                             <Route path="/about" element={<AboutUs />} />
                             <Route path="/contact" element={<ContactUs />} />
                             <Route path="/packages" element={<Packages />} />
@@ -170,12 +178,14 @@ const App: React.FC = () => {
                     </div>
                   } />
                 </Routes>
-              </CartProvider>
-            </CompareProvider>
-          </AuthProvider>
-        </Router>
-      </ToastProvider>
-    </ErrorBoundary>
+              </AuthProvider>
+            </Router>
+          </CartProvider>
+        </CompareProvider>
+      </RecentlyViewedProvider>
+    </WishlistProvider>
+  </ToastProvider>
+</ErrorBoundary>
   );
 };
 

@@ -234,6 +234,7 @@ export const blockDate = async (date: string, reason?: string) => await api.post
 export const unblockDate = async (date: string) => await api.delete(`/availability/block/${date}`);
 export const generateEasyReply = async (inquiry: string, voice?: string) => await api.post('/ai/easy-reply', { inquiry, voice });
 export const checkAvailability = async (vId: string, date: string) => (await api.get('/availability/check', { params: { vendorId: vId, date } })) as any;
+export const recordVendorProfileView = async (vId: string, guestVisitorId?: string) => await api.post(`/vendors/${vId}/profile-view`, { guestVisitorId });
 
 export const uploadImage = async (file: File) => {
     const fd = new FormData(); fd.append('file', file);

@@ -10,6 +10,7 @@ import { Booking } from '../bookings/entities/booking.entity';
 import { VendorAd } from './entities/vendor-ad.entity';
 import { VendorGallery } from './entities/vendor-gallery.entity';
 import { Availability } from '../availability/entities/availability.entity';
+import { VendorProfileView } from './entities/vendor-profile-view.entity';
 
 @Injectable()
 export class VendorsService {
@@ -30,6 +31,8 @@ export class VendorsService {
         private availabilityRepository: Repository<Availability>,
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(VendorProfileView)
+        private profileViewRepository: Repository<VendorProfileView>,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
@@ -226,7 +229,7 @@ export class VendorsService {
         };
     }
 
-    async getDetailedEarnings(vendorId: string): Promise<any> {
+    async getDetailedEarnings(vendorId: string, year?: number): Promise<any> {
         const bookings = await this.bookingRepository.find({
             where: { vendorId },
             order: { createdAt: 'DESC' },
@@ -234,15 +237,22 @@ export class VendorsService {
         });
 
         // ⚡ OPTIMIZED: DB Aggregation for monthly stats
-        const monthlyStats = await this.bookingRepository
+        let monthlyStatsQuery = this.bookingRepository
             .createQueryBuilder('booking')
             .select([
                 "TO_CHAR(created_at, 'Mon') as name",
                 "SUM(total_amount) as revenue"
             ])
             .where('booking.vendorId = :vendorId', { vendorId })
-            .andWhere("booking.status = 'completed' OR booking.payment_status = 'paid'")
-            .andWhere("created_at > NOW() - INTERVAL '6 months'")
+            .andWhere("(booking.status = 'completed' OR booking.payment_status = 'paid')");
+
+        if (year) {
+            monthlyStatsQuery = monthlyStatsQuery.andWhere("EXTRACT(YEAR FROM created_at) = :year", { year });
+        } else {
+            monthlyStatsQuery = monthlyStatsQuery.andWhere("created_at > NOW() - INTERVAL '6 months'");
+        }
+
+        const monthlyStats = await monthlyStatsQuery
             .groupBy("TO_CHAR(created_at, 'Mon'), DATE_TRUNC('month', created_at)")
             .orderBy("DATE_TRUNC('month', created_at)", "ASC")
             .getRawMany();
@@ -254,9 +264,18 @@ export class VendorsService {
             .andWhere("booking.status = 'completed' OR booking.payment_status = 'paid'")
             .getRawOne();
 
+        const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const filledMonthlyStats = allMonths.map(month => {
+            const found = monthlyStats.find(s => s.name?.trim() === month);
+            return {
+                name: month,
+                revenue: found ? Number(found.revenue) : 0
+            };
+        });
+
         return {
             totalBalance: Number(totalBalance?.total || 0),
-            monthlyStats: monthlyStats.map(s => ({ name: s.name, revenue: Number(s.revenue) })),
+            monthlyStats: filledMonthlyStats,
             recentTransactions: bookings.map(b => ({
                 id: `#TRX-${b.id?.split('-')[0].toUpperCase()}`,
                 service: 'Service Booking', 
@@ -404,5 +423,62 @@ export class VendorsService {
             where: { vendorId },
             order: { date: 'ASC' }
         });
+    }
+
+    async recordProfileView(vendorId: string, viewerUserId?: string, guestVisitorId?: string): Promise<{ success: boolean; counted: boolean }> {
+        const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
+        if (!vendor) {
+            throw new NotFoundException('Vendor not found');
+        }
+
+        // Ignore self views
+        if (viewerUserId && vendor.userId === viewerUserId) {
+            return { success: true, counted: false };
+        }
+
+        // Must have at least one identifier
+        if (!viewerUserId && !guestVisitorId) {
+            return { success: true, counted: false };
+        }
+
+        try {
+            // Attempt to insert. If unique constraint fails, it throws an error which we catch.
+            const view = this.profileViewRepository.create({
+                vendorId,
+                viewerUserId: viewerUserId || null,
+                guestVisitorId: guestVisitorId || null,
+            });
+            await this.profileViewRepository.save(view);
+            return { success: true, counted: true };
+        } catch (error: any) {
+            // Check for Postgres unique violation error code (23505)
+            if (error.code === '23505') {
+                return { success: true, counted: false };
+            }
+            console.error('[VendorsService.recordProfileView] Error:', error);
+            // Ignore other errors so we don't crash the frontend request for a background metric
+            return { success: true, counted: false };
+        }
+    }
+
+    async getVendorViewAnalytics(vendorId: string): Promise<any> {
+        // Optimized single query for all time-based metrics
+        const result = await this.profileViewRepository
+            .createQueryBuilder('view')
+            .select([
+                'COUNT(view.id) as total_unique_views',
+                "COUNT(view.id) FILTER (WHERE view.createdAt >= CURRENT_DATE) as today_unique_views",
+                "COUNT(view.id) FILTER (WHERE view.createdAt >= date_trunc('week', CURRENT_DATE)) as week_unique_views",
+                "COUNT(view.id) FILTER (WHERE view.createdAt >= date_trunc('month', CURRENT_DATE)) as month_unique_views"
+            ])
+            .where('view.vendorId = :vendorId', { vendorId })
+            .getRawOne();
+
+        return {
+            totalUniqueViews: Number(result?.total_unique_views || 0),
+            todayUniqueViews: Number(result?.today_unique_views || 0),
+            weekUniqueViews: Number(result?.week_unique_views || 0),
+            monthUniqueViews: Number(result?.month_unique_views || 0),
+        };
     }
 }

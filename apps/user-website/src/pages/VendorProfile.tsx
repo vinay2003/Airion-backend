@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
     Star, MapPin, ShieldCheck, Mail, Phone,
@@ -7,7 +7,7 @@ import {
     Users, Tag, ChevronRight, MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api, { toggleWishlist, checkIsWishlisted } from '../lib/api';
+import api, { toggleWishlist, checkIsWishlisted, recordVendorProfileView } from '../lib/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import toast from 'react-hot-toast';
@@ -46,6 +46,60 @@ const VendorProfile: React.FC = () => {
             }
         };
         if (id) fetchProfile();
+    }, [id]);
+
+    const viewRecordedRef = useRef(false);
+
+    useEffect(() => {
+        if (!id || viewRecordedRef.current) return;
+
+        const controller = new AbortController();
+        viewRecordedRef.current = true; // Optimistic lock
+
+        const recordView = async () => {
+            try {
+                // Check if user is logged in
+                const isLoggedIn = !!localStorage.getItem('ease2event_token');
+                
+                // Helper to manage cookies
+                const getCookie = (name: string) => {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop()?.split(';').shift();
+                };
+                const setCookie = (name: string, value: string, days: number) => {
+                    const date = new Date();
+                    date.setTime(date.getTime() + (days*24*60*60*1000));
+                    document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+                };
+
+                let guestId = getCookie('guestVisitorId') || localStorage.getItem('guestVisitorId');
+                
+                // For unauthenticated users, ensure guest ID exists
+                if (!isLoggedIn && !guestId) {
+                    guestId = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
+                    setCookie('guestVisitorId', guestId, 365);
+                    localStorage.setItem('guestVisitorId', guestId);
+                } else if (guestId) {
+                    // Sync cookie and localStorage if one is missing
+                    if (!getCookie('guestVisitorId')) setCookie('guestVisitorId', guestId, 365);
+                    if (!localStorage.getItem('guestVisitorId')) localStorage.setItem('guestVisitorId', guestId);
+                }
+
+                // Send the request, passing the signal for aborting
+                await recordVendorProfileView(id, guestId);
+            } catch (error: any) {
+                if (error.name !== 'AbortError') {
+                    console.error('Failed to record profile view:', error);
+                }
+            }
+        };
+
+        recordView();
+
+        return () => {
+            controller.abort();
+        };
     }, [id]);
 
     const handleToggleWishlist = async () => {

@@ -12,9 +12,11 @@ import { VendorGallery } from './entities/vendor-gallery.entity';
 import { Availability } from '../availability/entities/availability.entity';
 import { User } from '../auth/entities/user.entity';
 
+import { VendorProfileView } from './entities/vendor-profile-view.entity';
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vendor, Activity, Category, Subcategory, Booking, VendorAd, VendorGallery, Availability, User]),
+    TypeOrmModule.forFeature([Vendor, Activity, Category, Subcategory, Booking, VendorAd, VendorGallery, Availability, User, VendorProfileView]),
   ],
   controllers: [VendorsController],
   providers: [VendorsService],

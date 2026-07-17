@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, MapPin, Phone, Send, Loader2, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import SEO from '../components/SEO';
 
 const ContactUs: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -46,6 +47,7 @@ const ContactUs: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+            <SEO title="Contact Us" description="Get in touch with Ease2event. We are here to help you plan and manage your perfect event." />
             <div className="max-w-6xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
                 {/* Contact Info Side */}
                 <div className="md:w-2/5 bg-gray-900 dark:bg-black text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
@@ -90,19 +92,7 @@ const ContactUs: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="relative z-10 mt-12">
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-red-500 transition-colors cursor-pointer flex items-center justify-center">
-                                <span className="font-bold">IG</span>
-                            </div>
-                            <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-red-500 transition-colors cursor-pointer flex items-center justify-center">
-                                <span className="font-bold">TW</span>
-                            </div>
-                            <div className="w-10 h-10 bg-white/10 rounded-full hover:bg-red-500 transition-colors cursor-pointer flex items-center justify-center">
-                                <span className="font-bold">LN</span>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 {/* Form Side */}

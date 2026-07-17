@@ -361,7 +361,7 @@ export const Terms: React.FC = () => (
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">2. User Responsibilities</h2>
             <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account.</p>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">3. Limitation of Liability</h2>
-            <p>Ease2event acts as a marketplace bridging users and vendors. We are not liable for quality disputes between parties, though we provide resolution support services.</p>
+            <p>Ease2event acts as a platform bridging users and vendors. We are not liable for quality disputes between parties, though we provide resolution support services.</p>
         </div>
     </div>
 );

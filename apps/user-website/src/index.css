@@ -26,6 +26,19 @@
 @import "tailwindcss";
 @import "@ease2event/ui/globals.css";
 
+@theme {
+  --animate-marquee: marquee 25s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}
+
 /* ── 2. Light Theme: activate for this portal ────────────── */
 :root {
   color-scheme: light;

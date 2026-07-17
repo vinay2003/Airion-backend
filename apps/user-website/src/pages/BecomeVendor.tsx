@@ -31,7 +31,7 @@ const BecomeVendor: React.FC = () => {
                             Grow Your Business with Ease2event
                         </h1>
                         <p className="text-xl md:text-xl text-gray-300 mb-10 leading-relaxed">
-                            Join Bihar's fastest-growing event marketplace. Connect with verified leads and manage bookings effortlessly.
+                            Join Bihar's fastest-growing event venues platform. Connect with verified leads and manage bookings effortlessly.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Link to="/signup?portal=vendor" className="bg-red-500 hover:bg-red-600 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2">

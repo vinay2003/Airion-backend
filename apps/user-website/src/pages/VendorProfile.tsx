@@ -87,11 +87,11 @@ const VendorProfile: React.FC = () => {
                 <div className="absolute bottom-6 left-0 w-full px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto flex justify-between items-end">
                         <div className="flex gap-4 items-center mb-2">
-                            <Button 
+                            <Button
                                 onClick={handleToggleWishlist}
                                 disabled={wishlistLoading}
-                                size="sm" 
-                                variant="secondary" 
+                                size="sm"
+                                variant="secondary"
                                 className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all  ${isWishlisted ? 'text-red-500 fill-red-500' : ''}`}
                             >
                                 <Heart size={18} className={isWishlisted ? 'fill-red-500 text-red-500' : ''} />
@@ -203,7 +203,7 @@ const VendorProfile: React.FC = () => {
                                     <div key={pkg.name} className={`flex flex-col p-6 rounded-xl border bg-white relative transition-all duration-300 ${pkg.isPopular ? 'border-primary shadow-lg shadow-primary/5' : 'border-gray-100 shadow-sm'}`}>
                                         {pkg.isPopular && (
                                             <span className="absolute -top-3 left-6 bg-primary text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                                                MOST POPULAR
+                                                Most Popular
                                             </span>
                                         )}
                                         <div className="space-y-2 mb-6">
@@ -306,7 +306,7 @@ const VendorProfile: React.FC = () => {
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Availability Calendar</p>
                                     <h3 className="text-xl font-black text-slate-900 tracking-tighter italic">Select Your Date</h3>
                                 </div>
-                                
+
                                 <div className="w-full flex justify-center bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                                     <DayPicker
                                         mode="single"

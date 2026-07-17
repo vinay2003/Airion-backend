@@ -20,24 +20,24 @@ import ProfileSettings from './pages/dashboard/ProfileSettings';
 import { Payments, DigitalInvites, Support, Terms, Privacy } from './pages/dashboard/Placeholders';
 import GuestList from './pages/dashboard/GuestList';
 
-// Lazy load pages
-const Home = lazy(() => import('./pages/Home'));
-const EventDetails = lazy(() => import('./pages/EventDetails'));
-const VendorDiscovery = lazy(() => import('./pages/VendorDiscovery'));
-const CategoryPage = lazy(() => import('./pages/CategoryPage'));
-const AboutUs = lazy(() => import('./pages/AboutUs'));
-const ContactUs = lazy(() => import('./pages/ContactUs'));
-const Inspiration = lazy(() => import('./pages/Inspiration'));
-const BookingConfirmation = lazy(() => import('./pages/BookingConfirmation'));
-const UnifiedAuth = lazy(() => import('./pages/UnifiedAuth'));
-const PlanEvent = lazy(() => import('./pages/PlanEvent'));
-const TrendingWeddings = lazy(() => import('./pages/TrendingWeddings'));
-const Packages = lazy(() => import('./pages/Packages'));
-const BecomeVendor = lazy(() => import('./pages/BecomeVendor'));
-const InterestSelection = lazy(() => import('./pages/InterestSelection'));
-const SplashScreen = lazy(() => import('./pages/SplashScreen'));
-const Onboarding = lazy(() => import('./pages/Onboarding'));
-const VendorProfile = lazy(() => import('./pages/VendorProfile'));
+// Static imports for instant page transitions
+import Home from './pages/Home';
+import EventDetails from './pages/EventDetails';
+import VendorDiscovery from './pages/VendorDiscovery';
+import CategoryPage from './pages/CategoryPage';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
+import Inspiration from './pages/Inspiration';
+import BookingConfirmation from './pages/BookingConfirmation';
+import UnifiedAuth from './pages/UnifiedAuth';
+import PlanEvent from './pages/PlanEvent';
+import TrendingWeddings from './pages/TrendingWeddings';
+import Packages from './pages/Packages';
+import BecomeVendor from './pages/BecomeVendor';
+import InterestSelection from './pages/InterestSelection';
+import SplashScreen from './pages/SplashScreen';
+import Onboarding from './pages/Onboarding';
+import VendorProfile from './pages/VendorProfile';
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">

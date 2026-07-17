@@ -8,15 +8,15 @@ import { AuthProvider, ProtectedRoute } from '@ease2event/shared';
 
 const queryClient = new QueryClient();
 
-// Lazy load pages
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Vendors = lazy(() => import('./pages/Vendors'));
-const Users = lazy(() => import('./pages/Users'));
-const Bookings = lazy(() => import('./pages/Bookings'));
-const Settings = lazy(() => import('./pages/Settings'));
-const AdminLogin = lazy(() => import('./pages/AdminLogin'));
-const Subscriptions = lazy(() => import('./pages/Subscriptions'));
-const Advertisements = lazy(() => import('./pages/Advertisements'));
+// Static imports for instant page transitions
+import Dashboard from './pages/Dashboard';
+import Vendors from './pages/Vendors';
+import Users from './pages/Users';
+import Bookings from './pages/Bookings';
+import Settings from './pages/Settings';
+import AdminLogin from './pages/AdminLogin';
+import Subscriptions from './pages/Subscriptions';
+import Advertisements from './pages/Advertisements';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">

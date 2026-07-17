@@ -16,14 +16,14 @@ import {
 import { POPULAR_LOCATIONS } from '../lib/constants';
 
 const EVENT_TYPES: { value: string; label: string; icon: LucideIcon; color: string; bg: string }[] = [
-    { value: 'wedding',     label: 'Wedding',        icon: Heart,      color: 'text-pink-600',   bg: 'bg-pink-50 dark:bg-pink-950/40' },
-    { value: 'birthday',    label: 'Birthday Party', icon: Cake,       color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950/40' },
-    { value: 'corporate',   label: 'Corporate',      icon: Briefcase,  color: 'text-blue-600',   bg: 'bg-blue-50 dark:bg-blue-950/40' },
-    { value: 'conference',  label: 'Conference',     icon: Mic2,       color: 'text-violet-600', bg: 'bg-violet-50 dark:bg-violet-950/40' },
-    { value: 'anniversary', label: 'Anniversary',    icon: Wine,       color: 'text-red-500',    bg: 'bg-red-50 dark:bg-red-950/40' },
-    { value: 'reception',   label: 'Reception',      icon: Flower2,    color: 'text-rose-500',   bg: 'bg-rose-50 dark:bg-rose-950/40' },
-    { value: 'concert',     label: 'Concert',        icon: Music,      color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
-    { value: 'exhibition',  label: 'Exhibition',     icon: ImageIcon,  color: 'text-teal-600',   bg: 'bg-teal-50 dark:bg-teal-950/40' },
+    { value: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-600', bg: 'bg-pink-50 dark:bg-pink-950/40' },
+    { value: 'birthday', label: 'Birthday Party', icon: Cake, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950/40' },
+    { value: 'corporate', label: 'Corporate', icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950/40' },
+    { value: 'conference', label: 'Conference', icon: Mic2, color: 'text-violet-600', bg: 'bg-violet-50 dark:bg-violet-950/40' },
+    { value: 'anniversary', label: 'Anniversary', icon: Wine, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-950/40' },
+    { value: 'reception', label: 'Reception', icon: Flower2, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-950/40' },
+    { value: 'concert', label: 'Concert', icon: Music, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
+    { value: 'exhibition', label: 'Exhibition', icon: ImageIcon, color: 'text-teal-600', bg: 'bg-teal-50 dark:bg-teal-950/40' },
 ];
 
 const TypewriterEffect = ({ words }: { words: string[] }) => {
@@ -221,28 +221,28 @@ const SearchBar = () => {
                                 {POPULAR_LOCATIONS
                                     .filter(loc => loc.label.toLowerCase().includes(locationSearch.toLowerCase()))
                                     .map((loc) => (
-                                    <button
-                                        key={loc.value}
-                                        type="button"
-                                        onClick={() => {
-                                            setLocation(loc.value === location ? "" : loc.value);
-                                            setOpenLocation(false);
-                                        }}
-                                        className="w-full flex items-center gap-4 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all text-left"
-                                    >
-                                        <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm shrink-0">
-                                            <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
-                                        </div>
-                                        <div className="flex flex-col overflow-hidden flex-1">
-                                            <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate text-sm">
-                                                {loc.label.split(',')[0]}
-                                            </span>
-                                            <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
-                                                {loc.label.split(',')[1]?.trim() || "Local Destination"}
-                                            </span>
-                                        </div>
-                                        <Check className={cn("h-5 w-5 text-red-500 shrink-0", location === loc.value ? "opacity-100" : "opacity-0")} />
-                                    </button>
+                                        <button
+                                            key={loc.value}
+                                            type="button"
+                                            onClick={() => {
+                                                setLocation(loc.value === location ? "" : loc.value);
+                                                setOpenLocation(false);
+                                            }}
+                                            className="w-full flex items-center gap-4 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-950/20 group transition-all text-left"
+                                        >
+                                            <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm shrink-0">
+                                                <MapPin className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden flex-1">
+                                                <span className="font-black text-gray-900 dark:text-white group-hover:text-red-600 truncate text-sm">
+                                                    {loc.label.split(',')[0]}
+                                                </span>
+                                                <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                                                    {loc.label.split(',')[1]?.trim() || "Local Destination"}
+                                                </span>
+                                            </div>
+                                            <Check className={cn("h-5 w-5 text-red-500 shrink-0", location === loc.value ? "opacity-100" : "opacity-0")} />
+                                        </button>
                                     ))}
                                 {POPULAR_LOCATIONS.filter(loc => loc.label.toLowerCase().includes(locationSearch.toLowerCase())).length === 0 && (
                                     <p className="text-sm text-gray-400 text-center py-6 font-medium">No destinations found</p>
@@ -273,12 +273,12 @@ const SearchBar = () => {
                             </div>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[270px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
+                    <PopoverContent className="p-0 w-[300px] overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700" align="start" sideOffset={12}>
                         <div className="bg-white dark:bg-slate-900">
-                            <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-slate-800">
+                            <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-slate-800 text-center">
                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">What's the occasion?</p>
                             </div>
-                            <div className="py-1.5 grid grid-cols-2 gap-1 p-2">
+                            <div className="py-1.5 flex flex-col gap-1 p-2 max-h-[300px] overflow-y-auto">
                                 {EVENT_TYPES.map((ev) => {
                                     const Icon = ev.icon;
                                     const isSelected = eventType === ev.value;
@@ -291,17 +291,17 @@ const SearchBar = () => {
                                                 setOpenEventType(false);
                                             }}
                                             className={cn(
-                                                'flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all border text-center',
+                                                'flex items-center gap-3 p-2.5 rounded-xl transition-all border text-left w-full',
                                                 isSelected
                                                     ? 'border-red-400 bg-red-50 dark:bg-red-950/30'
                                                     : 'border-transparent hover:border-gray-200 dark:hover:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800'
                                             )}
                                         >
-                                            <div className={cn('w-9 h-9 rounded-full flex items-center justify-center', ev.bg)}>
+                                            <div className={cn('w-8 h-8 rounded-full flex items-center justify-center shrink-0', ev.bg)}>
                                                 <Icon className={cn('w-4 h-4', isSelected ? 'text-red-600' : ev.color)} />
                                             </div>
                                             <span className={cn(
-                                                'text-[11px] font-bold leading-tight',
+                                                'text-xs font-bold leading-tight',
                                                 isSelected ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
                                             )}>{ev.label}</span>
                                         </button>

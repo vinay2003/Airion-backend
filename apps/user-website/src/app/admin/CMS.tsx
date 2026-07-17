@@ -7,7 +7,7 @@ const CMS: React.FC = () => {
     const heroSection = {
         title: 'Find the Perfect Vendor for Your Dream Event',
         subtitle: 'Connect with thousands of verified venues, photographers, and caterers across India.',
-        buttonText: 'Explore Marketplace',
+        buttonText: 'Explore Venues',
         backgroundImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80'
     };
 

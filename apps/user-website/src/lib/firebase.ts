@@ -15,47 +15,42 @@ const cleanEnvVar = (val: string | undefined): string => {
   return clean;
 };
 
-// Vite environments retrieve config properties via import.meta.env.VITE_ prefix
-const firebaseConfig = {
-  apiKey: cleanEnvVar(import.meta.env.VITE_FIREBASE_API_KEY),
-  authDomain: cleanEnvVar(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
-  projectId: cleanEnvVar(import.meta.env.VITE_FIREBASE_PROJECT_ID),
-  storageBucket: cleanEnvVar(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET),
-  messagingSenderId: cleanEnvVar(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID),
-  appId: cleanEnvVar(import.meta.env.VITE_FIREBASE_APP_ID)
+// Production Firebase config (used when env vars are not injected — e.g. monorepo Vercel builds)
+// Note: Firebase web API keys are NOT secret — they are always visible in the browser bundle.
+// Security is enforced via Firebase Security Rules and authorized domains.
+const FIREBASE_PROD_CONFIG = {
+  apiKey: "AIzaSyAigoCAh80p9Qey4JfpDpztAj8RLjCB8mQ",
+  authDomain: "easy2event-67c2a.firebaseapp.com",
+  projectId: "easy2event-67c2a",
+  storageBucket: "easy2event-67c2a.firebasestorage.app",
+  messagingSenderId: "742753803631",
+  appId: "1:742753803631:web:531861dffbdf90e44c5c9a"
 };
 
-// Graceful check for config presence to avoid runtime load crashes
-const isConfigured = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
+// Vite environments retrieve config properties via import.meta.env.VITE_ prefix
+const firebaseConfig = {
+  apiKey: cleanEnvVar(import.meta.env.VITE_FIREBASE_API_KEY) || FIREBASE_PROD_CONFIG.apiKey,
+  authDomain: cleanEnvVar(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN) || FIREBASE_PROD_CONFIG.authDomain,
+  projectId: cleanEnvVar(import.meta.env.VITE_FIREBASE_PROJECT_ID) || FIREBASE_PROD_CONFIG.projectId,
+  storageBucket: cleanEnvVar(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET) || FIREBASE_PROD_CONFIG.storageBucket,
+  messagingSenderId: cleanEnvVar(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID) || FIREBASE_PROD_CONFIG.messagingSenderId,
+  appId: cleanEnvVar(import.meta.env.VITE_FIREBASE_APP_ID) || FIREBASE_PROD_CONFIG.appId
+};
+
+// Always configured now — prod values are hardcoded as fallback
+const isConfigured = true;
 
 if (import.meta.env.DEV) {
-  if (isConfigured) {
-    console.log('🔥 [Firebase Client] Credentials configured successfully:', {
-      projectId: firebaseConfig.projectId,
-      apiKeyMasked: firebaseConfig.apiKey ? `${firebaseConfig.apiKey.substring(0, 6)}...` : 'none',
-      authDomain: firebaseConfig.authDomain
-    });
-  } else {
-    console.warn(
-      '⚠️ [Ease2Event] Firebase client-side credentials are not fully configured in your .env file.\n' +
-      'Please set VITE_FIREBASE_API_KEY, VITE_FIREBASE_PROJECT_ID, etc. in your .env.local or .env.development to enable live SMS OTP.'
-    );
-  }
+  console.log('🔥 [Firebase Client] Credentials configured:', {
+    projectId: firebaseConfig.projectId,
+    apiKeyMasked: `${firebaseConfig.apiKey.substring(0, 6)}...`,
+    authDomain: firebaseConfig.authDomain,
+    source: import.meta.env.VITE_FIREBASE_API_KEY ? 'env vars' : 'hardcoded fallback'
+  });
 }
 
 // Initialize Firebase App instance
-const app = initializeApp(
-  isConfigured 
-    ? firebaseConfig 
-    : {
-        apiKey: "placeholder-api-key",
-        authDomain: "placeholder-auth-domain.firebaseapp.com",
-        projectId: "placeholder-project-id",
-        storageBucket: "placeholder-storage-bucket.appspot.com",
-        messagingSenderId: "placeholder-messaging-sender-id",
-        appId: "placeholder-app-id"
-      }
-);
+const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 

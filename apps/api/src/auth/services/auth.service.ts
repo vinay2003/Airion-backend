@@ -62,8 +62,30 @@ export class AuthService {
             }
 
             try {
-                // Ensure newlines in private key are correctly unescaped
-                const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+                // Robust private key parsing
+                let formattedPrivateKey = privateKey;
+                
+                // Remove surrounding quotes if they exist
+                if (formattedPrivateKey.startsWith('"') && formattedPrivateKey.endsWith('"')) {
+                    formattedPrivateKey = formattedPrivateKey.slice(1, -1);
+                } else if (formattedPrivateKey.startsWith("'") && formattedPrivateKey.endsWith("'")) {
+                    formattedPrivateKey = formattedPrivateKey.slice(1, -1);
+                }
+
+                // Replace escaped newlines with actual newlines and normalize double-escaped chars
+                formattedPrivateKey = formattedPrivateKey.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\'/g, "'").trim();
+                
+                // Fix spacing/formatting if it's on a single line without explicit \n
+                if (!formattedPrivateKey.includes('\n')) {
+                    formattedPrivateKey = formattedPrivateKey.replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n');
+                    formattedPrivateKey = formattedPrivateKey.replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----\n');
+                    
+                    const content = formattedPrivateKey.replace('-----BEGIN PRIVATE KEY-----\n', '').replace('\n-----END PRIVATE KEY-----\n', '').replace(/\s+/g, '');
+                    const matchedContent = content.match(/.{1,64}/g);
+                    if (matchedContent) {
+                        formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${matchedContent.join('\n')}\n-----END PRIVATE KEY-----\n`;
+                    }
+                }
 
                 admin.initializeApp({
                     credential: admin.credential.cert({

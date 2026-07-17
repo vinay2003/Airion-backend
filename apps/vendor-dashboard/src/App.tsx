@@ -8,23 +8,23 @@ import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient();
 
-// Lazy load pages
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Listings = lazy(() => import('./pages/Listings'));
-const Inbox = lazy(() => import('./pages/Inbox'));
-const VendorLogin = lazy(() => import('./pages/VendorLogin'));
-const VendorSignupBasic = lazy(() => import('./pages/auth/VendorSignupBasic'));
-const VendorSignupForm = lazy(() => import('./pages/VendorSignup'));
-const Bookings = lazy(() => import('./pages/Bookings'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const Settings = lazy(() => import('./pages/Settings'));
-const EventPlanning = lazy(() => import('./pages/EventPlanning'));
-const Promotions = lazy(() => import('./pages/Promotions'));
-const Calendar = lazy(() => import('./pages/Calendar'));
-const Earnings = lazy(() => import('./pages/Earnings'));
-const Products = lazy(() => import('./pages/Products'));
-const Ads = lazy(() => import('./pages/Ads'));
-const Gallery = lazy(() => import('./pages/Gallery'));
+// Static imports for instant page transitions
+import Dashboard from './pages/Dashboard';
+import Listings from './pages/Listings';
+import Inbox from './pages/Inbox';
+import VendorLogin from './pages/VendorLogin';
+import VendorSignupBasic from './pages/auth/VendorSignupBasic';
+import VendorSignupForm from './pages/VendorSignup';
+import Bookings from './pages/Bookings';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
+import EventPlanning from './pages/EventPlanning';
+import Promotions from './pages/Promotions';
+import Calendar from './pages/Calendar';
+import Earnings from './pages/Earnings';
+import Products from './pages/Products';
+import Ads from './pages/Ads';
+import Gallery from './pages/Gallery';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">

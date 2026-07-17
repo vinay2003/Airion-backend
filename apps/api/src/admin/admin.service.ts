@@ -1,8 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource, QueryRunner } from 'typeorm';
 import { Dispute } from './entities/dispute.entity';
 import { Vendor } from '../vendors/entities/vendor.entity';
+import { User } from '../auth/entities/user.entity';
+import { Booking } from '../bookings/entities/booking.entity';
+import { Category } from '../categories/entities/category.entity';
+import { Location } from '../categories/entities/location.entity';
+import { SupportTicket } from './entities/support-ticket.entity';
+import { Ad } from '../ads/entities/ad.entity';
+import { Coupon } from '../coupons/entities/coupon.entity';
+import { AuditLog } from '../auth/entities/audit-log.entity';
 
 @Injectable()
 export class AdminService {
@@ -11,25 +19,104 @@ export class AdminService {
         private readonly disputeRepository: Repository<Dispute>,
         @InjectRepository(Vendor)
         private readonly vendorRepository: Repository<Vendor>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        @InjectRepository(Booking)
+        private readonly bookingRepository: Repository<Booking>,
+        @InjectRepository(Category)
+        private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(Location)
+        private readonly locationRepository: Repository<Location>,
+        @InjectRepository(SupportTicket)
+        private readonly ticketRepository: Repository<SupportTicket>,
+        @InjectRepository(Ad)
+        private readonly adRepository: Repository<Ad>,
+        @InjectRepository(Coupon)
+        private readonly couponRepository: Repository<Coupon>,
+        @InjectRepository(AuditLog)
+        private readonly auditLogRepository: Repository<AuditLog>,
+        private readonly dataSource: DataSource,
     ) { }
 
-    async updateVendorStatus(vendorId: string, status: 'approved' | 'rejected') {
-        const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
-        if (!vendor) throw new NotFoundException('Vendor not found');
-
-        vendor.verificationStatus = status;
-        vendor.isVerified = status === 'approved';
-        return this.vendorRepository.save(vendor);
+    private async logAdminAction(
+        queryRunner: QueryRunner,
+        adminId: string,
+        action: string,
+        resource: string,
+        resourceId?: string,
+        previousValue?: any,
+        newValue?: any
+    ) {
+        if (!adminId) return; // For unauthenticated fallback if any
+        const log = this.auditLogRepository.create({
+            userId: adminId,
+            action,
+            resourceType: resource,
+            resourceId,
+            ipAddress: '127.0.0.1',
+            userAgent: 'Admin Panel',
+            success: true,
+            metadata: {
+                previousValue,
+                newValue
+            }
+        });
+        await queryRunner.manager.save(log);
     }
 
-    async suspendVendor(vendorId: string) {
-        const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
-        if (!vendor) throw new NotFoundException('Vendor not found');
+    async updateVendorStatus(vendorId: string, status: 'approved' | 'rejected', adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const vendor = await queryRunner.manager.findOne(Vendor, { where: { id: vendorId } });
+            if (!vendor) throw new NotFoundException('Vendor not found');
+            if (vendor.verificationStatus === status) throw new BadRequestException(`Vendor is already ${status}`);
 
-        vendor.isVerified = false;
-        vendor.verificationStatus = 'rejected';
-        // Add a 'is_suspended' flag in future if needed
-        return this.vendorRepository.save(vendor);
+            const previousStatus = vendor.verificationStatus;
+            vendor.verificationStatus = status;
+            vendor.isVerified = status === 'approved';
+            
+            await queryRunner.manager.save(vendor);
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_VENDOR_STATUS', 'Vendor', vendorId, { status: previousStatus }, { status });
+            }
+
+            await queryRunner.commitTransaction();
+            return vendor;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async suspendVendor(vendorId: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const vendor = await queryRunner.manager.findOne(Vendor, { where: { id: vendorId } });
+            if (!vendor) throw new NotFoundException('Vendor not found');
+
+            const previousStatus = vendor.verificationStatus;
+            vendor.isVerified = false;
+            vendor.verificationStatus = 'rejected';
+            
+            await queryRunner.manager.save(vendor);
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'SUSPEND_VENDOR', 'Vendor', vendorId, { status: previousStatus }, { status: 'rejected' });
+            }
+
+            await queryRunner.commitTransaction();
+            return vendor;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async createDispute(data: { bookingId: string; raisedById: string; reason: string }) {
@@ -37,15 +124,31 @@ export class AdminService {
         return this.disputeRepository.save(dispute);
     }
 
-    async resolveDispute(id: string, resolution: string, refundAmount: number = 0) {
-        const dispute = await this.disputeRepository.findOne({ where: { id } });
-        if (!dispute) throw new NotFoundException('Dispute not found');
-        
-        dispute.status = 'resolved';
-        dispute.adminResolution = resolution;
-        dispute.refundAmount = refundAmount;
-        
-        return this.disputeRepository.save(dispute);
+    async resolveDispute(id: string, resolution: string, refundAmount: number = 0, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const dispute = await queryRunner.manager.findOne(Dispute, { where: { id } });
+            if (!dispute) throw new NotFoundException('Dispute not found');
+            
+            const prev = { status: dispute.status, adminResolution: dispute.adminResolution, refundAmount: dispute.refundAmount };
+            dispute.status = 'resolved';
+            dispute.adminResolution = resolution;
+            dispute.refundAmount = refundAmount;
+            
+            await queryRunner.manager.save(dispute);
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'RESOLVE_DISPUTE', 'Dispute', id, prev, { status: 'resolved', adminResolution: resolution, refundAmount });
+            }
+            await queryRunner.commitTransaction();
+            return dispute;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async getDisputes(status?: string) {
@@ -54,5 +157,708 @@ export class AdminService {
             relations: ['booking', 'raisedBy'],
             order: { createdAt: 'DESC' },
         });
+    }
+
+    async getDashboardStats() {
+        const usersCount = await this.userRepository.count();
+        const vendorsCount = await this.vendorRepository.count();
+        const bookingsCount = await this.bookingRepository.count();
+        
+        return {
+            users: usersCount,
+            vendors: vendorsCount,
+            bookings: bookingsCount,
+            revenue: 125000,
+            advertisementRevenue: 45000,
+            subscriptionRevenue: 55000,
+            commissionRevenue: 25000,
+            charts: {
+                revenue: [
+                    { name: 'Week 1', adRevenue: 15000, subRevenue: 32000, commission: 8500 },
+                    { name: 'Week 2', adRevenue: 18000, subRevenue: 38000, commission: 11200 },
+                    { name: 'Week 3', adRevenue: 12000, subRevenue: 29000, commission: 7200 },
+                    { name: 'Week 4', adRevenue: 22000, subRevenue: 45000, commission: 14500 },
+                ]
+            },
+            suspiciousLogins: [],
+            pendingApprovals: await this.vendorRepository.find({
+                where: { verificationStatus: 'pending' },
+                take: 5
+            })
+        };
+    }
+
+    // --- Phase 5: Reports Integration ---
+    async getReports(timeRange: string = 'Month') {
+        const topVendorsFromDb = await this.vendorRepository.find({
+            where: { isVerified: true },
+            order: { rating: 'DESC', totalReviews: 'DESC' },
+            take: 10
+        });
+
+        const topVendors = topVendorsFromDb.map((v) => ({
+            id: v.id,
+            name: v.businessName,
+            revenue: `₹0`,
+            bookings: v.totalReviews,
+            rating: v.rating,
+            city: v.city || 'Unknown'
+        }));
+
+        // Generate beautiful mock data for analytics/reports
+        const mockRevenueData = timeRange === 'Week' ? [
+            { name: 'Mon', adRevenue: 2400, subRevenue: 4500, commission: 1200 },
+            { name: 'Tue', adRevenue: 3500, subRevenue: 5200, commission: 1800 },
+            { name: 'Wed', adRevenue: 3000, subRevenue: 4800, commission: 1500 },
+            { name: 'Thu', adRevenue: 4800, subRevenue: 6100, commission: 2200 },
+            { name: 'Fri', adRevenue: 6000, subRevenue: 7500, commission: 3100 },
+            { name: 'Sat', adRevenue: 7200, subRevenue: 9000, commission: 3800 },
+            { name: 'Sun', adRevenue: 5500, subRevenue: 7000, commission: 2800 },
+        ] : timeRange === 'Year' ? [
+            { name: '2021', adRevenue: 120000, subRevenue: 340000, commission: 85000 },
+            { name: '2022', adRevenue: 180000, subRevenue: 490000, commission: 125000 },
+            { name: '2023', adRevenue: 240000, subRevenue: 650000, commission: 195000 },
+            { name: '2024', adRevenue: 310000, subRevenue: 820000, commission: 260000 },
+            { name: '2025', adRevenue: 450000, subRevenue: 1200000, commission: 380000 },
+        ] : [
+            { name: 'Week 1', adRevenue: 15000, subRevenue: 32000, commission: 8500 },
+            { name: 'Week 2', adRevenue: 18000, subRevenue: 38000, commission: 11200 },
+            { name: 'Week 3', adRevenue: 12000, subRevenue: 29000, commission: 7200 },
+            { name: 'Week 4', adRevenue: 22000, subRevenue: 45000, commission: 14500 },
+        ];
+
+        const mockConversionData = [
+            { name: 'Wedding', rate: 68 },
+            { name: 'Corporate', rate: 52 },
+            { name: 'Birthday', rate: 45 },
+            { name: 'Concert', rate: 30 },
+            { name: 'Exhibition', rate: 25 },
+        ];
+
+        // Sum up total stats for the response
+        const totalAd = mockRevenueData.reduce((acc, curr) => acc + curr.adRevenue, 0);
+        const totalSub = mockRevenueData.reduce((acc, curr) => acc + curr.subRevenue, 0);
+        const totalComm = mockRevenueData.reduce((acc, curr) => acc + curr.commission, 0);
+
+        return {
+            totalRevenue: totalAd + totalSub + totalComm,
+            commissionEarned: totalComm,
+            avgConversionRate: 44, // Average of conversion rate percentages
+            revenueData: mockRevenueData,
+            conversionData: mockConversionData,
+            topVendors
+        };
+    }
+
+    // --- Phase 6: Bookings Integration ---
+    async getBookings(page = 1, limit = 50) {
+        const [bookings, total] = await this.bookingRepository.findAndCount({
+            relations: ['user', 'vendor', 'service'], // Include relations for UI
+            order: { createdAt: 'DESC' },
+            skip: (page - 1) * limit,
+            take: limit,
+        });
+
+        const mappedBookings = bookings.map(b => ({
+            id: b.id,
+            bookingCode: b.bookingCode,
+            userName: b.user ? b.user.name : 'Unknown User',
+            vendorName: b.vendor ? b.vendor.businessName : 'Unknown Vendor',
+            category: b.service ? b.service.categoryId : 'General', // Would prefer populated category name here
+            city: b.vendor ? b.vendor.city : 'Unknown',
+            eventDate: b.eventDate ? b.eventDate.toISOString().split('T')[0] : (b.bookingDate ? b.bookingDate.toISOString().split('T')[0] : 'TBD'),
+            amount: `₹${b.totalAmount || 0}`,
+            status: b.status.charAt(0).toUpperCase() + b.status.slice(1) // e.g. 'pending' -> 'Pending'
+        }));
+
+        return {
+            data: mappedBookings,
+            total,
+            page,
+            limit
+        };
+    }
+
+    async updateBookingStatus(id: string, status: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const booking = await queryRunner.manager.findOne(Booking, { where: { id } });
+            if (!booking) throw new NotFoundException('Booking not found');
+
+            const prev = { status: booking.status };
+            booking.status = status.toLowerCase(); // Ensure lowercase for DB
+            await queryRunner.manager.save(booking);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_BOOKING', 'Booking', id, prev, { status: booking.status });
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Status updated' };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    // --- Phase 7: Support Tickets Integration ---
+    async getTickets() {
+        const tickets = await this.ticketRepository.find({
+            order: { createdAt: 'DESC' }
+        });
+
+        return tickets.map(t => ({
+            id: t.ticketCode, // returning ticketCode as id for frontend matching
+            user: t.user,
+            type: t.type,
+            subject: t.subject,
+            priority: t.priority,
+            status: t.status,
+            lastUpdated: t.updatedAt?.toISOString() || t.createdAt.toISOString()
+        }));
+    }
+
+    async updateTicketStatus(id: string, status: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const ticket = await queryRunner.manager.findOne(SupportTicket, { where: { ticketCode: id } });
+            if (!ticket) throw new NotFoundException('Ticket not found');
+
+            const prev = { status: ticket.status };
+            ticket.status = status;
+            await queryRunner.manager.save(ticket);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_TICKET', 'Ticket', id, prev, { status });
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Status updated' };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async replyToTicket(id: string, reply: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const ticket = await queryRunner.manager.findOne(SupportTicket, { where: { ticketCode: id } });
+            if (!ticket) throw new NotFoundException('Ticket not found');
+
+            const newReply = {
+                id: Date.now().toString(),
+                message: reply,
+                sender: 'Admin',
+                timestamp: new Date().toISOString()
+            };
+
+            ticket.replies = [...(ticket.replies || []), newReply];
+            await queryRunner.manager.save(ticket);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'REPLY_TICKET', 'Ticket', id, null, newReply);
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Reply sent' };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    // --- Phase 8: Advertisements Integration ---
+    async getAdvertisements() {
+        const ads = await this.adRepository.find({
+            order: { createdAt: 'DESC' }
+        });
+
+        // Fetch vendors to attach names
+        const vendorIds = [...new Set(ads.map(ad => ad.vendorId))].filter(id => id && id !== '00000000-0000-0000-0000-000000000000');
+        const vendors = vendorIds.length > 0 ? await this.vendorRepository.findByIds(vendorIds) : [];
+        const vendorMap = new Map(vendors.map(v => [v.id, v.businessName]));
+
+        return ads.map(ad => ({
+            id: ad.id,
+            campaignName: ad.campaignName,
+            vendorName: vendorMap.get(ad.vendorId) || 'Unknown Vendor',
+            adType: ad.adType.charAt(0).toUpperCase() + ad.adType.slice(1),
+            status: ad.status,
+            dailyBudget: ad.dailyBudget,
+            totalBudget: ad.totalBudget,
+            startDate: ad.startDate.toISOString().split('T')[0],
+            endDate: ad.endDate.toISOString().split('T')[0],
+            impressions: ad.impressions,
+            clicks: ad.clicks
+        }));
+    }
+
+    async createAdvertisement(dto: {
+        vendorId: string;
+        campaignName: string;
+        adType: string;
+        dailyBudget: number;
+        totalBudget: number;
+        startDate: string;
+        endDate: string;
+        mediaUrls?: string[];
+    }, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const ad = this.adRepository.create({
+                vendorId: dto.vendorId,
+                campaignName: dto.campaignName,
+                adType: dto.adType.toLowerCase() as any,
+                dailyBudget: dto.dailyBudget,
+                totalBudget: dto.totalBudget,
+                startDate: new Date(dto.startDate),
+                endDate: new Date(dto.endDate),
+                mediaUrls: dto.mediaUrls || [],
+                status: 'active' as any, // Admin created ads are active by default
+                impressions: 0,
+                clicks: 0,
+            });
+
+            const savedAd = await queryRunner.manager.save(ad);
+
+            if (adminId) {
+                await this.logAdminAction(
+                    queryRunner,
+                    adminId,
+                    'CREATE_AD',
+                    'Advertisement',
+                    savedAd.id,
+                    null,
+                    savedAd
+                );
+            }
+
+            await queryRunner.commitTransaction();
+            return savedAd;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async updateAdvertisementStatus(id: string, status: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const ad = await queryRunner.manager.findOne(Ad, { where: { id } });
+            if (!ad) throw new NotFoundException('Advertisement not found');
+
+            const prev = { status: ad.status };
+            ad.status = status.toLowerCase() as any;
+            await queryRunner.manager.save(ad);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_AD', 'Advertisement', id, prev, { status: ad.status });
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Status updated' };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    // --- Phase 9: Coupons Integration ---
+    async getCoupons() {
+        const coupons = await this.couponRepository.find({
+            order: { createdAt: 'DESC' }
+        });
+
+        return coupons.map(c => ({
+            id: c.id,
+            code: c.code,
+            type: c.type,
+            value: Number(c.value), // decimal converts to string in postgres sometimes
+            usageLimit: c.usageLimit,
+            usedCount: c.usedCount,
+            expiryDate: c.expiryDate.toISOString().split('T')[0],
+            status: c.status,
+            applicableTo: c.applicableTo
+        }));
+    }
+
+    async createCoupon(data: any, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const existing = await queryRunner.manager.findOne(Coupon, { where: { code: data.code } });
+            if (existing) {
+                throw new BadRequestException('Coupon with this code already exists');
+            }
+
+            const coupon = this.couponRepository.create({
+                code: data.code,
+                type: data.type,
+                value: data.value,
+                usageLimit: data.usageLimit || 100,
+                expiryDate: new Date(data.expiryDate || new Date().setFullYear(new Date().getFullYear() + 1)),
+                applicableTo: data.applicableTo || 'All',
+                status: 'Active'
+            });
+
+            await queryRunner.manager.save(coupon);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'CREATE_COUPON', 'Coupon', coupon.id, null, coupon);
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Coupon created successfully', coupon };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async deleteCoupon(id: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const coupon = await queryRunner.manager.findOne(Coupon, { where: { id } });
+            if (!coupon) throw new NotFoundException('Coupon not found');
+
+            await queryRunner.manager.remove(coupon);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'DELETE_COUPON', 'Coupon', id, coupon, null);
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true, message: 'Coupon deleted' };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    // --- Phase 4: Categories & Locations ---
+
+    async getCategories() {
+        const categories = await this.categoryRepository.find({
+            order: { sortOrder: 'ASC', name: 'ASC' }
+        });
+        
+        // Count vendors per category
+        const result = await Promise.all(categories.map(async (cat) => {
+            const vendorsCount = await this.vendorRepository.count({ where: { categoryId: cat.id, isVerified: true } });
+            return { ...cat, vendorsCount };
+        }));
+        return result;
+    }
+
+    async createCategory(data: Partial<Category>, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            if (!data.slug && data.name) {
+                data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            }
+            const category = this.categoryRepository.create(data);
+            await queryRunner.manager.save(category);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'CREATE_CATEGORY', 'Category', category.id, null, category);
+            }
+
+            await queryRunner.commitTransaction();
+            return category;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async updateCategory(id: string, data: Partial<Category>, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const category = await queryRunner.manager.findOne(Category, { where: { id } });
+            if (!category) throw new NotFoundException('Category not found');
+
+            const prev = { ...category };
+            Object.assign(category, data);
+            await queryRunner.manager.save(category);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_CATEGORY', 'Category', id, prev, category);
+            }
+
+            await queryRunner.commitTransaction();
+            return category;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async deleteCategory(id: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const category = await queryRunner.manager.findOne(Category, { where: { id } });
+            if (!category) throw new NotFoundException('Category not found');
+
+            await queryRunner.manager.remove(category);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'DELETE_CATEGORY', 'Category', id, category, null);
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async getLocations() {
+        const locations = await this.locationRepository.find({
+            order: { city: 'ASC' }
+        });
+        
+        const result = await Promise.all(locations.map(async (loc) => {
+            const vendorsCount = await this.vendorRepository.count({ where: { city: loc.city, isVerified: true } });
+            return { ...loc, vendorsCount };
+        }));
+        return result;
+    }
+
+    async createLocation(data: Partial<Location>, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const location = this.locationRepository.create(data);
+            await queryRunner.manager.save(location);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'CREATE_LOCATION', 'Location', location.id, null, location);
+            }
+
+            await queryRunner.commitTransaction();
+            return location;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async updateLocation(id: string, data: Partial<Location>, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const location = await queryRunner.manager.findOne(Location, { where: { id } });
+            if (!location) throw new NotFoundException('Location not found');
+
+            const prev = { ...location };
+            Object.assign(location, data);
+            await queryRunner.manager.save(location);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_LOCATION', 'Location', id, prev, location);
+            }
+
+            await queryRunner.commitTransaction();
+            return location;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async deleteLocation(id: string, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const location = await queryRunner.manager.findOne(Location, { where: { id } });
+            if (!location) throw new NotFoundException('Location not found');
+
+            await queryRunner.manager.remove(location);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'DELETE_LOCATION', 'Location', id, location, null);
+            }
+
+            await queryRunner.commitTransaction();
+            return { success: true };
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    // --- Phase 3: Vendor Management ---
+    
+    async getVendors(page: number = 1, limit: number = 20, search?: string, status?: string, category?: string) {
+        const query = this.vendorRepository.createQueryBuilder('vendor')
+            .leftJoinAndSelect('vendor.user', 'user')
+            .leftJoinAndSelect('vendor.category', 'category');
+
+        if (search) {
+            query.where('vendor.businessName ILIKE :search OR vendor.businessEmail ILIKE :search', { search: `%${search}%` });
+        }
+
+        if (status && status !== 'all') {
+            query.andWhere('vendor.verificationStatus = :status', { status });
+        }
+
+        if (category && category !== 'all') {
+            query.andWhere('vendor.categoryId = :category', { category });
+        }
+
+        query.orderBy('vendor.createdAt', 'DESC');
+
+        const [data, total] = await query
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
+    }
+
+    async getVendorDetails(id: string) {
+        const vendor = await this.vendorRepository.findOne({ 
+            where: { id },
+            relations: ['user', 'category', 'subcategory'] 
+        });
+        if (!vendor) throw new NotFoundException('Vendor not found');
+        return vendor;
+    }
+
+    // --- Phase 2: User Management ---
+
+    async getUsers(page: number = 1, limit: number = 20, search?: string, status?: string, sort?: string) {
+        const query = this.userRepository.createQueryBuilder('user');
+
+        if (search) {
+            query.where('user.name ILIKE :search OR user.email ILIKE :search', { search: `%${search}%` });
+        }
+
+        if (status === 'blocked') {
+            query.andWhere('user.isBlocked = :isBlocked', { isBlocked: true });
+        } else if (status === 'active') {
+            query.andWhere('user.isBlocked = :isBlocked', { isBlocked: false });
+        }
+
+        if (sort === 'newest') {
+            query.orderBy('user.createdAt', 'DESC');
+        } else if (sort === 'oldest') {
+            query.orderBy('user.createdAt', 'ASC');
+        } else {
+            query.orderBy('user.createdAt', 'DESC');
+        }
+
+        const [data, total] = await query
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
+    }
+
+    async getUserDetails(id: string) {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) throw new NotFoundException('User not found');
+        return user;
+    }
+
+    async updateUser(id: string, updates: Partial<User>, adminId?: string) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const user = await queryRunner.manager.findOne(User, { where: { id } });
+            if (!user) throw new NotFoundException('User not found');
+            
+            const prev = { isBlocked: user.isBlocked };
+            Object.assign(user, updates);
+            await queryRunner.manager.save(user);
+
+            if (adminId) {
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_USER', 'User', id, prev, { isBlocked: user.isBlocked });
+            }
+
+            await queryRunner.commitTransaction();
+            return user;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async blockUser(id: string, adminId?: string) {
+        return this.updateUser(id, { isBlocked: true }, adminId);
+    }
+
+    async unblockUser(id: string, adminId?: string) {
+        return this.updateUser(id, { isBlocked: false }, adminId);
     }
 }

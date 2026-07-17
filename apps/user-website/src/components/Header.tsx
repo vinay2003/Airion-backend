@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     User as UserIcon, Globe, Moon, Sun,
     ChevronDown, LayoutDashboard, LogOut,
-    Settings, ArrowRight, X, Menu, Bell
+    Settings, ArrowRight, X, Menu, Bell, ShoppingCart
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useAuth, getPortalUrl } from '@ease2event/shared/auth';
 import { getSocket } from '@shared/auth/socket';
+import { useCart } from '../context/CartContext';
 
 // ─────────────────────────────────────────────
 // UserProfileMenu — unchanged from original
@@ -117,6 +118,7 @@ const Header: React.FC = () => {
 
     const { theme, toggleTheme } = useTheme();
     const { user, isAuthenticated, logout } = useAuth();
+    const { totalItems, setIsCartOpen } = useCart();
     const location = useLocation();
     const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -134,6 +136,7 @@ const Header: React.FC = () => {
                 { name: 'Corporate', path: '/category/corporate' },
             ],
         },
+        { name: 'Shop', path: '/merchandise' },
         { name: 'About Us', path: '/about' },
         { name: 'Contact', path: '/contact' },
     ];
@@ -302,6 +305,21 @@ const Header: React.FC = () => {
                         )}
                     </Link>
                 )}
+                <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
+                >
+                    <ShoppingCart size={20} />
+                    {totalItems > 0 && (
+                        <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900"
+                        >
+                            {totalItems}
+                        </motion.span>
+                    )}
+                </button>
                 <button
                     onClick={toggleTheme}
                     className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"

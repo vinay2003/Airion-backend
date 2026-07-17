@@ -1,5 +1,4 @@
-export * from './auth/socket';
-export * from './auth/AuthContext';
+export * from './auth';
 export { default as ProtectedRoute } from './components/ProtectedRoute';
 export { default as OTPInput } from './components/OTPInput';
 export { default as SocialLoginButtons } from './components/SocialLoginButtons';

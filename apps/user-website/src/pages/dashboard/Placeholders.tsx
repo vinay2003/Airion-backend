@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2 } from 'lucide-react';
+import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2, Wallet, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { askSupportAI } from '@/lib/api';
@@ -8,76 +8,180 @@ import { useRazorpay } from '@/hooks/useRazorpay';
 
 export const Payments: React.FC = () => {
     const { openCheckout, loading } = useRazorpay();
-    const transactions = [
-        { id: 'TXN-001', date: '2026-03-10', amount: '₹1,50,000', status: 'Completed', vendor: 'Grand Palace Banquet', numericAmount: 150000 },
-        { id: 'TXN-002', date: '2026-03-15', amount: '₹25,000', status: 'Pending', vendor: 'Candid Moments Photography', numericAmount: 25000 },
-    ];
+    const [walletBalance, setWalletBalance] = useState(5500);
+    const [referrals, setReferrals] = useState([
+        { id: 1, name: 'Anik Sen', date: '2026-03-01', reward: '₹500', status: 'Earned' },
+        { id: 2, name: 'Rohit K.', date: '2026-03-08', reward: '₹500', status: 'Pending' }
+    ]);
+    const [transactions, setTransactions] = useState([
+        { id: 'TXN-001', date: '2026-03-10', amount: '₹1,50,000', status: 'Completed', vendor: 'Grand Palace Banquet', numericAmount: 150000, type: 'Booking' },
+        { id: 'TXN-002', date: '2026-03-15', amount: '₹25,000', status: 'Pending', vendor: 'Candid Moments Photography', numericAmount: 25000, type: 'Booking' },
+        { id: 'TXN-W01', date: '2026-03-16', amount: '₹500', status: 'Completed', vendor: 'Referral Bonus: Anik Sen', numericAmount: 500, type: 'Wallet Credit' },
+    ]);
+
+    const referralCode = 'E2EREF9876';
 
     const handlePayNow = (txn: any) => {
         openCheckout(txn.numericAmount, {
             description: `Payment for ${txn.vendor}`,
             receiptId: txn.id,
             onSuccess: () => {
-                // In a real app, we would refresh the list
+                setTransactions(prev => prev.map(t => t.id === txn.id ? { ...t, status: 'Completed' } : t));
                 toast.success('Your booking is now confirmed!');
             }
         });
     };
 
+    const handleAddFunds = () => {
+        openCheckout(1000, {
+            description: 'Add Funds to Ease2Event Wallet',
+            receiptId: `ADD-${Date.now()}`,
+            onSuccess: () => {
+                setWalletBalance(prev => prev + 1000);
+                setTransactions(prev => [
+                    { id: `TXN-W${Date.now().toString().slice(-3)}`, date: new Date().toISOString().split('T')[0], amount: '₹1,000', status: 'Completed', vendor: 'Wallet Deposit', numericAmount: 1000, type: 'Wallet Credit' },
+                    ...prev
+                ]);
+                toast.success('₹1,000 added to your wallet!');
+            }
+        });
+    };
+
+    const handleCopyReferral = () => {
+        navigator.clipboard.writeText(referralCode);
+        toast.success('Referral code copied to clipboard!');
+    };
+
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Payments & Invoices</h2>
-                    <p className="text-gray-500">Track all your transactions and download invoices here.</p>
+        <div className="space-y-8">
+            <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Wallet & Financials</h2>
+                <p className="text-gray-500">Manage your virtual balance, cashback, referral rewards, and transactions.</p>
+            </div>
+
+            {/* Top Cards: Wallet & Referral */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* Wallet Balance Card */}
+                <div className="bg-gradient-to-br from-red-500 to-pink-600 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-red-500/20">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-xs uppercase tracking-wider font-bold opacity-80">Ease2Event Wallet Balance</p>
+                            <h3 className="text-4xl font-black mt-2">₹{walletBalance.toLocaleString()}</h3>
+                        </div>
+                        <Wallet size={32} className="opacity-80" />
+                    </div>
+                    <div className="flex gap-4 mt-8">
+                        <button
+                            onClick={handleAddFunds}
+                            className="px-6 py-3 bg-white text-red-600 font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-neutral-100 transition-colors shadow-lg"
+                        >
+                            Add Funds
+                        </button>
+                    </div>
+                </div>
+
+                {/* Referral Card */}
+                <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-neutral-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 text-red-500 mb-2">
+                            <Sparkles size={20} />
+                            <h4 className="font-bold text-sm uppercase tracking-wider">Refer & Earn</h4>
+                        </div>
+                        <p className="text-sm text-neutral-600 dark:text-slate-400">Share your referral link. You and your friend both earn ₹500 cashback upon their first event booking!</p>
+                    </div>
+                    
+                    <div className="flex gap-3 items-center mt-6">
+                        <div className="bg-neutral-50 dark:bg-slate-800 px-4 py-3 rounded-xl border border-neutral-200 dark:border-slate-700 font-mono font-bold text-sm tracking-wider flex-1 text-neutral-800 dark:text-white">
+                            {referralCode}
+                        </div>
+                        <button
+                            onClick={handleCopyReferral}
+                            className="px-5 py-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-bold rounded-xl text-xs uppercase"
+                        >
+                            Copy
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-700">
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Transaction ID</th>
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Date</th>
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Vendor</th>
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Amount</th>
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Status</th>
-                                <th className="p-4 font-semibold text-gray-600 dark:text-gray-300">Invoice</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transactions.map((txn) => (
-                                <tr key={txn.id} className="border-b border-gray-50 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800/50">
-                                    <td className="p-4 text-gray-900 dark:text-white font-medium">{txn.id}</td>
-                                    <td className="p-4 text-gray-500 dark:text-gray-400">{txn.date}</td>
-                                    <td className="p-4 text-gray-900 dark:text-white">{txn.vendor}</td>
-                                    <td className="p-4 text-gray-900 dark:text-white font-bold">{txn.amount}</td>
-                                    <td className="p-4">
-                                        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${txn.status === 'Completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                                            {txn.status}
-                                        </span>
-                                    </td>
-                                    <td className="p-4">
-                                        {txn.status === 'Pending' ? (
-                                            <Button 
-                                                size="sm" 
-                                                onClick={() => handlePayNow(txn)}
-                                                disabled={loading}
-                                                className="bg-red-500 hover:bg-red-600 text-white rounded-lg h-8 px-4"
-                                            >
-                                                Pay Now
-                                            </Button>
-                                        ) : (
-                                            <button className="text-red-500 hover:text-red-600 flex items-center gap-2 text-sm font-medium">
-                                                <Download size={16} /> Print
-                                            </button>
-                                        )}
-                                    </td>
+            {/* Referrals list & Transactions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Referrals Tracking */}
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-neutral-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 className="font-bold text-neutral-900 dark:text-white">Referrals Progress</h3>
+                    <div className="space-y-3">
+                        {referrals.map(ref => (
+                            <div key={ref.id} className="flex justify-between items-center py-2.5 border-b border-neutral-100 dark:border-slate-800 last:border-0">
+                                <div>
+                                    <p className="text-sm font-bold text-neutral-800 dark:text-white">{ref.name}</p>
+                                    <p className="text-xs text-neutral-400">{ref.date}</p>
+                                </div>
+                                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                                    ref.status === 'Earned' 
+                                        ? 'bg-green-50 text-green-600 dark:bg-green-500/10' 
+                                        : 'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10'
+                                }`}>
+                                    {ref.reward} ({ref.status})
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Transaction history */}
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-neutral-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 className="font-bold text-neutral-900 dark:text-white">Transaction History</h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="border-b border-neutral-100 dark:border-slate-800 text-xs font-bold text-neutral-400 uppercase tracking-wider">
+                                    <th className="pb-3">Reference ID</th>
+                                    <th className="pb-3">Recipient/Source</th>
+                                    <th className="pb-3">Amount</th>
+                                    <th className="pb-3">Status</th>
+                                    <th className="pb-3">Invoice</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-neutral-100 dark:divide-slate-800 text-sm">
+                                {transactions.map(txn => (
+                                    <tr key={txn.id} className="hover:bg-neutral-50/50 dark:hover:bg-slate-800/20">
+                                        <td className="py-4 font-mono font-semibold text-neutral-700 dark:text-slate-300">{txn.id}</td>
+                                        <td className="py-4 font-semibold text-neutral-900 dark:text-white">
+                                            {txn.vendor}
+                                            <span className="block text-[10px] text-neutral-400 font-bold uppercase mt-0.5">{txn.type}</span>
+                                        </td>
+                                        <td className="py-4 font-black text-neutral-900 dark:text-white">{txn.amount}</td>
+                                        <td className="py-4">
+                                            <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
+                                                txn.status === 'Completed'
+                                                    ? 'bg-green-50 text-green-600 dark:bg-green-500/10'
+                                                    : 'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10'
+                                            }`}>
+                                                {txn.status}
+                                            </span>
+                                        </td>
+                                        <td className="py-4">
+                                            {txn.status === 'Pending' ? (
+                                                <button
+                                                    onClick={() => handlePayNow(txn)}
+                                                    className="px-3.5 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold"
+                                                >
+                                                    Pay Now
+                                                </button>
+                                            ) : (
+                                                <button className="text-neutral-400 hover:text-red-500 transition-colors flex items-center gap-1.5 text-xs font-bold uppercase">
+                                                    <Download size={14} /> Print
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

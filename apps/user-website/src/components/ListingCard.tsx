@@ -22,16 +22,24 @@ interface ListingCardProps {
     spotsLeft?: number;
 }
 
+import { useWishlist } from '../context/WishlistContext';
+import { useCompare } from '../context/CompareContext';
+
 const ListingCard: React.FC<ListingCardProps> = ({
     id, images, image, title, rating, reviews, location, price, category,
     tags = ['Verified', 'Premium'],
     highlights = ['500+ Events Completed', 'Fast Response Time'],
     isTrending = true,
     marketplaceStatus = 'AVAILABLE',
-    spotsLeft = 42
+    spotsLeft = 42,
+    description = ''
 }) => {
-    const [isWishlisted, setIsWishlisted] = useState(false);
-    const [isCompared, setIsCompared] = useState(false);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+    
+    const isWishlisted = isInWishlist(id);
+    const isCompared = isInCompare(id);
+    
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
 
@@ -51,16 +59,28 @@ const ListingCard: React.FC<ListingCardProps> = ({
         setCurrentImageIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
     };
 
+    const vendorObj = {
+        id, title, rating, reviews, location, price, category: category || '', image: imageList[0], description, capacity: ''
+    };
+
     const toggleWishlist = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        setIsWishlisted(!isWishlisted);
+        if (isWishlisted) {
+            removeFromWishlist(id);
+        } else {
+            addToWishlist(vendorObj);
+        }
     };
 
     const handleCompare = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        setIsCompared(!isCompared);
+        if (isCompared) {
+            removeFromCompare(id);
+        } else {
+            addToCompare(vendorObj);
+        }
     };
 
     const handleBookNow = (e: React.MouseEvent) => {

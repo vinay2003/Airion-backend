@@ -264,8 +264,8 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: whereConditions });
 
         // Enforce role check if role is provided
-        if (user && dto.role && user.role !== dto.role) {
-            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${dto.role}`);
+        if (user && (dto as any).role && user.role !== (dto as any).role) {
+            this.logger.warn(`🚨 [AUTH] Cross-role login attempt: User ${identifier} (Role: ${user.role}) tried to login as ${(dto as any).role}`);
             throw new UnauthorizedException(`Account found, but registered as ${user.role}. Please login to the correct portal.`);
         }
 
@@ -303,23 +303,19 @@ export class AuthService {
 
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Authorized admin phone numbers (comma-separated in ADMIN_PHONE_NUMBERS env var)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
+        if (!adminPhones.includes(dto.phone)) {
             this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
-        // Check if admin user exists in DB
-        const adminUser = await this.userRepository.findOne({
-            where: { phoneNumber: dto.phone, role: UserRole.ADMIN }
-        });
-
-        if (!adminUser) {
-            this.logger.warn(`🚨 SECURITY ALERT: Admin record missing for verified number ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized user: No admin record found in database');
-        }
-
+        // Phone is authorized — generate and send OTP
+        // (DB record check happens at verifyAdminOtp when issuing the JWT)
         const identifier = dto.phone.trim();
         await this.otpRepository.delete({ identifier });
 
@@ -336,16 +332,15 @@ export class AuthService {
 
         await this.otpRepository.save(otp);
 
-        // Send SMS via provider
         this.logger.log(`🔑 [OTP_DEBUG] Admin OTP for ${identifier}: ${otpCode}`);
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
-        const isProduction = this.configService.get('NODE_ENV') === 'production';
-        
+
         await this.smsService.sendOtpSms(identifier, otpCode, 'admin_login');
 
+        const isProduction = this.configService.get('NODE_ENV') === 'production';
         return {
             message: 'OTP sent successfully to admin number',
-            _dev_otp: otpCode, // Temporarily visible for testing
+            ...(!isProduction && { _dev_otp: otpCode }),
         };
     }
 
@@ -490,10 +485,14 @@ export class AuthService {
 
     // Verify OTP for Admin
     async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
-        const adminPhone = this.configService.get('ADMIN_PHONE_NUMBER') || '1000000000';
+        // Support multiple admin phone numbers (comma-separated in env)
+        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
+            .split(',')
+            .map((p: string) => p.trim())
+            .filter(Boolean);
 
-        if (dto.phone !== adminPhone) {
-            throw new ForbiddenException('Unauthorized access attempt: Phone number mismatch');
+        if (!adminPhones.includes(dto.phone)) {
+            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
         }
 
         const identifier = dto.phone.trim();
@@ -528,12 +527,15 @@ export class AuthService {
         // Success: Clear OTP
         await this.otpRepository.delete({ identifier });
 
-        // Find existing admin record (Strict: No auto-create)
-        const adminUser = await this.userRepository.findOne({
-            where: { phoneNumber: identifier, role: UserRole.ADMIN }
-        });
+        // Raw SQL query — bypasses TypeORM metadata/module cache entirely
+        const rows = await this.userRepository.query(
+            `SELECT id, name, phone_number as "phoneNumber", role FROM users WHERE phone_number = $1 AND role = 'admin' LIMIT 1`,
+            [identifier]
+        );
+        const adminUser = rows[0];
 
         if (!adminUser) {
+            this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for phone: ${identifier}`);
             throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
         }
 

@@ -29,6 +29,7 @@ import { AdminModule } from './admin/admin.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { MerchandiseModule } from './merchandise/merchandise.module';
 
 @Module({
     imports: [
@@ -131,6 +132,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
         AvailabilityModule,
         ContactsModule,
         SubscriptionsModule,
+        MerchandiseModule,
     ],
     controllers: [AppController],
 })

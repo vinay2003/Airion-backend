@@ -1,35 +1,160 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@ease2event/shared';
+import { Shield, Phone, ArrowRight } from 'lucide-react';
+import { useAuth, adminAuth } from '@ease2event/shared';
+import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
-    const { user } = useAuth();
+    const { loginWithResponse } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Redirection to the Unified Auth System
-        // This ensures a single source of truth for authentication
-        if (!user) {
-            // Redirect to the main website login with portal context
-            const authUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:5173/login?portal=admin'
-                : '/login?portal=admin';
-            window.location.href = authUrl;
-        } else if (user.role === 'admin') {
-            // If already logged in as admin, go to dashboard
-            navigate('/');
-        } else {
-            // If logged in as something else, go back to main dashboard
-            window.location.href = '/dashboard';
+    const [phone, setPhone] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    const [showOTP, setShowOTP] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    // Step 1: Send OTP to admin phone
+    const handleSendOTP = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!phone.trim()) return toast.error('Enter your admin phone number');
+        setLoading(true);
+        try {
+            const res = await adminAuth.sendOtp(phone.trim());
+            toast.success(res.message || 'OTP sent to your phone');
+            setShowOTP(true);
+        } catch (err: any) {
+            const message = err?.response?.data?.message || 'Failed to send OTP';
+            toast.error(message);
+        } finally {
+            setLoading(false);
         }
-    }, [user, navigate]);
+    };
+
+    // Step 2: Verify OTP and login
+    const handleVerifyOTP = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const code = otp.join('');
+        if (code.length < 6) return toast.error('Enter the complete 6-digit OTP');
+        setLoading(true);
+        try {
+            const response = await adminAuth.verifyOtp(phone.trim(), code);
+            loginWithResponse(response);
+            toast.success('Login successful!');
+            navigate('/');
+        } catch (err: any) {
+            const message = err?.response?.data?.message || 'Invalid OTP';
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleOtpChange = (index: number, value: string) => {
+        if (value.length > 1) return;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+        if (value !== '' && index < 5) {
+            document.getElementById(`otp-${index + 1}`)?.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            document.getElementById(`otp-${index - 1}`)?.focus();
+        }
+    };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
-            <div className="text-center">
-                <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Redirecting to Secure Login...</h2>
-                <p className="text-gray-500 dark:text-gray-400">Please wait while we connect to the authentication portal.</p>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="p-8">
+                    <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+                        <Shield size={32} />
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
+                        {showOTP ? 'Two-Factor Auth' : 'Admin Portal'}
+                    </h2>
+                    <p className="text-center text-sm text-gray-500 dark:text-slate-400 mb-8">
+                        {showOTP
+                            ? `Enter the 6-digit OTP sent to ${phone}`
+                            : 'Secure access for Ease2event administrators'}
+                    </p>
+
+                    {/* Step 1: Phone Number */}
+                    {!showOTP && (
+                        <form onSubmit={handleSendOTP} className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
+                                    Admin Phone Number
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <Phone size={18} />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        className="pl-10 w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
+                                        placeholder="e.g. 9876543210"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
+                            >
+                                {loading
+                                    ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    : <><span>Send OTP</span><ArrowRight size={16} /></>}
+                            </button>
+                        </form>
+                    )}
+
+                    {/* Step 2: OTP Verification */}
+                    {showOTP && (
+                        <form onSubmit={handleVerifyOTP} className="space-y-6">
+                            <div className="flex justify-between gap-2">
+                                {otp.map((digit, i) => (
+                                    <input
+                                        key={i}
+                                        id={`otp-${i}`}
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength={1}
+                                        value={digit}
+                                        onChange={(e) => handleOtpChange(i, e.target.value)}
+                                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                                        className="w-12 h-14 text-center text-xl font-bold rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
+                                    />
+                                ))}
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
+                            >
+                                {loading
+                                    ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    : 'Verify & Login'}
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => { setShowOTP(false); setOtp(['', '', '', '', '', '']); }}
+                                className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300"
+                            >
+                                ← Back / Resend OTP
+                            </button>
+                        </form>
+                    )}
+                </div>
             </div>
         </div>
     );

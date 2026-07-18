@@ -98,14 +98,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  <button onClick={() => {
      const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
      window.location.href = landingUrl;
- }} className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-brand-primary)] border border-transparent cursor-pointer font-semibold text-sm">
- <Home size={18} />
- Go to Homepage
- </button>
- <button onClick={() => {
-     const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
-     window.location.href = landingUrl;
- }} className="md:hidden p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-brand-primary)] border border-transparent cursor-pointer">
+ }} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-brand-primary)] border border-transparent cursor-pointer">
  <Home size={20} />
  </button>
  <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer">
@@ -157,8 +150,8 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  size="sm"
  />
  <div className="hidden md:block">
- <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || 'Vendor Profile'}</p>
- <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight capitalize font-bold tracking-widest opacity-60 uppercase">{user?.role || 'Vendor'}</p>
+ <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || user?.email || 'Vendor'}</p>
+ <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight font-bold tracking-widest opacity-60 truncate max-w-[120px]">{user?.email || user?.phone || ''}</p>
  </div>
  <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
  </div>

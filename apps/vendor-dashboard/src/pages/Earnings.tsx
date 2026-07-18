@@ -460,14 +460,14 @@ const Earnings: React.FC = () => {
                         <p className="text-base sm:text-lg text-[var(--ease2event-text-secondary)] font-medium mt-3">Complete history of all payments and transfers</p>
                     </div>
                     <div className="flex gap-5 w-full xl:w-auto">
-                        <div className="relative flex-1 xl:w-96 group">
+                        <div className="relative w-full lg:max-w-md group min-w-0">
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-secondary)] group-focus-within:text-[var(--ease2event-brand-primary)] transition-colors" size={16} />
                             <input
                                 type="text"
                                 placeholder="Search transactions..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-16 pr-8 py-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[12px] font-bold outline-none focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 transition-all text-[var(--ease2event-text-primary)] tracking-widest placeholder:text-[var(--ease2event-text-secondary)]/40 "
+                                className="w-full max-w-full pl-16 pr-8 py-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[12px] font-bold outline-none focus:ring-4 focus:ring-[var(--ease2event-brand-primary)]/10 transition-all text-[var(--ease2event-text-primary)] tracking-widest placeholder:text-[var(--ease2event-text-secondary)]/40 overflow-hidden text-ellipsis"
                             />
                         </div>
                         <Button onClick={() => setIsFilterModalOpen(true)} className="cursor-pointer hidden sm:flex h-12 w-16 items-center justify-center bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-3xl text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] transition-all active:scale-90  ">
@@ -592,7 +592,7 @@ const Earnings: React.FC = () => {
                 <div className="space-y-4 p-4">
                     <div>
                         <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">New Monthly Target (₹)</label>
-                        <input type="number" defaultValue={displayData.payoutTarget} className="w-full text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-text-primary)]" />
+                        <input type="number" defaultValue={displayData.payoutTarget} className="w-full max-w-full text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-text-primary)] overflow-hidden" />
                     </div>
                     <div className="flex justify-end gap-3 mt-6">
                         <Button variant="secondary" onClick={() => setIsTargetModalOpen(false)}>Cancel</Button>

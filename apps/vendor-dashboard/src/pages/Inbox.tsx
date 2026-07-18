@@ -144,16 +144,16 @@ const Inbox: React.FC = () => {
  {/* Chat List */}
  <div className={`w-full md:w-96 border-r border-[var(--ease2event-border-subtle)] flex flex-col absolute md:relative inset-0 z-10 bg-[var(--ease2event-bg-surface)] transition-transform ${showMobileChat ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}`}>
  <div className="p-4 md:p-6 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
- <div className="flex items-center gap-3 bg-[var(--ease2event-bg-surface)] p-1 rounded-full border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/5 transition-all ">
- <div className="pl-3 py-2">
- <Search className="text-[var(--ease2event-text-muted)]" size={16} />
+ <div className="flex items-center gap-3 bg-[var(--ease2event-bg-surface)] p-1 rounded-2xl border border-[var(--ease2event-border-subtle)] focus-within:border-blue-500/40 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all shadow-sm">
+ <div className="pl-3 py-2.5">
+ <Search className="text-[var(--ease2event-text-muted)]" size={18} />
  </div>
  <input
  type="text"
  placeholder="Search enquiries..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="flex-1 bg-transparent border-none outline-none text-xs font-bold uppercase tracking-widest text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)]"
+ className="flex-1 bg-transparent border-none outline-none text-xs font-bold tracking-widest text-[var(--ease2event-text-primary)] placeholder-[var(--ease2event-text-muted)]"
  />
  </div>
  </div>
@@ -166,10 +166,10 @@ const Inbox: React.FC = () => {
  <div
  key={lead.id || index}
  onClick={() => handleChatSelect(lead.id)}
- className={`p-6 flex gap-5 cursor-pointer transition-all relative border-b border-[var(--ease2event-border-subtle)]/30 ${activeChat === lead.id ? 'bg-[var(--ease2event-bg-elevated)]' : 'hover:bg-[var(--ease2event-bg-elevated)]/50'}`}
+ className={`p-5 mx-3 my-2 rounded-2xl flex gap-4 cursor-pointer transition-all relative border border-transparent ${activeChat === lead.id ? 'bg-[var(--ease2event-bg-elevated)] shadow-md shadow-black/5 border-[var(--ease2event-border-subtle)]' : 'hover:bg-[var(--ease2event-bg-elevated)]/40'}`}
  >
  {activeChat === lead.id && (
- <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--ease2event-brand-primary)]"></div>
+ <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-1.5 rounded-r-lg bg-[var(--ease2event-brand-primary)]"></div>
  )}
  <div className="relative flex-shrink-0">
  <div className="w-14 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center font-bold text-xl text-white shadow-blue-500/20 uppercase">
@@ -357,13 +357,14 @@ const Inbox: React.FC = () => {
  </div>
  </>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/5 p-6">
- <div className="w-24 h-24 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl flex items-center justify-center mb-6 relative overflow-hidden group">
- <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform " />
- <Send size={16} className="text-blue-500" />
+ <div className="flex-1 flex flex-col items-center justify-center text-[var(--ease2event-text-muted)] bg-[var(--ease2event-bg-elevated)]/30 p-6 relative">
+ <div className="absolute inset-0 bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.02] to-transparent pointer-events-none" />
+ <div className="w-32 h-32 bg-[var(--ease2event-bg-surface)] backdrop-blur-xl border border-[var(--ease2event-border-subtle)] shadow-xl rounded-[40px] flex items-center justify-center mb-8 relative overflow-hidden group">
+ <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 group-hover:scale-125 transition-transform duration-700" />
+ <MessageSquare size={36} className="text-blue-500 relative z-10 drop-shadow-md" />
  </div>
- <p className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tight">Select a Chat</p>
- <p className="text-sm font-bold tracking-widest text-[var(--ease2event-text-secondary)] mt-2">Pick a conversation to start messaging</p>
+ <p className="text-2xl font-bold text-[var(--ease2event-text-primary)] tracking-tight">Your Enquiries Hub</p>
+ <p className="text-sm font-bold tracking-widest text-[var(--ease2event-text-secondary)] mt-3 max-w-sm text-center">Select a conversation from the list to engage with potential clients and finalize details.</p>
  </div>
  )}
  </div>

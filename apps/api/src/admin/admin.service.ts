@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, InternalServerError
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, QueryRunner } from 'typeorm';
 import { Dispute } from './entities/dispute.entity';
-import { Vendor } from '../vendors/entities/vendor.entity';
+import { Vendor, VendorVerificationStatus } from '../vendors/entities/vendor.entity';
 import { User } from '../auth/entities/user.entity';
 import { Booking } from '../bookings/entities/booking.entity';
 import { Category } from '../categories/entities/category.entity';
@@ -71,15 +71,17 @@ export class AdminService {
         try {
             const vendor = await queryRunner.manager.findOne(Vendor, { where: { id: vendorId } });
             if (!vendor) throw new NotFoundException('Vendor not found');
-            if (vendor.verificationStatus === status) throw new BadRequestException(`Vendor is already ${status}`);
+            
+            const newStatus = status === 'approved' ? VendorVerificationStatus.APPROVED : VendorVerificationStatus.REJECTED;
+            if (vendor.verificationStatus === newStatus) throw new BadRequestException(`Vendor is already ${status}`);
 
             const previousStatus = vendor.verificationStatus;
-            vendor.verificationStatus = status;
+            vendor.verificationStatus = newStatus;
             vendor.isVerified = status === 'approved';
             
             await queryRunner.manager.save(vendor);
             if (adminId) {
-                await this.logAdminAction(queryRunner, adminId, 'UPDATE_VENDOR_STATUS', 'Vendor', vendorId, { status: previousStatus }, { status });
+                await this.logAdminAction(queryRunner, adminId, 'UPDATE_VENDOR_STATUS', 'Vendor', vendorId, { status: previousStatus }, { status: newStatus });
             }
 
             await queryRunner.commitTransaction();
@@ -102,11 +104,11 @@ export class AdminService {
 
             const previousStatus = vendor.verificationStatus;
             vendor.isVerified = false;
-            vendor.verificationStatus = 'rejected';
+            vendor.verificationStatus = VendorVerificationStatus.REJECTED;
             
             await queryRunner.manager.save(vendor);
             if (adminId) {
-                await this.logAdminAction(queryRunner, adminId, 'SUSPEND_VENDOR', 'Vendor', vendorId, { status: previousStatus }, { status: 'rejected' });
+                await this.logAdminAction(queryRunner, adminId, 'SUSPEND_VENDOR', 'Vendor', vendorId, { status: previousStatus }, { status: VendorVerificationStatus.REJECTED });
             }
 
             await queryRunner.commitTransaction();
@@ -182,7 +184,7 @@ export class AdminService {
             },
             suspiciousLogins: [],
             pendingApprovals: await this.vendorRepository.find({
-                where: { verificationStatus: 'pending' },
+                where: { verificationStatus: VendorVerificationStatus.KYC_PENDING },
                 take: 5
             })
         };

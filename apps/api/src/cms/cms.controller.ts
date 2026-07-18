@@ -3,7 +3,8 @@ import { CmsService } from './cms.service';
 import { UpdateConfigDto } from './dto/update-config.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { Roles } from '../auth/guards/roles.decorator';
+import { UserRole } from '../auth/entities/user.entity';
 
 @Controller('cms')
 export class CmsController {
@@ -25,7 +26,7 @@ export class CmsController {
 
   @Put(':key')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   async update(@Param('key') key: string, @Body() updateConfigDto: UpdateConfigDto) {
     return this.cmsService.set(key, updateConfigDto);
   }

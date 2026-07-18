@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Vendor } from './entities/vendor.entity';
+import { Vendor, VendorVerificationStatus } from './entities/vendor.entity';
 import { Activity, ActivityType } from './entities/activity.entity';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { User } from '../auth/entities/user.entity';
@@ -261,13 +261,13 @@ export class VendorsService {
             if (normalizedStatus === VendorVerificationStatus.APPROVED) {
                 await this.emailService.sendVendorStatusEmail(
                     vendor.user.email,
-                    vendor.businessName || vendor.user.firstName,
+                    vendor.businessName || vendor.user.name,
                     'approved'
                 ).catch(e => console.error('Failed to send approval email', e));
             } else if (normalizedStatus === VendorVerificationStatus.REJECTED) {
                 await this.emailService.sendVendorStatusEmail(
                     vendor.user.email,
-                    vendor.businessName || vendor.user.firstName,
+                    vendor.businessName || vendor.user.name,
                     'rejected',
                     options.rejectionReason
                 ).catch(e => console.error('Failed to send rejection email', e));
@@ -442,7 +442,7 @@ export class VendorsService {
                 vendor = this.vendorRepository.create({ 
                     userId,
                     businessName: user?.name || 'Vendor-' + userId.substring(0, 8),
-                    verificationStatus: 'pending',
+                    verificationStatus: VendorVerificationStatus.KYC_PENDING,
                     isProfileComplete: false
                 });
                 vendor = await this.vendorRepository.save(vendor);

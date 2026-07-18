@@ -23,7 +23,8 @@ import EventPlanning from './pages/EventPlanning';
 import Promotions from './pages/Promotions';
 import Calendar from './pages/Calendar';
 import Earnings from './pages/Earnings';
-import Products from './pages/Products';
+import Services from './pages/Services';
+import Reviews from './pages/Reviews';
 import Gallery from './pages/Gallery';
 import ShopItems from './pages/ShopItems';
 import MerchandiseOrders from './pages/MerchandiseOrders';
@@ -66,7 +67,9 @@ const App: React.FC = () => {
 
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />
-                  <Route path="products" element={<Products />} />
+                  <Route path="services" element={<Services />} />
+                  <Route path="products" element={<Navigate to="/services" replace />} />
+                  <Route path="reviews" element={<Reviews />} />
                   <Route path="shop-items" element={<ShopItems />} />
                   <Route path="ads" element={<Promotions />} />
                   <Route path="promotions" element={<Promotions />} />

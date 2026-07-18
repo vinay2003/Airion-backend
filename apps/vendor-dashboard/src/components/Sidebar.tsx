@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag, Briefcase, Star } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
 
@@ -14,16 +14,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  const navItems = [
  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
  { icon: Ticket, label: 'Events', path: '/events' },
+ { icon: Briefcase, label: 'Services List', path: '/services' },
  { icon: Calendar, label: 'Bookings', path: '/bookings' },
  { icon: CalendarDays, label: 'Calendar', path: '/calendar' },
  { icon: DollarSign, label: 'Earnings', path: '/earnings' },
  { icon: MessageSquare, label: 'Enquiries', path: '/enquiries' },
- { icon: Megaphone, label: 'Ads', path: '/ads' },
- { icon: Camera, label: 'Gallery', path: '/gallery' },
- { icon: Package, label: 'Products', path: '/products' },
- { icon: Package, label: 'Event Shop', path: '/shop-items' },
+ { icon: ShoppingBag, label: 'Event Shop', path: '/shop-items' },
  { icon: ShoppingBag, label: 'Shop Orders', path: '/shop-orders' },
+ { icon: Megaphone, label: 'Promotions', path: '/promotions' },
+ { icon: Camera, label: 'Gallery', path: '/gallery' },
  { icon: BarChart2, label: 'Analytics', path: '/analytics' },
+ { icon: Star, label: 'Reviews', path: '/reviews' },
  { icon: Settings, label: 'Settings', path: '/settings' },
  ];
 

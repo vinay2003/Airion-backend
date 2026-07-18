@@ -12,6 +12,8 @@ import { useTheme } from '../context/ThemeContext';
 import api, { uploadImage } from '../lib/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 
 
@@ -290,11 +292,14 @@ const Profile: React.FC = () => {
  };
 
  return (
- <div className="space-y-6 px-6 w-full max-w-7xl mx-auto pb-32">
+ <div className="space-y-6 px-6 w-full max-w-7xl mx-auto pb-32 pt-6">
+ <Link to="/settings" className="inline-flex items-center text-sm font-semibold text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-brand-primary)] transition-colors">
+ <ArrowLeft size={16} className="mr-1" /> Back to Settings
+ </Link>
  {/* Header: Profile Dashboard */}
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--ease2event-border-subtle)] pb-6">
  <div className="space-y-2">
- <h1 className="text-xl font-bold tracking-tight leading-normal">Profile</h1>
+ <h1 className="text-xl font-bold tracking-tight leading-normal">Profile Settings</h1>
  <p className="text-sm font-semibold text-[var(--ease2event-text-secondary)]">Manage your account</p>
  </div>
 

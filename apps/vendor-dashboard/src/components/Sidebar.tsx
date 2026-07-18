@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  { icon: DollarSign, label: 'Earnings', path: '/earnings' },
  { icon: MessageSquare, label: 'Enquiries', path: '/enquiries' },
  { icon: ShoppingBag, label: 'Event Shop', path: '/shop-items' },
- { icon: ShoppingBag, label: 'Shop Orders', path: '/shop-orders' },
+ { icon: ShoppingBag, label: 'Shop Orders', path: '/shop/orders' },
  { icon: Megaphone, label: 'Promotions', path: '/promotions' },
  { icon: Camera, label: 'Gallery', path: '/gallery' },
  { icon: BarChart2, label: 'Analytics', path: '/analytics' },

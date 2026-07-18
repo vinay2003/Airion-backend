@@ -15,6 +15,8 @@ import { RefreshToken } from '../entities/refresh-token.entity';
 import * as admin from 'firebase-admin';
 import { EmailService } from '../../common/services/email.service';
 import { SmsService } from '../../common/services/sms.service';
+import { authenticator } from 'otplib';
+import * as QRCode from 'qrcode';
 
 @Injectable()
 export class AuthService {
@@ -539,6 +541,20 @@ export class AuthService {
             throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
         }
 
+        // Check if user has MFA enabled — if so, issue a short-lived temp token instead of full access
+        const fullUser = await this.userRepository.findOne({ where: { id: adminUser.id } });
+        if (fullUser?.mfaEnabled && fullUser?.mfaSecret) {
+            const tempPayload = { sub: adminUser.id, role: adminUser.role, is2faPending: true };
+            const tempToken = this.jwtService.sign(tempPayload, { expiresIn: '5m' });
+            this.logger.log(`🔐 [ADMIN_2FA] 2FA required for Admin ID: ${adminUser.id}`);
+            return {
+                require2fa: true,
+                tempToken,
+                user: null,
+                access_token: null,
+            } as any;
+        }
+
         const payload = {
             sub: adminUser.id,
             role: adminUser.role,
@@ -624,8 +640,8 @@ export class AuthService {
             throw new BadRequestException('User with this email does not exist');
         }
 
-        // Generate reset token
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        // Generate cryptographically secure reset token
+        const token = CryptoUtil.generateSecureToken(32);
         const identifier = 'reset_' + email;
         const expiresAt = (Date.now() + 15 * 60 * 1000).toString(); // 15 mins
 
@@ -1005,5 +1021,107 @@ export class AuthService {
             this.logger.error(`❌ Firebase token verification failed: ${error.message}`, error.stack);
             throw new UnauthorizedException(error.message || 'Invalid Firebase token or verification error');
         }
+    }
+
+    // ─────────────────────────────────────────
+    // TOTP / MFA Methods (Admin 2FA)
+    // ─────────────────────────────────────────
+
+    /**
+     * Generate a new TOTP secret for the user and return a QR code URL.
+     * The secret is NOT saved until the user verifies it via enable2fa.
+     */
+    async generate2faSecret(userId: string): Promise<{ secret: string; qrCodeUrl: string; otpAuthUrl: string }> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) throw new UnauthorizedException('User not found');
+
+        const secret = authenticator.generateSecret();
+        const appName = this.configService.get('APP_NAME', 'Ease2Event');
+        const otpAuthUrl = authenticator.keyuri(user.email || user.phoneNumber || userId, appName, secret);
+        const qrCodeUrl = await QRCode.toDataURL(otpAuthUrl);
+
+        // Temporarily store the secret (not enabled yet)
+        user.mfaSecret = secret;
+        await this.userRepository.save(user);
+
+        this.logger.log(`🔐 [2FA] Generated 2FA secret for user: ${userId}`);
+        return { secret, qrCodeUrl, otpAuthUrl };
+    }
+
+    /**
+     * Verify an OTP code and permanently enable 2FA for the user.
+     */
+    async enable2fa(userId: string, otp: string): Promise<{ message: string }> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) throw new UnauthorizedException('User not found');
+        if (!user.mfaSecret) throw new BadRequestException('Generate a 2FA secret first by calling /auth/2fa/generate');
+
+        const isValid = authenticator.verify({ token: otp, secret: user.mfaSecret });
+        if (!isValid) throw new BadRequestException('Invalid OTP code. Please try again.');
+
+        user.mfaEnabled = true;
+        await this.userRepository.save(user);
+
+        this.logger.log(`✅ [2FA] 2FA enabled for user: ${userId}`);
+        return { message: '2FA has been enabled successfully.' };
+    }
+
+    /**
+     * Verify a TOTP code using a temporary token issued during Admin login.
+     * If valid, exchange the temp token for a full access token.
+     */
+    async verify2faLogin(tempToken: string, otp: string): Promise<{ access_token: string; user: Partial<User> }> {
+        let decoded: any;
+        try {
+            decoded = this.jwtService.verify(tempToken);
+        } catch {
+            throw new UnauthorizedException('Temporary token is invalid or expired. Please log in again.');
+        }
+
+        if (!decoded.is2faPending) {
+            throw new UnauthorizedException('Invalid token type.');
+        }
+
+        const user = await this.userRepository.findOne({ where: { id: decoded.sub } });
+        if (!user || !user.mfaSecret) throw new UnauthorizedException('User not found or 2FA not configured.');
+
+        const isValid = authenticator.verify({ token: otp, secret: user.mfaSecret });
+        if (!isValid) {
+            this.logger.warn(`🔒 [2FA] Failed 2FA verification for user: ${user.id}`);
+            throw new UnauthorizedException('Invalid 2FA code. Please check your authenticator app.');
+        }
+
+        const payload = { sub: user.id, role: user.role };
+        const access_token = this.jwtService.sign(payload);
+
+        const refreshTokenPlain = CryptoUtil.generateSecureToken(32);
+        const tokenHash = CryptoUtil.hashValue(refreshTokenPlain);
+        await this.refreshTokenRepository.save(this.refreshTokenRepository.create({
+            userId: user.id,
+            tokenHash,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        }));
+
+        this.logger.log(`✅ [2FA] 2FA verified and full session issued for user: ${user.id}`);
+        const { password, mfaSecret, ...safeUser } = user as any;
+        return { access_token, user: safeUser };
+    }
+
+    /**
+     * Disable 2FA for a user (requires current OTP for confirmation).
+     */
+    async disable2fa(userId: string, otp: string): Promise<{ message: string }> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user || !user.mfaEnabled || !user.mfaSecret) throw new BadRequestException('2FA is not enabled.');
+
+        const isValid = authenticator.verify({ token: otp, secret: user.mfaSecret });
+        if (!isValid) throw new BadRequestException('Invalid OTP code.');
+
+        user.mfaEnabled = false;
+        user.mfaSecret = null;
+        await this.userRepository.save(user);
+
+        this.logger.log(`✅ [2FA] 2FA disabled for user: ${userId}`);
+        return { message: '2FA has been disabled.' };
     }
 }

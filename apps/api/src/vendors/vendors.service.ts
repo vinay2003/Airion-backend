@@ -217,16 +217,43 @@ export class VendorsService {
         return { vendors, total };
     }
 
-    async updateStatus(id: string, status: string): Promise<Vendor> {
+    async updateStatus(
+        id: string,
+        status: string,
+        options: { rejectionReason?: string; reviewedById?: string } = {}
+    ): Promise<Vendor> {
+        const { VendorVerificationStatus } = await import('./entities/vendor.entity');
         const vendor = await this.findOne(id);
-        vendor.verificationStatus = status;
-        if (status === 'approved') {
+        const now = new Date();
+
+        // Validate status is a valid enum value
+        const validStatuses = Object.values(VendorVerificationStatus);
+        const normalizedStatus = status.toUpperCase() as VendorVerificationStatus;
+        if (!validStatuses.includes(normalizedStatus)) {
+            throw new Error(`Invalid vendor status: ${status}. Must be one of: ${validStatuses.join(', ')}`);
+        }
+
+        vendor.verificationStatus = normalizedStatus;
+
+        if (normalizedStatus === VendorVerificationStatus.APPROVED) {
             vendor.isVerified = true;
-        } else if (status === 'rejected') {
+            vendor.kycReviewedAt = now;
+            vendor.reviewedById = options.reviewedById || null;
+            vendor.rejectionReason = null;
+        } else if (normalizedStatus === VendorVerificationStatus.REJECTED) {
+            vendor.isVerified = false;
+            vendor.kycReviewedAt = now;
+            vendor.reviewedById = options.reviewedById || null;
+            vendor.rejectionReason = options.rejectionReason || null;
+        } else if (normalizedStatus === VendorVerificationStatus.KYC_PENDING) {
+            vendor.kycSubmittedAt = now;
+        } else if (normalizedStatus === VendorVerificationStatus.SUSPENDED) {
             vendor.isVerified = false;
         }
+
         return this.vendorRepository.save(vendor);
     }
+
 
     async getVendorStats(vendorId: string): Promise<any> {
         // ⚡ OPTIMIZED: Database-level aggregation (No O(N) loops)

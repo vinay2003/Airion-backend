@@ -156,17 +156,26 @@ export class VendorsController {
     }
 
     /**
-     * Admin Endpoint: Update single vendor approval status
+     * Admin Endpoint: Update single vendor approval/KYC status
+     * Body: { status: VendorVerificationStatus, rejectionReason?: string }
      */
     @Patch(':id/status')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
-    async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+    async updateStatus(
+        @Param('id') id: string,
+        @Body() body: { status: string; rejectionReason?: string },
+        @Request() req: any,
+    ) {
         if (!body.status) {
             throw new BadRequestException('Status is required');
         }
-        return this.vendorsService.updateStatus(id, body.status);
+        return this.vendorsService.updateStatus(id, body.status, {
+            rejectionReason: body.rejectionReason,
+            reviewedById: req.user?.userId,
+        });
     }
+
 
     @Get(':id/stats/bookings')
     @UseGuards(JwtAuthGuard)

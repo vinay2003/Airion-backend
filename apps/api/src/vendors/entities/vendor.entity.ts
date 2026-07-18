@@ -6,6 +6,26 @@ import { VendorAd } from './vendor-ad.entity';
 import { VendorGallery } from './vendor-gallery.entity';
 import { VendorProfileView } from './vendor-profile-view.entity';
 
+/**
+ * KYC / Vendor Approval Lifecycle Enum
+ * DRAFT         → Vendor registered but hasn't submitted profile
+ * EMAIL_PENDING → Account created, awaiting email verification
+ * KYC_PENDING   → Profile complete, documents uploaded, awaiting review
+ * UNDER_REVIEW  → Admin has started reviewing the submission
+ * APPROVED      → Vendor approved and badge granted
+ * REJECTED      → Submission rejected with reason
+ * SUSPENDED     → Previously approved vendor suspended
+ */
+export enum VendorVerificationStatus {
+    DRAFT = 'DRAFT',
+    EMAIL_PENDING = 'EMAIL_PENDING',
+    KYC_PENDING = 'KYC_PENDING',
+    UNDER_REVIEW = 'UNDER_REVIEW',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
+    SUSPENDED = 'SUSPENDED',
+}
+
 @Entity('vendors')
 export class Vendor {
     @PrimaryGeneratedColumn('uuid')
@@ -106,11 +126,23 @@ export class Vendor {
     @Column('boolean', { name: 'is_verified', default: false })
     isVerified: boolean;
 
-    @Column('varchar', { name: 'verification_status', default: 'pending' })
-    verificationStatus: string; // pending, approved, rejected
+    @Column({ type: 'enum', enum: VendorVerificationStatus, name: 'verification_status', default: VendorVerificationStatus.DRAFT })
+    verificationStatus: VendorVerificationStatus;
 
     @Column('jsonb', { name: 'verification_documents', nullable: true })
     verificationDocuments: Array<{ type: string; url: string }>;
+
+    @Column({ name: 'rejection_reason', type: 'text', nullable: true })
+    rejectionReason: string | null;
+
+    @Column({ name: 'reviewed_by_id', type: 'uuid', nullable: true })
+    reviewedById: string | null;
+
+    @Column({ name: 'kyc_submitted_at', type: 'timestamp', nullable: true })
+    kycSubmittedAt: Date | null;
+
+    @Column({ name: 'kyc_reviewed_at', type: 'timestamp', nullable: true })
+    kycReviewedAt: Date | null;
 
     @Column('jsonb', { name: 'social_links', nullable: true })
     socialLinks: { facebook?: string; instagram?: string; website?: string };

@@ -13,6 +13,7 @@ import { SessionService } from './services/session.service';
 import { AuditService } from './services/audit.service';
 import { AuthController } from './controllers/auth.controller';
 import { UsersController } from './controllers/users.controller';
+import { TwoFactorController } from './controllers/two-factor.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { Vendor } from '../vendors/entities/vendor.entity';
 import { VendorAd } from '../vendors/entities/vendor-ad.entity';
@@ -35,7 +36,7 @@ import { SmsService } from '../common/services/sms.service';
             inject: [ConfigService],
         }),
     ],
-    controllers: [AuthController, UsersController],
+    controllers: [AuthController, UsersController, TwoFactorController],
     providers: [AuthService, SessionService, AuditService, JwtStrategy, EmailService, SmsService],
     exports: [AuthService, SessionService, AuditService, JwtModule, EmailService, SmsService],
 })

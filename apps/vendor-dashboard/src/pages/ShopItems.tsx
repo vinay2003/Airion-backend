@@ -207,17 +207,17 @@ const ShopItems: React.FC = () => {
                             {/* Status Badge */}
                             <div className="absolute top-3 left-3 z-10 flex gap-2">
                                 {item.approvalStatus === 'approved' && (
-                                    <Badge variant="success" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
+                                    <Badge variant="confirmed" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
                                         <CheckCircle2 size={12} className="mr-1" /> Approved
                                     </Badge>
                                 )}
                                 {item.approvalStatus === 'pending' && (
-                                    <Badge variant="warning" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
+                                    <Badge variant="pending" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
                                         <Clock size={12} className="mr-1" /> Pending
                                     </Badge>
                                 )}
                                 {item.approvalStatus === 'rejected' && (
-                                    <Badge variant="error" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
+                                    <Badge variant="cancelled" className="shadow-sm font-bold bg-white/90 backdrop-blur-md">
                                         <XCircle size={12} className="mr-1" /> Rejected
                                     </Badge>
                                 )}

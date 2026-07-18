@@ -234,10 +234,11 @@ const Profile: React.FC = () => {
  await api.put('/vendors/me', submissionData);
  toast.success('Business profile updated!');
  refreshUser();
- } catch (err: any) {
- const msg = err.response?.data?.message || 'Failed to update business profile.';
- toast.error(Array.isArray(msg) ? msg[0] : msg);
- } finally {
+    } catch (err: any) {
+      console.error('Failed to update business profile:', err);
+      const msg = err.response?.data?.message || err.message || 'Failed to update business profile.';
+      toast.error(Array.isArray(msg) ? msg[0] : msg);
+    } finally {
  setSubmitting(false);
  }
  };
@@ -260,10 +261,11 @@ const Profile: React.FC = () => {
  });
  toast.success('Password updated successfully!');
  setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
- } catch (err: any) {
- const msg = err.response?.data?.message || 'Failed to update password.';
- toast.error(Array.isArray(msg) ? msg[0] : msg);
- } finally {
+    } catch (err: any) {
+      console.error('Failed to update password:', err);
+      const msg = err.response?.data?.message || err.message || 'Failed to update password.';
+      toast.error(Array.isArray(msg) ? msg[0] : msg);
+    } finally {
  setSubmitting(false);
  }
  };

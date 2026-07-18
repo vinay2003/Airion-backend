@@ -75,7 +75,6 @@ export default function PremiumUpgrade() {
     
     // Fallbacks if backend has no plans defined
     const displayPlans = billingCycle === 'yearly' && yearlyPlans.length > 0 ? yearlyPlans : monthlyPlans;
-    const currentPlan = displayPlans.find(p => p.name.toLowerCase().includes('premium')) || displayPlans[0];
 
     // Calculate discount dynamically if both monthly and yearly plans exist
     let discountPercent = 0;
@@ -87,26 +86,6 @@ export default function PremiumUpgrade() {
             discountPercent = Math.round((1 - (yearlyPrice / equivalentMonthlyPrice)) * 100);
         }
     }
-
-    const freeFeatures = [
-        "Vendor Profile & Portfolio",
-        "Manage up to 5 Services",
-        "Basic Marketplace Visibility",
-        "Standard Analytics",
-        "Up to 10 Leads per month",
-        "Standard Email Support"
-    ];
-
-    const premiumFeatures = [
-        "Unlimited Services & Listings",
-        "Advanced Analytics & Trends",
-        "Priority Search Ranking",
-        "Premium Vendor Badge",
-        "Unlimited Leads & Inquiries",
-        "Custom Profile Branding",
-        "AI Pricing Insights (Coming Soon)",
-        "24/7 Priority Support"
-    ];
 
     if (isSubLoading || isPlansLoading) {
         return (
@@ -207,7 +186,7 @@ export default function PremiumUpgrade() {
 
             {/* ── PRICING CARDS ──────────────────────────────────────────────────────── */}
             {!isPremium && plans.length > 0 && (
-                <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-start">
+                <div className={`grid md:grid-cols-${Math.min(displayPlans.length + 1, 4)} gap-8 max-w-7xl mx-auto items-start`}>
                     
                     {/* Free Tier */}
                     <div className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl p-8 lg:p-10 shadow-sm relative overflow-hidden">
@@ -222,7 +201,13 @@ export default function PremiumUpgrade() {
                             </div>
                             
                             <div className="pt-6 space-y-4 border-t border-[var(--ease2event-border-subtle)]">
-                                {freeFeatures.map((feat, i) => (
+                                {[
+                                    "Vendor Profile & Portfolio",
+                                    "Manage up to 5 Services",
+                                    "Basic Marketplace Visibility",
+                                    "Standard Analytics",
+                                    "Up to 10 Leads per month"
+                                ].map((feat, i) => (
                                     <div key={i} className="flex items-start gap-3">
                                         <CheckCircle2 size={20} className="text-[var(--ease2event-text-muted)] shrink-0 mt-0.5" />
                                         <span className="text-[var(--ease2event-text-secondary)] font-medium">{feat}</span>
@@ -236,29 +221,31 @@ export default function PremiumUpgrade() {
                         </div>
                     </div>
 
-                    {/* Premium Tier */}
-                    {currentPlan && (
-                        <div className="bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-brand-primary)] rounded-3xl p-8 lg:p-10 shadow-xl shadow-[var(--ease2event-brand-primary)]/10 relative overflow-hidden ring-1 ring-[var(--ease2event-brand-primary)]/20">
+                    {/* Paid Tiers mapped dynamically */}
+                    {displayPlans.map((plan, idx) => (
+                        <div key={plan.id} className={`bg-[var(--ease2event-bg-elevated)] border rounded-3xl p-8 lg:p-10 shadow-xl relative overflow-hidden ${idx === 0 ? 'border-[var(--ease2event-brand-primary)] shadow-[var(--ease2event-brand-primary)]/10 ring-1 ring-[var(--ease2event-brand-primary)]/20' : 'border-[var(--ease2event-border-subtle)]'}`}>
                             
-                            <div className="absolute top-0 right-0 bg-gradient-to-bl from-[var(--ease2event-brand-primary)] to-[var(--ease2event-brand-secondary)] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-6 rounded-bl-2xl">
-                                Recommended
-                            </div>
+                            {idx === 0 && (
+                                <div className="absolute top-0 right-0 bg-gradient-to-bl from-[var(--ease2event-brand-primary)] to-[var(--ease2event-brand-secondary)] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-6 rounded-bl-2xl">
+                                    Recommended
+                                </div>
+                            )}
 
                             <div className="space-y-6">
                                 <div>
                                     <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] mb-2 flex items-center gap-2">
-                                        <Crown size={20} className="text-amber-500" />
-                                        {currentPlan.name || 'Premium'}
+                                        {idx === 0 ? <Crown size={20} className="text-amber-500" /> : <Star size={20} className="text-blue-500" />}
+                                        {plan.name}
                                     </h3>
-                                    <p className="text-[var(--ease2event-text-secondary)] text-sm md:text-base font-medium h-10">{currentPlan.description || 'Maximum visibility and advanced tools for serious vendors.'}</p>
+                                    <p className="text-[var(--ease2event-text-secondary)] text-sm md:text-base font-medium h-10">{plan.description}</p>
                                 </div>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-extrabold">₹{currentPlan.price}</span>
-                                    <span className="text-[var(--ease2event-text-muted)] font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                                    <span className="text-3xl font-extrabold">₹{plan.price}</span>
+                                    <span className="text-[var(--ease2event-text-muted)] font-medium">/{plan.billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
                                 </div>
                                 
                                 <div className="pt-6 space-y-4 border-t border-[var(--ease2event-border-subtle)]">
-                                    {(currentPlan.features?.length > 0 ? currentPlan.features : premiumFeatures).map((feat, i) => (
+                                    {(plan.features || []).map((feat: string, i: number) => (
                                         <div key={i} className="flex items-start gap-3">
                                             <div className="bg-[var(--ease2event-brand-primary)]/10 p-0.5 rounded-full shrink-0 mt-0.5">
                                                 <CheckCircle2 size={16} className="text-[var(--ease2event-brand-primary)]" strokeWidth={3} />
@@ -270,17 +257,17 @@ export default function PremiumUpgrade() {
                                 
                                 <Button 
                                     className="w-full mt-8 bg-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-secondary)] text-white font-bold py-4 shadow-lg shadow-[var(--ease2event-brand-primary)]/30 transition-all hover:scale-[1.02]"
-                                    onClick={() => handleCheckout(currentPlan.id)}
+                                    onClick={() => handleCheckout(plan.id)}
                                     loading={isCheckingOut}
                                 >
-                                    <Sparkles size={18} className="mr-2" /> Upgrade to {currentPlan.name || 'Premium'}
+                                    <Sparkles size={18} className="mr-2" /> Upgrade to {plan.name}
                                 </Button>
                                 <p className="text-center text-xs text-[var(--ease2event-text-muted)] font-medium mt-4 flex items-center justify-center gap-1.5">
-                                    <ShieldCheck size={14} /> Secure payment via Razorpay/Stripe
+                                    <ShieldCheck size={14} /> Secure payment
                                 </p>
                             </div>
                         </div>
-                    )}
+                    ))}
                 </div>
             )}
 

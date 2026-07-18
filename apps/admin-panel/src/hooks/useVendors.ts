@@ -33,8 +33,8 @@ export const useVendorDetails = (vendorId: string | null) => {
 export const useVerifyVendor = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ vendorId, status }: { vendorId: string, status: 'approved' | 'rejected' }) => {
-            const { data } = await authApi.post(`/admin/vendors/${vendorId}/verify`, { status });
+        mutationFn: async ({ vendorId, status, rejectionReason }: { vendorId: string, status: 'approved' | 'rejected', rejectionReason?: string }) => {
+            const { data } = await authApi.patch(`/vendors/${vendorId}/status`, { status, rejectionReason });
             return data;
         },
         onSuccess: (data, variables) => {

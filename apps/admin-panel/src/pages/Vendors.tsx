@@ -207,7 +207,22 @@ const Vendors: React.FC = () => {
 
     const handleAction = async (id: string, action: 'approve' | 'reject' | 'kyc') => {
         try {
-            await verifyMutation.mutateAsync({ vendorId: id, status: action === 'approve' || action === 'kyc' ? 'approved' : 'rejected' });
+            let rejectionReason: string | undefined;
+            if (action === 'reject') {
+                const reason = window.prompt('Please provide a reason for rejecting this vendor:');
+                if (reason === null) return; // User cancelled
+                if (!reason.trim()) {
+                    toast.error('Rejection reason is required');
+                    return;
+                }
+                rejectionReason = reason.trim();
+            }
+
+            await verifyMutation.mutateAsync({ 
+                vendorId: id, 
+                status: action === 'approve' || action === 'kyc' ? 'approved' : 'rejected',
+                rejectionReason
+            });
             toast.success(action === 'approve' ? 'Vendor approved' : action === 'reject' ? 'Vendor rejected' : 'KYC verified');
         } catch (err) {
             toast.error('Action failed. Please try again.');

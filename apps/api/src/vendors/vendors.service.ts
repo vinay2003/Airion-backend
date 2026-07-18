@@ -11,6 +11,7 @@ import { VendorAd } from './entities/vendor-ad.entity';
 import { VendorGallery } from './entities/vendor-gallery.entity';
 import { Availability } from '../availability/entities/availability.entity';
 import { VendorProfileView } from './entities/vendor-profile-view.entity';
+import { EmailService } from '../common/services/email.service';
 
 @Injectable()
 export class VendorsService {
@@ -33,6 +34,7 @@ export class VendorsService {
         private userRepository: Repository<User>,
         @InjectRepository(VendorProfileView)
         private profileViewRepository: Repository<VendorProfileView>,
+        private emailService: EmailService,
     ) { }
 
     async create(createVendorDto: CreateVendorDto, user: { userId: string }): Promise<Vendor> {
@@ -233,6 +235,7 @@ export class VendorsService {
             throw new Error(`Invalid vendor status: ${status}. Must be one of: ${validStatuses.join(', ')}`);
         }
 
+        const previousStatus = vendor.verificationStatus;
         vendor.verificationStatus = normalizedStatus;
 
         if (normalizedStatus === VendorVerificationStatus.APPROVED) {
@@ -251,7 +254,27 @@ export class VendorsService {
             vendor.isVerified = false;
         }
 
-        return this.vendorRepository.save(vendor);
+        const savedVendor = await this.vendorRepository.save(vendor);
+
+        // Send email if status changed to APPROVED or REJECTED
+        if (previousStatus !== normalizedStatus && vendor.user && vendor.user.email) {
+            if (normalizedStatus === VendorVerificationStatus.APPROVED) {
+                await this.emailService.sendVendorStatusEmail(
+                    vendor.user.email,
+                    vendor.businessName || vendor.user.firstName,
+                    'approved'
+                ).catch(e => console.error('Failed to send approval email', e));
+            } else if (normalizedStatus === VendorVerificationStatus.REJECTED) {
+                await this.emailService.sendVendorStatusEmail(
+                    vendor.user.email,
+                    vendor.businessName || vendor.user.firstName,
+                    'rejected',
+                    options.rejectionReason
+                ).catch(e => console.error('Failed to send rejection email', e));
+            }
+        }
+
+        return savedVendor;
     }
 
 

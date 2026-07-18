@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
-import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, MoreVertical, TrendingUp, TrendingDown, DollarSign, Package, FileText, ChevronRight, Clock, Sparkles, CheckCircle2, Zap, Target, Activity, Plus, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@ease2event/shared';
 import api from '../lib/api';
@@ -143,6 +143,29 @@ const Dashboard = () => {
 
  return (
  <div className=" space-y-8 pb-12 w-full max-w-7xl mx-auto px-6">
+            
+            {user?.vendor?.verificationStatus === 'REJECTED' && (
+                <div className="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl shadow-sm">
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <X className="h-5 w-5 text-rose-500" />
+                        </div>
+                        <div className="ml-3">
+                            <h3 className="text-sm font-bold text-rose-800">KYC Verification Rejected</h3>
+                            <div className="mt-2 text-sm text-rose-700">
+                                <p>We could not approve your account based on the submitted documents. Reason:</p>
+                                <p className="mt-1 font-medium italic">{user.vendor.rejectionReason || 'Please contact support for more details.'}</p>
+                            </div>
+                            <div className="mt-4">
+                                <Button onClick={() => navigate('/settings?tab=kyc')} variant="primary" className="bg-rose-600 hover:bg-rose-700 text-white h-8 text-xs font-bold rounded-lg px-4">
+                                    Resubmit KYC
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
  {/* Top Header */}
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[var(--ease2event-border-subtle)] pb-6">
  <div className="space-y-2">

@@ -4,6 +4,7 @@ import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
 import { Booking } from './entities/booking.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { CommonModule } from '../common/common.module';
 
 import { WalletModule } from '../wallet/wallet.module';
 import { AvailabilityModule } from '../availability/availability.module';
@@ -13,7 +14,8 @@ import { AvailabilityModule } from '../availability/availability.module';
     TypeOrmModule.forFeature([Booking]), 
     NotificationsModule, 
     WalletModule, 
-    AvailabilityModule
+    AvailabilityModule,
+    CommonModule
   ],
   controllers: [BookingsController],
   providers: [BookingsService],

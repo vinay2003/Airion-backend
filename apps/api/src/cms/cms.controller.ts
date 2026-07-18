@@ -1,0 +1,32 @@
+import { Controller, Get, Post, Put, Body, Param, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import { CmsService } from './cms.service';
+import { UpdateConfigDto } from './dto/update-config.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+
+@Controller('cms')
+export class CmsController {
+  constructor(private readonly cmsService: CmsService) {}
+
+  @Get()
+  async findAll() {
+    return this.cmsService.findAll();
+  }
+
+  @Get(':key')
+  async findOne(@Param('key') key: string) {
+    const config = await this.cmsService.findOne(key);
+    if (!config) {
+      throw new HttpException('Config not found', HttpStatus.NOT_FOUND);
+    }
+    return config.value;
+  }
+
+  @Put(':key')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async update(@Param('key') key: string, @Body() updateConfigDto: UpdateConfigDto) {
+    return this.cmsService.set(key, updateConfigDto);
+  }
+}

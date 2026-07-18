@@ -36,6 +36,7 @@ import { RefundsModule } from './refunds/refunds.module';
 import { CronModule } from './cron/cron.module';
 import { HealthModule } from './health/health.module';
 import { CartModule } from './cart/cart.module';
+import { CmsModule } from './cms/cms.module';
 
 @Module({
     imports: [
@@ -145,6 +146,7 @@ import { CartModule } from './cart/cart.module';
         CronModule,
         HealthModule,
         CartModule,
+        CmsModule,
     ],
     controllers: [AppController],
 })

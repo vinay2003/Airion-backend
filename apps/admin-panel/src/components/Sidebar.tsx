@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone, BarChart, Ticket, Map, LifeBuoy, Home, DollarSign } from 'lucide-react';
+import { Layout, LayoutDashboard, Store, Users, Settings, LogOut, Shield, Moon, Sun, X, Calendar, Star, Megaphone, BarChart, Ticket, Map, LifeBuoy, Home, DollarSign, ShoppingBag } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '@ease2event/shared';
 
@@ -20,6 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Layout, label: 'Content Management', path: '/cms' },
         { icon: Users, label: 'Users', path: '/users' },
         { icon: Store, label: 'Vendors', path: '/vendors' },
         { icon: Calendar, label: 'Bookings', path: '/bookings' },

@@ -14,7 +14,7 @@ import Users from './pages/Users';
 import Vendors from './pages/Vendors';
 import Settings from './pages/Settings';
 import Bookings from './pages/Bookings';
-import CategoriesAndRegions from './pages/CategoriesAndRegions';
+import Categories from './pages/Categories';
 import Subscriptions from './pages/Subscriptions';
 import Advertisements from './pages/Advertisements';
 import Coupons from './pages/Coupons';
@@ -22,6 +22,7 @@ import SupportTickets from './pages/SupportTickets';
 import Reports from './pages/Reports';
 import AdminLogin from './pages/AdminLogin';
 import ShopAdmin from './pages/Shop';
+import ShopOrders from './pages/ShopOrders';
 import Refunds from './pages/Refunds';
 
 const PageLoader = () => (
@@ -58,6 +59,7 @@ const App: React.FC = () => {
                   <Route path="categories" element={<Categories />} />
                   <Route path="support" element={<SupportTickets />} />
                   <Route path="shop" element={<ShopAdmin />} />
+                  <Route path="shop-orders" element={<ShopOrders />} />
                   <Route path="refunds" element={<Refunds />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />

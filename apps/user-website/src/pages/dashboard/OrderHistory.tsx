@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Package, ShoppingBag, ChevronRight, Search, RefreshCw, X, CheckCircle, Clock, Truck, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../lib/api';
 
 interface OrderItem {
     id: string;
@@ -22,44 +23,7 @@ interface Order {
     address: string;
 }
 
-const MOCK_ORDERS: Order[] = [
-    {
-        id: '1',
-        orderCode: 'ORD-847291',
-        status: 'delivered',
-        placedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-        estimatedDelivery: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        items: [
-            { id: '1', productName: 'Premium LED Fairy Lights (50m)', productImage: 'https://images.unsplash.com/photo-1608501947097-86951ad73fea?w=200', quantity: 2, price: 1200 },
-            { id: '2', productName: 'Elegant Floral Centerpiece Set', productImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200', quantity: 1, price: 4500 },
-        ],
-        total: 6900,
-        address: '12, Park Avenue, Bandra West, Mumbai - 400050',
-    },
-    {
-        id: '2',
-        orderCode: 'ORD-392104',
-        status: 'shipped',
-        placedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-        items: [
-            { id: '3', productName: 'Bridal Squad Satin Robes (Pack of 5)', productImage: 'https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?w=200', quantity: 1, price: 7500 },
-        ],
-        total: 7500,
-        address: '45B, Connaught Place, New Delhi - 110001',
-    },
-    {
-        id: '3',
-        orderCode: 'ORD-109482',
-        status: 'processing',
-        placedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        items: [
-            { id: '4', productName: 'Custom Engraved Champagne Flutes', productImage: 'https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=200', quantity: 4, price: 2200 },
-        ],
-        total: 8800,
-        address: 'Flat 7, Sunrise Heights, Koramangala, Bangalore - 560034',
-    },
-];
+
 
 const STATUS_CONFIG = {
     processing: { label: 'Processing', icon: Clock, bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-700 dark:text-amber-400', steps: 1 },
@@ -107,10 +71,35 @@ const OrderHistory: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTimeout(() => {
-            setOrders(MOCK_ORDERS);
-            setLoading(false);
-        }, 600);
+        const fetchOrders = async () => {
+            try {
+                const res = await api.get('/merchandise/orders');
+                const data = (res as any).data || res;
+                if (Array.isArray(data)) {
+                    setOrders(data.map((o: any) => ({
+                        id: o.id,
+                        orderCode: `ORD-${o.id.substring(0,6).toUpperCase()}`,
+                        status: o.status,
+                        placedAt: o.createdAt,
+                        estimatedDelivery: o.estimatedDelivery || undefined,
+                        total: Number(o.totalAmount),
+                        address: o.shippingAddress,
+                        items: (o.items || []).map((i: any) => ({
+                            id: i.id,
+                            productName: i.product?.title || 'Unknown Product',
+                            productImage: i.product?.image || '',
+                            quantity: i.quantity,
+                            price: Number(i.price),
+                        }))
+                    })));
+                }
+            } catch (error) {
+                toast.error('Failed to load order history');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrders();
     }, []);
 
     const filtered = orders.filter(o => {

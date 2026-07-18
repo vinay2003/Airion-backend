@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Req, Query } from '@nestjs/common';
 import { MerchandiseService } from './merchandise.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -25,6 +25,31 @@ export class MerchandiseController {
     @UseGuards(JwtAuthGuard)
     getOrders(@Req() req: any) {
         return this.merchandiseService.getOrders(req.user.userId);
+    }
+
+    @Get('vendor/orders')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.VENDOR)
+    getVendorOrders(@Req() req: any) {
+        return this.merchandiseService.getVendorOrders(req.user.userId);
+    }
+
+    @Patch('vendor/orders/:orderItemId/status')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.VENDOR)
+    updateVendorOrderStatus(
+        @Param('orderItemId') orderItemId: string,
+        @Body() payload: any,
+        @Req() req: any
+    ) {
+        return this.merchandiseService.updateOrderItemStatus(orderItemId, req.user.userId, payload);
+    }
+
+    @Get('admin/orders')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    getAdminOrders() {
+        return this.merchandiseService.getAdminOrders();
     }
 
     @Get(':id')

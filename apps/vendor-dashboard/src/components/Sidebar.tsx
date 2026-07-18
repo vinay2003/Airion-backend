@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
 
@@ -21,6 +21,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  { icon: Megaphone, label: 'Ads', path: '/ads' },
  { icon: Camera, label: 'Gallery', path: '/gallery' },
  { icon: Package, label: 'Products', path: '/products' },
+ { icon: Package, label: 'Event Shop', path: '/shop-items' },
+ { icon: ShoppingBag, label: 'Shop Orders', path: '/shop-orders' },
  { icon: BarChart2, label: 'Analytics', path: '/analytics' },
  { icon: Settings, label: 'Settings', path: '/settings' },
  ];

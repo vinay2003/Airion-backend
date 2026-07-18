@@ -25,6 +25,8 @@ import Calendar from './pages/Calendar';
 import Earnings from './pages/Earnings';
 import Products from './pages/Products';
 import Gallery from './pages/Gallery';
+import ShopItems from './pages/ShopItems';
+import MerchandiseOrders from './pages/MerchandiseOrders';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -56,6 +58,8 @@ const App: React.FC = () => {
                   <Route path="events" element={<Listings />} />
                   <Route path="enquiries" element={<Inbox />} />
                   <Route path="bookings" element={<Bookings />} />
+                  <Route path="shop-items" element={<ShopItems />} />
+                  <Route path="shop-orders" element={<MerchandiseOrders />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="profile" element={<Profile />} />
@@ -63,6 +67,7 @@ const App: React.FC = () => {
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />
                   <Route path="products" element={<Products />} />
+                  <Route path="shop-items" element={<ShopItems />} />
                   <Route path="ads" element={<Promotions />} />
                   <Route path="promotions" element={<Promotions />} />
                   <Route path="plan-event" element={<EventPlanning />} />

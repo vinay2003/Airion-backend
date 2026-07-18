@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -31,6 +32,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { MerchandiseModule } from './merchandise/merchandise.module';
 import { RefundsModule } from './refunds/refunds.module';
+import { CronModule } from './cron/cron.module';
 
 @Module({
     imports: [
@@ -109,6 +111,7 @@ import { RefundsModule } from './refunds/refunds.module';
                 };
             },
         }),
+        ScheduleModule.forRoot(),
         AuthModule,
         VendorsModule,
         CategoriesModule,
@@ -135,6 +138,7 @@ import { RefundsModule } from './refunds/refunds.module';
         SubscriptionsModule,
         MerchandiseModule,
         RefundsModule,
+        CronModule,
     ],
     controllers: [AppController],
 })

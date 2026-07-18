@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAdDto } from './dto/create-ad.dto';
 import { UpdateAdDto } from './dto/update-ad.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Ad, AdStatus } from './entities/ad.entity';
 
 @Injectable()
@@ -71,5 +72,51 @@ export class AdsService {
 
   async incrementClick(id: string): Promise<void> {
     await this.adsRepository.increment({ id }, 'clicks', 1);
+  }
+
+  async approveCampaign(id: string, adminId: string): Promise<Ad> {
+    const ad = await this.findOne(id);
+    ad.status = AdStatus.ACTIVE;
+    ad.approvedBy = adminId;
+    ad.approvedAt = new Date();
+    return await this.adsRepository.save(ad);
+  }
+
+  async rejectCampaign(id: string, adminId: string): Promise<Ad> {
+    const ad = await this.findOne(id);
+    ad.status = AdStatus.REJECTED;
+    ad.approvedBy = adminId;
+    ad.approvedAt = new Date();
+    return await this.adsRepository.save(ad);
+  }
+
+  async expireCampaign(id: string): Promise<Ad> {
+    const ad = await this.findOne(id);
+    ad.status = AdStatus.EXPIRED;
+    return await this.adsRepository.save(ad);
+  }
+
+  calculateCTR(impressions: number, clicks: number): number {
+    if (impressions === 0) return 0;
+    return Number(((clicks / impressions) * 100).toFixed(2));
+  }
+
+  // Cron Job to run every hour and expire ads that have passed their end date
+  @Cron(CronExpression.EVERY_HOUR)
+  async checkExpiredAds() {
+    const expiredAds = await this.adsRepository.createQueryBuilder('ad')
+      .where('ad.status = :status', { status: AdStatus.ACTIVE })
+      .andWhere('ad.endDate < :now', { now: new Date() })
+      .getMany();
+
+    if (expiredAds.length > 0) {
+      await Promise.all(
+        expiredAds.map(ad => {
+          ad.status = AdStatus.EXPIRED;
+          return this.adsRepository.save(ad);
+        })
+      );
+      console.log(`[AdsService] Expired ${expiredAds.length} ads automatically.`);
+    }
   }
 }

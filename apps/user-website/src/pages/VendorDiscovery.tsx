@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import FilterSidebar, { FilterValues } from '../components/FilterSidebar';
 import ListingCard from '../components/ListingCard';
 import SEO from '../components/SEO';
-import { fetchEvents } from '../lib/api';
+import { fetchVendorDiscovery } from '../lib/api';
 import MapView from '../components/MapView';
 import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X, Layers } from 'lucide-react';
 import type { Event } from '../types';
@@ -116,7 +116,7 @@ const VendorDiscovery: React.FC = () => {
     useEffect(() => {
         const loadVendors = async () => {
             try {
-                const data = await fetchEvents();
+                const data = await fetchVendorDiscovery();
                 console.log('[VendorDiscovery] Fetched vendors:', data.length);
                 setVendors(data);
             } catch (err) {
@@ -284,6 +284,7 @@ const VendorDiscovery: React.FC = () => {
             case 'rating':
                 return copy.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             default:
+                // Return exactly as received from backend (priority sorting applied on server)
                 return copy;
         }
     }, [filteredVendors, sortBy]);
@@ -504,7 +505,7 @@ const VendorDiscovery: React.FC = () => {
                                                 description={vendor.description}
                                                 category={vendor.category}
                                                 marketplaceStatus={(idx % 4 === 0 ? 'FILLING_FAST' : idx % 4 === 1 ? 'TOP_RATED' : idx % 4 === 2 ? 'NEW' : 'AVAILABLE') as any}
-                                                tags={['Verified', 'Premium', 'Fast Response']}
+                                                tags={vendor.isSponsored ? ['🌟 Sponsored', 'Verified', 'Premium'] : ['Verified', 'Premium', 'Fast Response']}
                                             />
                                         </motion.div>
                                     ))}

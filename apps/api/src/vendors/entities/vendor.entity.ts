@@ -92,6 +92,12 @@ export class Vendor {
     @Column('int', { name: 'total_reviews', default: 0 })
     totalReviews: number;
 
+    @Column('boolean', { name: 'is_sponsored', default: false })
+    isSponsored: boolean;
+
+    @Column('boolean', { name: 'is_featured', default: false })
+    isFeatured: boolean;
+
     @Column('boolean', { name: 'is_profile_complete', default: false })
     isProfileComplete: boolean;
 

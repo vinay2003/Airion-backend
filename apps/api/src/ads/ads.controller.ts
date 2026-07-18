@@ -43,6 +43,34 @@ export class AdsController {
     return this.adsService.update(id, updateAdDto);
   }
 
+  @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.VENDOR)
+  findOne(@Param('id') id: string) {
+    return this.adsService.findOne(id);
+  }
+
+  @Patch(':id/approve')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  approve(@Param('id') id: string, @Req() req: any) {
+    return this.adsService.approveCampaign(id, req.user.userId);
+  }
+
+  @Patch(':id/reject')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  reject(@Param('id') id: string, @Req() req: any) {
+    return this.adsService.rejectCampaign(id, req.user.userId);
+  }
+
+  @Patch(':id/expire')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  expire(@Param('id') id: string) {
+    return this.adsService.expireCampaign(id);
+  }
+
   // ─── Public Endpoints (User Website) ────────────────────────────────
 
   @Get('active')

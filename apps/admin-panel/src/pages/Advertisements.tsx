@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Search, CheckCircle, XCircle, PauseCircle, Activity, Image as ImageIcon, Calendar, Plus, UploadCloud, Eye, MousePointer2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useAdminAdvertisements, useUpdateAdvertisementStatus, useCreateAdvertisement } from '../hooks/useAdvertisements';
+import { useAdminAdvertisements, useApproveAdvertisement, useRejectAdvertisement, useExpireAdvertisement, useCreateAdvertisement } from '../hooks/useAdvertisements';
 import { useAdminVendors } from '../hooks/useVendors';
 import { authApi } from '@ease2event/shared/auth/api';
 
@@ -39,13 +39,23 @@ const Advertisements: React.FC = () => {
     const { data: adsData, isLoading } = useAdminAdvertisements();
     const { data: vendorsResponse } = useAdminVendors(1, 100, '', 'all', 'all');
     const createAdMutation = useCreateAdvertisement();
-    const updateStatusMutation = useUpdateAdvertisementStatus();
+    const approveMutation = useApproveAdvertisement();
+    const rejectMutation = useRejectAdvertisement();
+    const expireMutation = useExpireAdvertisement();
 
     const ads: Ad[] = adsData || [];
     const vendors = vendorsResponse?.data || [];
 
-    const updateAdStatus = async (id: string, status: Ad['status']) => {
-        await updateStatusMutation.mutateAsync({ id, status });
+    const handleApprove = async (id: string) => {
+        await approveMutation.mutateAsync(id);
+    };
+
+    const handleReject = async (id: string) => {
+        await rejectMutation.mutateAsync(id);
+    };
+
+    const handleExpire = async (id: string) => {
+        await expireMutation.mutateAsync(id);
     };
 
     const handleFileUpload = async (file: File) => {
@@ -265,22 +275,22 @@ const Advertisements: React.FC = () => {
                         <div className="pt-6 border-t border-gray-100 dark:border-slate-800 flex gap-3">
                             {ad.status === 'pending' && (
                                 <>
-                                    <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <CheckCircle size={18} /> Approve
                                     </button>
-                                    <button onClick={() => updateAdStatus(ad.id, 'rejected')} className="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <button onClick={() => handleReject(ad.id)} className="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <XCircle size={18} /> Reject
                                     </button>
                                 </>
                             )}
                             {ad.status === 'active' && (
-                                <button onClick={() => updateAdStatus(ad.id, 'paused')} className="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <PauseCircle size={18} /> Pause Campaign
+                                <button onClick={() => handleExpire(ad.id)} className="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <PauseCircle size={18} /> End Campaign
                                 </button>
                             )}
                             {(ad.status === 'paused' || ad.status === 'rejected') && (
-                                <button onClick={() => updateAdStatus(ad.id, 'active')} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <Activity size={18} /> Resume Campaign
+                                <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <Activity size={18} /> Restart Campaign
                                 </button>
                             )}
                         </div>

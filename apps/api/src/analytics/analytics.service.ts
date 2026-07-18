@@ -66,10 +66,13 @@ export class AnalyticsService {
         if (vendorsCount === 0) vendorsCount = 356;
         if (totalRevenue === 0) totalRevenue = 4500000;
 
-        const commission = totalRevenue * 0.10; // 10% commission
+        const commissionEarned = totalRevenue * 0.10; // 10% commission
 
         // We could also add charts data here, but for now just return the main stats + mocked charts
         return {
+            totalRevenue,
+            commissionEarned,
+            avgConversionRate: 4.8, // Mocked for now
             stats: [
                 { label: 'Total Revenue', value: `₹${(totalRevenue / 100000).toFixed(2)}L`, change: '+12%', icon: 'DollarSign', color: 'emerald' },
                 { label: 'Active Vendors', value: vendorsCount, change: '+8%', icon: 'Store', color: 'blue' },
@@ -93,12 +96,23 @@ export class AnalyticsService {
                 { name: 'Photo', value: 200 },
             ],
             revenueData: [
-                { name: 'Jan', revenue: 1200000, commission: 120000 },
-                { name: 'Feb', revenue: 1500000, commission: 150000 },
-                { name: 'Mar', revenue: 2000000, commission: 200000 },
-                { name: 'Apr', revenue: 2200000, commission: 220000 },
-                { name: 'May', revenue: 1800000, commission: 180000 },
-                { name: 'Jun', revenue: 2800000, commission: 280000 },
+                { name: 'Jan', adRevenue: 120000, subRevenue: 300000, commission: 120000 },
+                { name: 'Feb', adRevenue: 150000, subRevenue: 320000, commission: 150000 },
+                { name: 'Mar', adRevenue: 200000, subRevenue: 400000, commission: 200000 },
+                { name: 'Apr', adRevenue: 220000, subRevenue: 450000, commission: 220000 },
+                { name: 'May', adRevenue: 180000, subRevenue: 380000, commission: 180000 },
+                { name: 'Jun', adRevenue: 280000, subRevenue: 500000, commission: 280000 },
+            ],
+            conversionData: [
+                { name: 'Weddings', rate: 4.2 },
+                { name: 'Corporate', rate: 5.8 },
+                { name: 'Parties', rate: 3.5 },
+                { name: 'Birthdays', rate: 6.1 },
+            ],
+            topVendors: [
+                { id: 'v1', name: 'Royal Palace', city: 'Mumbai', revenue: '₹4.5L', bookings: 42, rating: 4.9 },
+                { id: 'v2', name: 'Elite Catering', city: 'Delhi', revenue: '₹3.2L', bookings: 56, rating: 4.8 },
+                { id: 'v3', name: 'Vibrant Decor', city: 'Pune', revenue: '₹2.8L', bookings: 38, rating: 4.7 },
             ]
         };
     }

@@ -333,6 +333,27 @@ const EventDetails: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Left Content */}
                     <div className="lg:col-span-2 space-y-10">
+                        {/* Vendor Link Section */}
+                        <motion.section
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="bg-gray-50 dark:bg-slate-900 rounded-2xl p-6 flex items-center justify-between border border-gray-100 dark:border-slate-800"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white dark:border-slate-800 shadow-sm">
+                                    <img src={event.vendorImage || "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200"} alt={event.vendorName || "Vendor"} className="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Hosted by {event.vendorName || 'Ease2Event Partner'}</h3>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400">Professional Event Partner</p>
+                                </div>
+                            </div>
+                            <Link to={`/vendor/${event.vendorId}`} className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-bold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                                View Profile <ChevronRight size={16} />
+                            </Link>
+                        </motion.section>
+
                         {/* About Section */}
                         <motion.section
                             initial={{ opacity: 0, y: 20 }}

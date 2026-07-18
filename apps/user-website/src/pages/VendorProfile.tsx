@@ -321,22 +321,28 @@ const VendorProfile: React.FC = () => {
                         {/* Product & Services List */}
                         {services.length > 0 && (
                             <section className="space-y-6">
-                                <h2 className="text-xl font-bold text-gray-900">Services Index</h2>
-                                <div className="space-y-3">
+                                <h2 className="text-xl font-bold text-gray-900">All Event Packages & Listings</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {services.map((item: any) => (
-                                        <div key={item.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-gray-100 rounded-xl shadow-sm  transition-all group">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
-                                                    <Tag size={20} />
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors">{item.title}</h4>
-                                                    <p className="text-xs text-gray-500 font-medium">Capacity: {item.guestCapacity || 'N/A'} Guests</p>
-                                                </div>
+                                        <div key={item.id} onClick={() => navigate(`/events/${item.id}`)} className="flex flex-col bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                                            <div className="h-40 w-full overflow-hidden relative">
+                                                <img src={item.images?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                <Badge className="absolute top-3 right-3 bg-white/90 text-slate-900 border-none shadow-sm">{item.category?.name || 'Event'}</Badge>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-sm font-bold text-gray-900">₹{Number(item.basePrice).toLocaleString()}</p>
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase">Starting price</p>
+                                            <div className="p-5 flex flex-col flex-1">
+                                                <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h4>
+                                                <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
+                                                    <Users size={14} className="text-blue-500" /> {item.guestCapacity || 'Contact for capacity'}
+                                                </div>
+                                                <div className="mt-auto flex justify-between items-end">
+                                                    <div>
+                                                        <p className="text-[10px] text-gray-400 font-bold uppercase">Starting price</p>
+                                                        <p className="text-lg font-black text-slate-900 dark:text-white text-primary">₹{Number(item.basePrice).toLocaleString()}</p>
+                                                    </div>
+                                                    <Button variant="ghost" size="sm" className="h-8 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                                        View Details
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}

@@ -6,25 +6,59 @@ export const useAdminAdvertisements = () => {
     return useQuery({
         queryKey: ['adminAdvertisements'],
         queryFn: async () => {
-            const { data } = await authApi.get('/admin/advertisements');
-            return data.data || data; // fallback to data if backend format changes
+            const { data } = await authApi.get('/ads');
+            return data.data || data;
         },
     });
 };
 
-export const useUpdateAdvertisementStatus = () => {
+export const useApproveAdvertisement = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, status }: { id: string; status: string }) => {
-            const { data } = await authApi.patch(`/admin/advertisements/${id}/status`, { status });
+        mutationFn: async (id: string) => {
+            const { data } = await authApi.patch(`/ads/${id}/approve`);
             return data;
         },
-        onSuccess: (_, variables) => {
-            toast.success(`Ad status updated to ${variables.status}`);
+        onSuccess: () => {
+            toast.success('Campaign approved successfully');
             queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
         },
         onError: () => {
-            toast.error('Failed to update advertisement status');
+            toast.error('Failed to approve campaign');
+        }
+    });
+};
+
+export const useRejectAdvertisement = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await authApi.patch(`/ads/${id}/reject`);
+            return data;
+        },
+        onSuccess: () => {
+            toast.success('Campaign rejected successfully');
+            queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
+        },
+        onError: () => {
+            toast.error('Failed to reject campaign');
+        }
+    });
+};
+
+export const useExpireAdvertisement = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await authApi.patch(`/ads/${id}/expire`);
+            return data;
+        },
+        onSuccess: () => {
+            toast.success('Campaign expired successfully');
+            queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
+        },
+        onError: () => {
+            toast.error('Failed to expire campaign');
         }
     });
 };
@@ -42,7 +76,7 @@ export const useCreateAdvertisement = () => {
             endDate: string;
             mediaUrls?: string[];
         }) => {
-            const { data } = await authApi.post('/admin/advertisements', adData);
+            const { data } = await authApi.post('/ads', adData);
             return data;
         },
         onSuccess: () => {

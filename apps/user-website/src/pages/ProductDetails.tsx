@@ -5,6 +5,7 @@ import { Star, ShieldCheck, Truck, RefreshCw, ShoppingCart, ArrowLeft } from 'lu
 import toast from 'react-hot-toast';
 
 import { fetchProductById } from '../lib/api';
+import { useAuth } from '@ease2event/shared';
 
 const MOCK_PRODUCTS: Product[] = [
     {
@@ -143,7 +144,14 @@ const ProductDetails: React.FC = () => {
         );
     }
 
+    const { user } = useAuth();
+
     const handleAddToCart = () => {
+        if (!user) {
+            toast.error('Please login to add items to cart.');
+            navigate('/login', { state: { returnTo: `/merchandise/${id}` } });
+            return;
+        }
         addToCart(product, quantity);
         toast.success(`Added ${quantity} ${product.title} to cart!`);
     };

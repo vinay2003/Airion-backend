@@ -7,6 +7,7 @@ export enum AdStatus {
   PAUSED = 'paused',
   COMPLETED = 'completed',
   REJECTED = 'rejected',
+  EXPIRED = 'expired',
 }
 
 export enum AdType {
@@ -59,6 +60,15 @@ export class Ad {
 
   @Column({ type: 'int', default: 0 })
   clicks: number;
+
+  @Column({ type: 'int', default: 0 })
+  priority: number;
+
+  @Column({ nullable: true })
+  approvedBy: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  approvedAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -41,10 +41,16 @@ export class RefundRequest {
     ifscCode: string;
 
     @Column({ nullable: true })
-    adminNote: string;
+    adminRemark: string;
 
     @Column({ nullable: true })
-    processedAt: Date;
+    approvedBy: string;
+
+    @Column({ type: 'timestamp', nullable: true })
+    approvedAt: Date;
+
+    @Column({ nullable: true })
+    completedAt: Date;
 
     @CreateDateColumn()
     createdAt: Date;

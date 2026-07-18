@@ -22,6 +22,7 @@ import SupportTickets from './pages/SupportTickets';
 import Reports from './pages/Reports';
 import AdminLogin from './pages/AdminLogin';
 import ShopAdmin from './pages/Shop';
+import Refunds from './pages/Refunds';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -57,6 +58,7 @@ const App: React.FC = () => {
                   <Route path="categories" element={<Categories />} />
                   <Route path="support" element={<SupportTickets />} />
                   <Route path="shop" element={<ShopAdmin />} />
+                  <Route path="refunds" element={<Refunds />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<div className="p-8 text-[var(--ease2event-text-primary)] font-medium">Page not found</div>} />
                 </Route>

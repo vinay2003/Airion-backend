@@ -19,7 +19,8 @@ import {
     Sun,
     Search,
     Sparkles,
-    Home
+    Home,
+    ShoppingBag
 } from 'lucide-react';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { useAuth } from '@shared/auth/AuthContext';
@@ -147,6 +148,7 @@ const DashboardLayout: React.FC = () => {
     const navItems = [
         { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
         { icon: Calendar, label: 'My Bookings', path: '/dashboard/bookings', badge: 0 },
+        { icon: ShoppingBag, label: 'My Orders', path: '/dashboard/orders' },
         { icon: Heart, label: 'Saved Vendors', path: '/dashboard/saved' },
         { icon: Mail, label: 'Inbox', path: '/dashboard/inbox', badge: unreadChats },
         { icon: CreditCard, label: 'Budget Planner', path: '/dashboard/budget' },

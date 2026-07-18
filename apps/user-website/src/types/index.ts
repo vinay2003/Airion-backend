@@ -8,6 +8,8 @@ export interface EventPackage {
 export interface Event {
     id: string;
     vendorId?: string;
+    vendorName?: string;
+    vendorImage?: string;
     title: string;
     category: string;
     image: string;
@@ -20,6 +22,7 @@ export interface Event {
     description: string;
     amenities?: string[];
     packages?: EventPackage[];
+    isSponsored?: boolean;
 }
 
 export interface Category {

@@ -5,7 +5,7 @@ export const useAdminReports = (timeRange: string) => {
     return useQuery({
         queryKey: ['adminReports', timeRange],
         queryFn: async () => {
-            const { data } = await authApi.get(`/admin/reports?timeRange=${timeRange}`);
+            const { data } = await authApi.get(`/analytics/admin/global-stats`);
             return data.data || data;
         },
     });

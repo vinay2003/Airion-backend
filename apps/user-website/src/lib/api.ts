@@ -15,6 +15,8 @@ const mapServiceToEvent = (service: any): Event => {
         price: `${service.currency || 'INR'} ${parseFloat(service.basePrice).toLocaleString()}`,
         capacity: 'Contact Vendor',
         description: service.description || '',
+        vendorName: service.vendor?.businessName || 'Ease2Event Partner',
+        vendorImage: service.vendor?.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200',
         packages: service.packages && service.packages.length
             ? service.packages.map((pkg: any) => ({
                 title: pkg.name || pkg.title || '',
@@ -108,13 +110,48 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         results = results.filter(s => s.category.toLowerCase().includes(cat) || cat.includes(s.category.toLowerCase()));
     }
 
-    return results.map(s => ({
+    return results.map((s, idx) => ({
         ...s,
         images: (s as any).images || [],
         vendorId: '550e8400-e29b-41d4-a716-446655440000',
+        vendorName: 'The Royal Grand Palace',
+        vendorImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=200',
         reviews: s.reviews || 0,
-        capacity: (s as any).capacity || 'Contact Vendor' // ✅ Added missing property
+        capacity: (s as any).capacity || 'Contact Vendor', // ✅ Added missing property
+        isSponsored: idx % 3 === 0 // Make every 3rd event sponsored
     })) as Event[];
+};
+
+export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): Promise<Event[]> => {
+    const params = new URLSearchParams();
+    if (filters.city) params.append('city', filters.city);
+    if (filters.search) params.append('search', filters.search);
+    
+    // Convert to query string
+    const query = params.toString();
+    const url = `/vendors/discovery${query ? `?${query}` : ''}`;
+    
+    const response = await api.get(url);
+    const data = response.data?.data?.vendors || response.data?.vendors || response.data || [];
+    
+    return data.map((v: any) => ({
+        id: v.id,
+        vendorId: v.id,
+        title: v.businessName || 'Unnamed Vendor',
+        category: v.category?.name || v.category || 'Uncategorized',
+        image: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
+        images: v.portfolioImages || [],
+        rating: v.rating || 4.5,
+        location: v.businessAddress?.city || 'India',
+        reviews: v.totalReviews || 0,
+        price: 'Contact for Pricing',
+        capacity: 'Contact Vendor',
+        description: v.bio || '',
+        vendorName: v.businessName || 'Unnamed Vendor',
+        vendorImage: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200',
+        isSponsored: !!v.isSponsored,
+        isFeatured: !!v.isFeatured
+    }));
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Param, UseGuards, Req, Query, ForbiddenException } from '@nestjs/common';
+import { Controller, Post, Get, Put, Patch, Body, Param, UseGuards, Req, Query, ForbiddenException } from '@nestjs/common';
 import { RefundsService } from './refunds.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -38,21 +38,21 @@ export class RefundsController {
         return this.refundsService.getRefundById(id, req.user.userId, isAdmin);
     }
 
-    @Put(':id/approve')
+    @Patch(':id/approve')
     @Roles(UserRole.ADMIN)
-    approveRefund(@Param('id') id: string, @Body('adminNote') adminNote?: string) {
-        return this.refundsService.approveRefund(id, adminNote);
+    approveRefund(@Param('id') id: string, @Req() req: any, @Body('adminRemark') adminRemark?: string) {
+        return this.refundsService.approveRefund(id, req.user.userId, adminRemark);
     }
 
-    @Put(':id/reject')
+    @Patch(':id/reject')
     @Roles(UserRole.ADMIN)
-    rejectRefund(@Param('id') id: string, @Body('adminNote') adminNote: string) {
-        return this.refundsService.rejectRefund(id, adminNote);
+    rejectRefund(@Param('id') id: string, @Req() req: any, @Body('adminRemark') adminRemark: string) {
+        return this.refundsService.rejectRefund(id, req.user.userId, adminRemark);
     }
 
-    @Put(':id/processed')
+    @Patch(':id/complete')
     @Roles(UserRole.ADMIN)
-    markProcessed(@Param('id') id: string) {
-        return this.refundsService.markProcessed(id);
+    markProcessed(@Param('id') id: string, @Req() req: any) {
+        return this.refundsService.markProcessed(id, req.user.userId);
     }
 }

@@ -172,6 +172,51 @@ export class VendorsService {
         return { vendors, total };
     }
 
+    async getDiscovery(options: { 
+        city?: string; 
+        categoryId?: string; 
+        search?: string; 
+        sponsored?: boolean; 
+        limit?: number; 
+        offset?: number; 
+    } = {}): Promise<{ vendors: Vendor[]; total: number }> {
+        const { city, categoryId, search, sponsored, limit = 20, offset = 0 } = options;
+        
+        const query = this.vendorRepository.createQueryBuilder('vendor')
+            .leftJoinAndSelect('vendor.user', 'user')
+            .leftJoinAndSelect('vendor.category', 'category')
+            .where('vendor.isVerified = :isVerified', { isVerified: true });
+
+        // Apply Hard Filters First (Search filters are never bypassed)
+        if (city) {
+            query.andWhere("vendor.businessAddress->>'city' ILIKE :city", { city: `%${city}%` });
+        }
+        
+        if (categoryId) {
+            query.andWhere('vendor.categoryId = :categoryId', { categoryId });
+        }
+        
+        if (search) {
+            query.andWhere('(vendor.businessName ILIKE :search OR user.name ILIKE :search)', { search: `%${search}%` });
+        }
+
+        if (sponsored !== undefined) {
+            query.andWhere('vendor.isSponsored = :sponsored', { sponsored });
+        }
+
+        // Priority Order: Sponsored -> Featured -> Verified -> Rating -> Popularity -> Latest
+        query.orderBy('vendor.isSponsored', 'DESC')
+             .addOrderBy('vendor.isFeatured', 'DESC')
+             .addOrderBy('vendor.rating', 'DESC')
+             .addOrderBy('vendor.totalReviews', 'DESC')
+             .addOrderBy('vendor.createdAt', 'DESC')
+             .take(limit)
+             .skip(offset);
+
+        const [vendors, total] = await query.getManyAndCount();
+        return { vendors, total };
+    }
+
     async updateStatus(id: string, status: string): Promise<Vendor> {
         const vendor = await this.findOne(id);
         vendor.verificationStatus = status;

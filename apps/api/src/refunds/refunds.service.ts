@@ -85,7 +85,7 @@ export class RefundsService {
     /**
      * Admin: Approve a refund request.
      */
-    async approveRefund(id: string, adminNote?: string): Promise<RefundRequest> {
+    async approveRefund(id: string, adminId: string, adminRemark?: string): Promise<RefundRequest> {
         const refund = await this.refundRepository.findOne({ where: { id } });
         if (!refund) throw new NotFoundException('Refund request not found');
         if (refund.status !== RefundStatus.PENDING) {
@@ -93,15 +93,16 @@ export class RefundsService {
         }
 
         refund.status = RefundStatus.APPROVED;
-        refund.adminNote = adminNote || '';
-        refund.processedAt = new Date();
+        refund.adminRemark = adminRemark || '';
+        refund.approvedBy = adminId;
+        refund.approvedAt = new Date();
         return this.refundRepository.save(refund);
     }
 
     /**
      * Admin: Reject a refund request.
      */
-    async rejectRefund(id: string, adminNote: string): Promise<RefundRequest> {
+    async rejectRefund(id: string, adminId: string, adminRemark: string): Promise<RefundRequest> {
         const refund = await this.refundRepository.findOne({ where: { id } });
         if (!refund) throw new NotFoundException('Refund request not found');
         if (refund.status !== RefundStatus.PENDING) {
@@ -109,22 +110,24 @@ export class RefundsService {
         }
 
         refund.status = RefundStatus.REJECTED;
-        refund.adminNote = adminNote;
-        refund.processedAt = new Date();
+        refund.adminRemark = adminRemark;
+        refund.approvedBy = adminId;
+        refund.approvedAt = new Date();
         return this.refundRepository.save(refund);
     }
 
     /**
      * Admin: Mark a refund as actually transferred/processed.
      */
-    async markProcessed(id: string): Promise<RefundRequest> {
+    async markProcessed(id: string, adminId: string): Promise<RefundRequest> {
         const refund = await this.refundRepository.findOne({ where: { id } });
         if (!refund) throw new NotFoundException('Refund request not found');
         if (refund.status !== RefundStatus.APPROVED) {
             throw new BadRequestException('Refund must be approved before marking as processed');
         }
         refund.status = RefundStatus.PROCESSED;
-        refund.processedAt = new Date();
+        refund.completedAt = new Date();
+        // optionally log adminId for this action as well if needed.
         return this.refundRepository.save(refund);
     }
 }

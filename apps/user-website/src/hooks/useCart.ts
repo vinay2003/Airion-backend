@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/apiClient';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@ease2event/shared/auth';
 import { BookingCartItem } from '../context/BookingCartContext';
 
 export interface ServerCartItem {

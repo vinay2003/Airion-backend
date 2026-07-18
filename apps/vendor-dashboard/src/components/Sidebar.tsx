@@ -10,6 +10,18 @@ interface SidebarProps {
  onClose: () => void;
 }
 
+const getDisplayName = (user: any) => {
+  if (!user) return 'Vendor';
+  const name = user.name;
+  if (name && typeof name === 'string') {
+    const cleaned = name.replace(/^User\s+/i, '').trim();
+    if (cleaned.length > 0 && !cleaned.includes('@')) {
+      return cleaned;
+    }
+  }
+  return user.email || 'Vendor';
+};
+
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  const { user } = useAuth();
  const { isPremium, isLoading: isSubLoading } = useVendorSubscription();
@@ -109,11 +121,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   <NavLink to="/settings?tab=profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
   <Avatar
   src={user?.vendor?.logo}
-  name={user?.name || user?.email || 'Vendor'}
+  name={getDisplayName(user)}
   size="md"
   />
   <div className="flex-1 min-w-0">
-  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>
+  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{getDisplayName(user)}</p>
   <p className="text-xs text-[var(--ease2event-text-muted)] truncate">View Profile</p>
   </div>
   </NavLink>

@@ -186,7 +186,11 @@ export default function PremiumUpgrade() {
 
             {/* ── PRICING CARDS ──────────────────────────────────────────────────────── */}
             {!isPremium && plans.length > 0 && (
-                <div className={`grid md:grid-cols-${Math.min(displayPlans.length + 1, 4)} gap-8 max-w-7xl mx-auto items-start`}>
+                <div className={`grid gap-8 max-w-7xl mx-auto items-start ${
+                    displayPlans.length === 1 ? 'md:grid-cols-2 lg:grid-cols-2' : 
+                    displayPlans.length === 2 ? 'md:grid-cols-2 lg:grid-cols-3' :
+                    displayPlans.length >= 3 ? 'md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1'
+                }`}>
                     
                     {/* Free Tier */}
                     <div className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl p-8 lg:p-10 shadow-sm relative overflow-hidden">

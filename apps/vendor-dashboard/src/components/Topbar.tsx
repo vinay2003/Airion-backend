@@ -13,6 +13,18 @@ interface TopbarProps {
  onMenuClick: () => void;
 }
 
+const getDisplayName = (user: any) => {
+  if (!user) return 'Vendor';
+  const name = user.name;
+  if (name && typeof name === 'string') {
+    const cleaned = name.replace(/^User\s+/i, '').trim();
+    if (cleaned.length > 0 && !cleaned.includes('@')) {
+      return cleaned;
+    }
+  }
+  return user.email || 'Vendor';
+};
+
 const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  const { user, logout } = useAuth();
  const { theme, toggleTheme } = useTheme();
@@ -146,11 +158,11 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  >
  <Avatar
  src={user?.vendor?.logo}
- name={user?.name || user?.email || 'Vendor'}
+ name={getDisplayName(user)}
  size="sm"
  />
  <div className="hidden md:block">
- <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{user?.name || user?.email || 'Vendor'}</p>
+ <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{getDisplayName(user)}</p>
  <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight font-bold tracking-widest opacity-60 truncate max-w-[120px]">{user?.email || user?.phone || ''}</p>
  </div>
  <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
@@ -159,7 +171,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  {isProfileOpen && (
  <div className="fixed inset-x-4 md:absolute md:right-0 md:left-auto mt-3 md:w-56 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-[var(--ease2event-shadow-lg)] origin-top md:origin-top-right z-50 overflow-hidden top-[75px] md:top-auto">
  <div className="p-4 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)]/50">
- <p className="font-bold text-[var(--ease2event-text-primary)] text-sm truncate">{user?.name || 'Hello, Vendor'}</p>
+ <p className="font-bold text-[var(--ease2event-text-primary)] text-sm truncate">{getDisplayName(user)}</p>
  <p className="text-xs text-[var(--ease2event-text-muted)] truncate">{user?.email || 'vendor@ease2event.in'}</p>
  </div>
  <div className="p-2 space-y-1">

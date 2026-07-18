@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Put, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Put, NotFoundException, BadRequestException, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { VendorsService } from './vendors.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
@@ -91,6 +92,7 @@ export class VendorsController {
     }
 
     @Get('discovery')
+    @UseInterceptors(CacheInterceptor)
     async getDiscovery(
         @Query('city') city?: string,
         @Query('categoryId') categoryId?: string,

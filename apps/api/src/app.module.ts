@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -112,6 +113,7 @@ import { CronModule } from './cron/cron.module';
             },
         }),
         ScheduleModule.forRoot(),
+        CacheModule.register({ isGlobal: true }),
         AuthModule,
         VendorsModule,
         CategoriesModule,

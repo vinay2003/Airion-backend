@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany, Index } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Subcategory } from '../../categories/entities/subcategory.entity';
@@ -92,9 +92,11 @@ export class Vendor {
     @Column('int', { name: 'total_reviews', default: 0 })
     totalReviews: number;
 
+    @Index()
     @Column('boolean', { name: 'is_sponsored', default: false })
     isSponsored: boolean;
 
+    @Index()
     @Column('boolean', { name: 'is_featured', default: false })
     isFeatured: boolean;
 

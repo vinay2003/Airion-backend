@@ -34,6 +34,8 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { MerchandiseModule } from './merchandise/merchandise.module';
 import { RefundsModule } from './refunds/refunds.module';
 import { CronModule } from './cron/cron.module';
+import { HealthModule } from './health/health.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
     imports: [
@@ -141,6 +143,8 @@ import { CronModule } from './cron/cron.module';
         MerchandiseModule,
         RefundsModule,
         CronModule,
+        HealthModule,
+        CartModule,
     ],
     controllers: [AppController],
 })

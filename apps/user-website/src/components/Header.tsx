@@ -34,10 +34,12 @@ const UserProfileMenu = ({
             className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent  dark:"
         >
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-sm">
-                {user?.name?.[0] || <UserIcon size={20} />}
+                {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || <UserIcon size={20} />}
             </div>
             <div className="hidden xl:block text-left">
-                <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">{user?.name}</p>
+                <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">
+                    {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                </p>
                 <p className="text-[10px] text-gray-500 font-medium">Account</p>
             </div>
             <ChevronDown
@@ -55,8 +57,10 @@ const UserProfileMenu = ({
                     className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-[1010]"
                 >
                     <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white">{user?.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                            {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email || user?.phone}</p>
                     </div>
                     <div className="p-2">
                         {user?.role === 'user' ? (
@@ -254,22 +258,6 @@ const Header: React.FC = () => {
             </nav>
 
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-                {isAuthenticated ? (
-                    <UserProfileMenu
-                        user={user}
-                        isUserMenuOpen={isUserMenuOpen}
-                        setIsUserMenuOpen={setIsUserMenuOpen}
-                        userMenuRef={userMenuRef}
-                        logout={logout}
-                    />
-                ) : (
-                    <Link
-                        to="/login"
-                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
-                    >
-                        <UserIcon size={24} />
-                    </Link>
-                )}
                 {isAuthenticated && (
                     user?.role === 'user' ? (
                         <Link
@@ -345,6 +333,22 @@ const Header: React.FC = () => {
                 >
                     {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
+                {isAuthenticated ? (
+                    <UserProfileMenu
+                        user={user}
+                        isUserMenuOpen={isUserMenuOpen}
+                        setIsUserMenuOpen={setIsUserMenuOpen}
+                        userMenuRef={userMenuRef}
+                        logout={logout}
+                    />
+                ) : (
+                    <Link
+                        to="/login"
+                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"
+                    >
+                        <UserIcon size={24} />
+                    </Link>
+                )}
             </div>
 
             <div className="flex lg:hidden items-center gap-2">
@@ -517,11 +521,13 @@ const Header: React.FC = () => {
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-4 mb-4">
                                             <div className="w-12 h-12 rounded-2xl bg-red-500 flex items-center justify-center text-white text-xl font-black">
-                                                {user?.name?.[0]}
+                                                {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || <UserIcon size={24} color="white" />}
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-black text-gray-900 dark:text-white">{user?.name}</span>
-                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Member ID: #2384</span>
+                                                <span className="text-sm font-black text-gray-900 dark:text-white">
+                                                    {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                                                </span>
+                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{user?.email || 'Member ID: #2384'}</span>
                                             </div>
                                         </div>
                                         {user?.role === 'user' ? (

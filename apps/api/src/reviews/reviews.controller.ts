@@ -30,6 +30,17 @@ export class ReviewsController {
         return this.reviewsService.findByVendor(vendorId);
     }
 
+    @Patch(':id/reply')
+    @UseGuards(JwtAuthGuard)
+    async replyToReview(
+        @Param('id') id: string,
+        @Body() body: { replyText: string; vendorId?: string },
+        @Request() req: any
+    ) {
+        const vendorId = body.vendorId || req.user.vendorId || req.user.userId;
+        return this.reviewsService.reply(id, vendorId, body.replyText);
+    }
+
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.NO_CONTENT)

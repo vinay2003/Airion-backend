@@ -4,6 +4,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import SearchBar from './SearchBar';
 import { useAuth } from '@shared/auth'; // ✅ added
+import api from '../lib/api';
 
 const HERO_IMAGES = [
     "https://images.unsplash.com/photo-1773745060497-4cc1df774c72?w=2560&auto=format&fit=crop&q=100",
@@ -75,6 +76,34 @@ const Hero: React.FC = () => {
     const [stripIndex, setStripIndex] = useState(0);
     const [disableTransition, setDisableTransition] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+    
+    const [heroContent, setHeroContent] = useState(HERO_CONTENT);
+    const [heroImages, setHeroImages] = useState(HERO_IMAGES);
+    const [loopImages, setLoopImages] = useState(LOOP_IMAGES);
+
+    useEffect(() => {
+        api.get('/cms/landing_page_hero').then((res: any) => {
+            if (res.data) {
+                const config = res.data;
+                const newContent = [...HERO_CONTENT];
+                newContent[0] = {
+                    ...newContent[0],
+                    title: <>{config.title}</>,
+                    description: config.subtitle,
+                };
+                
+                const newImages = [...HERO_IMAGES];
+                if (config.backgroundImage) {
+                    newImages[0] = config.backgroundImage;
+                }
+
+                setHeroContent(newContent);
+                setHeroImages(newImages);
+                setLoopImages([...newImages, newImages[0]]);
+            }
+        }).catch(err => console.error('Failed to load CMS hero config', err));
+    }, []);
+
     const [isSoundEnabled, setIsSoundEnabled] = useState(() => {
         const saved = localStorage.getItem('hero_sound_enabled');
         return saved === null ? true : saved === 'true';
@@ -151,7 +180,7 @@ const Hero: React.FC = () => {
 
 
     // Real index for content & dots — wraps clone (index 6) back to 0
-    const displayIndex = stripIndex % HERO_IMAGES.length;
+    const displayIndex = stripIndex % heroImages.length;
 
     // Auto-advance every 6s
     useEffect(() => {
@@ -168,7 +197,7 @@ const Hero: React.FC = () => {
 
     // When we land on the clone, snap silently back to real index 0
     useEffect(() => {
-        if (stripIndex === LOOP_IMAGES.length - 1) {
+        if (stripIndex === loopImages.length - 1) {
             const timer = setTimeout(() => {
                 setDisableTransition(true);
                 setStripIndex(0);
@@ -229,20 +258,20 @@ const Hero: React.FC = () => {
                 <div
                     className="absolute inset-0 flex"
                     style={{
-                        width: `${LOOP_IMAGES.length * 100}%`,
-                        transform: `translateX(-${stripIndex * (100 / LOOP_IMAGES.length)}%)`,
+                        width: `${loopImages.length * 100}%`,
+                        transform: `translateX(-${stripIndex * (100 / loopImages.length)}%)`,
                         transition: disableTransition ? 'none' : 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)',
                         willChange: 'transform',
                     }}
                 >
-                    {LOOP_IMAGES.map((src, idx) => {
-                        const contentIdx = idx % HERO_CONTENT.length;
-                        const content = HERO_CONTENT[contentIdx];
+                    {loopImages.map((src, idx) => {
+                        const contentIdx = idx % heroContent.length;
+                        const content = heroContent[contentIdx];
                         return (
                             <div
                                 key={idx}
                                 className="relative flex-shrink-0"
-                                style={{ width: `${100 / LOOP_IMAGES.length}%` }}
+                                style={{ width: `${100 / loopImages.length}%` }}
                             >
                                 <img
                                     src={src}
@@ -315,7 +344,7 @@ const Hero: React.FC = () => {
 
                 {/* Indicators — keyed to displayIndex */}
                 <div className="absolute bottom-10 left-0 right-0 z-20 flex justify-center items-center gap-4">
-                    {HERO_IMAGES.map((_, idx) => (
+                    {heroImages.map((_, idx) => (
                         <button
                             key={idx}
                             type="button"

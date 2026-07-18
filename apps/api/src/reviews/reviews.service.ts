@@ -112,6 +112,16 @@ export class ReviewsService {
         return savedReview;
     }
 
+    async reply(id: string, vendorId: string, replyText: string): Promise<Review> {
+        const review = await this.reviewRepository.findOne({ where: { id, vendorId } });
+        if (!review) {
+            throw new NotFoundException('Review not found or does not belong to you');
+        }
+        
+        review.vendorReply = replyText;
+        return this.reviewRepository.save(review);
+    }
+
     async delete(id: string, userId: string): Promise<boolean> {
         const review = await this.reviewRepository.findOne({ where: { id, userId } });
         if (!review) {

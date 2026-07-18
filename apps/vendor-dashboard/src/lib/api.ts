@@ -43,4 +43,10 @@ export const uploadImage = async (file: File) => {
     });
 };
 
+// Reviews
+export const fetchVendorReviews = async (vendorId: string) =>
+    await api.get(`/reviews/vendor/${vendorId}`);
+
+export const replyToReview = async (reviewId: string, vendorId: string, replyText: string) =>
+    await api.patch(`/reviews/${reviewId}/reply`, { vendorId, replyText });
 

@@ -111,6 +111,11 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
     async changePassword(@Request() req: any, @Body() dto: ChangePasswordDto) {
-        return this.authService.changePassword(req.user.userId, dto);
+        try {
+            return await this.authService.changePassword(req.user.userId, dto);
+        } catch (error: any) {
+            console.error('[changePassword Error]:', error);
+            throw error;
+        }
     }
 }

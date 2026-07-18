@@ -17,7 +17,8 @@ export class WalletController {
     @Get('overview')
     @Roles(UserRole.VENDOR)
     async getOverview(@Req() req: any) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
         
         const overview = await this.walletService.getWalletOverview(vendor.id);
@@ -29,7 +30,8 @@ export class WalletController {
     @Post('withdraw')
     @Roles(UserRole.VENDOR)
     async withdraw(@Req() req: any, @Body() body: { amount: number, bankDetails?: any }) {
-        const vendor = await this.vendorsService.findByUserId(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
         return this.walletService.requestWithdrawal(vendor.id, body.amount, body.bankDetails);
     }

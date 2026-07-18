@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Vendor } from '../../vendors/entities/vendor.entity';
 
 @Entity('vendor_availability')
-@Index(['vendorId', 'date'], { unique: true })
 export class Availability {
     @PrimaryGeneratedColumn('uuid')
     id: string;

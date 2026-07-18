@@ -46,6 +46,9 @@ export class Review {
     @Column('text', { name: 'review_text', nullable: true })
     reviewText: string;
 
+    @Column('text', { name: 'vendor_reply', nullable: true })
+    vendorReply: string;
+
     @Column('text', { array: true, nullable: true })
     images: string[];
 

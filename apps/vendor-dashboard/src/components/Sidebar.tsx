@@ -1,27 +1,44 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag, Briefcase, Star, Crown, Sparkles } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
+import { useVendorSubscription } from '../hooks/useVendorSubscription';
 
 interface SidebarProps {
  isOpen: boolean;
  onClose: () => void;
 }
 
+const getDisplayName = (user: any) => {
+  if (!user) return 'Vendor';
+  const name = user.name;
+  if (name && typeof name === 'string') {
+    const cleaned = name.replace(/^User\s+/i, '').trim();
+    if (cleaned.length > 0 && !cleaned.includes('@')) {
+      return cleaned;
+    }
+  }
+  return user.email || 'Vendor';
+};
+
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  const { user } = useAuth();
+ const { isPremium, isLoading: isSubLoading } = useVendorSubscription();
  const navItems = [
  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
  { icon: Ticket, label: 'Events', path: '/events' },
+ { icon: Briefcase, label: 'Services List', path: '/services' },
  { icon: Calendar, label: 'Bookings', path: '/bookings' },
  { icon: CalendarDays, label: 'Calendar', path: '/calendar' },
  { icon: DollarSign, label: 'Earnings', path: '/earnings' },
  { icon: MessageSquare, label: 'Enquiries', path: '/enquiries' },
- { icon: Megaphone, label: 'Ads', path: '/ads' },
+ { icon: ShoppingBag, label: 'Event Shop', path: '/shop-items' },
+ { icon: ShoppingBag, label: 'Shop Orders', path: '/shop/orders' },
+ { icon: Megaphone, label: 'Promotions', path: '/promotions' },
  { icon: Camera, label: 'Gallery', path: '/gallery' },
- { icon: Package, label: 'Products', path: '/products' },
  { icon: BarChart2, label: 'Analytics', path: '/analytics' },
+ { icon: Star, label: 'Reviews', path: '/reviews' },
  { icon: Settings, label: 'Settings', path: '/settings' },
  ];
 
@@ -77,14 +94,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  </nav>
 
  <div className="p-4 border-t border-[var(--ease2event-border-subtle)] space-y-2">
-  <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
+  {!isSubLoading && (
+    <NavLink 
+      to="/premium" 
+      onClick={() => window.innerWidth < 768 && onClose()} 
+      className={`flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
+        isPremium 
+          ? 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20 text-amber-600 hover:bg-amber-500/20' 
+          : 'bg-gradient-to-r from-[var(--ease2event-brand-primary)]/10 to-[var(--ease2event-brand-secondary)]/10 border-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-primary)]/20'
+      }`}
+    >
+      <div className={`p-1.5 rounded-lg ${isPremium ? 'bg-amber-500/20 text-amber-600' : 'bg-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-brand-primary)]'}`}>
+        {isPremium ? <Crown size={18} /> : <Sparkles size={18} />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold truncate">
+          {isPremium ? 'Premium Active' : 'Upgrade to Premium'}
+        </p>
+        <p className="text-xs truncate font-medium opacity-80">
+          {isPremium ? 'Manage Subscription' : 'Unlock Advanced Tools'}
+        </p>
+      </div>
+    </NavLink>
+  )}
+
+  <NavLink to="/settings?tab=profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
   <Avatar
   src={user?.vendor?.logo}
-  name={user?.name || user?.email || 'Vendor'}
+  name={getDisplayName(user)}
   size="md"
   />
   <div className="flex-1 min-w-0">
-  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{user?.name || 'Vendor Profile'}</p>
+  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] truncate">{getDisplayName(user)}</p>
   <p className="text-xs text-[var(--ease2event-text-muted)] truncate">View Profile</p>
   </div>
   </NavLink>

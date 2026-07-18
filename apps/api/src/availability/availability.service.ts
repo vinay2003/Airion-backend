@@ -22,18 +22,12 @@ export class AvailabilityService {
     }
 
     async blockDate(vendorId: string, date: string, reason?: string, status: string = 'blocked') {
-        const existing = await this.availabilityRepository.findOne({
+        const existings = await this.availabilityRepository.find({
             where: { vendorId, date },
         });
 
-        if (existing && existing.status === 'booked') {
+        if (existings.some(e => e.status === 'booked')) {
             throw new BadRequestException('Cannot block a date that is already booked');
-        }
-
-        if (existing) {
-            existing.status = status;
-            existing.reason = reason ?? null;
-            return this.availabilityRepository.save(existing);
         }
 
         const block = this.availabilityRepository.create({
@@ -46,9 +40,9 @@ export class AvailabilityService {
         return this.availabilityRepository.save(block);
     }
 
-    async unblockDate(vendorId: string, date: string) {
+    async unblockDate(vendorId: string, id: string) {
         const block = await this.availabilityRepository.findOne({
-            where: { vendorId, date },
+            where: { vendorId, id },
         });
 
         if (!block) return true;

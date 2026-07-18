@@ -342,7 +342,7 @@ const Promotions: React.FC = () => {
                                 onChange={e => setDisplayForm(d => ({ ...d, placement: e.target.value }))}
                                 className="w-full h-11 px-4 rounded-xl border border-gray-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-[var(--ease2event-text-primary)]"
                             >
-                                {DISPLAY_PLACEMENTS.map(p => <option key={p}>{p}</option>)}
+                                {DISPLAY_PLACEMENTS.map(p => <option key={p} className="bg-white dark:bg-slate-900">{p}</option>)}
                             </select>
                         </div>
                         <div>

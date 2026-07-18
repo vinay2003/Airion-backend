@@ -23,7 +23,7 @@ interface Package {
  * 📦 Service Inventory: High-Fidelity Asset Management
  * Refactored for 'Premium SaaS' aesthetics with DM Sans & Framer Motion.
  */
-const Products: React.FC = () => {
+const Services: React.FC = () => {
  const { user } = useAuth();
  const vendorId = user?.vendor?.id || '';
  const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +32,7 @@ const Products: React.FC = () => {
  const [activeTab, setActiveTab] = useState('ALL_SERVICES');
  const [submitting, setSubmitting] = useState(false);
  const [loading, setLoading] = useState(true);
- const [products, setProducts] = useState<any[]>([]);
+ const [services, setServices] = useState<any[]>([]);
 
  const [formData, setFormData] = useState({
  title: '',
@@ -59,7 +59,7 @@ const Products: React.FC = () => {
  if (!vendorId) return;
  try {
  const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
- setProducts(res || []);
+ setServices(res || []);
  } catch (err) {
  console.error('Failed to load initial data');
  } finally {
@@ -125,7 +125,7 @@ const Products: React.FC = () => {
  await api.delete(`/services/${id}`);
  toast.success('Service deleted successfully!');
  const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
- setProducts(res || []);
+ setServices(res || []);
  } catch (err) {
  console.error('Deletion failed:', err);
  toast.error('Failed to delete service.');
@@ -165,7 +165,7 @@ const Products: React.FC = () => {
  resetForm();
  setIsAdding(false);
  const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
- setProducts(res || []);
+ setServices(res || []);
  } catch (err) {
  console.error('Submission failed:', err);
  toast.error('Failed to save service. Please check your connection.');
@@ -197,7 +197,7 @@ const Products: React.FC = () => {
  setFormData({ ...formData, packages: newPackages });
  };
 
- const filteredProducts = products.filter(p => {
+ const filteredServices = services.filter(p => {
  const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase());
  let matchesTab = true;
  if (activeTab === 'ACTIVE') matchesTab = p.isActive !== false;
@@ -508,7 +508,7 @@ const Products: React.FC = () => {
  ) : (
  <>
  <AnimatePresence mode="popLayout">
- {filteredProducts.map((prod: any, idx: number) => (
+ {filteredServices.map((prod: any, idx: number) => (
  <div
  key={prod.id || idx}
  className="card-minimal !p-0 overflow-hidden group border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)]  transition-all flex flex-col h-full cursor-pointer rounded-xl"
@@ -573,4 +573,4 @@ const Products: React.FC = () => {
  );
 };
 
-export default Products;
+export default Services;

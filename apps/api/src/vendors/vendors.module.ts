@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VendorsService } from './vendors.service';
 import { VendorsController } from './vendors.controller';
@@ -13,10 +13,12 @@ import { Availability } from '../availability/entities/availability.entity';
 import { User } from '../auth/entities/user.entity';
 
 import { VendorProfileView } from './entities/vendor-profile-view.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Vendor, Activity, Category, Subcategory, Booking, VendorAd, VendorGallery, Availability, User, VendorProfileView]),
+    forwardRef(() => AuthModule),
   ],
   controllers: [VendorsController],
   providers: [VendorsService],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Patch, UseGuards, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Patch, UseGuards, Query, Req, Headers } from '@nestjs/common';
 import { Request } from 'express';
 import { SubscriptionsService } from './subscriptions.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -32,6 +32,12 @@ export class SubscriptionsController {
     @Post('cancel')
     cancelSubscription(@Req() req: Request & { user: any }) {
         return this.subscriptionsService.cancelSubscription(req.user.id);
+    }
+
+    // Webhook endpoint (unprotected, relies on signature verification)
+    @Post('webhook/payment')
+    handlePaymentWebhook(@Body() payload: any, @Headers('stripe-signature') signature: string) {
+        return this.subscriptionsService.handlePaymentWebhook(payload, signature);
     }
 
     // Admin endpoints

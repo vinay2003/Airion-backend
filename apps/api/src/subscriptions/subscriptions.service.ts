@@ -61,6 +61,23 @@ export class SubscriptionsService {
         return { success: true, message: 'Subscription auto-renew cancelled' };
     }
 
+    async handlePaymentWebhook(payload: any, signature: string) {
+        // Example implementation for Stripe/Razorpay signature verification
+        // 1. Verify signature using gateway library (e.g. stripe.webhooks.constructEvent)
+        // const event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
+        
+        // 2. Idempotency check: Ensure we haven't already processed this webhook event ID
+        
+        // 3. Handle specific event types (e.g., checkout.session.completed, invoice.payment_succeeded)
+        // if (event.type === 'checkout.session.completed') {
+        //    const session = event.data.object;
+        //    // Extract userId and planId from session metadata
+        //    // Create or update ActiveSubscription to ACTIVE
+        // }
+        
+        return { received: true };
+    }
+
     // Admin functions
     async getAllPlans() {
         return this.planRepository.find({ order: { type: 'ASC', priority: 'ASC' } });

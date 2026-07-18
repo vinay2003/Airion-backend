@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Req, Query } from '@nestjs/common';
 import { MerchandiseService } from './merchandise.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -24,7 +24,35 @@ export class MerchandiseController {
     @Get('orders')
     @UseGuards(JwtAuthGuard)
     getOrders(@Req() req: any) {
-        return this.merchandiseService.getOrders(req.user.userId);
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.getOrders(userId);
+    }
+
+    @Get('vendor/orders')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.VENDOR)
+    getVendorOrders(@Req() req: any) {
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.getVendorOrders(userId);
+    }
+
+    @Patch('vendor/orders/:orderItemId/status')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.VENDOR)
+    updateVendorOrderStatus(
+        @Param('orderItemId') orderItemId: string,
+        @Body() payload: any,
+        @Req() req: any
+    ) {
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.updateOrderItemStatus(orderItemId, userId, payload);
+    }
+
+    @Get('admin/orders')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    getAdminOrders() {
+        return this.merchandiseService.getAdminOrders();
     }
 
     @Get(':id')
@@ -36,21 +64,24 @@ export class MerchandiseController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.VENDOR)
     create(@Body() productData: any, @Req() req: any) {
-        return this.merchandiseService.create(productData, req.user.userId, req.user.role);
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.create(productData, userId, req.user.role);
     }
 
     @Put(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.VENDOR)
     update(@Param('id') id: string, @Body() productData: any, @Req() req: any) {
-        return this.merchandiseService.update(id, productData, req.user.userId, req.user.role);
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.update(id, productData, userId, req.user.role);
     }
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN, UserRole.VENDOR)
     delete(@Param('id') id: string, @Req() req: any) {
-        return this.merchandiseService.delete(id, req.user.userId, req.user.role);
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.delete(id, userId, req.user.role);
     }
 
     @Put(':id/approve')
@@ -63,6 +94,7 @@ export class MerchandiseController {
     @Post('checkout')
     @UseGuards(JwtAuthGuard)
     checkout(@Body() orderData: any, @Req() req: any) {
-        return this.merchandiseService.checkout(req.user.userId, orderData);
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.checkout(userId, orderData);
     }
 }

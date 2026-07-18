@@ -23,8 +23,12 @@ import EventPlanning from './pages/EventPlanning';
 import Promotions from './pages/Promotions';
 import Calendar from './pages/Calendar';
 import Earnings from './pages/Earnings';
-import Products from './pages/Products';
+import Services from './pages/Services';
+import Reviews from './pages/Reviews';
 import Gallery from './pages/Gallery';
+import ShopItems from './pages/ShopItems';
+import MerchandiseOrders from './pages/MerchandiseOrders';
+import PremiumUpgrade from './pages/PremiumUpgrade';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -56,17 +60,23 @@ const App: React.FC = () => {
                   <Route path="events" element={<Listings />} />
                   <Route path="enquiries" element={<Inbox />} />
                   <Route path="bookings" element={<Bookings />} />
+                  <Route path="shop-items" element={<ShopItems />} />
+                  <Route path="shop/orders" element={<MerchandiseOrders />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="profile" element={<Profile />} />
+                  <Route path="profile" element={<Navigate to="/settings?tab=profile" replace />} />
 
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />
-                  <Route path="products" element={<Products />} />
+                  <Route path="services" element={<Services />} />
+                  <Route path="products" element={<Navigate to="/services" replace />} />
+                  <Route path="reviews" element={<Reviews />} />
+                  <Route path="shop-items" element={<ShopItems />} />
                   <Route path="ads" element={<Promotions />} />
                   <Route path="promotions" element={<Promotions />} />
                   <Route path="plan-event" element={<EventPlanning />} />
                   <Route path="gallery" element={<Gallery />} />
+                  <Route path="premium" element={<PremiumUpgrade />} />
                 </Route>
 
                 {/* Catch-all - redirect within the basename context */}

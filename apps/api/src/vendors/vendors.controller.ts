@@ -3,6 +3,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 import { VendorsService } from './vendors.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
+import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/guards/roles.decorator';
@@ -128,15 +129,20 @@ export class VendorsController {
 
     @Put('me')
     @UseGuards(JwtAuthGuard)
-    async updateProfile(@Body() updateVendorDto: Partial<CreateVendorDto>, @Request() req: any) {
-        const userId = req.user.userId || req.user.sub;
-        const vendor = await this.vendorsService.findByUserId(userId);
+    async updateProfile(@Body() updateVendorDto: UpdateVendorDto, @Request() req: any) {
+        try {
+            const userId = req.user.userId || req.user.sub;
+            const vendor = await this.vendorsService.findByUserId(userId);
 
-        if (!vendor) {
-            throw new NotFoundException('Vendor profile not found');
+            if (!vendor) {
+                throw new NotFoundException('Vendor profile not found');
+            }
+
+            return await this.vendorsService.update(vendor.id, updateVendorDto, userId);
+        } catch (error: any) {
+            console.error('[updateProfile Error]:', error);
+            throw new BadRequestException(error.message || 'Failed to update vendor');
         }
-
-        return this.vendorsService.update(vendor.id, updateVendorDto, userId);
     }
 
     /**
@@ -150,17 +156,26 @@ export class VendorsController {
     }
 
     /**
-     * Admin Endpoint: Update single vendor approval status
+     * Admin Endpoint: Update single vendor approval/KYC status
+     * Body: { status: VendorVerificationStatus, rejectionReason?: string }
      */
     @Patch(':id/status')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
-    async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+    async updateStatus(
+        @Param('id') id: string,
+        @Body() body: { status: string; rejectionReason?: string },
+        @Request() req: any,
+    ) {
         if (!body.status) {
             throw new BadRequestException('Status is required');
         }
-        return this.vendorsService.updateStatus(id, body.status);
+        return this.vendorsService.updateStatus(id, body.status, {
+            rejectionReason: body.rejectionReason,
+            reviewedById: req.user?.userId,
+        });
     }
+
 
     @Get(':id/stats/bookings')
     @UseGuards(JwtAuthGuard)

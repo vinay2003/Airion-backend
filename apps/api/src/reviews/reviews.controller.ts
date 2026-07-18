@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Request, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards, Request, HttpCode, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -28,6 +28,17 @@ export class ReviewsController {
     @Get('vendor/:vendorId')
     async findByVendor(@Param('vendorId') vendorId: string) {
         return this.reviewsService.findByVendor(vendorId);
+    }
+
+    @Patch(':id/reply')
+    @UseGuards(JwtAuthGuard)
+    async replyToReview(
+        @Param('id') id: string,
+        @Body() body: { replyText: string; vendorId?: string },
+        @Request() req: any
+    ) {
+        const vendorId = body.vendorId || req.user.vendorId || req.user.userId;
+        return this.reviewsService.reply(id, vendorId, body.replyText);
     }
 
     @Delete(':id')

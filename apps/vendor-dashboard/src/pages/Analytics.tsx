@@ -3,7 +3,7 @@ import {
     TrendingUp, Eye, Users, ArrowUpRight, ArrowDownRight,
     Activity, Zap, BarChart3, Target, MoreVertical, Layers,
     Sparkles, ShieldCheck, Globe, Cpu, ChevronRight, Box,
-    IndianRupee
+    IndianRupee, Lock, Crown
 } from 'lucide-react';
 import {
     AreaChart, Area, BarChart, Bar, XAxis, YAxis,
@@ -16,6 +16,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchVendorPerformance } from '../lib/api';
 import { Badge, Button, Skeleton } from '@ease2event/ui';
 import toast from 'react-hot-toast';
+import { useVendorSubscription } from '../hooks/useVendorSubscription';
+import { useNavigate } from 'react-router-dom';
 
 type AnalysisPeriod = '7D' | '30D' | '90D' | 'YTD';
 
@@ -28,6 +30,8 @@ const Analytics: React.FC = () => {
     const vendorId = user?.vendor?.id || user?.id || '';
     const [period, setPeriod] = useState<AnalysisPeriod>('30D');
     const queryClient = useQueryClient();
+    const { isPremium } = useVendorSubscription();
+    const navigate = useNavigate();
 
     const handleUpdateReports = async () => {
         try {
@@ -54,6 +58,23 @@ const Analytics: React.FC = () => {
         },
         enabled: !!vendorId
     });
+
+    const { data: plansData } = useQuery({
+        queryKey: ['vendorPlans'],
+        queryFn: async () => {
+            try {
+                const res: any = await api.get('/subscriptions/plans', { params: { type: 'vendor' } });
+                return res.data?.data || res.data || [];
+            } catch (err) {
+                return [];
+            }
+        }
+    });
+
+    const highestPlan = useMemo(() => {
+        if (!plansData || !Array.isArray(plansData) || plansData.length === 0) return null;
+        return plansData.filter((p: any) => p.isActive && p.price > 0).sort((a: any, b: any) => b.priority - a.priority)[0] || plansData[0];
+    }, [plansData]);
 
     const stats = useMemo(() => [
         { label: 'Profile Views', value: statsData?.totalEvents || '0', change: '+12.4%', trend: 'up', icon: Eye, color: 'text-blue-500', shadow: 'shadow-blue-500/10' },
@@ -180,8 +201,29 @@ const Analytics: React.FC = () => {
                 ))}
             </div>
 
-            {/* 📊 Spectrum Analytics Flow */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* 📊 Spectrum Analytics Flow (Premium Locked) */}
+        <div className="relative">
+            {!isPremium && (
+                <div className="absolute inset-0 z-20 backdrop-blur-xl bg-[var(--ease2event-bg-main)]/60 rounded-[40px] flex flex-col items-center justify-center p-8 border border-[var(--ease2event-border-subtle)] text-center">
+                    <div className="bg-amber-500/10 text-amber-600 p-4 rounded-full mb-4 ring-4 ring-amber-500/5">
+                        <Lock size={32} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-2 flex items-center gap-2">
+                        <Crown className="text-amber-500" size={24} /> Advanced Insights Locked
+                    </h3>
+                    <p className="text-[var(--ease2event-text-secondary)] font-medium max-w-md mb-8">
+                        {highestPlan?.description || 'Upgrade to Premium to unlock advanced growth trends, revenue performance tracking, and AI-powered business predictions.'}
+                    </p>
+                    <Button 
+                        onClick={() => navigate('/premium')}
+                        className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 shadow-lg shadow-amber-500/20"
+                    >
+                        Upgrade to {highestPlan?.name || 'Premium'}
+                    </Button>
+                </div>
+            )}
+            
+            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${!isPremium ? 'opacity-40 select-none pointer-events-none' : ''}`}>
                 <div className="card-premium p-6 sm:p-6 relative group">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-12 relative z-10 gap-6 sm:gap-0">
                         <div className="flex items-center gap-4 sm:gap-6">
@@ -249,6 +291,7 @@ const Analytics: React.FC = () => {
                         </ResponsiveContainer>
                     </div>
                 </div>
+            </div>
             </div>
 
             {/* 🏰 Node Leadership Matrix */}

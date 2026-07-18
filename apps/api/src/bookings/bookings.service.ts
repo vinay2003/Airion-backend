@@ -5,6 +5,7 @@ import { Booking } from './entities/booking.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 import { WalletService } from '../wallet/wallet.service';
 import { AvailabilityService } from '../availability/availability.service';
+import { EmailService } from '../common/services/email.service';
 
 @Injectable()
 export class BookingsService {
@@ -14,6 +15,7 @@ export class BookingsService {
         private readonly notificationsService: NotificationsService,
         private readonly walletService: WalletService,
         private readonly availabilityService: AvailabilityService,
+        private readonly emailService: EmailService,
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
@@ -189,13 +191,30 @@ export class BookingsService {
 
             if (fullBooking?.user?.id) {
                 const statusString = fullBooking.status.charAt(0).toUpperCase() + fullBooking.status.slice(1);
+                const vendorName = fullBooking.vendor?.businessName || 'A Vendor';
+                const serviceName = fullBooking.service?.title || 'a service';
+                const userName = fullBooking.user?.name || 'Customer';
+                const userEmail = fullBooking.user?.email;
+                const bookingCode = fullBooking.bookingCode || fullBooking.id.substring(0, 8);
+
                 await this.notificationsService.create({
                     userId: fullBooking.user.id,
                     type: `booking_${fullBooking.status}`,
                     title: `Booking ${statusString}`,
-                    message: `Your booking for ${fullBooking.service?.title || 'a service'} is now ${fullBooking.status}.`,
+                    message: `Your booking for ${serviceName} is now ${fullBooking.status}.`,
                     data: { bookingId: fullBooking.id }
                 });
+
+                if (userEmail && (nextStatus === 'confirmed' || nextStatus === 'canceled')) {
+                    await this.emailService.sendBookingStatusEmail(
+                        userEmail,
+                        userName,
+                        bookingCode,
+                        nextStatus,
+                        serviceName,
+                        vendorName
+                    );
+                }
             }
         } catch (err) {
             console.error('Failed to send notification on transition:', err);

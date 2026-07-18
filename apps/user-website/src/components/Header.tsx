@@ -131,7 +131,7 @@ const Header: React.FC = () => {
 
     const navItems = [
         { name: 'Home', path: '/' },
-        { name: 'Venues', path: '/search' },
+        { name: 'Vendors', path: '/search' },
         { name: 'Packages', path: '/packages' },
         {
             name: 'Events',
@@ -280,20 +280,39 @@ const Header: React.FC = () => {
                     )
                 )}
                 {isAuthenticated && (
-                    <Link
-                        to={user?.role === 'vendor' ? '/vendor/enquiries' : '/dashboard'}
-                        onClick={() => setHasNewNotifications(false)}
-                        className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
-                    >
-                        <Bell size={20} />
-                        {hasNewNotifications && (
-                            <motion.span
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
-                            />
-                        )}
-                    </Link>
+                    user?.role === 'vendor' ? (
+                        <a
+                            href={getPortalUrl('vendor' as any) + '/enquiries'}
+                            onClick={() => setHasNewNotifications(false)}
+                            className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
+                            title="Go to Vendor Enquiries"
+                        >
+                            <Bell size={20} />
+                            {hasNewNotifications && (
+                                <motion.span
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
+                                />
+                            )}
+                        </a>
+                    ) : (
+                        <Link
+                            to="/dashboard/bookings"
+                            onClick={() => setHasNewNotifications(false)}
+                            className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
+                            title="View Notifications & Bookings"
+                        >
+                            <Bell size={20} />
+                            {hasNewNotifications && (
+                                <motion.span
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
+                                />
+                            )}
+                        </Link>
+                    )
                 )}
                 <Link
                     to="/cart"

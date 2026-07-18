@@ -386,7 +386,7 @@ const ProfileSettings: React.FC = () => {
         </div>
       </div>
 
-      <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] sticky bottom-0 bg-[var(--ease2event-bg-surface)] pb-4 z-10 flex justify-end">
+      <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] mt-10 flex justify-end">
         <Button onClick={handleSaveProfile} disabled={submitting} className="h-14 sm:h-12 w-full sm:w-auto sm:px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] sm:text-[12px] font-bold tracking-widest rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-[var(--ease2event-brand-primary)]/20">
           {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={16} className="mr-3" /> SAVE PROFILE</>}
         </Button>

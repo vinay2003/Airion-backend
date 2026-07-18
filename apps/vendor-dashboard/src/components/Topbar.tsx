@@ -95,7 +95,17 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  </div>
 
  <div ref={navRef} className="flex items-center justify-end gap-3 md:gap-6 flex-1 relative">
- <button onClick={() => window.location.href = 'http://localhost:5173'} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer">
+ <button onClick={() => {
+     const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+     window.location.href = landingUrl;
+ }} className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-brand-primary)] border border-transparent cursor-pointer font-semibold text-sm">
+ <Home size={18} />
+ Go to Homepage
+ </button>
+ <button onClick={() => {
+     const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+     window.location.href = landingUrl;
+ }} className="md:hidden p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-brand-primary)] border border-transparent cursor-pointer">
  <Home size={20} />
  </button>
  <button onClick={toggleTheme} className="p-2.5 hover:bg-[rgba(108,99,255,0.06)] rounded-xl transition-all text-[var(--ease2event-text-secondary)] border border-transparent cursor-pointer">

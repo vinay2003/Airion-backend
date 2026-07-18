@@ -221,16 +221,6 @@ const DashboardLayout: React.FC = () => {
                 </nav>
 
                 <div className="p-4 border-t border-neutral-200 dark:border-slate-800 space-y-2">
-                    <button
-                        onClick={() => {
-                            const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
-                            window.location.href = landingUrl;
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all font-medium text-sm"
-                    >
-                        <Home size={20} />
-                        Go to Homepage
-                    </button>
 
                     <button
                         onClick={toggleTheme}
@@ -264,6 +254,27 @@ const DashboardLayout: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4 ml-auto">
+                        <button
+                            onClick={() => {
+                                const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+                                window.location.href = landingUrl;
+                            }}
+                            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all text-sm"
+                            title="Go to Homepage"
+                        >
+                            <Home size={18} />
+                            Go to Homepage
+                        </button>
+                        <button
+                            onClick={() => {
+                                const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
+                                window.location.href = landingUrl;
+                            }}
+                            className="md:hidden p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 rounded-lg transition"
+                            title="Go to Homepage"
+                        >
+                            <Home size={20} />
+                        </button>
                         <button className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg transition">
                             <Globe size={20} />
                         </button>

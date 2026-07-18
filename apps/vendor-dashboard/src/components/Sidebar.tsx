@@ -77,16 +77,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  </nav>
 
  <div className="p-4 border-t border-[var(--ease2event-border-subtle)] space-y-2">
-  <button
-   onClick={() => {
-    const landingUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin.replace(':5174', ':5173').replace(':5175', ':5173');
-    window.location.href = landingUrl;
-   }}
-   className="flex items-center gap-3 px-3 py-3 w-full rounded-lg text-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-primary)]/10 transition-all font-semibold text-sm"
-  >
-   <Home size={20} />
-   Go to Homepage
-  </button>
   <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
   <Avatar
   src={user?.vendor?.logo}

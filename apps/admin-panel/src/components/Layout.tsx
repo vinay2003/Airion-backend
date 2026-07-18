@@ -49,7 +49,7 @@ const Layout: React.FC = () => {
                         title="Go to website"
                     >
                         <Home size={16} />
-                        View Website
+                        Go to Homepage
                     </button>
 
                     {/* Notification bell */}
@@ -74,7 +74,7 @@ const Layout: React.FC = () => {
                     <button
                         onClick={handleGoToLanding}
                         className="md:hidden p-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
-                        title="View Website"
+                        title="Go to Homepage"
                     >
                         <Home size={20} />
                     </button>

@@ -61,15 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                    {/* View Website Redirect */}
-                    <button
-                        onClick={handleGoToLanding}
-                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all cursor-pointer text-sm"
-                    >
-                        <Home size={20} />
-                        View Website
-                    </button>
-                    <div className="h-px bg-gray-250 dark:bg-slate-800 my-2" />
+
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}

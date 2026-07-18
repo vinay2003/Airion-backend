@@ -21,18 +21,12 @@ const Inbox: React.FC = () => {
  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
  const [typingUser, setTypingUser] = useState<string | null>(null);
 
- const mockLeads: any[] = [
- { id: 'mock-lead-1', user: { name: 'Sameer Malhotra' }, notes: 'Enquiry for Wedding Decoration', status: 'pending', aiScore: 85, createdAt: new Date(Date.now() - 2 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 30).toISOString(), guestsCount: 200, aiReasoning: 'High intent customer. Quick response recommended.' },
- { id: 'mock-lead-2', user: { name: 'Isha Gupta' }, notes: 'Enquiry for Birthday Party', status: 'pending', aiScore: 92, createdAt: new Date(Date.now() - 5 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 15).toISOString(), guestsCount: 50, aiReasoning: 'Looking for premium options.' },
- { id: 'mock-lead-3', user: { name: 'Rahul Verma' }, notes: 'Enquiry for Corporate Seminar', status: 'contacted', aiScore: 68, createdAt: new Date(Date.now() - 24 * 3600000).toISOString(), eventDate: new Date(Date.now() + 86400000 * 45).toISOString(), guestsCount: 300, aiReasoning: 'Needs quick follow up.' }
- ];
-
  const { data: apiLeads, isLoading } = useQuery({
  queryKey: ['vendor-leads'],
  queryFn: () => leadService.getVendorLeads().catch(() => []),
  });
 
- const leads = apiLeads && apiLeads.length > 0 ? apiLeads : mockLeads;
+ const leads = apiLeads || [];
 
  const activeLead = leads?.find(lead => lead.id === activeChat);
  const filteredChats = (leads || []).filter(lead =>

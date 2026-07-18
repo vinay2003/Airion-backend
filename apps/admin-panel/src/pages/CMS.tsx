@@ -11,10 +11,15 @@ const defaultHero = {
 };
 
 const defaultCategories = [
-    { id: 1, name: 'Venues', icon: 'Hotel', count: 1200 },
-    { id: 2, name: 'Photographers', icon: 'Camera', count: 850 },
-    { id: 3, name: 'Catering', icon: 'Utensils', count: 500 },
-    { id: 4, name: 'Decorators', icon: 'Palette', count: 400 },
+    { id: 1, name: 'Weddings & Ceremonies', slug: 'weddings', icon: 'Heart', image: 'https://images.unsplash.com/photo-1587271407850-8d438ca9fdf2?w=2000&auto=format&fit=crop&q=80', gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto', count: 1200 },
+    { id: 2, name: 'Milestone Birthdays', slug: 'birthdays', icon: 'Cake', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64', count: 850 },
+    { id: 3, name: 'Corporate Galas', slug: 'corporate', icon: 'Briefcase', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64', count: 500 },
+    { id: 4, name: 'Soirées & Parties', slug: 'parties', icon: 'PartyPopper', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64', count: 400 },
+];
+
+const defaultFaqs = [
+    { question: 'Is there a fee to use Ease2event?', answer: 'Browsing is free. We charge a planning service fee only when you confirm a booking.' },
+    { question: 'Can I cancel or reschedule?', answer: 'Yes. Full refunds are available within 48 hours of booking.' }
 ];
 
 const CMS: React.FC = () => {
@@ -24,6 +29,7 @@ const CMS: React.FC = () => {
 
     const [heroSection, setHeroSection] = useState(defaultHero);
     const [categories, setCategories] = useState(defaultCategories);
+    const [faqs, setFaqs] = useState(defaultFaqs);
 
     useEffect(() => {
         fetchConfigs();
@@ -35,6 +41,7 @@ const CMS: React.FC = () => {
             const { data } = await api.get('/cms');
             if (data.landing_page_hero) setHeroSection(data.landing_page_hero);
             if (data.landing_page_categories) setCategories(data.landing_page_categories);
+            if (data.landing_page_faqs) setFaqs(data.landing_page_faqs);
         } catch (error) {
             console.error('Failed to fetch CMS configs', error);
             toast.error('Failed to load CMS configuration');
@@ -50,6 +57,8 @@ const CMS: React.FC = () => {
                 await api.put('/cms/landing_page_hero', { value: heroSection });
             } else if (activeTab === 'categories') {
                 await api.put('/cms/landing_page_categories', { value: categories });
+            } else if (activeTab === 'faqs') {
+                await api.put('/cms/landing_page_faqs', { value: faqs });
             }
             toast.success('Changes published successfully');
         } catch (error) {
@@ -98,7 +107,7 @@ const CMS: React.FC = () => {
                     {[
                         { id: 'hero', label: 'Hero Section', icon: Layout },
                         { id: 'categories', label: 'Featured Categories', icon: ImageIcon },
-                        { id: 'testimonials', label: 'Testimonials', icon: Type },
+                        { id: 'faqs', label: 'FAQs', icon: Type },
                         { id: 'footer', label: 'Footer Links', icon: LinkIcon },
                         { id: 'mobile', label: 'Mobile App Banner', icon: Smartphone },
                         { id: 'seo', label: 'SEO Metadata', icon: Globe },
@@ -188,31 +197,45 @@ const CMS: React.FC = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
                                     <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Featured Categories</h2>
-                                    <button className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20"><Plus size={18} /></button>
+                                    <button 
+                                        className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20"
+                                        onClick={() => setCategories([...categories, { id: Date.now(), name: 'New Category', slug: 'new', icon: 'Sparkles', image: '', gridClass: 'col-span-1 h-64', count: 0 }])}
+                                    >
+                                        <Plus size={18} />
+                                    </button>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-6">
                                     {categories.map((cat, i) => (
-                                        <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-2xl group">
-                                            <MoveVertical className="text-gray-300 cursor-move" size={20} />
-                                            <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-gray-100 dark:border-slate-800 shadow-sm">
-                                                <ImageIcon size={20} className="text-red-500" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <input 
-                                                    type="text" 
-                                                    value={cat.name}
-                                                    onChange={(e) => {
-                                                        const newCats = [...categories];
-                                                        newCats[i].name = e.target.value;
-                                                        setCategories(newCats);
-                                                    }}
-                                                    className="bg-transparent border-none p-0 font-black text-gray-900 dark:text-white uppercase tracking-tight text-sm outline-none w-full"
-                                                />
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase">{cat.count} listings connected</p>
-                                            </div>
-                                            <div className="flex items-center gap-1 opacity-100">
-                                                <button className="p-2 text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-800 rounded-lg"><Edit2 size={16} /></button>
-                                                <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 size={16} /></button>
+                                        <div key={i} className="flex flex-col gap-4 p-4 bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-2xl">
+                                            <div className="flex items-center gap-4">
+                                                <MoveVertical className="text-gray-300 cursor-move" size={20} />
+                                                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Name</label>
+                                                        <input type="text" value={cat.name} onChange={(e) => {
+                                                            const newCats = [...categories]; newCats[i].name = e.target.value; setCategories(newCats);
+                                                        }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Slug</label>
+                                                        <input type="text" value={cat.slug || ''} onChange={(e) => {
+                                                            const newCats = [...categories]; newCats[i].slug = e.target.value; setCategories(newCats);
+                                                        }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Image URL</label>
+                                                        <input type="text" value={cat.image || ''} onChange={(e) => {
+                                                            const newCats = [...categories]; newCats[i].image = e.target.value; setCategories(newCats);
+                                                        }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Grid Class</label>
+                                                        <input type="text" value={cat.gridClass || 'col-span-1 h-64'} onChange={(e) => {
+                                                            const newCats = [...categories]; newCats[i].gridClass = e.target.value; setCategories(newCats);
+                                                        }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
+                                                    </div>
+                                                </div>
+                                                <button onClick={() => setCategories(categories.filter((_, idx) => idx !== i))} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg self-start mt-6"><Trash2 size={16} /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -220,7 +243,40 @@ const CMS: React.FC = () => {
                             </div>
                         )}
 
-                        {activeTab !== 'hero' && activeTab !== 'categories' && (
+                        {activeTab === 'faqs' && (
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Frequently Asked Questions</h2>
+                                    <button 
+                                        className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20"
+                                        onClick={() => setFaqs([...faqs, { question: 'New Question', answer: 'New Answer' }])}
+                                    >
+                                        <Plus size={18} />
+                                    </button>
+                                </div>
+                                <div className="space-y-6">
+                                    {faqs.map((faq, i) => (
+                                        <div key={i} className="flex flex-col gap-4 p-4 bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-2xl">
+                                            <div>
+                                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Question</label>
+                                                <input type="text" value={faq.question} onChange={(e) => {
+                                                    const newFaqs = [...faqs]; newFaqs[i].question = e.target.value; setFaqs(newFaqs);
+                                                }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Answer</label>
+                                                <textarea value={faq.answer} onChange={(e) => {
+                                                    const newFaqs = [...faqs]; newFaqs[i].answer = e.target.value; setFaqs(newFaqs);
+                                                }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white resize-none" rows={3} />
+                                            </div>
+                                            <button onClick={() => setFaqs(faqs.filter((_, idx) => idx !== i))} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg self-end"><Trash2 size={16} /> Delete</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab !== 'hero' && activeTab !== 'categories' && activeTab !== 'faqs' && (
                             <div className="py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-sm">
                                 Feature Coming Soon
                             </div>

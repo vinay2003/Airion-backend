@@ -64,7 +64,7 @@ const App: React.FC = () => {
                   <Route path="shop/orders" element={<MerchandiseOrders />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="profile" element={<Profile />} />
+                  <Route path="profile" element={<Navigate to="/settings?tab=profile" replace />} />
 
                    <Route path="calendar" element={<Calendar />} />
                   <Route path="earnings" element={<Earnings />} />

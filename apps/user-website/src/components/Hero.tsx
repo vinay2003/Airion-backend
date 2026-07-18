@@ -257,38 +257,18 @@ const Hero: React.FC = () => {
                                 {/* ── TEXT OVERLAY: slides horizontally with the image ── */}
                                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
                                     <div className="space-y-8 max-w-4xl w-full">
-                                        {/* Welcome badge (authenticated) */}
-                                        {isAuthenticated && (
-                                            <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-xl border-2 border-white/30 px-8 py-3.5 rounded-full text-white text-lg font-normal shadow-2xl mx-auto">
-                                                <div className="w-3.5 h-3.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]" />
-                                                Welcome back,
-                                                <span className="text-xl md:text-2xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                                                    {user?.name.split(' ')[0]}
-                                                </span>
-                                                !
-                                            </div>
-                                        )}
-
                                         {/* Heading */}
-                                        {isAuthenticated ? (
-                                            <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-wide leading-tight font-serif drop-shadow-2xl">
-                                                {content.authTitle}
-                                            </h1>
-                                        ) : (
-                                            <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
-                                                {content.title}
-                                            </h1>
-                                        )}
+                                        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+                                            {content.title}
+                                        </h1>
 
                                         {/* Description */}
                                         <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
-                                            {isAuthenticated
-                                                ? content.authDescription
-                                                : content.description}
+                                            {content.description}
                                         </p>
 
                                         {/* Trust Badge */}
-                                        {!isAuthenticated && content.badge && (
+                                        {content.badge && (
                                             <div className="flex justify-center">
                                                 <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-4 hover:bg-black/50 transition-colors">
                                                     <span className={`text-2xl ${content.badge.color}`}>
@@ -299,17 +279,6 @@ const Hero: React.FC = () => {
                                                     </span>
                                                 </div>
                                             </div>
-                                        )}
-
-                                        {/* CTA Button (authenticated) */}
-                                        {isAuthenticated && (
-                                            <Link
-                                                to="/dashboard"
-                                                className="inline-flex items-center gap-2 bg-red-600 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl transition transform  active:scale-95"
-                                            >
-                                                Go to Dashboard
-                                                <ArrowRight size={18} />
-                                            </Link>
                                         )}
                                     </div>
                                 </div>

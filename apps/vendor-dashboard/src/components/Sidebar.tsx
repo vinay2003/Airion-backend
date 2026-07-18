@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag, Briefcase, Star } from 'lucide-react';
+import { LayoutDashboard, Calendar, CalendarDays, DollarSign, MessageSquare, Package, Settings, BarChart2, Ticket, X, Megaphone, Camera, Home, ShoppingBag, Briefcase, Star, Crown, Sparkles } from 'lucide-react';
 import { useAuth } from '@ease2event/shared';
 import { Avatar } from '@ease2event/ui';
+import { useVendorSubscription } from '../hooks/useVendorSubscription';
 
 interface SidebarProps {
  isOpen: boolean;
@@ -11,6 +12,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  const { user } = useAuth();
+ const { isPremium, isLoading: isSubLoading } = useVendorSubscription();
  const navItems = [
  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
  { icon: Ticket, label: 'Events', path: '/events' },
@@ -80,6 +82,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  </nav>
 
  <div className="p-4 border-t border-[var(--ease2event-border-subtle)] space-y-2">
+  {!isSubLoading && (
+    <NavLink 
+      to="/premium" 
+      onClick={() => window.innerWidth < 768 && onClose()} 
+      className={`flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
+        isPremium 
+          ? 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20 text-amber-600 hover:bg-amber-500/20' 
+          : 'bg-gradient-to-r from-[var(--ease2event-brand-primary)]/10 to-[var(--ease2event-brand-secondary)]/10 border-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-primary)]/20'
+      }`}
+    >
+      <div className={`p-1.5 rounded-lg ${isPremium ? 'bg-amber-500/20 text-amber-600' : 'bg-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-brand-primary)]'}`}>
+        {isPremium ? <Crown size={18} /> : <Sparkles size={18} />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold truncate">
+          {isPremium ? 'Premium Active' : 'Upgrade to Premium'}
+        </p>
+        <p className="text-xs truncate font-medium opacity-80">
+          {isPremium ? 'Manage Subscription' : 'Unlock Advanced Tools'}
+        </p>
+      </div>
+    </NavLink>
+  )}
+
   <NavLink to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="flex items-center gap-3 p-3 rounded-xl bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] hover:bg-[var(--ease2event-bg-elevated)] transition-colors cursor-pointer">
   <Avatar
   src={user?.vendor?.logo}

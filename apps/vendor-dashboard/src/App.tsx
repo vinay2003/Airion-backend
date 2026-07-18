@@ -28,6 +28,7 @@ import Reviews from './pages/Reviews';
 import Gallery from './pages/Gallery';
 import ShopItems from './pages/ShopItems';
 import MerchandiseOrders from './pages/MerchandiseOrders';
+import PremiumUpgrade from './pages/PremiumUpgrade';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
@@ -60,7 +61,7 @@ const App: React.FC = () => {
                   <Route path="enquiries" element={<Inbox />} />
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="shop-items" element={<ShopItems />} />
-                  <Route path="shop-orders" element={<MerchandiseOrders />} />
+                  <Route path="shop/orders" element={<MerchandiseOrders />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="profile" element={<Profile />} />
@@ -75,6 +76,7 @@ const App: React.FC = () => {
                   <Route path="promotions" element={<Promotions />} />
                   <Route path="plan-event" element={<EventPlanning />} />
                   <Route path="gallery" element={<Gallery />} />
+                  <Route path="premium" element={<PremiumUpgrade />} />
                 </Route>
 
                 {/* Catch-all - redirect within the basename context */}

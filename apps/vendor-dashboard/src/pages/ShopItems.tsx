@@ -168,7 +168,7 @@ const ShopItems: React.FC = () => {
                             className="pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
                         />
                     </div>
-                    <Button variant="primary" onClick={() => {
+                    <Button variant="primary" className="rounded-xl" onClick={() => {
                         setFormData(initialFormState);
                         setEditingId(null);
                         setIsAdding(true);
@@ -196,7 +196,7 @@ const ShopItems: React.FC = () => {
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No items found</h3>
                     <p className="text-gray-500 mb-6 max-w-md">You haven't added any products to the shop yet. Start selling decorations, gifts, or other physical items.</p>
-                    <Button variant="primary" onClick={() => setIsAdding(true)}>
+                    <Button variant="primary" className="rounded-xl" onClick={() => setIsAdding(true)}>
                         <Plus size={18} /> Add Your First Item
                     </Button>
                 </div>
@@ -386,10 +386,10 @@ const ShopItems: React.FC = () => {
                             </div>
 
                             <div className="p-6 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-3 sticky bottom-0">
-                                <Button variant="outline" className="flex-1" onClick={() => setIsAdding(false)}>
+                                <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setIsAdding(false)}>
                                     Cancel
                                 </Button>
-                                <Button variant="primary" className="flex-1" type="submit" form="item-form" disabled={submitting}>
+                                <Button variant="primary" className="flex-1 rounded-xl" type="submit" form="item-form" disabled={submitting}>
                                     {submitting ? (
                                         <><Loader2 size={18} className="animate-spin" /> Saving...</>
                                     ) : (

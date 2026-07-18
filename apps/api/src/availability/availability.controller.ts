@@ -28,13 +28,13 @@ export class AvailabilityController {
         return this.availabilityService.blockDate(vendor.id, body.date, body.reason);
     }
 
-    @Delete('block/:date')
+    @Delete('block/:id')
     @Roles(UserRole.VENDOR)
-    async unblockDate(@Req() req: any, @Param('date') date: string) {
+    async unblockDate(@Req() req: any, @Param('id') id: string) {
         const userId = req.user.userId || req.user.sub;
         const vendor = await this.vendorsService.findByUserId(userId);
         if (!vendor) throw new NotFoundException('Vendor profile not found');
-        return this.availabilityService.unblockDate(vendor.id, date);
+        return this.availabilityService.unblockDate(vendor.id, id);
     }
 
     @Get('check')

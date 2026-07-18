@@ -342,7 +342,7 @@ const CalendarPage: React.FC = () => {
  e.stopPropagation(); 
  setActiveMenuId(null); 
  if (ev.type === 'block') {
- unblockMutation.mutate(ev.dateStr); 
+ unblockMutation.mutate(ev.id); 
  } else {
  notify.info('Cannot delete bookings directly from calendar');
  }

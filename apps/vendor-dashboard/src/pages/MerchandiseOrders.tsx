@@ -146,7 +146,7 @@ const MerchandiseOrders: React.FC = () => {
                                             <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.product.title}</h3>
                                             <p className="text-sm text-gray-500 font-medium">Order: ORD-{item.order.id.substring(0,8).toUpperCase()}</p>
                                         </div>
-                                        <Badge variant={item.fulfillmentStatus === 'DELIVERED' ? 'success' : item.fulfillmentStatus === 'CANCELLED' ? 'error' : 'warning'}>
+                                        <Badge variant={item.fulfillmentStatus === 'DELIVERED' ? 'confirmed' : item.fulfillmentStatus === 'CANCELLED' ? 'cancelled' : 'pending'}>
                                             {item.fulfillmentStatus}
                                         </Badge>
                                     </div>

@@ -33,13 +33,13 @@ export class Baseline1784299308729 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "user_id" uuid`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "resource_type" character varying(50)`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "resource_id" character varying(255)`);
-        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "ip_address" character varying(45) NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "user_agent" text NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "ip_address" character varying(45) NOT NULL DEFAULT '127.0.0.1'`);
+        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "user_agent" text NOT NULL DEFAULT 'Unknown'`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "success" boolean NOT NULL DEFAULT true`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "failure_reason" character varying(255)`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "metadata" jsonb`);
-        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "adminId" uuid NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "resource" character varying(100) NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "adminId" uuid`);
+        await queryRunner.query(`ALTER TABLE "audit_logs" ADD "resource" character varying(100) NOT NULL DEFAULT 'system'`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "resourceId" character varying(255)`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "previousValue" jsonb`);
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "newValue" jsonb`);

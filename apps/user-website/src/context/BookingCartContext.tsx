@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useCallback, ReactNode, useMemo } from 'react';
+import { useCart } from '../hooks/useCart';
 
 export interface BookingAddon {
     id: string;
@@ -38,33 +39,51 @@ interface BookingCartContextType {
 const BookingCartContext = createContext<BookingCartContextType | undefined>(undefined);
 
 export const BookingCartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [cartItems, setCartItems] = useState<BookingCartItem[]>([]);
+    const { cart, addItem, removeItem, clearCart: apiClearCart } = useCart();
 
-    const addToCart = useCallback((item: BookingCartItem) => {
-        setCartItems(prev => {
-            const exists = prev.find(i => i.vendorId === item.vendorId);
-            if (exists) {
-                return prev.map(i => i.vendorId === item.vendorId ? { ...i, ...item } : i);
-            }
-            return [...prev, item];
+    const cartItems: BookingCartItem[] = useMemo(() => {
+        return cart
+            .filter((c: any) => c.itemType === 'BOOKING')
+            .map((c: any) => c.metadata as BookingCartItem);
+    }, [cart]);
+
+    const addToCart = useCallback(async (item: BookingCartItem) => {
+        await addItem({
+            itemType: 'BOOKING',
+            referenceId: item.vendorId,
+            quantity: 1,
+            metadata: item
         });
-    }, []);
+    }, [addItem]);
 
-    const removeFromCart = useCallback((vendorId: string) => {
-        setCartItems(prev => prev.filter(i => i.vendorId !== vendorId));
-    }, []);
+    const removeFromCart = useCallback(async (vendorId: string) => {
+        const cartItem = cart.find((c: any) => c.itemType === 'BOOKING' && c.referenceId === vendorId);
+        if (cartItem) {
+            await removeItem({ itemId: cartItem.id, itemType: 'BOOKING', referenceId: vendorId });
+        }
+    }, [cart, removeItem]);
 
-    const updateCartItem = useCallback((vendorId: string, updates: Partial<BookingCartItem>) => {
-        setCartItems(prev => prev.map(i => i.vendorId === vendorId ? { ...i, ...updates } : i));
-    }, []);
+    const updateCartItem = useCallback(async (vendorId: string, updates: Partial<BookingCartItem>) => {
+        const cartItem = cart.find((c: any) => c.itemType === 'BOOKING' && c.referenceId === vendorId);
+        if (cartItem) {
+            await addItem({
+                itemType: 'BOOKING',
+                referenceId: vendorId,
+                quantity: 0, // indicates update if backend supports it, but our backend merges metadata in addItem!
+                metadata: updates
+            });
+        }
+    }, [cart, addItem]);
 
-    const clearCart = useCallback(() => setCartItems([]), []);
+    const clearCart = useCallback(async () => {
+        await apiClearCart();
+    }, [apiClearCart]);
 
     const isInCart = useCallback((vendorId: string) => cartItems.some(i => i.vendorId === vendorId), [cartItems]);
 
     const cartTotal = cartItems.reduce((sum, item) => {
-        const addonsTotal = item.selectedAddons.reduce((a, b) => a + b.price, 0);
-        return sum + item.packagePrice + addonsTotal;
+        const addonsTotal = item.selectedAddons?.reduce((a, b) => a + b.price, 0) || 0;
+        return sum + (item.packagePrice || 0) + addonsTotal;
     }, 0);
 
     const cartCount = cartItems.length;

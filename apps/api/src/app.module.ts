@@ -95,10 +95,10 @@ import { CronModule } from './cron/cron.module';
                         // Keep connections alive to prevent idle-timeout resets
                         keepAlive: true,
                         keepAliveInitialDelayMillis: 10000,
-                        // NeonDB free tier cold starts can take up to 30s
+                        // NeonDB free tier cold starts can take up to 30-45s
                         max: isProd ? 100 : 5, // Increased for prod to handle 50k users
-                        idleTimeoutMillis: 30000,
-                        connectionTimeoutMillis: 30000,
+                        idleTimeoutMillis: 60000,
+                        connectionTimeoutMillis: 60000,
                         // Pool-level SSL must mirror top-level ssl config
                         ssl: { rejectUnauthorized: false },
                     },
@@ -108,7 +108,7 @@ import { CronModule } from './cron/cron.module';
                     logging: !isProd ? ['error', 'warn'] : false,
                     retryAttempts: 20,
                     retryDelay: 5000,
-                    connectTimeoutMS: 30000,
+                    connectTimeoutMS: 60000,
                 };
             },
         }),

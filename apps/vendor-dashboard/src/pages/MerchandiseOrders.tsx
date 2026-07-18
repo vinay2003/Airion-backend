@@ -92,7 +92,7 @@ const MerchandiseOrders: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <Package className="text-indigo-500" />
                         Shop Orders
                     </h1>
@@ -115,7 +115,7 @@ const MerchandiseOrders: React.FC = () => {
                         className="px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl outline-none"
                     >
                         <option value="ALL">All Statuses</option>
-                        {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                        {STATUSES.map(s => <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>)}
                     </select>
                 </div>
             </div>
@@ -143,8 +143,8 @@ const MerchandiseOrders: React.FC = () => {
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start mb-2">
                                         <div>
-                                            <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.product.title}</h3>
-                                            <p className="text-sm text-gray-500 font-medium">Order: ORD-{item.order.id.substring(0,8).toUpperCase()}</p>
+                                            <h3 className="font-semibold text-base text-gray-900 dark:text-white">{item.product.title}</h3>
+                                            <p className="text-xs text-gray-500 font-medium">Order: ORD-{item.order.id.substring(0,8).toUpperCase()}</p>
                                         </div>
                                         <Badge variant={item.fulfillmentStatus === 'DELIVERED' ? 'confirmed' : item.fulfillmentStatus === 'CANCELLED' ? 'cancelled' : 'pending'}>
                                             {item.fulfillmentStatus}
@@ -152,20 +152,20 @@ const MerchandiseOrders: React.FC = () => {
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                                         <div>
-                                            <p className="text-xs text-gray-500 font-bold uppercase mb-1">Customer</p>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{item.order.user.name}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Customer</p>
+                                            <p className="text-xs font-semibold text-gray-900 dark:text-white">{item.order.user.name}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 font-bold uppercase mb-1">Quantity</p>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{item.quantity} × ₹{item.price}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Quantity</p>
+                                            <p className="text-xs font-semibold text-gray-900 dark:text-white">{item.quantity} × ₹{item.price}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 font-bold uppercase mb-1">Total</p>
-                                            <p className="text-sm font-black text-indigo-600">₹{item.quantity * item.price}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Total</p>
+                                            <p className="text-xs font-bold text-indigo-600">₹{item.quantity * item.price}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 font-bold uppercase mb-1">Order Date</p>
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{new Date(item.order.createdAt).toLocaleDateString()}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Order Date</p>
+                                            <p className="text-xs font-semibold text-gray-900 dark:text-white">{new Date(item.order.createdAt).toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                 </div>

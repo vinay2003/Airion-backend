@@ -130,11 +130,11 @@ export default function PremiumUpgrade() {
                     {isPremium ? 'Premium Active' : 'Upgrade to Premium'}
                 </motion.div>
                 
-                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
                     {isPremium ? 'You are a Premium Vendor' : 'Scale Your Business Faster.'}
                 </h1>
                 
-                <p className="text-lg text-[var(--ease2event-text-secondary)] leading-relaxed">
+                <p className="text-base md:text-lg text-[var(--ease2event-text-secondary)] leading-relaxed">
                     {isPremium 
                         ? 'Thank you for being a premium member. You have access to all advanced tools, priority ranking, and unlimited leads.'
                         : 'Unlock advanced analytics, priority ranking, unlimited leads, and exclusive tools to get booked more often.'}
@@ -149,7 +149,7 @@ export default function PremiumUpgrade() {
                 >
                     <div className="space-y-2">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-2xl font-bold">{subscription.plan?.name || 'Premium Plan'}</h2>
+                            <h2 className="text-xl md:text-2xl font-bold">{subscription.plan?.name || 'Premium Plan'}</h2>
                             <Badge variant={"success" as any} className="bg-green-500/10 text-green-600 border-green-500/20">Active</Badge>
                         </div>
                         <p className="text-[var(--ease2event-text-secondary)] font-medium">
@@ -213,11 +213,11 @@ export default function PremiumUpgrade() {
                     <div className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl p-8 lg:p-10 shadow-sm relative overflow-hidden">
                         <div className="space-y-6">
                             <div>
-                                <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-2">Basic</h3>
-                                <p className="text-[var(--ease2event-text-secondary)] font-medium h-10">Everything you need to get started on Ease2Event.</p>
+                                <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] mb-2">Basic</h3>
+                                <p className="text-[var(--ease2event-text-secondary)] text-sm md:text-base font-medium h-10">Everything you need to get started on Ease2Event.</p>
                             </div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-extrabold">Free</span>
+                                <span className="text-3xl font-extrabold">Free</span>
                                 <span className="text-[var(--ease2event-text-muted)] font-medium">forever</span>
                             </div>
                             
@@ -246,14 +246,14 @@ export default function PremiumUpgrade() {
 
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="text-2xl font-bold text-[var(--ease2event-text-primary)] mb-2 flex items-center gap-2">
-                                        <Crown size={24} className="text-amber-500" />
+                                    <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] mb-2 flex items-center gap-2">
+                                        <Crown size={20} className="text-amber-500" />
                                         {currentPlan.name || 'Premium'}
                                     </h3>
-                                    <p className="text-[var(--ease2event-text-secondary)] font-medium h-10">{currentPlan.description || 'Maximum visibility and advanced tools for serious vendors.'}</p>
+                                    <p className="text-[var(--ease2event-text-secondary)] text-sm md:text-base font-medium h-10">{currentPlan.description || 'Maximum visibility and advanced tools for serious vendors.'}</p>
                                 </div>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-extrabold">₹{currentPlan.price}</span>
+                                    <span className="text-3xl font-extrabold">₹{currentPlan.price}</span>
                                     <span className="text-[var(--ease2event-text-muted)] font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
                                 </div>
                                 
@@ -269,7 +269,7 @@ export default function PremiumUpgrade() {
                                 </div>
                                 
                                 <Button 
-                                    className="w-full mt-8 bg-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-secondary)] text-white font-bold py-6 shadow-lg shadow-[var(--ease2event-brand-primary)]/30 transition-all hover:scale-[1.02]"
+                                    className="w-full mt-8 bg-[var(--ease2event-brand-primary)] hover:bg-[var(--ease2event-brand-secondary)] text-white font-bold py-4 shadow-lg shadow-[var(--ease2event-brand-primary)]/30 transition-all hover:scale-[1.02]"
                                     onClick={() => handleCheckout(currentPlan.id)}
                                     loading={isCheckingOut}
                                 >
@@ -296,7 +296,7 @@ export default function PremiumUpgrade() {
             {/* ── FAQ SECTION ──────────────────────────────────────────────────────── */}
             <div className="max-w-3xl mx-auto pt-16 border-t border-[var(--ease2event-border-subtle)] space-y-8">
                 <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-bold">Frequently Asked Questions</h3>
+                    <h3 className="text-xl md:text-2xl font-bold">Frequently Asked Questions</h3>
                     <p className="text-[var(--ease2event-text-secondary)]">Everything you need to know about billing and premium.</p>
                 </div>
                 

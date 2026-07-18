@@ -102,24 +102,46 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
     ];
 
 
-    // Priority: Returning Mocks for development quality assurance
-    let results = [...mockServices];
+    // Priority: Fetch Real Vendor Services from Backend
+    let realEvents: Event[] = [];
+    try {
+        const params = new URLSearchParams();
+        if (filters.category && filters.category.toLowerCase() !== 'all') {
+            params.append('category', filters.category);
+        }
+        const query = params.toString();
+        const url = `/services${query ? `?${query}` : ''}`;
+        
+        const response = await api.get(url);
+        const data = response.data?.data || response.data || [];
+        if (Array.isArray(data)) {
+            realEvents = data.map(mapServiceToEvent);
+        }
+    } catch (err) {
+        console.error('Failed to fetch real vendor services:', err);
+    }
+
+    // Combine real events with mocks for development quality assurance
+    let mockResults = [...mockServices];
 
     if (filters.category && filters.category.toLowerCase() !== 'all') {
         const cat = filters.category.toLowerCase();
-        results = results.filter(s => s.category.toLowerCase().includes(cat) || cat.includes(s.category.toLowerCase()));
+        mockResults = mockResults.filter(s => s.category.toLowerCase().includes(cat) || cat.includes(s.category.toLowerCase()));
     }
 
-    return results.map((s, idx) => ({
+    const mappedMocks = mockResults.map((s, idx) => ({
         ...s,
         images: (s as any).images || [],
         vendorId: '550e8400-e29b-41d4-a716-446655440000',
         vendorName: 'The Royal Grand Palace',
         vendorImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=200',
         reviews: s.reviews || 0,
-        capacity: (s as any).capacity || 'Contact Vendor', // ✅ Added missing property
-        isSponsored: idx % 3 === 0 // Make every 3rd event sponsored
+        capacity: (s as any).capacity || 'Contact Vendor',
+        isSponsored: idx % 3 === 0 
     })) as Event[];
+
+    // Return real events first, then mocks
+    return [...realEvents, ...mappedMocks];
 };
 
 export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): Promise<Event[]> => {

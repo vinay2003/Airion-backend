@@ -3,7 +3,6 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { User, Bell, Lock, Activity, CreditCard } from 'lucide-react';
 import ProfileSettings from '../components/settings/ProfileSettings';
 import SecuritySettings from '../components/settings/SecuritySettings';
-import PreferenceSettings from '../components/settings/PreferenceSettings';
 
 const Settings: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +15,6 @@ const Settings: React.FC = () => {
     { id: 'profile', label: 'Profile', icon: User, desc: 'Personal & business details', available: true },
     { id: 'security', label: 'Security', icon: Lock, desc: 'Password & access logs', available: true },
     { id: 'notifications', label: 'Notifications', icon: Bell, desc: 'Alerts & emails', available: false },
-    { id: 'preferences', label: 'Preferences', icon: Activity, desc: 'Theme & display', available: true },
     { id: 'payouts', label: 'Payout Methods', icon: CreditCard, desc: 'Bank & UPI details', available: false },
   ], []);
 
@@ -36,8 +34,6 @@ const Settings: React.FC = () => {
         return <ProfileSettings />;
       case 'security':
         return <SecuritySettings />;
-      case 'preferences':
-        return <PreferenceSettings />;
       case 'notifications':
       case 'payouts':
         return (

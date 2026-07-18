@@ -38,10 +38,10 @@ const CMS: React.FC = () => {
     const fetchConfigs = async () => {
         try {
             setIsLoading(true);
-            const { data } = await api.get('/cms');
-            if (data.landing_page_hero) setHeroSection(data.landing_page_hero);
-            if (data.landing_page_categories) setCategories(data.landing_page_categories);
-            if (data.landing_page_faqs) setFaqs(data.landing_page_faqs);
+            const data = await api.get<any>('/cms');
+            if (data?.landing_page_hero) setHeroSection(data.landing_page_hero);
+            if (data?.landing_page_categories) setCategories(data.landing_page_categories);
+            if (data?.landing_page_faqs) setFaqs(data.landing_page_faqs);
         } catch (error) {
             console.error('Failed to fetch CMS configs', error);
             toast.error('Failed to load CMS configuration');

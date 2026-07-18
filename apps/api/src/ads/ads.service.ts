@@ -37,7 +37,7 @@ export class AdsService {
     }
     // Note: We could add more complex JSON filtering for categories/events here
 
-    return await query.getMany();
+    return await query.orderBy('ad.createdAt', 'DESC').getMany();
   }
 
   async findByVendor(vendorId: string): Promise<Ad[]> {
@@ -101,18 +101,6 @@ export class AdsService {
     return Number(((clicks / impressions) * 100).toFixed(2));
   }
 
-  async findActiveAds(options: { city?: string }): Promise<Ad[]> {
-    const query = this.adsRepository.createQueryBuilder('ad')
-      .where('ad.status = :status', { status: AdStatus.ACTIVE });
-    
-    if (options.city) {
-      query.andWhere('ad.targetCities @> ARRAY[:city]', { city: options.city })
-           .orWhere('ad.targetCities IS NULL')
-           .orWhere('cardinality(ad.targetCities) = 0');
-    }
-    
-    return await query.orderBy('ad.createdAt', 'DESC').getMany();
-  }
 
   // Cron Job to run every hour and expire ads that have passed their end date
   @Cron(CronExpression.EVERY_HOUR)

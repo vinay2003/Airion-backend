@@ -204,7 +204,7 @@ const Reports: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {topVendors.map((vendor, i) => (
+                            {topVendors.map((vendor: any, i: number) => (
                                 <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-amber-100 text-amber-600' : i === 1 ? 'bg-gray-200 text-gray-600' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>

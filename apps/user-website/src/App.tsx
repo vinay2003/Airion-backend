@@ -65,10 +65,10 @@ const App: React.FC = () => {
         <WishlistProvider>
           <RecentlyViewedProvider>
             <CompareProvider>
-              <CartProvider>
-                <BookingCartProvider>
-                  <Router>
-                    <AuthProvider>
+              <Router>
+                <AuthProvider>
+                  <CartProvider>
+                    <BookingCartProvider>
                       <ScrollToTop />
                       <CartDrawer />
                       <Routes>
@@ -134,10 +134,10 @@ const App: React.FC = () => {
                           </div>
                         } />
                       </Routes>
-                    </AuthProvider>
-                  </Router>
-                </BookingCartProvider>
-              </CartProvider>
+                    </BookingCartProvider>
+                  </CartProvider>
+                </AuthProvider>
+              </Router>
             </CompareProvider>
           </RecentlyViewedProvider>
         </WishlistProvider>

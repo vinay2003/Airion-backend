@@ -38,7 +38,7 @@ const UserProfileMenu = ({
             </div>
             <div className="hidden xl:block text-left">
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">
-                    {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                    {user?.name || user?.phoneNumber || (user?.email && user.email.split('@')[0]) || 'My Account'}
                 </p>
                 <p className="text-[10px] text-gray-500 font-medium">Account</p>
             </div>
@@ -58,9 +58,9 @@ const UserProfileMenu = ({
                 >
                     <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                         <p className="text-sm font-bold text-gray-900 dark:text-white">
-                            {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                            {user?.name || user?.phoneNumber || (user?.email && user.email.split('@')[0]) || 'My Account'}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email || user?.phone}</p>
+                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email || user?.phoneNumber}</p>
                     </div>
                     <div className="p-2">
                         {user?.role === 'user' ? (
@@ -525,7 +525,7 @@ const Header: React.FC = () => {
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-black text-gray-900 dark:text-white">
-                                                    {user?.name || user?.phone || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                                                    {user?.name || user?.phoneNumber || (user?.email && user.email.split('@')[0]) || 'My Account'}
                                                 </span>
                                                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{user?.email || 'Member ID: #2384'}</span>
                                             </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Briefcase, Camera, Plus, Trash2, CheckCircle2, Loader2, Phone } from 'lucide-react';
 import { Avatar, Button } from '@ease2event/ui';
 import { useAuth } from '@ease2event/shared';
-import api, { uploadImage } from '../../../lib/api';
+import api, { uploadImage } from '../../lib/api';
 import toast from 'react-hot-toast';
 
 const ProfileSettings: React.FC = () => {

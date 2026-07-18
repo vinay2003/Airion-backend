@@ -10,7 +10,7 @@ export class CartController {
 
     @Get()
     getCart(@Request() req: any) {
-        return this.cartService.getCart(req.user.id);
+        return this.cartService.getCart(req.user.userId);
     }
 
     @Post('items')
@@ -18,7 +18,7 @@ export class CartController {
         @Request() req: any,
         @Body() dto: { itemType: CartItemType; referenceId: string; quantity?: number; metadata?: any }
     ) {
-        return this.cartService.addItem(req.user.id, dto);
+        return this.cartService.addItem(req.user.userId, dto);
     }
 
     @Put('items/:id')
@@ -27,7 +27,7 @@ export class CartController {
         @Param('id') itemId: string,
         @Body() dto: { quantity: number }
     ) {
-        return this.cartService.updateItemQuantity(req.user.id, itemId, dto.quantity);
+        return this.cartService.updateItemQuantity(req.user.userId, itemId, dto.quantity);
     }
 
     @Delete('items/:id')
@@ -35,12 +35,12 @@ export class CartController {
         @Request() req: any,
         @Param('id') itemId: string
     ) {
-        return this.cartService.removeItem(req.user.id, itemId);
+        return this.cartService.removeItem(req.user.userId, itemId);
     }
 
     @Delete()
     clearCart(@Request() req: any) {
-        return this.cartService.clearCart(req.user.id);
+        return this.cartService.clearCart(req.user.userId);
     }
 
     @Post('merge')
@@ -48,6 +48,6 @@ export class CartController {
         @Request() req: any,
         @Body() dto: { items: { itemType: CartItemType; referenceId: string; quantity: number; metadata: any }[] }
     ) {
-        return this.cartService.mergeCart(req.user.id, dto.items);
+        return this.cartService.mergeCart(req.user.userId, dto.items);
     }
 }

@@ -19,7 +19,7 @@ export class CmsController {
   async findOne(@Param('key') key: string) {
     const config = await this.cmsService.findOne(key);
     if (!config) {
-      throw new HttpException('Config not found', HttpStatus.NOT_FOUND);
+      return null;
     }
     return config.value;
   }

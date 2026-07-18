@@ -10,6 +10,7 @@ export interface SubscriptionPlan {
     billingCycle: 'monthly' | 'yearly';
     features: string[];
     isActive: boolean;
+    priority?: number;
 }
 
 export interface ActiveSubscription {

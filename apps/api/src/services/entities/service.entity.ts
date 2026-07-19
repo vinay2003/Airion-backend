@@ -78,7 +78,7 @@ export class Service {
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
 
-    @OneToMany(() => ServicePackage, (pkg) => pkg.service, { cascade: true })
+    @OneToMany(() => ServicePackage, (pkg) => pkg.service, { cascade: true, orphanedRowAction: 'delete' })
     packages: ServicePackage[];
 
     @CreateDateColumn({ name: 'created_at' })

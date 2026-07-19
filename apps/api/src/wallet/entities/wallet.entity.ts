@@ -25,6 +25,9 @@ export class Wallet {
     @Column({ default: 'INR' })
     currency: string;
 
+    @Column('decimal', { name: 'monthly_target', precision: 12, scale: 2, default: 100000 })
+    monthlyTarget: number;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 

@@ -27,10 +27,8 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useAuth } from '@ease2event/shared';
 import { bookingService } from '@ease2event/shared/lib/services/bookingService';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchWalletOverview, requestWithdrawal } from '../lib/api';
+import { fetchWalletOverview, requestWithdrawal, updateWalletTarget } from '../lib/api';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-
-type Period = 'Daily' | 'Weekly' | 'Monthly';
 
 /**
  * 💹 Financial Intelligence Matrix: Autonomous Revenue Monitoring
@@ -39,11 +37,12 @@ type Period = 'Daily' | 'Weekly' | 'Monthly';
 const Earnings: React.FC = () => {
     const { user } = useAuth();
     const vendorId = user?.vendor?.id || user?.id || '';
-    const [activePeriod, setActivePeriod] = useState<Period>('Monthly');
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
     const [searchTerm, setSearchTerm] = useState('');
     const [isRegistryModalOpen, setIsRegistryModalOpen] = useState(false);
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
+    const [targetInput, setTargetInput] = useState<string>('');
     const [statusFilter, setStatusFilter] = useState('All');
     const queryClient = useQueryClient();
 
@@ -57,49 +56,47 @@ const Earnings: React.FC = () => {
         staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     });
 
-    // 📊 Dynamic Chart Aggregation (Fallback to Matrix Mock)
+    // 📊 Dynamic Chart Aggregation (Using Real Data)
     const periodData = useMemo(() => {
-        const dailyStats = [
-            { name: '08:00', revenue: 2500 }, { name: '10:00', revenue: 4200 },
-            { name: '12:00', revenue: 15600 }, { name: '14:00', revenue: 8900 },
-            { name: '16:00', revenue: 12400 }, { name: '18:00', revenue: 18500 },
-            { name: '20:00', revenue: 14200 },
-        ];
+        const txs = (walletData as any)?.transactions || [];
+        
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const chartMap = months.reduce((acc, month) => {
+            acc[month] = 0;
+            return acc;
+        }, {} as Record<string, number>);
+        
+        txs.forEach((t: any) => {
+            if (t.type === 'EARNING' && t.status === 'completed') {
+                const date = new Date(t.createdAt);
+                if (date.getFullYear() === selectedYear) {
+                    const monthKey = date.toLocaleDateString('en-US', { month: 'short' });
+                    if (chartMap[monthKey] !== undefined) {
+                        chartMap[monthKey] += Number(t.amount);
+                    }
+                }
+            }
+        });
 
-        const weeklyStats = [
-            { name: 'Mon', revenue: 12500 }, { name: 'Tue', revenue: 15200 },
-            { name: 'Wed', revenue: 14800 }, { name: 'Thu', revenue: 21100 },
-            { name: 'Fri', revenue: 35500 }, { name: 'Sat', revenue: 42000 },
-            { name: 'Sun', revenue: 28000 },
-        ];
+        return months.map(m => ({ name: m, revenue: chartMap[m] }));
+    }, [selectedYear, walletData]);
 
-        const monthlyStats = [
-            { name: 'Jan', revenue: 145000 }, { name: 'Feb', revenue: 152000 },
-            { name: 'Mar', revenue: 148000 }, { name: 'Apr', revenue: 161000 },
-            { name: 'May', revenue: 155000 }, { name: 'Jun', revenue: 167000 },
-            { name: 'Jul', revenue: 172000 },
-        ];
-
-        switch (activePeriod) {
-            case 'Daily': return dailyStats;
-            case 'Weekly': return weeklyStats;
-            case 'Monthly': return monthlyStats;
-            default: return monthlyStats;
-        }
-    }, [activePeriod]);
-
-    // 💎 Intelligence KPIs
+    // 💎 Intelligence KPIs (Real Data)
     const displayData = useMemo(() => {
-        const statsBase = {
-            Daily: { revenue: 76300, growth: '+8.2%', progress: 65, target: 100000, date: 'Oct 25' },
-            Weekly: { revenue: 169100, growth: '+24.1%', progress: 82, target: 200000, date: 'Oct 28' },
-            Monthly: { revenue: 1045000, growth: '+12.5%', progress: 45, target: 2500000, date: 'Nov 05' }
-        };
-
-        const currentStats = statsBase[activePeriod];
+        const txs = (walletData as any)?.transactions || [];
+        let periodRev = 0;
+        
+        txs.forEach((t: any) => {
+            if (t.type === 'EARNING' && t.status === 'completed') {
+                const date = new Date(t.createdAt);
+                if (date.getFullYear() === selectedYear) {
+                    periodRev += Number(t.amount);
+                }
+            }
+        });
 
         // Map backend transactions to frontend table format
-        const rawTransactions = (walletData as any)?.transactions?.map((t: any) => ({
+        const rawTransactions = txs.map((t: any) => ({
             id: t.id,
             service: t.description || 'Service Payment',
             client: t.referenceId ? `Ref: ${t.referenceId.slice(0, 8)}` : 'Platform',
@@ -107,26 +104,23 @@ const Earnings: React.FC = () => {
             amount: `₹${Number(t.amount).toLocaleString()}`,
             status: t.status.charAt(0).toUpperCase() + t.status.slice(1),
             method: t.type
-        })) || [
-                { id: '#TRX-9821', service: 'Wedding Photography', client: 'Rohit Sharma', date: 'Oct 12, 2023', amount: '₹12,500', status: 'Completed', method: 'UPI' },
-                { id: '#TRX-9822', service: 'Event Catering', client: 'Anjali Gupta', date: 'Oct 10, 2023', amount: '₹45,000', status: 'Pending', method: 'Transfer' },
-            ];
+        }));
 
         return {
             totalBalance: (walletData as any)?.balance || 0,
             pendingBalance: (walletData as any)?.pending || 0,
-            periodRevenue: currentStats.revenue, // We'll keep mock revenue trends for chart aesthetics
-            growth: currentStats.growth,
-            payoutDate: currentStats.date,
-            payoutProgress: currentStats.progress,
-            payoutTarget: currentStats.target,
+            periodRevenue: periodRev,
+            growth: '+0.0%', // Real calculation would require historical comparison
+            payoutDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            payoutProgress: Math.min(100, (((walletData as any)?.balance || 0) / ((walletData as any)?.monthlyTarget || 100000)) * 100).toFixed(0),
+            payoutTarget: (walletData as any)?.monthlyTarget || 100000,
             transactions: rawTransactions.filter((t: any) => {
                 const searchMatch = t.client.toLowerCase().includes(searchTerm.toLowerCase()) || t.service.toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'All' || t.status.toLowerCase() === statusFilter.toLowerCase();
                 return searchMatch && statusMatch;
             })
         };
-    }, [activePeriod, walletData, searchTerm, statusFilter]);
+    }, [selectedYear, walletData, searchTerm, statusFilter]);
 
     const handleExport = () => {
         notify.info('Preparing transaction logs for export...');
@@ -178,6 +172,29 @@ const Earnings: React.FC = () => {
         if (confirm(`Request withdrawal for ₹${balance.toLocaleString('en-IN')}?`)) {
             withdrawMutation.mutate(balance);
         }
+    };
+
+    const targetMutation = useMutation({
+        mutationFn: async (target: number) => {
+            return updateWalletTarget(target);
+        },
+        onSuccess: () => {
+            notify.success('Target updated successfully');
+            queryClient.invalidateQueries({ queryKey: ['wallet-overview'] });
+            setIsTargetModalOpen(false);
+        },
+        onError: (err: any) => {
+            notify.error(err.response?.data?.message || 'Failed to update target');
+        }
+    });
+
+    const handleSaveTarget = () => {
+        const parsed = Number(targetInput);
+        if (!parsed || parsed < 1000) {
+            notify.error('Please enter a valid target amount (min ₹1000)');
+            return;
+        }
+        targetMutation.mutate(parsed);
     };
 
     const containerVariants: Variants = {
@@ -273,7 +290,7 @@ const Earnings: React.FC = () => {
                                 <span>{displayData.growth}</span>
                             </div>
                         </div>
-                        <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-3 sm:mb-4">{activePeriod} Revenue</p>
+                        <p className="text-[var(--ease2event-text-secondary)] font-bold text-[12px] sm:text-sm tracking-widest mb-3 sm:mb-4">Revenue ({selectedYear})</p>
                         <h2 className="text-lg sm:text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">
                             {isLoading ? <Skeleton className="h-12 w-32 rounded-xl" /> : `₹${displayData.periodRevenue.toLocaleString('en-IN')}`}
                         </h2>
@@ -314,7 +331,7 @@ const Earnings: React.FC = () => {
                             <span className="text-[var(--ease2event-brand-primary)] tracking-tight">SETTLEMENT: {displayData.payoutDate}</span>
                         </div>
                     </div>
-                    <button onClick={() => setIsTargetModalOpen(true)} className="cursor-pointer mt-8 sm:mt-10 flex items-center justify-between w-full p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-lg sm:rounded-xl transition-all group active:scale-95 ">
+                    <button onClick={() => { setTargetInput(displayData.payoutTarget.toString()); setIsTargetModalOpen(true); }} className="cursor-pointer mt-8 sm:mt-10 flex items-center justify-between w-full p-4 sm:p-5 bg-[var(--ease2event-bg-surface)] hover:bg-[var(--ease2event-bg-elevated)] border-2 border-[var(--ease2event-border-subtle)] rounded-lg sm:rounded-xl transition-all group active:scale-95 ">
                         <span className="text-xs sm:text-sm font-bold text-[var(--ease2event-text-primary)] tracking-widest leading-none">Edit Target</span>
                         <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] text-[var(--ease2event-brand-primary)] group-hover:translate-x-2 transition-transform" />
                     </button>
@@ -330,23 +347,24 @@ const Earnings: React.FC = () => {
                             <h3 className="text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tight leading-none">Earnings Overview</h3>
                             <p className="text-[11px] text-[var(--ease2event-text-secondary)] font-bold tracking-widest mt-4">Performance tracking across selected periods</p>
                         </div>
-                        <div className="bg-[var(--ease2event-bg-elevated)] p-1 sm:p-2 rounded-xl border border-[var(--ease2event-border-subtle)] flex gap-0.5 sm:gap-2 w-full sm:w-auto">
-                            {(['Daily', 'Weekly', 'Monthly'] as Period[]).map(period => (
-                                <button
-                                    key={period}
-                                    onClick={() => setActivePeriod(period)}
-                                    className={`cursor-pointer flex-1 sm:flex-none px-3 sm:px-5 py-2.5 sm:py-4 text-[8px] sm:text-[11px] font-bold tracking-widest rounded-lg transition-all ${activePeriod === period ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-md' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'}`}
-                                >
-                                    {period}
-                                </button>
-                            ))}
+                        <div className="relative flex items-center bg-[var(--ease2event-bg-elevated)] rounded-xl border border-[var(--ease2event-border-subtle)] overflow-hidden">
+                            <select
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                className="appearance-none bg-transparent pl-4 pr-10 py-2 sm:py-3 w-full h-full text-xs sm:text-sm font-bold tracking-widest text-[var(--ease2event-text-primary)] outline-none cursor-pointer"
+                            >
+                                {[2023, 2024, 2025, 2026, 2027].map(year => (
+                                    <option key={year} value={year}>{year}</option>
+                                ))}
+                            </select>
+                            <CalendarIcon size={14} className="absolute right-4 text-[var(--ease2event-text-secondary)] pointer-events-none" />
                         </div>
                     </div>
 
 
-                    <div className="h-[350px] sm:h-[450px] w-full -ml-4 flex-1">
+                    <div className="h-[350px] sm:h-[450px] w-full flex-1">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={periodData} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
+                            <AreaChart data={periodData} margin={{ top: 20, right: 20, left: 20, bottom: 40 }}>
                                 <defs>
                                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="var(--ease2event-brand-primary)" stopOpacity={0.6} />
@@ -366,7 +384,7 @@ const Earnings: React.FC = () => {
                                     tickLine={false}
                                     tick={{ fill: 'var(--ease2event-text-secondary)', fontSize: 10, fontWeight: 700 }}
                                     tickFormatter={(val) => `₹${val / 1000}k`}
-                                    dx={-20}
+                                    dx={0}
                                 />
                                 <Tooltip
                                     cursor={{ stroke: 'var(--ease2event-brand-primary)', strokeWidth: 3, strokeDasharray: '8 8' }}
@@ -592,14 +610,13 @@ const Earnings: React.FC = () => {
                 <div className="space-y-4 p-4">
                     <div>
                         <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">New Monthly Target (₹)</label>
-                        <input type="number" defaultValue={displayData.payoutTarget} className="w-full max-w-full text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-text-primary)] overflow-hidden" />
+                        <input type="number" value={targetInput} onChange={e => setTargetInput(e.target.value)} className="w-full max-w-full text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 text-[var(--ease2event-text-primary)] overflow-hidden" />
                     </div>
                     <div className="flex justify-end gap-3 mt-6">
                         <Button variant="secondary" onClick={() => setIsTargetModalOpen(false)}>Cancel</Button>
-                        <Button onClick={() => {
-                            notify.success('Target updated successfully');
-                            setIsTargetModalOpen(false);
-                        }}>Save Target</Button>
+                        <Button disabled={targetMutation.isPending} onClick={handleSaveTarget}>
+                            {targetMutation.isPending ? 'Saving...' : 'Save Target'}
+                        </Button>
                     </div>
                 </div>
             </Modal>

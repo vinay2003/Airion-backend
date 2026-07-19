@@ -48,15 +48,15 @@ export class ServicesController {
 
     @Put(':id')
     @UseGuards(JwtAuthGuard)
-    async update(@Param('id') id: string, @Body() updateDto: Partial<CreateServiceDto>) {
-        return this.servicesService.update(id, updateDto);
+    async update(@Param('id') id: string, @Body() updateDto: Partial<CreateServiceDto>, @Request() req: any) {
+        return this.servicesService.update(id, updateDto, req.user?.vendorId);
     }
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
-    async remove(@Param('id') id: string) {
-        const deleted = await this.servicesService.delete(id);
+    async remove(@Param('id') id: string, @Request() req: any) {
+        const deleted = await this.servicesService.delete(id, req.user?.vendorId);
         if (!deleted) {
             throw new NotFoundException(`Service not found or could not be deleted`);
         }

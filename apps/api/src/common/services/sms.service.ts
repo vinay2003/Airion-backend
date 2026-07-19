@@ -34,12 +34,10 @@ export class SmsService {
                 {
                     params: {
                         authorization: apiKey,
-                        route: 'q',
-                        message: `${otp} is your Ease2event admin verification code. Valid for 5 minutes. Do not share with anyone.`,
-                        language: 'english',
-                        flash: 0,
+                        route: 'otp',
+                        variables_values: otp,
                         numbers: cleanNumber,
-                    },
+                    }
                 }
             );
 

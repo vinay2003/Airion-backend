@@ -26,6 +26,8 @@ const ShopItems: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState<ShopItem[]>([]);
@@ -117,15 +119,22 @@ const ShopItems: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this item?")) return;
-        
+    const handleDelete = (id: string) => {
+        setItemToDelete(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            await api.delete(`/merchandise/${id}`);
+            setIsDeleting(true);
+            await api.delete(`/merchandise/${itemToDelete}`);
             toast.success("Item deleted.");
             fetchItems();
+            setItemToDelete(null);
         } catch (error) {
             toast.error("Failed to delete item.");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -396,6 +405,40 @@ const ShopItems: React.FC = () => {
                                         <>{editingId ? 'Save Changes' : 'Submit Item'}</>
                                     )}
                                 </Button>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {itemToDelete && (
+                    <>
+                        <div className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm" onClick={() => setItemToDelete(null)} />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl z-50 overflow-hidden"
+                        >
+                            <div className="p-8 text-center">
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <Trash2 size={32} />
+                                </div>
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Delete Item?</h2>
+                                <p className="text-gray-500 mb-8">Are you sure you want to delete this item? This action cannot be undone and will immediately remove it from the shop.</p>
+                                
+                                <div className="flex gap-4">
+                                    <Button variant="outline" className="flex-1 rounded-xl py-3" onClick={() => setItemToDelete(null)} disabled={isDeleting}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="primary" className="flex-1 rounded-xl py-3 !bg-red-600 hover:!bg-red-700 shadow-red-500/20" onClick={confirmDelete} disabled={isDeleting}>
+                                        {isDeleting ? (
+                                            <><Loader2 size={18} className="animate-spin inline mr-2" /> Deleting...</>
+                                        ) : (
+                                            'Yes, Delete'
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                         </motion.div>
                     </>

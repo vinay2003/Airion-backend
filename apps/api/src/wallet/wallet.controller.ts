@@ -35,4 +35,13 @@ export class WalletController {
         if (!vendor) throw new NotFoundException('Vendor profile not found');
         return this.walletService.requestWithdrawal(vendor.id, body.amount, body.bankDetails);
     }
+
+    @Post('target')
+    @Roles(UserRole.VENDOR)
+    async updateTarget(@Req() req: any, @Body() body: { target: number }) {
+        const userId = req.user.userId || req.user.sub;
+        const vendor = await this.vendorsService.findByUserId(userId);
+        if (!vendor) throw new NotFoundException('Vendor profile not found');
+        return this.walletService.updateMonthlyTarget(vendor.id, body.target);
+    }
 }

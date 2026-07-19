@@ -33,6 +33,8 @@ const Services: React.FC = () => {
  const [submitting, setSubmitting] = useState(false);
  const [loading, setLoading] = useState(true);
  const [services, setServices] = useState<any[]>([]);
+ const [serviceToDelete, setServiceToDelete] = useState<string | null>(null);
+ const [isDeleting, setIsDeleting] = useState(false);
 
  const [formData, setFormData] = useState({
  title: '',
@@ -58,7 +60,7 @@ const Services: React.FC = () => {
  const fetchData = async () => {
  if (!vendorId) return;
  try {
- const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ const res = await api.get(`/services?vendorId=${vendorId}&limit=100`) as any[];
  setServices(res || []);
  } catch (err) {
  console.error('Failed to load initial data');
@@ -119,18 +121,27 @@ const Services: React.FC = () => {
  setIsAdding(true);
  };
 
- const handleDeleteProduct = async (id: string) => {
- if (!window.confirm('Are you sure you want to delete this service?')) return;
+ const handleDeleteProduct = (id: string) => {
+ setServiceToDelete(id);
+ };
+
+ const confirmDelete = async () => {
+ if (!serviceToDelete) return;
+ setIsDeleting(true);
  try {
- await api.delete(`/services/${id}`);
+ await api.delete(`/services/${serviceToDelete}`);
  toast.success('Service deleted successfully!');
- const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ setServiceToDelete(null);
+ const res = await api.get(`/services?vendorId=${vendorId}&limit=100`) as any[];
  setServices(res || []);
  } catch (err) {
  console.error('Deletion failed:', err);
  toast.error('Failed to delete service.');
+ } finally {
+ setIsDeleting(false);
  }
  };
+
 
  const handleSaveService = async () => {
  if (!formData.title || !formData.basePrice) {
@@ -164,7 +175,7 @@ const Services: React.FC = () => {
  }
  resetForm();
  setIsAdding(false);
- const res = await api.get(`/services?vendorId=${vendorId}`) as any[];
+ const res = await api.get(`/services?vendorId=${vendorId}&limit=100`) as any[];
  setServices(res || []);
  } catch (err) {
  console.error('Submission failed:', err);
@@ -369,15 +380,15 @@ const Services: React.FC = () => {
  <div className="absolute top-0 right-0 p-5 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
  <ShieldCheck size={120} />
  </div>
- <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6 tracking-tight relative z-10">Registry Status</h3>
+ <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] mb-6 tracking-tight relative z-10">System Status</h3>
  <div className="space-y-6 relative z-10">
  <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
- <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Status</span>
- <span className="text-sm font-bold text-[var(--ease2event-brand-primary)]">ALPHA_CMD_01</span>
+ <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Visibility</span>
+ <span className="text-sm font-bold text-[var(--ease2event-brand-primary)]">Public</span>
  </div>
  <div className="flex justify-between items-center py-2 border-b border-[var(--ease2event-border-subtle)]">
- <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Throughput</span>
- <span className="text-sm font-bold text-emerald-500">NOMINAL</span>
+ <span className="text-sm font-bold text-[var(--ease2event-text-secondary)]">Performance</span>
+ <span className="text-sm font-bold text-emerald-500">Good</span>
  </div>
  <p className="text-[12px] text-[var(--ease2event-text-secondary)] font-bold tracking-tighter opacity-100 mt-4">
  Update this across all platforms. </p>
@@ -447,9 +458,54 @@ const Services: React.FC = () => {
  
  
  
- className="space-y-5 pb-32 px-6 w-full max-w-7xl mx-auto"
- >
- {/* Header Section */}
+  className="space-y-5 pb-32 px-6 w-full max-w-7xl mx-auto"
+  >
+  <AnimatePresence>
+  {serviceToDelete && (
+  <motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
+  >
+  <motion.div
+  initial={{ scale: 0.95, opacity: 0, y: 20 }}
+  animate={{ scale: 1, opacity: 1, y: 0 }}
+  exit={{ scale: 0.95, opacity: 0, y: 20 }}
+  className="bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden"
+  >
+  <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
+  <Trash2 size={100} />
+  </div>
+  <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+  <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-2">
+  <Trash2 size={32} />
+  </div>
+  <h2 className="text-2xl font-black text-[var(--ease2event-text-primary)] tracking-tight">Delete Service?</h2>
+  <p className="text-sm font-bold text-[var(--ease2event-text-secondary)]">This action cannot be undone. This service will be permanently removed from your inventory.</p>
+  <div className="flex w-full gap-4 pt-6">
+  <Button
+  onClick={() => setServiceToDelete(null)}
+  disabled={isDeleting}
+  className="flex-1 bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)] border border-[var(--ease2event-border-subtle)] font-bold py-3 rounded-2xl flex items-center justify-center"
+  >
+  Cancel
+  </Button>
+  <Button
+  onClick={confirmDelete}
+  disabled={isDeleting}
+  className="flex-1 bg-red-500 text-white hover:bg-red-600 font-bold py-3 rounded-2xl flex items-center justify-center"
+  >
+  {isDeleting ? <Loader2 className="animate-spin" size={20} /> : 'Delete Service'}
+  </Button>
+  </div>
+  </div>
+  </motion.div>
+  </motion.div>
+  )}
+  </AnimatePresence>
+
+  {/* Header Section */}
  <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)]">
  <div >
  <h1 className="text-xl font-bold normal-case tracking-normal leading-normal">Services List</h1>

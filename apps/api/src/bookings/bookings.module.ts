@@ -8,6 +8,7 @@ import { CommonModule } from '../common/common.module';
 
 import { WalletModule } from '../wallet/wallet.module';
 import { AvailabilityModule } from '../availability/availability.module';
+import { AuthModule } from '../auth/auth.module';
 
 import { EmailService } from '../common/services/email.service';
 

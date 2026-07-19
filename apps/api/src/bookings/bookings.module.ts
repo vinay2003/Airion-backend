@@ -4,10 +4,11 @@ import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
 import { Booking } from './entities/booking.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { AuthModule } from '../auth/auth.module';
+
 
 import { WalletModule } from '../wallet/wallet.module';
 import { AvailabilityModule } from '../availability/availability.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [

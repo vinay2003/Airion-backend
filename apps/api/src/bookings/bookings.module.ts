@@ -4,21 +4,22 @@ import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
 import { Booking } from './entities/booking.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { CommonModule } from '../common/common.module';
+
 
 import { WalletModule } from '../wallet/wallet.module';
 import { AvailabilityModule } from '../availability/availability.module';
+
+import { EmailService } from '../common/services/email.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Booking]), 
     NotificationsModule, 
     WalletModule, 
-    AvailabilityModule,
-    CommonModule
+    AvailabilityModule
   ],
   controllers: [BookingsController],
-  providers: [BookingsService],
+  providers: [BookingsService, EmailService],
   exports: [BookingsService],
 })
 export class BookingsModule {}

@@ -17,6 +17,9 @@ export const fetchWalletOverview = async () =>
 export const requestWithdrawal = async (amount: number, bankDetails?: any) =>
     await api.post('/wallet/withdraw', { amount, bankDetails });
 
+export const updateWalletTarget = async (target: number) =>
+    await api.post('/wallet/target', { target });
+
 // Availability & Calendar
 export const fetchVendorSchedule = async (vendorId: string) =>
     await api.get(`/vendors/${vendorId}/availability`);

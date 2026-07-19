@@ -168,7 +168,7 @@ const Reviews: React.FC = () => {
                                 <button
                                     key={t}
                                     onClick={() => setFilter(t)}
-                                    className={`px-4 md:px-6 py-2.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase transition-all tracking-widest whitespace-nowrap ${filter === t
+                                    className={`cursor-pointer px-4 md:px-6 py-2.5 rounded-lg text-[9px] md:text-[10px] font-bold uppercase transition-all tracking-widest whitespace-nowrap ${filter === t
                                         ? 'bg-[var(--ease2event-brand-primary)] text-white '
                                         : 'text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-text-primary)]'}`}
                                 >

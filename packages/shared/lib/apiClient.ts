@@ -34,7 +34,7 @@ export class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 10000, // 10s failsafe to prevent infinite "Loading..." states
+      timeout: 30000, // 30s failsafe to accommodate cold-starts of remote serverless DBs
     });
 
     this.initializeInterceptors();

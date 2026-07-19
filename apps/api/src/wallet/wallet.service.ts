@@ -42,7 +42,7 @@ export class WalletService {
         const recentTransactions = await this.transactionRepository.find({
             where: { walletId: wallet.id },
             order: { createdAt: 'DESC' },
-            take: 10,
+            take: 100,
         });
 
         return {
@@ -50,6 +50,7 @@ export class WalletService {
             pending: wallet.pendingBalance,
             totalWithdrawn: wallet.totalWithdrawn,
             currency: wallet.currency,
+            monthlyTarget: wallet.monthlyTarget,
             transactions: recentTransactions,
         };
     }
@@ -161,5 +162,12 @@ export class WalletService {
             where: { walletId: wallet.id },
             order: { createdAt: 'DESC' },
         });
+    }
+
+    async updateMonthlyTarget(vendorId: string, target: number) {
+        const wallet = await this.getOrCreateWallet(vendorId);
+        wallet.monthlyTarget = target;
+        await this.walletRepository.save(wallet);
+        return { success: true, monthlyTarget: target };
     }
 }

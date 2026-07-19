@@ -142,14 +142,31 @@ export class ServicesService {
         }
     }
 
-    async update(id: string, updateDto: Partial<CreateServiceDto>): Promise<Service> {
+    async update(id: string, updateDto: Partial<CreateServiceDto>, vendorId?: string): Promise<Service> {
         const service = await this.findOne(id);
+        if (vendorId && service.vendorId !== vendorId) {
+            throw new BadRequestException('You do not have permission to modify this service');
+        }
+        
+        if (updateDto.packages) {
+            // Manually remove old packages to avoid TypeORM cascading issues
+            await this.packageRepository.delete({ serviceId: service.id });
+            // Strip IDs to ensure they are inserted as new records
+            updateDto.packages = updateDto.packages.map(p => {
+                const { id, createdAt, updatedAt, serviceId, ...rest } = p as any;
+                return rest;
+            });
+        }
+
         Object.assign(service, updateDto);
         return this.serviceRepository.save(service);
     }
 
-    async delete(id: string): Promise<boolean> {
+    async delete(id: string, vendorId?: string): Promise<boolean> {
         const service = await this.findOne(id);
+        if (vendorId && service.vendorId !== vendorId) {
+            throw new BadRequestException('You do not have permission to delete this service');
+        }
         await this.serviceRepository.remove(service);
         return true;
     }

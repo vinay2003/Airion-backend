@@ -23,8 +23,9 @@ export class MerchandiseService {
         if (options?.adminMode) {
             // Admin sees all
         } else if (options?.vendorId) {
-            // Vendor sees their own (all statuses)
-            query.where('product.creatorId = :vendorId', { vendorId: options.vendorId });
+            // Vendor sees their own (all statuses). Handles both userId and vendorId passed from frontend.
+            query.where('product.creatorId = :vendorId', { vendorId: options.vendorId })
+                 .orWhere('EXISTS (SELECT 1 FROM vendors v WHERE v.user_id = product.creator_id AND v.id = :vendorId)', { vendorId: options.vendorId });
         } else {
             // Public shop sees only active & approved
             query.where('product.isActive = :isActive', { isActive: true })

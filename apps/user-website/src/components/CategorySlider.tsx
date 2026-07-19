@@ -3,10 +3,16 @@ import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     ChevronLeft, ChevronRight, Sparkles, Heart, Cake, Briefcase,
-    PartyPopper, Camera, ChefHat, Palette, Music, Hotel, Sparkle, CalendarCheck
+    PartyPopper, Camera, ChefHat, Palette, Music, Hotel, Sparkle, CalendarCheck, Utensils,
+    type LucideIcon
 } from 'lucide-react';
+import api from '../lib/api';
 
-const CATEGORIES = [
+const ICON_MAP: Record<string, LucideIcon> = {
+    Sparkles, Heart, Cake, Briefcase, PartyPopper, Camera, ChefHat, Palette, Music, Hotel, Sparkle, CalendarCheck, Utensils
+};
+
+const DEFAULT_CATEGORIES = [
     { id: 'all', label: 'All', icon: Sparkles, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=200' },
     { id: 'weddings', label: 'Weddings', icon: Heart, image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200' },
     { id: 'birthdays', label: 'Birthdays', icon: Cake, image: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?q=80&w=200' },
@@ -22,6 +28,7 @@ const CATEGORIES = [
 ];
 
 const CategorySlider: React.FC = () => {
+    const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
@@ -42,6 +49,20 @@ const CategorySlider: React.FC = () => {
         setShowLeftArrow(scrollLeft > 0);
         setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1); // -1 to account for rounding errors
     };
+
+    useEffect(() => {
+        api.get('/cms/landing_page_categories').then(res => {
+            if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+                const mapped = res.data.map(cat => ({
+                    id: cat.slug || cat.name.toLowerCase(),
+                    label: cat.name,
+                    icon: ICON_MAP[cat.icon] || Sparkles,
+                    image: cat.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=200'
+                }));
+                setCategories([{ id: 'all', label: 'All', icon: Sparkles, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=200' }, ...mapped]);
+            }
+        }).catch(err => console.error('Failed to load categories', err));
+    }, []);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -149,7 +170,7 @@ const CategorySlider: React.FC = () => {
                 className={`flex overflow-x-auto items-center justify-start gap-6 md:gap-8 py-6 px-4 hide-scrollbar select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {[...CATEGORIES, ...CATEGORIES].map((category, index) => {
+                {[...categories, ...categories].map((category, index) => {
                     const isActive = activeCategory === category.id;
                     const Icon = category.icon;
                     return (

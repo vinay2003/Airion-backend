@@ -37,7 +37,7 @@ export class AdsService {
     }
     // Note: We could add more complex JSON filtering for categories/events here
 
-    return await query.getMany();
+    return await query.orderBy('ad.createdAt', 'DESC').getMany();
   }
 
   async findByVendor(vendorId: string): Promise<Ad[]> {
@@ -100,6 +100,7 @@ export class AdsService {
     if (impressions === 0) return 0;
     return Number(((clicks / impressions) * 100).toFixed(2));
   }
+
 
   // Cron Job to run every hour and expire ads that have passed their end date
   @Cron(CronExpression.EVERY_HOUR)

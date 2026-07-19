@@ -20,7 +20,7 @@ export default function PremiumUpgrade() {
     const fetchPlans = async () => {
         try {
             setIsPlansLoading(true);
-            const res = await api.get('/subscriptions/plans', { params: { type: 'vendor' } }) as any;
+            const res: any = await api.get('/subscriptions/plans', { params: { type: 'vendor' } });
             const data = res.data?.data || res.data || [];
             if (Array.isArray(data)) {
                 setPlans(data);
@@ -36,7 +36,7 @@ export default function PremiumUpgrade() {
     const handleCheckout = async (planId: string) => {
         try {
             setIsCheckingOut(true);
-            const res = await api.post('/subscriptions/checkout', { planId }) as any;
+            const res: any = await api.post('/subscriptions/checkout', { planId });
             const data = res.data?.data || res.data;
             
             if (data.url) {

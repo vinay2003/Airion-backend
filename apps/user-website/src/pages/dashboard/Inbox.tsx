@@ -7,6 +7,7 @@ import { useAuth } from '@shared/auth/AuthContext';
 import { Send, Search, CheckCheck, Paperclip, Mail, ArrowLeft, MoreVertical, Phone, Image as ImageIcon } from 'lucide-react';
 import Skeleton from '../../components/Skeleton';
 import { useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export const Inbox: React.FC = () => {
     const { user } = useAuth();
@@ -27,21 +28,13 @@ export const Inbox: React.FC = () => {
         retry: false,
     });
 
-    const [mockMessages, setMockMessages] = useState<any[]>([
-        { id: 'm1', senderId: 'support', body: 'Hello! Welcome to Ease2Event Premium Support. How can we assist you today?', createdAt: new Date(Date.now() - 3600000).toISOString() },
-        { id: 'm2', senderId: user?.id || 'user', body: 'Hi, I wanted to ask about the refunds policy for bookings.', createdAt: new Date(Date.now() - 1800000).toISOString() },
-        { id: 'm3', senderId: 'support', body: 'Sure! You get a full 100% refund if you cancel up to 14 days before your event. Let us know if you have any other questions!', createdAt: new Date(Date.now() - 600000).toISOString() }
-    ]);
-
     // Fetch Messages for selected thread
-    const { data: serverMessages = [], isLoading: loadingMessages } = useQuery({
+    const { data: messages = [], isLoading: loadingMessages } = useQuery({
         queryKey: ['messages', selectedThreadId],
         queryFn: () => fetchMessages(selectedThreadId),
-        enabled: !!selectedThreadId && selectedThreadId !== 'mock-support',
+        enabled: !!selectedThreadId,
         retry: false,
     });
-
-    const messages = selectedThreadId === 'mock-support' ? mockMessages : serverMessages;
 
     // Handle vendorId from URL
     useEffect(() => {
@@ -54,10 +47,16 @@ export const Inbox: React.FC = () => {
                 setSelectedThreadId(existingConvo.id);
                 setShowMobileChat(true);
             } else {
-                // If not, we could hit an endpoint to create one, or just set it to mock for now
-                // Setting to mock-support as a fallback
-                setSelectedThreadId('mock-support');
-                setShowMobileChat(true);
+                // If not, hit API to start conversation
+                import('../../lib/api').then(({ startConversation }) => {
+                    startConversation(vendorIdParam).then((res: any) => {
+                        setSelectedThreadId(res.id);
+                        setShowMobileChat(true);
+                        queryClient.invalidateQueries({ queryKey: ['conversations'] });
+                    }).catch(err => {
+                        console.error('Failed to start conversation:', err);
+                    });
+                });
             }
         }
     }, [location.search, conversations]);
@@ -116,15 +115,15 @@ export const Inbox: React.FC = () => {
                 body: messageText,
                 createdAt: new Date().toISOString()
             };
-            setMockMessages(prev => [...prev, userMsg]);
+            queryClient.setQueryData(['messages', 'mock-support'], (prev: any) => [...(prev || []), userMsg]);
             setMessageText('');
 
             // Trigger typing effect
             setTypingUser('Ease2Event Support AI');
             setTimeout(() => {
                 setTypingUser(null);
-                setMockMessages(prev => [
-                    ...prev,
+                queryClient.setQueryData(['messages', 'mock-support'], (prev: any) => [
+                    ...(prev || []),
                     {
                         id: `support-${Date.now()}`,
                         senderId: 'support',

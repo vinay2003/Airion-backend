@@ -15,7 +15,7 @@ import { RefreshToken } from '../entities/refresh-token.entity';
 import * as admin from 'firebase-admin';
 import { EmailService } from '../../common/services/email.service';
 import { SmsService } from '../../common/services/sms.service';
-import { authenticator } from 'otplib';
+const { authenticator } = require('otplib');
 import * as QRCode from 'qrcode';
 
 @Injectable()
@@ -1118,7 +1118,7 @@ export class AuthService {
         if (!isValid) throw new BadRequestException('Invalid OTP code.');
 
         user.mfaEnabled = false;
-        user.mfaSecret = null;
+        user.mfaSecret = undefined;
         await this.userRepository.save(user);
 
         this.logger.log(`✅ [2FA] 2FA disabled for user: ${userId}`);

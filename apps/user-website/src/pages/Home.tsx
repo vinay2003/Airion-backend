@@ -15,7 +15,8 @@ import FallingLeaves from '../components/FallingLeaves';
 import { fetchEvents } from '../lib/api';
 import api from '../lib/api';
 import type { Event } from '../types';
-const faqs = [
+
+const DEFAULT_FAQS = [
     {
         question: "How quickly can I get venue proposals after submitting a brief?",
         answer: "Most clients receive 3–5 personalised venue proposals within 2 hours of submitting their brief during business hours. For urgent requests, use the Priority Planning option and we'll respond within 30 minutes."
@@ -65,6 +66,20 @@ const FAQItem = ({ question, answer, isOpen, onToggle }: { question: string; ans
     );
 };
 
+const DEFAULT_GRID_CATEGORIES = [
+    { name: 'Weddings & Ceremonies', slug: 'weddings', image: 'https://images.unsplash.com/photo-1587271407850-8d438ca9fdf2?w=2000&auto=format&fit=crop&q=80', gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
+    { name: 'Milestone Birthdays', slug: 'birthdays', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Corporate Galas', slug: 'corporate', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Soirées & Parties', slug: 'parties', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+    { name: 'Photography', slug: 'photography', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Curated Dining', slug: 'catering', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Artistic Decor', slug: 'decor', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Music & DJs', slug: 'music', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+    { name: 'Premium Venues', slug: 'venues', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
+    { name: 'Bridal Makeup', slug: 'makeup', image: 'https://plus.unsplash.com/premium_photo-1677526496597-aa0f49053ce2?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwcHJvZHVjdHN8ZW58MHx8MHx8fDA%3D', gridClass: 'col-span-1 h-64' },
+    { name: 'Full Planning', slug: 'planning', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?q=80&w=2000&auto=format&fit=crop', gridClass: 'col-span-1 h-64' },
+];
+
 const Home: React.FC = () => {
     const { showToast } = useToast();
     const { user, isAuthenticated } = useAuth();
@@ -79,6 +94,9 @@ const Home: React.FC = () => {
     const [marketplaceTab, setMarketplaceTab] = useState('All');
     const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
     const [activeAds, setActiveAds] = useState<any[]>([]);
+
+    const [gridCategories, setGridCategories] = useState(DEFAULT_GRID_CATEGORIES);
+    const [faqs, setFaqs] = useState(DEFAULT_FAQS);
 
     const [subscribeEmail, setSubscribeEmail] = useState('');
     const [subscribeError, setSubscribeError] = useState('');
@@ -103,6 +121,15 @@ const Home: React.FC = () => {
                 setActiveAds(data.filter((ad: any) => ad.adType === 'banner' || ad.adType === 'featured'));
             }
         }).catch(err => console.error('Failed to load ads', err));
+
+        api.get('/cms').then((res: any) => {
+            if (res.data?.landing_page_categories && res.data.landing_page_categories.length > 0) {
+                setGridCategories(res.data.landing_page_categories);
+            }
+            if (res.data?.landing_page_faqs && res.data.landing_page_faqs.length > 0) {
+                setFaqs(res.data.landing_page_faqs);
+            }
+        }).catch(err => console.error('Failed to load CMS', err));
     }, []);
 
     const filteredEvents = useMemo(() => {
@@ -196,27 +223,15 @@ const Home: React.FC = () => {
                             </p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
-                            {[
-                                { title: 'Weddings & Ceremonies', label: 'MOST BOOKED', image: 'https://images.unsplash.com/photo-1587271407850-8d438ca9fdf2?w=2000&auto=format&fit=crop&q=80', link: '/marketplace?category=weddings', class: 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 h-64 lg:h-auto' },
-                                { title: 'Milestone Birthdays', label: 'PRIVATE PARTIES', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=birthdays', class: 'col-span-1 h-64' },
-                                { title: 'Corporate Galas', label: 'BUSINESS EVENTS', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=corporate', class: 'col-span-1 h-64' },
-                                { title: 'Soirées & Parties', label: 'NIGHTLIFE & FUN', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=parties', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Photography', label: 'VISUAL STORIES', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=photography', class: 'col-span-1 h-64' },
-                                { title: 'Curated Dining', label: 'CULINARY EXPERIENCES', image: 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=catering', class: 'col-span-1 h-64' },
-                                { title: 'Artistic Decor', label: 'DESIGN & AMBIANCE', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=decor', class: 'col-span-1 h-64' },
-                                { title: 'Music & DJs', label: 'SOUNDSCAPES', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=music', class: 'col-span-1 h-64' },
-                                { title: 'Premium Venues', label: 'EXCLUSIVE SPACES', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=venues', class: 'col-span-1 sm:col-span-2 lg:col-span-2 h-64' },
-                                { title: 'Bridal Makeup', label: 'BEAUTY & STYLE', image: 'https://plus.unsplash.com/premium_photo-1677526496597-aa0f49053ce2?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFrZXVwJTIwcHJvZHVjdHN8ZW58MHx8MHx8fDA%3D', link: '/marketplace?category=makeup', class: 'col-span-1 h-64' },
-                                { title: 'Full Planning', label: 'STRESS-FREE', image: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?q=80&w=2000&auto=format&fit=crop', link: '/marketplace?category=planning', class: 'col-span-1 h-64' },
-                            ].map((cat, idx) => (
-                                <Link key={idx} to={cat.link} className={`group relative rounded-3xl overflow-hidden shadow-sm  transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.class}`}>
+                            {gridCategories.map((cat, idx) => (
+                                <Link key={idx} to={`/marketplace?category=${cat.slug || cat.name.toLowerCase()}`} className={`group relative rounded-3xl overflow-hidden shadow-sm  transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.gridClass || 'col-span-1 h-64'}`}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
-                                    <img src={cat.image} alt={cat.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <img src={cat.image} alt={cat.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                                         <p className="text-white/70 label mb-1">
-                                            {cat.label || 'Category'}
+                                            {cat.slug ? cat.slug.toUpperCase() : 'CATEGORY'}
                                         </p>
-                                        <h3 className="text-white heading">{cat.title}</h3>
+                                        <h3 className="text-white heading">{cat.name}</h3>
                                     </div>
                                 </Link>
                             ))}

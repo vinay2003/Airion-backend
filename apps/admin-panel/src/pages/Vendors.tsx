@@ -199,31 +199,50 @@ const Vendors: React.FC = () => {
         }
     };
 
+    const [rejectionModalVendorId, setRejectionModalVendorId] = useState<string | null>(null);
+    const [rejectionReason, setRejectionReason] = useState('');
+
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'desc';
         if (sortConfig.key === key && sortConfig.direction === 'desc') direction = 'asc';
         setSortConfig({ key, direction });
     };
 
-    const handleAction = async (id: string, action: 'approve' | 'reject' | 'kyc') => {
-        try {
-            let rejectionReason: string | undefined;
-            if (action === 'reject') {
-                const reason = window.prompt('Please provide a reason for rejecting this vendor:');
-                if (reason === null) return; // User cancelled
-                if (!reason.trim()) {
-                    toast.error('Rejection reason is required');
-                    return;
-                }
-                rejectionReason = reason.trim();
-            }
+    const submitRejection = async () => {
+        if (!rejectionModalVendorId) return;
+        if (!rejectionReason.trim()) {
+            toast.error('Rejection reason is required');
+            return;
+        }
 
+        try {
+            await verifyMutation.mutateAsync({ 
+                vendorId: rejectionModalVendorId, 
+                status: 'rejected',
+                rejectionReason: rejectionReason.trim()
+            });
+            toast.success('Vendor rejected');
+            setRejectionModalVendorId(null);
+            setRejectionReason('');
+        } catch (err) {
+            toast.error('Failed to reject vendor. Please try again.');
+        }
+    };
+
+    const handleAction = async (id: string, action: 'approve' | 'reject' | 'kyc') => {
+        if (action === 'reject') {
+            setRejectionModalVendorId(id);
+            setRejectionReason('');
+            return;
+        }
+
+        try {
             await verifyMutation.mutateAsync({ 
                 vendorId: id, 
-                status: action === 'approve' || action === 'kyc' ? 'approved' : 'rejected',
-                rejectionReason
+                status: 'approved',
+                rejectionReason: undefined
             });
-            toast.success(action === 'approve' ? 'Vendor approved' : action === 'reject' ? 'Vendor rejected' : 'KYC verified');
+            toast.success(action === 'approve' ? 'Vendor approved' : 'KYC verified');
         } catch (err) {
             toast.error('Action failed. Please try again.');
         }
@@ -401,6 +420,48 @@ const Vendors: React.FC = () => {
                     onClose={() => setSelectedVendor(null)}
                     onAction={handleAction}
                 />
+            )}
+
+            {/* Rejection Modal */}
+            {rejectionModalVendorId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setRejectionModalVendorId(null)} />
+                    <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Reject Vendor</h3>
+                            <button onClick={() => setRejectionModalVendorId(null)} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Rejection Reason</label>
+                                <textarea
+                                    className="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-gray-900 dark:text-white resize-none"
+                                    rows={4}
+                                    placeholder="Please provide a detailed reason for rejecting this vendor application..."
+                                    value={rejectionReason}
+                                    onChange={(e) => setRejectionReason(e.target.value)}
+                                ></textarea>
+                                <p className="text-xs text-gray-500 mt-2">This reason will be included in the email sent to the vendor.</p>
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => setRejectionModalVendorId(null)}
+                                    className="flex-1 py-2.5 px-4 rounded-xl border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={submitRejection}
+                                    className="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm transition-colors flex justify-center items-center gap-2"
+                                >
+                                    <X size={16} /> Confirm Rejection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

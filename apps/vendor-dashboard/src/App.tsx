@@ -18,7 +18,7 @@ import VendorSignupForm from './pages/VendorSignup';
 import Bookings from './pages/Bookings';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
-import Profile from './pages/Profile';
+
 import EventPlanning from './pages/EventPlanning';
 import Promotions from './pages/Promotions';
 import Calendar from './pages/Calendar';

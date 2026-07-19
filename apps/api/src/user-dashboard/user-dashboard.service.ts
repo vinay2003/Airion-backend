@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
 import { Booking } from '../bookings/entities/booking.entity';
-import { Vendor } from '../vendors/entities/vendor.entity';
+import { Vendor, VendorVerificationStatus } from '../vendors/entities/vendor.entity';
 import { VendorAd } from '../vendors/entities/vendor-ad.entity';
 import { User } from '../auth/entities/user.entity';
 
@@ -41,7 +41,7 @@ export class UserDashboardService {
         // 3. Fetch Trending/Recommended Vendors
         // For now, fetch top rated vendors in the platform
         const trendingVendors = await this.vendorRepository.find({
-            where: { verificationStatus: 'verified' },
+            where: { verificationStatus: VendorVerificationStatus.APPROVED },
             relations: ['category'],
             order: { rating: 'DESC' },
             take: 4

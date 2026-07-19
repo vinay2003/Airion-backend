@@ -9,7 +9,7 @@ export interface ServerCartItem {
     itemType: 'BOOKING' | 'MERCHANDISE';
     referenceId: string;
     quantity: number;
-    metadata: any;
+    metadata?: any;
 }
 
 const LOCAL_CART_KEY = 'ease2event_guest_cart';
@@ -67,7 +67,7 @@ export const useCart = () => {
         queryKey: ['cart'],
         queryFn: async () => {
             const res = await api.get('/cart');
-            return res.data;
+            return (res as any).data;
         },
         enabled: isLoggedIn,
     });
@@ -76,7 +76,7 @@ export const useCart = () => {
         mutationFn: async (item: { itemType: 'BOOKING' | 'MERCHANDISE'; referenceId: string; quantity?: number; metadata?: any }) => {
             if (isLoggedIn) {
                 const res = await api.post('/cart/items', item);
-                return res.data;
+                return (res as any).data;
             } else {
                 // Local state update
                 setLocalCart(prev => {
@@ -102,7 +102,7 @@ export const useCart = () => {
                 // The backend uses cart_item.id for DELETE. So we need to match it.
                 // For simplicity, let's just delete by itemId.
                 const res = await api.delete(`/cart/items/${args.itemId}`);
-                return res.data;
+                return (res as any).data;
             } else {
                 setLocalCart(prev => prev.filter(i => i.id !== args.itemId && i.referenceId !== args.referenceId));
                 return null;
@@ -117,7 +117,7 @@ export const useCart = () => {
         mutationFn: async () => {
             if (isLoggedIn) {
                 const res = await api.delete('/cart');
-                return res.data;
+                return (res as any).data;
             } else {
                 setLocalCart([]);
                 return null;
@@ -132,7 +132,7 @@ export const useCart = () => {
         mutationFn: async (args: { itemId: string, quantity: number }) => {
             if (isLoggedIn) {
                 const res = await api.put(`/cart/items/${args.itemId}`, { quantity: args.quantity });
-                return res.data;
+                return (res as any).data;
             } else {
                 setLocalCart(prev => prev.map(i => i.id === args.itemId ? { ...i, quantity: args.quantity } : i));
                 return null;

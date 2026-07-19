@@ -181,92 +181,21 @@ export const fetchEventById = async (id: string): Promise<Event | undefined> => 
     return all.find(e => e.id === id);
 };
 
-// --- Mock Persistence Helpers ---
-const getMockBookings = () => {
-    try {
-        const stored = localStorage.getItem('ease2event_mock_bookings');
-        return stored ? JSON.parse(stored) : [];
-    } catch { return []; }
-};
-
-const saveMockBooking = (booking: any) => {
-    try {
-        const current = getMockBookings();
-        const updated = [booking, ...current];
-        localStorage.setItem('ease2event_mock_bookings', JSON.stringify(updated));
-    } catch (e) { console.error('Failed to save mock booking', e); }
-};
-
 export const createBooking = async (data: any) => {
-    try {
-        const res = await api.post('/bookings', data);
-        return res;
-    } catch (error) {
-        const isMockId = data.vendorId === '550e8400-e29b-41d4-a716-446655440000' || 
-                         !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(data.vendorId);
-        if (isMockId) {
-            console.warn('Mock/Invalid Vendor Booking: Using fallback response');
-            const mockBooking = { 
-                id: 'mock-' + Date.now(), 
-                bookingCode: 'E2E-' + Math.floor(Math.random() * 900000 + 100000),
-                eventDate: data.eventDate || new Date().toISOString(),
-                status: 'pending', // Initially pending until payment verified
-                totalAmount: data.totalAmount,
-                vendorId: data.vendorId,
-                vendor: { 
-                    businessName: 'The Royal Grand Palace', 
-                    city: 'Patna', 
-                    portfolioImages: ['https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80'] 
-                }
-            };
-            saveMockBooking(mockBooking);
-            return { success: true, booking: mockBooking };
-        }
-        throw error;
-    }
+    const res = await api.post('/bookings', data);
+    return res;
 };
 
 export const fetchMyBookings = async () => {
-    try { 
-        const res = await api.get('/bookings/mine'); 
-        const mockData = getMockBookings();
-        // Return both real and mock data (mock first for visibility)
-        return Array.isArray(res) ? [...mockData, ...res] : mockData;
-    }
-    catch { 
-        return getMockBookings(); 
-    }
+    const res = await api.get('/bookings/mine');
+    return Array.isArray(res) ? res : [];
 };
 
 export const createPaymentOrder = async (amount: number, bookingId: string) => {
-    try {
-        return await api.post('/payments/create-order', { amount, bookingId });
-    } catch (error) {
-        if (bookingId.startsWith('mock-') || bookingId.length < 10) {
-            return { amount: amount * 100, currency: 'INR', order_id: 'order_mock_' + Date.now() };
-        }
-        throw error;
-    }
+    return await api.post('/payments/create-order', { amount, bookingId });
 };
 export const verifyPayment = async (data: any, bookingId: string) => {
-    try {
-        return await api.post('/payments/verify', { ...data, bookingId });
-    } catch (error) {
-        if (bookingId.startsWith('mock-')) {
-            // Update the status in localStorage to 'confirmed'
-            try {
-                const bookings = getMockBookings();
-                const bookingIndex = bookings.findIndex((b: any) => b.id === bookingId);
-                if (bookingIndex !== -1) {
-                    bookings[bookingIndex].status = 'confirmed';
-                    localStorage.setItem('ease2event_mock_bookings', JSON.stringify(bookings));
-                }
-            } catch (e) { console.error('Failed to update mock status', e); }
-            
-            return { success: true, message: 'Mock payment verified' };
-        }
-        throw error;
-    }
+    return await api.post('/payments/verify', { ...data, bookingId });
 };
 export const toggleWishlist = async (vId: string) => await api.post(`/wishlists/toggle/${vId}`);
 export const fetchMyWishlist = async () => await api.get('/wishlists/mine');
@@ -280,7 +209,7 @@ export const updateGuest = async (id: string, d: any) => await api.patch(`/guest
 export const deleteGuest = async (id: string) => await api.delete(`/guests/${id}`);
 export const fetchConversations = async () => (await api.get('/chat/conversations')) as any[];
 export const fetchMessages = async (id: string) => (await api.get(`/chat/messages/${id}`)) as any[];
-export const startConversation = async (vId: string) => await api.post('/chat/start', { vendorId: vId });
+export const startConversation = async (vId: string) => await api.post('/chat/start', { participantId: vId });
 export const updateProfile = async (d: any) => await api.patch('/auth/profile', d);
 export const changePassword = async (d: any) => await api.post('/auth/change-password', d);
 // --- VENDOR DASHBOARD & ANALYTICS (Step 6 Coordination) ---

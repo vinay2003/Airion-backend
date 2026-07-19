@@ -10,6 +10,7 @@ import {
 import { useBookingCart } from '../context/BookingCartContext';
 import { useAuth } from '@shared/auth/AuthContext';
 import toast from 'react-hot-toast';
+import { createBooking } from '../lib/api';
 
 /* ─── Razorpay types ─── */
 declare global {
@@ -316,8 +317,27 @@ const BookingCart: React.FC = () => {
                 email: user?.email || '',
             },
             theme: { color: '#dc2626' },
-            handler: (response: any) => {
+            handler: async (response: any) => {
                 // Payment successful
+                toast.loading('Processing your booking...', { id: 'booking-process' });
+                
+                try {
+                    // Create bookings on the backend for all vendors
+                    for (const item of cartItems) {
+                        await createBooking({
+                            vendorId: item.vendorId,
+                            totalAmount: item.packagePrice,
+                            eventDate: item.eventDate,
+                            specialRequirements: item.specialInstructions,
+                        });
+                    }
+                    toast.success('Booking confirmed!', { id: 'booking-process' });
+                } catch (err: any) {
+                    console.error('Failed to create booking in backend:', err);
+                    toast.error('Payment succeeded but booking creation failed. Please contact support.', { id: 'booking-process' });
+                    // Continue to confirmation page anyway since payment succeeded
+                }
+
                 clearCart();
                 navigate('/booking-confirmation', {
                     state: {

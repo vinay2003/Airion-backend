@@ -25,6 +25,26 @@ export class VendorsController {
         return this.vendorsService.create(createVendorDto, req.user);
     }
 
+    @Get('discovery')
+    @UseInterceptors(CacheInterceptor)
+    async getDiscovery(
+        @Query('city') city?: string,
+        @Query('categoryId') categoryId?: string,
+        @Query('search') search?: string,
+        @Query('sponsored') sponsored?: string,
+        @Query('limit') limit?: string,
+        @Query('offset') offset?: string,
+    ) {
+        return this.vendorsService.getDiscovery({
+            city,
+            categoryId,
+            search,
+            sponsored: sponsored === 'true' ? true : (sponsored === 'false' ? false : undefined),
+            limit: limit ? parseInt(limit, 10) : 20,
+            offset: offset ? parseInt(offset, 10) : 0,
+        });
+    }
+
     @Get('me')
     @UseGuards(JwtAuthGuard)
     async getMyProfile(@Request() req: any) {
@@ -92,25 +112,7 @@ export class VendorsController {
         return this.vendorsService.recordProfileView(vendorId, viewerUserId, body.guestVisitorId);
     }
 
-    @Get('discovery')
-    @UseInterceptors(CacheInterceptor)
-    async getDiscovery(
-        @Query('city') city?: string,
-        @Query('categoryId') categoryId?: string,
-        @Query('search') search?: string,
-        @Query('sponsored') sponsored?: string,
-        @Query('limit') limit?: string,
-        @Query('offset') offset?: string,
-    ) {
-        return this.vendorsService.getDiscovery({
-            city,
-            categoryId,
-            search,
-            sponsored: sponsored === 'true' ? true : (sponsored === 'false' ? false : undefined),
-            limit: limit ? parseInt(limit, 10) : 20,
-            offset: offset ? parseInt(offset, 10) : 0,
-        });
-    }
+
 
     @Get(':id')
     async findOne(@Param('id') id: string, @Request() req: any) {

@@ -14,6 +14,7 @@ const Reviews: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyText, setReplyText] = useState('');
+    const [mockReplies, setMockReplies] = useState<Record<string, string>>({});
 
     const { data: rawReviews = [], isLoading } = useQuery({
         queryKey: ['vendor-reviews', vendorId],
@@ -37,7 +38,7 @@ const Reviews: React.FC = () => {
                 createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
                 reviewText: 'Absolutely amazing venue and service! The Grand Ballroom was decorated perfectly for our wedding reception. The staff was incredibly helpful throughout the event.',
                 service: { title: 'Grand Ballroom' },
-                vendorReply: 'Thank you Rahul! It was an honor to host your special day. Wishing you a happy married life!',
+                vendorReply: mockReplies['mock-1'] !== undefined ? mockReplies['mock-1'] : 'Thank you Rahul! It was an honor to host your special day. Wishing you a happy married life!',
             },
             {
                 id: 'mock-2',
@@ -46,7 +47,7 @@ const Reviews: React.FC = () => {
                 createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
                 reviewText: 'The Sunset Garden is beautiful! Everything went skip-free. Only reason for 4 stars is that the catering setup took slightly longer than expected, but the food was delicious.',
                 service: { title: 'Sunset Garden' },
-                vendorReply: null,
+                vendorReply: mockReplies['mock-2'] !== undefined ? mockReplies['mock-2'] : null,
             },
             {
                 id: 'mock-3',
@@ -55,10 +56,10 @@ const Reviews: React.FC = () => {
                 createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
                 reviewText: 'Professional staff and great coordination. Highly recommended for corporate events.',
                 service: { title: 'Corporate Package' },
-                vendorReply: 'Glad you liked it Vikram! Looking forward to your next corporate booking.',
+                vendorReply: mockReplies['mock-3'] !== undefined ? mockReplies['mock-3'] : 'Glad you liked it Vikram! Looking forward to your next corporate booking.',
             }
         ];
-    }, [rawReviews]);
+    }, [rawReviews, mockReplies]);
 
     const stats = useMemo(() => {
         const total = reviewsData.length;
@@ -99,7 +100,9 @@ const Reviews: React.FC = () => {
     const replyMutation = useMutation({
         mutationFn: async ({ id, text }: { id: string; text: string }) => {
             if (id.startsWith('mock-')) {
-                throw new Error("This is a sample review. Real reviews will appear here once you receive them.");
+                await new Promise(resolve => setTimeout(resolve, 500));
+                setMockReplies(prev => ({ ...prev, [id]: text }));
+                return { success: true };
             }
             return replyToReview(id, vendorId, text);
         },

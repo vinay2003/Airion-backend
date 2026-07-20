@@ -62,8 +62,8 @@ const Services: React.FC = () => {
  try {
  const res = await api.get(`/services?vendorId=${vendorId}&limit=100`) as any[];
  setServices(res || []);
- } catch (err) {
- console.error('Failed to load initial data');
+ } catch (err: any) {
+ setServices([]);
  } finally {
  setLoading(false);
  }

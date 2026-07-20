@@ -13,7 +13,7 @@ const MOCK_PRODUCTS: Product[] = [
         title: 'Premium LED Fairy Lights (50m)',
         price: 1200,
         category: 'Decor',
-        image: 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600',
+        image: 'https://images.unsplash.com/photo-1729919561898-f4a994c90b0c?w=600&auto=format&fit=crop&q=80',
     },
     {
         id: 'm2',
@@ -34,7 +34,7 @@ const MOCK_PRODUCTS: Product[] = [
         title: 'Bridal Squad Satin Robes (Pack of 5)',
         price: 7500,
         category: 'Apparel',
-        image: 'https://images.unsplash.com/photo-1516041042571-063943ed2949?q=80&w=600',
+        image: 'https://plus.unsplash.com/premium_photo-1706485734742-4a4153f34d2f?w=600&auto=format&fit=crop&q=80&w=600',
     },
     {
         id: 'm5',
@@ -48,7 +48,7 @@ const MOCK_PRODUCTS: Product[] = [
         title: 'Custom Engraved Champagne Flutes',
         price: 2200,
         category: 'Gifts',
-        image: 'https://images.unsplash.com/photo-1510657158737-1424a520a23e?q=80&w=600',
+        image: 'https://images.unsplash.com/photo-1723431620052-46680a65c7b7?w=600&auto=format&fit=crop&q=80',
     },
     {
         id: 'm7',
@@ -113,7 +113,7 @@ const ProductDetails: React.FC = () => {
                         title: res.title,
                         price: Number(res.price),
                         category: res.category,
-                        image: res.image || 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600'
+                        image: res.image || 'https://images.unsplash.com/photo-1729919561898-f4a994c90b0c?w=600&auto=format&fit=crop&q=80'
                     });
                 }
             })
@@ -167,7 +167,7 @@ const ProductDetails: React.FC = () => {
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white dark:bg-slate-900 p-8 sm:p-12 rounded-[32px] border border-neutral-200/60 dark:border-slate-800">
-                    
+
                     {/* Left: Image */}
                     <div className="aspect-square rounded-3xl overflow-hidden bg-neutral-100 dark:bg-slate-800 border border-neutral-200/50 dark:border-slate-800">
                         <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
@@ -179,7 +179,7 @@ const ProductDetails: React.FC = () => {
                             <span className="text-xs font-black text-red-500 uppercase tracking-widest bg-red-50 dark:bg-red-500/10 px-3.5 py-1.5 rounded-full">
                                 {product.category}
                             </span>
-                            
+
                             <h1 className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white mt-4 leading-tight">
                                 {product.title}
                             </h1>

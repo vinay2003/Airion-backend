@@ -21,31 +21,52 @@ const SORT_OPTIONS = [
     { label: 'Newest', value: 'newest' },
 ];
 
-const SwipeView: React.FC<{ vendors: Event[] }> = ({ vendors }) => {
+const SwipeView: React.FC<{ vendors: Event[]; onResetFilters?: () => void }> = ({ vendors, onResetFilters }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const { addToWishlist } = useWishlist();
 
-    const activeVendor = vendors[currentIndex];
+    // Reset swipe index whenever vendors list changes (e.g., when filters are applied)
+    useEffect(() => {
+        setCurrentIndex(0);
+    }, [vendors]);
 
     const handleSwipe = (direction: 'left' | 'right') => {
-        if (direction === 'right' && activeVendor) {
-            addToWishlist(activeVendor);
-            toast.success(`Wishlisted ${activeVendor.title}!`);
+        const vendor = vendors[currentIndex];
+        if (direction === 'right' && vendor) {
+            addToWishlist(vendor);
+            toast.success(`Wishlisted ${vendor.title}!`);
         }
         setCurrentIndex(prev => prev + 1);
     };
 
-    if (currentIndex >= vendors.length) {
+    const handleStartOver = () => {
+        setCurrentIndex(0);
+        if (onResetFilters) {
+            onResetFilters();
+        }
+    };
+
+    if (vendors.length === 0 || currentIndex >= vendors.length) {
         return (
             <div className="h-[450px] flex flex-col items-center justify-center text-center p-8 bg-neutral-50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-neutral-200 dark:border-slate-800">
-                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">No more vendors to swipe!</h3>
-                <p className="text-neutral-500 mb-4">You've swiped through all available nodes.</p>
-                <button onClick={() => setCurrentIndex(0)} className="px-6 py-2.5 bg-red-500 text-white rounded-xl font-bold">
+                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+                    {vendors.length === 0 ? 'No matching vendors to swipe!' : 'No more vendors to swipe!'}
+                </h3>
+                <p className="text-neutral-500 mb-4">
+                    {vendors.length === 0 ? "Reset your filters to swipe through vendors again." : "You've swiped through all available nodes."}
+                </p>
+                <button
+                    type="button"
+                    onClick={handleStartOver}
+                    className="px-6 py-2.5 bg-red-500 hover:bg-red-600 active:scale-95 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-500/20 cursor-pointer"
+                >
                     Start Over
                 </button>
             </div>
         );
     }
+
+    const activeVendor = vendors[currentIndex];
 
     return (
         <div className="flex flex-col items-center justify-center h-[550px] w-full">
@@ -90,10 +111,10 @@ const SwipeView: React.FC<{ vendors: Event[] }> = ({ vendors }) => {
             
             {/* Actions */}
             <div className="flex gap-6 mt-6">
-                <button onClick={() => handleSwipe('left')} className="w-14 h-14 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-500/10 border border-neutral-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-lg text-red-500 transition-colors">
+                <button onClick={() => handleSwipe('left')} className="w-14 h-14 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-500/10 border border-neutral-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-lg text-red-500 transition-colors cursor-pointer">
                     <X size={24} />
                 </button>
-                <button onClick={() => handleSwipe('right')} className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-red-500/30 transition-transform active:scale-95">
+                <button onClick={() => handleSwipe('right')} className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-red-500/30 transition-transform active:scale-95 cursor-pointer">
                     <Heart size={24} />
                 </button>
             </div>
@@ -480,7 +501,13 @@ const VendorDiscovery: React.FC = () => {
                                 <MapView vendors={sortedVendors} />
                             </div>
                         ) : viewMode === 'swipe' ? (
-                            <SwipeView vendors={sortedVendors} />
+                            <SwipeView
+                                vendors={sortedVendors}
+                                onResetFilters={() => {
+                                    setActiveFilters([]);
+                                    setAppliedFilters(null);
+                                }}
+                            />
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                                 <AnimatePresence>

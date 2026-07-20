@@ -26,7 +26,7 @@ const TRENDING_VENDORS = [
 
 const DEAL_BANNERS = [
     { id: 0, title: 'Wedding Season Deals', subtitle: 'Up to 30% Off', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800', link: '/marketplace' },
-    { id: 1, title: 'Book Now, Pay Later', subtitle: 'EMI on all bookings', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?w=800', link: '/marketplace' },
+    { id: 1, title: 'Book Now, Pay Later', subtitle: 'EMI on all bookings', image: 'https://plus.unsplash.com/premium_photo-1661879046374-2f7298cd2ab8?w=600&auto=format&fit=crop&q=80', link: '/marketplace' },
     { id: 2, title: 'Premium Vendors in Patna', subtitle: 'Verified & Rated', image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800', link: '/marketplace' },
 ];
 

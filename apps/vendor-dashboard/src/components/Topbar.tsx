@@ -163,7 +163,7 @@ const Topbar: React.FC<TopbarProps> = ({ title, onMenuClick }) => {
  />
  <div className="hidden md:block">
  <p className="text-sm font-semibold text-[var(--ease2event-text-primary)] leading-tight">{getDisplayName(user)}</p>
- <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight font-bold tracking-widest opacity-60 truncate max-w-[120px]">{user?.email || user?.phone || ''}</p>
+ <p className="text-[10px] text-[var(--ease2event-text-muted)] leading-tight font-bold tracking-widest opacity-60 truncate max-w-[120px]">{user?.email || user?.phoneNumber || ''}</p>
  </div>
  <ChevronDown size={16} className={`text-[var(--ease2event-text-muted)] hidden md:block transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
  </div>

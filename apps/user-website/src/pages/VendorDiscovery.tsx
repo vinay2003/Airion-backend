@@ -305,7 +305,7 @@ const VendorDiscovery: React.FC = () => {
                             </AnimatePresence>
                         </div>
 
-                        {/* Map/List/Swipe Toggle */}
+                        {/* Map/List Toggle */}
                         <div className="flex items-center gap-6 px-1">
                             <button
                                 onClick={() => setViewMode('list')}

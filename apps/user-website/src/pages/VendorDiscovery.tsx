@@ -6,7 +6,7 @@ import ListingCard from '../components/ListingCard';
 import SEO from '../components/SEO';
 import { fetchVendorDiscovery } from '../lib/api';
 import MapView from '../components/MapView';
-import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X, Layers } from 'lucide-react';
+import { Map, List, ChevronDown, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import type { Event } from '../types';
 import FallingPetals from '../components/FallingPetals';
 import { useWishlist } from '../context/WishlistContext';
@@ -21,111 +21,11 @@ const SORT_OPTIONS = [
     { label: 'Newest', value: 'newest' },
 ];
 
-const SwipeView: React.FC<{ vendors: Event[]; onResetFilters?: () => void }> = ({ vendors, onResetFilters }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const { addToWishlist } = useWishlist();
-
-    // Reset swipe index whenever vendors list changes (e.g., when filters are applied)
-    useEffect(() => {
-        setCurrentIndex(0);
-    }, [vendors]);
-
-    const handleSwipe = (direction: 'left' | 'right') => {
-        const vendor = vendors[currentIndex];
-        if (direction === 'right' && vendor) {
-            addToWishlist(vendor);
-            toast.success(`Wishlisted ${vendor.title}!`);
-        }
-        setCurrentIndex(prev => prev + 1);
-    };
-
-    const handleStartOver = () => {
-        setCurrentIndex(0);
-        if (onResetFilters) {
-            onResetFilters();
-        }
-    };
-
-    if (vendors.length === 0 || currentIndex >= vendors.length) {
-        return (
-            <div className="h-[450px] flex flex-col items-center justify-center text-center p-8 bg-neutral-50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-neutral-200 dark:border-slate-800">
-                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                    {vendors.length === 0 ? 'No matching vendors to swipe!' : 'No more vendors to swipe!'}
-                </h3>
-                <p className="text-neutral-500 mb-4">
-                    {vendors.length === 0 ? "Reset your filters to swipe through vendors again." : "You've swiped through all available nodes."}
-                </p>
-                <button
-                    type="button"
-                    onClick={handleStartOver}
-                    className="px-6 py-2.5 bg-red-500 hover:bg-red-600 active:scale-95 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-500/20 cursor-pointer"
-                >
-                    Start Over
-                </button>
-            </div>
-        );
-    }
-
-    const activeVendor = vendors[currentIndex];
-
-    return (
-        <div className="flex flex-col items-center justify-center h-[550px] w-full">
-            <div className="relative w-full max-w-[360px] h-[460px]">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeVendor.id}
-                        drag="x"
-                        dragConstraints={{ left: 0, right: 0 }}
-                        onDragEnd={(_, info) => {
-                            if (info.offset.x > 100) handleSwipe('right');
-                            else if (info.offset.x < -100) handleSwipe('left');
-                        }}
-                        className="absolute inset-0 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-neutral-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col cursor-grab active:cursor-grabbing"
-                    >
-                        <div className="relative h-64 overflow-hidden bg-neutral-100 dark:bg-slate-800">
-                            <img src={activeVendor.image || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80'} alt={activeVendor.title} className="w-full h-full object-cover pointer-events-none" />
-                            <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{activeVendor.category}</div>
-                        </div>
-                        <div className="p-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-xl font-black text-neutral-900 dark:text-white truncate">{activeVendor.title}</h3>
-                                <div className="flex items-center gap-2 text-xs font-bold text-neutral-400 mt-1.5">
-                                    <MapPin size={14} className="text-red-500" />
-                                    <span>{activeVendor.location}</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between border-t border-neutral-100 dark:border-slate-800 pt-4">
-                                <div>
-                                    <span className="text-[10px] text-neutral-400 font-bold block uppercase tracking-wider">Base Price</span>
-                                    <span className="text-lg font-black text-neutral-900 dark:text-white">{activeVendor.price}</span>
-                                </div>
-                                <div className="flex items-center gap-1 bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-lg border border-amber-400/20">
-                                    <Star size={12} fill="currentColor" />
-                                    <span className="text-xs font-bold">{activeVendor.rating}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
-            </div>
-            
-            {/* Actions */}
-            <div className="flex gap-6 mt-6">
-                <button onClick={() => handleSwipe('left')} className="w-14 h-14 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-500/10 border border-neutral-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-lg text-red-500 transition-colors cursor-pointer">
-                    <X size={24} />
-                </button>
-                <button onClick={() => handleSwipe('right')} className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-red-500/30 transition-transform active:scale-95 cursor-pointer">
-                    <Heart size={24} />
-                </button>
-            </div>
-        </div>
-    );
-};
 
 const VendorDiscovery: React.FC = () => {
     const [vendors, setVendors] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
-    const [viewMode, setViewMode] = useState<'list' | 'map' | 'swipe'>('list');
+    const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [sortBy, setSortBy] = useState('recommended');
     const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -437,21 +337,6 @@ const VendorDiscovery: React.FC = () => {
                                     />
                                 )}
                             </button>
-                            <button
-                                onClick={() => setViewMode('swipe')}
-                                className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${viewMode === 'swipe' ? 'text-neutral-900 dark:text-white' : 'text-neutral-400'}`}
-                            >
-                                <div className="flex items-center gap-2 text-xs font-black tracking-[0.2em]">
-                                    <Layers size={16} className={viewMode === 'swipe' ? 'text-red-500' : ''} />
-                                    Swipe
-                                </div>
-                                {viewMode === 'swipe' && (
-                                    <motion.div
-                                        layoutId="viewUnderline"
-                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
-                                    />
-                                )}
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -500,14 +385,6 @@ const VendorDiscovery: React.FC = () => {
                             <div className="h-[calc(100vh-200px)] rounded-3xl overflow-hidden shadow-sm border border-neutral-200/60 dark:border-slate-800">
                                 <MapView vendors={sortedVendors} />
                             </div>
-                        ) : viewMode === 'swipe' ? (
-                            <SwipeView
-                                vendors={sortedVendors}
-                                onResetFilters={() => {
-                                    setActiveFilters([]);
-                                    setAppliedFilters(null);
-                                }}
-                            />
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                                 <AnimatePresence>

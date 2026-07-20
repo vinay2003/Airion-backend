@@ -160,7 +160,16 @@ const Header: React.FC = () => {
 
     // Scroll detection
     useEffect(() => {
-        const handle = () => setIsScrolled(window.scrollY > 20);
+        let ticking = false;
+        const handle = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 20);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
         window.addEventListener('scroll', handle, { passive: true });
         return () => window.removeEventListener('scroll', handle);
     }, []);

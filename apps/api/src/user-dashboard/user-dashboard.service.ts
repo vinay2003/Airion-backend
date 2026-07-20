@@ -15,7 +15,7 @@ export class UserDashboardService {
         private readonly bookingRepository: Repository<Booking>,
         @InjectRepository(Vendor)
         private readonly vendorRepository: Repository<Vendor>,
-    ) {}
+    ) { }
 
     async getOverview(userId: string) {
         this.logger.log(`📊 Fetching dashboard overview for user: ${userId}`);
@@ -52,7 +52,7 @@ export class UserDashboardService {
         // For now, return mock deals if no ads exist
         const deals = [
             { id: 1, title: 'Wedding Season Deals', subtitle: 'Up to 30% Off', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800', link: '/marketplace' },
-            { id: 2, title: 'Book Now, Pay Later', subtitle: 'EMI on all bookings', image: 'https://images.unsplash.com/photo-1530103862676-de3c9a59af57?w=800', link: '/marketplace' }
+            { id: 2, title: 'Book Now, Pay Later', subtitle: 'EMI on all bookings', image: 'https://plus.unsplash.com/premium_photo-1661879046374-2f7298cd2ab8?w=600&auto=format&fit=crop&q=80', link: '/marketplace' }
         ];
 
         return {
@@ -64,7 +64,7 @@ export class UserDashboardService {
             recentBookings: recentBookings.map(b => ({
                 id: b.id,
                 vendorName: b.vendor?.businessName || 'Unknown Vendor',
-                category: 'Vendor', 
+                category: 'Vendor',
                 status: b.status,
                 location: b.vendor?.city || 'Patna',
                 date: new Date(b.createdAt).toLocaleDateString(),
@@ -77,7 +77,7 @@ export class UserDashboardService {
                 name: v.businessName,
                 category: v.category?.name || 'Service',
                 rating: v.rating,
-                price: '₹25,000', 
+                price: '₹25,000',
                 image: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400',
                 location: v.city || 'Patna'
             })),

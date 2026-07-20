@@ -97,7 +97,12 @@ const Reviews: React.FC = () => {
     }, [reviewsData, filter, searchQuery]);
 
     const replyMutation = useMutation({
-        mutationFn: ({ id, text }: { id: string; text: string }) => replyToReview(id, vendorId, text),
+        mutationFn: async ({ id, text }: { id: string; text: string }) => {
+            if (id.startsWith('mock-')) {
+                throw new Error("This is a sample review. Real reviews will appear here once you receive them.");
+            }
+            return replyToReview(id, vendorId, text);
+        },
         onSuccess: () => {
             notify.success('Reply posted successfully!');
             setReplyingTo(null);

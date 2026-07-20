@@ -202,9 +202,9 @@ const Header: React.FC = () => {
                 to="/"
                 className="z-50  transition-transform flex items-center gap-3 flex-shrink-0"
             >
-                <img 
-                    src="/logo.svg" 
-                    alt="Ease2Event Logo" 
+                <img
+                    src="/logo.svg"
+                    alt="Ease2Event Logo"
                     className={`${isScrolled ? 'h-10' : 'h-12'} w-auto transition-all duration-300 object-contain drop-shadow-md`}
                 />
                 <span className={`${isScrolled ? 'text-base' : 'text-lg'} font-black tracking-tight text-gray-900 dark:text-white hidden sm:block transition-all duration-300`}>
@@ -446,10 +446,10 @@ const Header: React.FC = () => {
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
                             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
                                 <div className="flex items-center gap-3">
-                                    <img 
-                                        src="/logo.svg" 
-                                        alt="Ease2Event Logo" 
-                                        className="h-10 w-auto object-contain flex-shrink-0 drop-shadow-md" 
+                                    <img
+                                        src="/logo.svg"
+                                        alt="Ease2Event Logo"
+                                        className="h-10 w-auto object-contain flex-shrink-0 drop-shadow-md"
                                     />
                                     <div className="flex flex-col">
                                         <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Ease<span className="text-red-500">2</span>Event</span>

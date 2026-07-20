@@ -13,7 +13,7 @@ const MOCK_PRODUCTS: (Product & { description: string; rating: number; reviewsCo
         title: 'Premium LED Fairy Lights (50m)',
         price: 1200,
         category: 'Decor',
-        image: 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600',
+        image: 'https://images.unsplash.com/photo-1729919561898-f4a994c90b0c?w=600&auto=format&fit=crop&q=80',
         description: 'Enchanting warm white LED string lights. Waterproof and durable, perfect for backdrops and canopy ceilings.',
         rating: 4.8,
         reviewsCount: 124,
@@ -46,7 +46,7 @@ const MOCK_PRODUCTS: (Product & { description: string; rating: number; reviewsCo
         title: 'Bridal Squad Satin Robes (Pack of 5)',
         price: 7500,
         category: 'Apparel',
-        image: 'https://images.unsplash.com/photo-1516041042571-063943ed2949?q=80&w=600',
+        image: 'https://images.unsplash.com/photo-1684244177286-8625c54bce6d?w=600&auto=format&fit=crop&q=80',
         description: 'Super-soft silk satin robes with "Bride" and "Bridesmaid" embroidered on the back in gold script.',
         rating: 4.8,
         reviewsCount: 112,
@@ -68,7 +68,7 @@ const MOCK_PRODUCTS: (Product & { description: string; rating: number; reviewsCo
         title: 'Custom Engraved Champagne Flutes',
         price: 2200,
         category: 'Gifts',
-        image: 'https://images.unsplash.com/photo-1510657158737-1424a520a23e?q=80&w=600',
+        image: 'https://images.unsplash.com/photo-1723431620052-46680a65c7b7?w=600&auto=format&fit=crop&q=80',
         description: 'Pair of crystal champagne glasses engraved with initials. Elegant keepsake for the bride and groom.',
         rating: 4.9,
         reviewsCount: 140,
@@ -171,7 +171,7 @@ const Merchandise: React.FC = () => {
                         title: p.title,
                         price: Number(p.price),
                         category: p.category,
-                        image: p.image || 'https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600'
+                        image: p.image || 'https://images.unsplash.com/photo-1729919561898-f4a994c90b0c?w=600&auto=format&fit=crop&q=80'
                     })));
                 }
             })
@@ -203,13 +203,13 @@ const Merchandise: React.FC = () => {
                             Discover handpicked luxury centerpieces, custom acrylic signage, matching squad apparel, and smart lighting setups. Delivered straight to your venue.
                         </p>
                         <div className="flex flex-wrap gap-4 pt-2">
-                            <a 
-                                href="#store-grid" 
+                            <a
+                                href="#store-grid"
                                 className="px-6 py-3 bg-red-650 text-white font-bold rounded-lg text-xs tracking-wider uppercase"
                             >
                                 Browse Collection
                             </a>
-                            <button 
+                            <button
                                 onClick={() => {
                                     handleAddToCart(MOCK_PRODUCTS[0]);
                                 }}
@@ -224,13 +224,13 @@ const Merchandise: React.FC = () => {
                     <div className="lg:col-span-5">
                         <div className="p-6 bg-neutral-850 border border-neutral-850 rounded-2xl flex flex-col sm:flex-row gap-4 items-center">
                             <div className="w-28 h-28 rounded-xl overflow-hidden bg-neutral-800 flex-shrink-0">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1543594680-cb03264c7cc3?q=80&w=600" 
-                                    alt="Spotlight item" 
-                                    className="w-full h-full object-cover" 
+                                <img
+                                    src="https://images.unsplash.com/photo-1729919561898-f4a994c90b0c?w=600&auto=format&fit=crop&q=80"
+                                    alt="Spotlight item"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
-                            
+
                             <div className="space-y-2 flex-1 text-center sm:text-left">
                                 <span className="px-2 py-0.5 bg-red-950 text-[9px] font-bold text-red-400 uppercase tracking-widest rounded">
                                     Best Seller
@@ -243,7 +243,7 @@ const Merchandise: React.FC = () => {
                                 </p>
                                 <div className="flex items-center justify-between pt-1">
                                     <span className="font-bold text-sm text-white">₹1,200</span>
-                                    <button 
+                                    <button
                                         onClick={() => handleAddToCart(MOCK_PRODUCTS[0])}
                                         className="px-3 py-1.5 bg-red-650 text-white text-xs font-bold rounded"
                                     >
@@ -284,18 +284,16 @@ const Merchandise: React.FC = () => {
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 cursor-pointer ${
-                                    selectedCategory === cat
-                                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
-                                        : 'bg-white dark:bg-slate-900 text-neutral-600 dark:text-slate-300 border border-neutral-200 dark:border-slate-800'
-                                }`}
+                                className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 cursor-pointer ${selectedCategory === cat
+                                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                                    : 'bg-white dark:bg-slate-900 text-neutral-600 dark:text-slate-300 border border-neutral-200 dark:border-slate-800'
+                                    }`}
                             >
                                 {cat}
-                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${
-                                    selectedCategory === cat 
-                                        ? 'bg-neutral-800 text-white dark:bg-neutral-100 dark:text-neutral-900' 
-                                        : 'bg-neutral-100 dark:bg-slate-800 text-neutral-500 dark:text-slate-400'
-                                }`}>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${selectedCategory === cat
+                                    ? 'bg-neutral-800 text-white dark:bg-neutral-100 dark:text-neutral-900'
+                                    : 'bg-neutral-100 dark:bg-slate-800 text-neutral-500 dark:text-slate-400'
+                                    }`}>
                                     {count}
                                 </span>
                             </button>
@@ -325,17 +323,16 @@ const Merchandise: React.FC = () => {
                                         <div className="absolute top-2 left-2 bg-neutral-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">
                                             {product.category}
                                         </div>
-                                        
+
                                         {/* Stock Badge */}
-                                        <div className={`absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded ${
-                                            productStock <= 15
-                                                ? 'bg-amber-500 text-white'
-                                                : 'bg-emerald-500 text-white'
-                                        }`}>
+                                        <div className={`absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded ${productStock <= 15
+                                            ? 'bg-amber-500 text-white'
+                                            : 'bg-emerald-500 text-white'
+                                            }`}>
                                             {productStock <= 15 ? `Only ${productStock} left` : 'In Stock'}
                                         </div>
                                     </Link>
-                                    
+
                                     <div className="p-4 space-y-1">
                                         <div className="flex items-center gap-1">
                                             <Star className="text-yellow-400 fill-yellow-400" size={12} />

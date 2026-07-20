@@ -4,7 +4,7 @@ import { Building, User, Mail, Phone, MapPin, Shield, ArrowRight, CheckCircle, C
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../lib/apiClient';
 import toast from 'react-hot-toast';
@@ -148,7 +148,7 @@ const VendorSignupBasic: React.FC = () => {
         return (
             <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full shadow-2xl">
-                    <CardBody className="pt-12 pb-8 text-center">
+                    <CardContent className="pt-12 pb-8 text-center">
                         <div className="mb-6 flex justify-center">
                             <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full">
                                 <CheckCircle className="w-16 h-16 text-green-600 dark:text-green-400" />
@@ -159,7 +159,7 @@ const VendorSignupBasic: React.FC = () => {
                             Setting up your dashboard...
                         </p>
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-500 mx-auto"></div>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             </div>
         );
@@ -181,7 +181,7 @@ const VendorSignupBasic: React.FC = () => {
                             <span className="font-bold text-gray-900 dark:text-white">{basicDetails.phone}</span>
                         </p>
                     </CardHeader>
-                    <CardBody>
+                    <CardContent>
                         <div className="space-y-8">
                             <div className="text-center">
                                 <OTPInput 
@@ -232,7 +232,7 @@ const VendorSignupBasic: React.FC = () => {
                                 </button>
                             </div>
                         </div>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             </div>
         );
@@ -252,7 +252,7 @@ const VendorSignupBasic: React.FC = () => {
                         Join Bihar's fastest-growing event venues platform
                     </p>
                 </CardHeader>
-                <CardBody>
+                <CardContent>
                     <form onSubmit={handleSendOTP} className="space-y-6">
                         {error && (
                             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
@@ -397,7 +397,7 @@ const VendorSignupBasic: React.FC = () => {
                             </a>
                         </p>
                     </form>
-                </CardBody>
+                </CardContent>
             </Card>
         </div>
     );

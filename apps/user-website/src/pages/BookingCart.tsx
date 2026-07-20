@@ -305,7 +305,7 @@ const BookingCart: React.FC = () => {
         }
 
         const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_SoVyCbeWSJWBW1',
             amount: payableAmount * 100,
             currency: 'INR',
             name: 'Ease2Event',

@@ -389,16 +389,16 @@ const Earnings: React.FC = () => {
                                 <Tooltip
                                     cursor={{ stroke: 'var(--ease2event-brand-primary)', strokeWidth: 3, strokeDasharray: '8 8' }}
                                     contentStyle={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                         backdropFilter: 'blur(20px)',
                                         border: '1px solid var(--ease2event-border-base)',
-                                        borderRadius: '32px',
-                                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                                        padding: '24px'
+                                        borderRadius: '16px',
+                                        boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.1)',
+                                        padding: '12px 16px'
                                     }}
-                                    itemStyle={{ color: 'var(--ease2event-brand-primary)', fontWeight: 800, fontSize: '24px', letterSpacing: '-0.02em' }}
-                                    labelStyle={{ color: 'var(--ease2event-text-secondary)', fontWeight: 800, fontSize: '11px', marginBottom: '10px', textTransform: '', letterSpacing: '0.3em' }}
-                                    formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'CAPTURE_VAL']}
+                                    itemStyle={{ color: 'var(--ease2event-brand-primary)', fontWeight: 800, fontSize: '16px', letterSpacing: '-0.01em' }}
+                                    labelStyle={{ color: 'var(--ease2event-text-secondary)', fontWeight: 700, fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                                    formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'Revenue']}
                                 />
                                 <Area
                                     type="monotone"

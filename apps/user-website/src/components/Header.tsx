@@ -373,7 +373,7 @@ const Header: React.FC = () => {
             <div className="flex lg:hidden items-center gap-2">
                 <button
                     onClick={toggleTheme}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
+                    className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
                     aria-label="Toggle theme"
                 >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -381,26 +381,24 @@ const Header: React.FC = () => {
 
                 <Link
                     to="/cart"
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
+                    className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
                     aria-label="Open cart"
                 >
                     <ShoppingCart size={18} />
                     {totalItems > 0 && (
-                        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border border-white dark:border-slate-900">
+                        <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white dark:border-slate-900">
                             {totalItems}
                         </span>
                     )}
                 </Link>
 
-                <span className="hidden">
-                    <button
-                        onClick={toggleMenu}
-                        className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all active:scale-95"
-                        aria-label="Toggle menu"
-                    >
-                        {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-                    </button>
-                </span>
+                <button
+                    onClick={toggleMenu}
+                    className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all active:scale-95"
+                    aria-label="Toggle menu"
+                >
+                    {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                </button>
 
                 {isAuthenticated ? (
                     <UserProfileMenu
@@ -511,25 +509,37 @@ const Header: React.FC = () => {
 
                                 {/* Theme & Settings */}
                                 <div className="grid grid-cols-1 gap-3 p-1">
-                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                    <button
+                                        type="button"
+                                        onClick={toggleTheme}
+                                        className="w-full flex items-center justify-between p-4 sm:p-5 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-slate-800 transition-all cursor-pointer select-none active:scale-[0.99]"
+                                    >
                                         <div className="flex items-center gap-3">
-                                            {theme === 'dark' ? <Moon size={20} className="text-blue-500" /> : <Sun size={20} className="text-yellow-500" />}
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">Appearance</span>
+                                            <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                                {theme === 'dark' ? <Moon size={18} className="text-blue-400" /> : <Sun size={18} className="text-amber-500" />}
+                                            </div>
+                                            <div className="text-left">
+                                                <span className="block text-sm font-bold text-gray-900 dark:text-white">Appearance</span>
+                                                <span className="block text-[11px] text-gray-400 font-medium">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
+                                            </div>
                                         </div>
-                                        <button
-                                            onClick={toggleTheme}
-                                            className="w-12 h-6 bg-gray-200 dark:bg-slate-700 rounded-full relative transition-colors"
-                                        >
-                                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${theme === 'dark' ? 'left-7' : 'left-1'}`} />
-                                        </button>
-                                    </div>
+                                        <div className={`w-12 h-6.5 p-0.5 rounded-full transition-colors flex items-center ${theme === 'dark' ? 'bg-red-500 justify-end' : 'bg-gray-300 dark:bg-slate-700 justify-start'}`}>
+                                            <motion.div
+                                                layout
+                                                className="w-5 h-5 rounded-full bg-white shadow-md"
+                                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                            />
+                                        </div>
+                                    </button>
 
-                                    <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800">
+                                    <div className="flex items-center justify-between p-4 sm:p-5 bg-gray-50 dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-slate-800">
                                         <div className="flex items-center gap-3">
-                                            <Globe size={20} className="text-gray-400" />
+                                            <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                                <Globe size={18} className="text-gray-400" />
+                                            </div>
                                             <span className="text-sm font-bold text-gray-900 dark:text-white">Language</span>
                                         </div>
-                                        <span className="text-xs font-black text-red-500 uppercase tracking-widest">English</span>
+                                        <span className="text-xs font-black text-red-500 uppercase tracking-widest bg-red-50 dark:bg-red-950/40 px-3 py-1 rounded-full border border-red-100 dark:border-red-900/30">English</span>
                                     </div>
                                 </div>
                             </div>

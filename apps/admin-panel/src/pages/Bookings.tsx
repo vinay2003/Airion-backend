@@ -216,96 +216,206 @@ const Bookings: React.FC = () => {
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Booking</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Customer</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Vendor</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Event Date</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                                <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {isLoading ? (
-                                Array.from({ length: 5 }).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        {Array.from({ length: 7 }).map((_, j) => (
-                                            <td key={j} className="px-5 py-4">
-                                                <div className="h-4 bg-gray-100 dark:bg-slate-800 rounded w-3/4" />
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))
-                            ) : filteredBookings.map((booking) => (
-                                <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
-                                    <td className="px-5 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-black text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
-                                        <div className="text-xs text-gray-400 mt-0.5">{booking.category}</div>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <div className="flex items-center gap-1.5 group cursor-pointer">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.userName}</span>
-                                            <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
-                                        </div>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <div className="flex items-center gap-1.5 group cursor-pointer">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.vendorName}</span>
-                                            <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
-                                        </div>
-                                        {booking.city && <div className="text-xs text-gray-400 flex items-center gap-1 mt-0.5"><MapPin size={10} />{booking.city}</div>}
-                                    </td>
-                                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-slate-300 font-medium">
-                                        {booking.eventDate ? new Date(booking.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
-                                    </td>
-                                    <td className="px-5 py-4 whitespace-nowrap">
-                                        <span className="text-sm font-black text-gray-900 dark:text-white">{booking.amount}</span>
-                                    </td>
-                                    <td className="px-5 py-4 whitespace-nowrap">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getStatusStyles(booking.status)}`}>
+            {/* Responsive Booking Cards Grid for Mobile/Tablet & Table for Desktop */}
+            <div className="space-y-4">
+                {/* Mobile / Tablet Cards View (screen < lg) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
+                    {isLoading ? (
+                        Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 animate-pulse h-52 flex flex-col justify-between">
+                                <div className="h-4 bg-gray-100 dark:bg-slate-800 rounded w-1/3" />
+                                <div className="h-6 bg-gray-100 dark:bg-slate-800 rounded w-2/3" />
+                                <div className="h-10 bg-gray-100 dark:bg-slate-800 rounded w-full" />
+                            </div>
+                        ))
+                    ) : filteredBookings.map((booking) => (
+                        <div
+                            key={booking.id}
+                            className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-all hover:border-indigo-500/30"
+                        >
+                            {/* Card Header (Fixed Row) */}
+                            <div>
+                                <div className="flex items-center justify-between gap-2 h-7 mb-3">
+                                    <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                                        #{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold shrink-0 ${getStatusStyles(booking.status)}`}>
                                             {booking.status}
                                         </span>
-                                    </td>
-                                    <td className="px-5 py-4 whitespace-nowrap text-right">
-                                        <div className="flex justify-end gap-2">
-                                            {/* View Details — now functional */}
-                                            <button
-                                                onClick={() => setSelectedBooking(booking)}
-                                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg text-indigo-500"
-                                                title="View Details"
-                                            >
-                                                <Eye size={16} />
-                                            </button>
-                                            {booking.status === 'Pending' && (
-                                                <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Confirm">
-                                                    <CheckCircle size={16} />
-                                                </button>
-                                            )}
-                                            {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
-                                                <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Cancel">
-                                                    <XCircle size={16} />
-                                                </button>
-                                            )}
-                                            {booking.status === 'Cancelled' && (
-                                                <button onClick={() => updateStatus(booking.id, 'Refunded')} className="p-1.5 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg" title="Process Refund">
-                                                    <RefreshCcw size={16} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                        <button
+                                            onClick={() => setSelectedBooking(booking)}
+                                            className="text-gray-400 hover:text-indigo-600 shrink-0 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+                                            title="View Details"
+                                        >
+                                            <ExternalLink size={15} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Customer & Vendor Info */}
+                                <div className="space-y-1 mb-3">
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-white line-clamp-1 h-6">
+                                        {booking.userName}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 dark:text-slate-400 font-medium line-clamp-1 h-4">
+                                        {booking.vendorName} • {booking.category || 'Event'}
+                                    </p>
+                                </div>
+
+                                {/* Metadata Row (Fixed 2-Column Grid) */}
+                                <div className="grid grid-cols-2 gap-2 p-3 bg-gray-50 dark:bg-slate-800/40 rounded-xl mb-4 border border-gray-100 dark:border-slate-800/80">
+                                    <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-300 h-5">
+                                        <Calendar size={13} className="text-indigo-500 shrink-0" />
+                                        <span className="truncate">{booking.eventDate ? new Date(booking.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—'}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-300 h-5">
+                                        <MapPin size={13} className="text-indigo-500 shrink-0" />
+                                        <span className="truncate">{booking.city || 'N/A'}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card Footer (Fixed Positioned Amount & Buttons) */}
+                            <div className="flex items-center justify-between gap-2 pt-3 border-t border-gray-100 dark:border-slate-800 mt-auto min-h-[44px]">
+                                <div>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Total</p>
+                                    <p className="font-black text-gray-900 dark:text-white text-base leading-none">{booking.amount}</p>
+                                </div>
+                                <div className="flex items-center gap-1.5 justify-end ml-auto shrink-0">
+                                    {booking.status === 'Pending' && (
+                                        <button
+                                            onClick={() => updateStatus(booking.id, 'Confirmed')}
+                                            className="w-9 h-9 flex items-center justify-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl transition-colors shrink-0"
+                                            title="Confirm"
+                                        >
+                                            <CheckCircle size={16} />
+                                        </button>
+                                    )}
+                                    {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
+                                        <button
+                                            onClick={() => updateStatus(booking.id, 'Cancelled')}
+                                            className="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl transition-colors shrink-0"
+                                            title="Cancel"
+                                        >
+                                            <XCircle size={16} />
+                                        </button>
+                                    )}
+                                    {booking.status === 'Cancelled' && (
+                                        <button
+                                            onClick={() => updateStatus(booking.id, 'Refunded')}
+                                            className="w-9 h-9 flex items-center justify-center bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-xl transition-colors shrink-0"
+                                            title="Process Refund"
+                                        >
+                                            <RefreshCcw size={16} />
+                                        </button>
+                                    )}
+                                    {/* Fixed Details Button */}
+                                    <button
+                                        onClick={() => setSelectedBooking(booking)}
+                                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
+                                    >
+                                        Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
+
+                {/* Desktop Table View (screen >= lg) */}
+                <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[800px]">
+                            <thead>
+                                <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Booking</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Customer</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Vendor</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Event Date</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                    <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                                {isLoading ? (
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            {Array.from({ length: 7 }).map((_, j) => (
+                                                <td key={j} className="px-5 py-4">
+                                                    <div className="h-4 bg-gray-100 dark:bg-slate-800 rounded w-3/4" />
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))
+                                ) : filteredBookings.map((booking) => (
+                                    <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                        <td className="px-5 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-black text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
+                                            <div className="text-xs text-gray-400 mt-0.5">{booking.category}</div>
+                                        </td>
+                                        <td className="px-5 py-4">
+                                            <div className="flex items-center gap-1.5 group cursor-pointer">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.userName}</span>
+                                                <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
+                                            </div>
+                                        </td>
+                                        <td className="px-5 py-4">
+                                            <div className="flex items-center gap-1.5 group cursor-pointer">
+                                                <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{booking.vendorName}</span>
+                                                <ExternalLink size={12} className="text-gray-400 group-hover:text-indigo-600" />
+                                            </div>
+                                            {booking.city && <div className="text-xs text-gray-400 flex items-center gap-1 mt-0.5"><MapPin size={10} />{booking.city}</div>}
+                                        </td>
+                                        <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-slate-300 font-medium">
+                                            {booking.eventDate ? new Date(booking.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                                        </td>
+                                        <td className="px-5 py-4 whitespace-nowrap">
+                                            <span className="text-sm font-black text-gray-900 dark:text-white">{booking.amount}</span>
+                                        </td>
+                                        <td className="px-5 py-4 whitespace-nowrap">
+                                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getStatusStyles(booking.status)}`}>
+                                                {booking.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-4 whitespace-nowrap text-right">
+                                            <div className="flex justify-end items-center gap-2">
+                                                {booking.status === 'Pending' && (
+                                                    <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors" title="Confirm">
+                                                        <CheckCircle size={15} />
+                                                    </button>
+                                                )}
+                                                {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
+                                                    <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="w-8 h-8 flex items-center justify-center bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition-colors" title="Cancel">
+                                                        <XCircle size={15} />
+                                                    </button>
+                                                )}
+                                                {booking.status === 'Cancelled' && (
+                                                    <button onClick={() => updateStatus(booking.id, 'Refunded')} className="w-8 h-8 flex items-center justify-center bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors" title="Process Refund">
+                                                        <RefreshCcw size={15} />
+                                                    </button>
+                                                )}
+                                                {/* Primary Details button anchored right */}
+                                                <button
+                                                    onClick={() => setSelectedBooking(booking)}
+                                                    className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg text-indigo-600 dark:text-indigo-400 font-bold text-xs transition-colors shrink-0"
+                                                >
+                                                    Details
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 {!isLoading && filteredBookings.length === 0 && (
-                    <div className="p-12 text-center text-gray-500 dark:text-slate-400">No bookings match your filters.</div>
+                    <div className="p-12 text-center text-gray-500 dark:text-slate-400 bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800">
+                        No bookings match your filters.
+                    </div>
                 )}
             </div>
 

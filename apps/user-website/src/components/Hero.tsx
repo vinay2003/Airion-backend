@@ -252,7 +252,7 @@ const Hero: React.FC = () => {
             />
 
             {/* Hero Container - MOBILE FIX: Ensure visibility under fixed navbar */}
-            <div ref={heroRef} className="hero-section relative w-full h-[450px] md:h-[550px] overflow-hidden shadow-lg bg-gray-900 pt-[72px] md:pt-0 min-h-0">
+            <div ref={heroRef} className="hero-section relative w-full h-[480px] sm:h-[550px] lg:h-[620px] overflow-hidden shadow-lg bg-gray-900 pt-[60px] sm:pt-0 min-h-0">
 
                 {/* ── FILMSTRIP (with clone at end for seamless infinite loop) ── */}
                 <div
@@ -284,26 +284,26 @@ const Hero: React.FC = () => {
                                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
                                 
                                 {/* ── TEXT OVERLAY: slides horizontally with the image ── */}
-                                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
-                                    <div className="space-y-8 max-w-4xl w-full">
+                                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 py-8">
+                                    <div className="space-y-4 sm:space-y-6 md:space-y-8 max-w-4xl w-full">
                                         {/* Heading */}
-                                        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+                                        <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-wide leading-tight font-serif drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
                                             {content.title}
                                         </h1>
 
                                         {/* Description */}
-                                        <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
+                                        <p className="text-xs sm:text-base md:text-xl text-white/90 max-w-2xl mx-auto font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
                                             {content.description}
                                         </p>
 
                                         {/* Trust Badge */}
                                         {content.badge && (
                                             <div className="flex justify-center">
-                                                <div className="bg-black/40 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-4 hover:bg-black/50 transition-colors">
-                                                    <span className={`text-2xl ${content.badge.color}`}>
+                                                <div className="bg-black/40 backdrop-blur-md px-4 py-2 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl border border-white/20 shadow-2xl inline-flex items-center gap-2.5 sm:gap-4 hover:bg-black/50 transition-colors">
+                                                    <span className={`text-base sm:text-2xl ${content.badge.color}`}>
                                                         {content.badge.icon}
                                                     </span>
-                                                    <span className="text-white text-sm md:text-lg font-bold tracking-wide">
+                                                    <span className="text-white text-xs sm:text-sm md:text-base font-bold tracking-wide">
                                                         {content.badge.text}
                                                     </span>
                                                 </div>

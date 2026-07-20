@@ -213,45 +213,46 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="max-w-[1536px] mx-auto px-4 md:px-8 py-12"
+                        className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 py-10 sm:py-16"
                     >
-                        <div className="text-center mb-12">
-                            <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Whatever You're Celebrating,
-                                We Have the Perfect Space</h2>
-                            <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
+                        <div className="text-center mb-8 sm:mb-12">
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                                Whatever You're Celebrating, We Have the Perfect Space
+                            </h2>
+                            <p className="text-gray-600 dark:text-slate-400 max-w-2xl mx-auto text-xs sm:text-base">
                                 Discover everything you need to make your next event truly unforgettable.
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:grid-flow-row-dense">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:grid-flow-row-dense">
                             {gridCategories.map((cat, idx) => (
-                                <Link key={idx} to={`/marketplace?category=${cat.slug || cat.name.toLowerCase()}`} className={`group relative rounded-3xl overflow-hidden shadow-sm  transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.gridClass || 'col-span-1 h-64'}`}>
+                                <Link key={idx} to={`/marketplace?category=${cat.slug || cat.name.toLowerCase()}`} className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm transition-all duration-300 border border-neutral-100 dark:border-slate-800 ${cat.gridClass || 'col-span-1 h-52 sm:h-64'}`}>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity"></div>
                                     <img src={cat.image} alt={cat.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                    <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                        <p className="text-white/70 label mb-1">
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-20 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-500">
+                                        <p className="text-white/70 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1">
                                             {cat.slug ? cat.slug.toUpperCase() : 'CATEGORY'}
                                         </p>
-                                        <h3 className="text-white heading">{cat.name}</h3>
+                                        <h3 className="text-white text-lg sm:text-xl font-bold">{cat.name}</h3>
                                     </div>
                                 </Link>
                             ))}
                         </div>
                     </motion.section>
 
-
                     {/* Featured Events This Month */}
-                    <section className="max-w-[1536px] mx-auto px-4 md:px-8 py-16">
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                    <section className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 py-10 sm:py-16">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-4">
                             <div className="space-y-1">
-                                <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Top Booked Venues This Season</h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
-                                    Real-time availability — book before someone else does.</p>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Top Booked Venues This Season</h2>
+                                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
+                                    Real-time availability — book before someone else does.
+                                </p>
                             </div>
-                            <Link to="/marketplace" className="text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-400 font-black flex items-center gap-2 group text-sm tracking-widest bg-red-50 dark:bg-red-500/5 px-4 py-1.5 rounded-full border border-red-500/10 transition-all">
+                            <Link to="/marketplace" className="text-red-500 dark:text-white hover:text-red-600 dark:hover:text-red-400 font-black flex items-center gap-2 group text-xs sm:text-sm tracking-widest bg-red-50 dark:bg-red-500/5 px-4 py-2 rounded-full border border-red-500/10 transition-all shrink-0">
                                 See More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                             {weddingVenues.slice(0, 3).map((item, index) => (
                                 <ListingCard
                                     key={index}
@@ -264,34 +265,34 @@ const Home: React.FC = () => {
                     </section>
 
                     {/* Marketplace Section (KEY Tabbed Layout) */}
-                    <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-16">
-                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
+                    <section className="bg-white/5 backdrop-blur-lg dark:bg-slate-900/20 py-10 sm:py-16">
+                        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8">
 
                             {/* 🔹 Header */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-4 sm:gap-6">
 
                                 <div className="space-y-1">
-                                    <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                                         Plan Your Event Without Stress
                                     </h2>
 
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
+                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-semibold tracking-wide opacity-80">
                                         Real-time status tracking
                                     </p>
                                 </div>
 
                                 {/* 🔹 Tabs (FIXED) */}
-                                <div className="flex items-center gap-3 md:gap-4 overflow-x-auto hide-scrollbar pb-2">
+                                <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto hide-scrollbar pb-2 max-w-full">
                                     {['All', 'Available', 'Filling', 'New'].map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setMarketplaceTab(tab)}
-                                            className={`group relative py-2 transition-all duration-300 hover:scale-110 hover:brightness-150 ${marketplaceTab === tab
+                                            className={`group relative py-2 px-3 sm:px-4 transition-all duration-300 hover:scale-105 ${marketplaceTab === tab
                                                 ? 'text-gray-900 dark:text-white font-black'
                                                 : 'text-gray-500 font-semibold'
                                                 }`}
                                         >
-                                            <span className="text-xs md:text-sm tracking-[0.2em] whitespace-nowrap">
+                                            <span className="text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] whitespace-nowrap">
                                                 {tab}
                                             </span>
                                             {marketplaceTab === tab && (
@@ -306,7 +307,7 @@ const Home: React.FC = () => {
                             </div>
 
                             {/* 🔹 Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                                 {events.slice(0, 6).map((item, index) => {
                                     const statuses = ['AVAILABLE', 'FILLING_FAST', 'SOLD_OUT', 'COMING_SOON'] as const;
                                     const status = statuses[index % 4];
@@ -346,21 +347,19 @@ const Home: React.FC = () => {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 overflow-hidden"
+                        className="bg-[#FAF8F5] dark:bg-slate-900 py-16 sm:py-24 relative z-10 overflow-hidden"
                     >
                         {/* Confined Falling Leaf Effect */}
                         <div className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen -z-10">
                             <FallingLeaves />
                         </div>
-                        <div className="max-w-[1536px] mx-auto px-4 md:px-8 relative">
-                            <div className="text-center mb-20 relative">
-                                {/* Decorative elements matching the image */}
-
-                                <p className="text-md font-bold text-[#C25844] tracking-[0.25em] mb-4">The Process</p>
-                                <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
+                        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 relative">
+                            <div className="text-center mb-12 sm:mb-20 relative">
+                                <p className="text-xs sm:text-sm font-bold text-[#C25844] tracking-[0.25em] mb-2 sm:mb-4 uppercase">The Process</p>
+                                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] dark:text-white mb-4 sm:mb-6 font-serif tracking-tight leading-[1.15]">
                                     From Idea to Celebration in 4 Simple Steps
                                 </h2>
-                                <p className="text-gray-500 dark:text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                                <p className="text-gray-500 dark:text-slate-400 max-w-2xl mx-auto text-xs sm:text-base">
                                     Most clients go from first search to confirmed booking in under 48 hours.
                                 </p>
                             </div>
@@ -369,7 +368,7 @@ const Home: React.FC = () => {
                                 {/* Connecting Line */}
                                 <div className="hidden md:block absolute top-[40px] left-[12%] right-[12%] h-[1px] bg-[#C25844]/40 -z-10" />
 
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 relative z-10">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-8 relative z-10">
                                     {[
                                         {
                                             num: '01',
@@ -400,11 +399,11 @@ const Home: React.FC = () => {
                                             transition={{ delay: idx * 0.15, duration: 0.6 }}
                                             className="flex flex-col items-center text-center group"
                                         >
-                                            <div className="w-20 h-20 bg-[#FAF8F5] dark:bg-slate-900 border-[1.5px] border-[#C25844] rounded-full flex items-center justify-center mb-6 transition-transform duration-300 group-hover:bg-[#C25844] group-hover:text-white">
-                                                <span className="text-xl font-bold text-[#C25844] font-serif group-hover:text-white transition-colors">{step.num}</span>
+                                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF8F5] dark:bg-slate-900 border-[1.5px] border-[#C25844] rounded-full flex items-center justify-center mb-4 sm:mb-6 transition-transform duration-300 group-hover:bg-[#C25844] group-hover:text-white">
+                                                <span className="text-lg sm:text-xl font-bold text-[#C25844] font-serif group-hover:text-white transition-colors">{step.num}</span>
                                             </div>
-                                            <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-3 font-serif transition-colors">{step.title}</h3>
-                                            <p className="text-[13px] text-gray-500 dark:text-slate-400 leading-relaxed px-2">
+                                            <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] dark:text-white mb-2 sm:mb-3 font-serif transition-colors">{step.title}</h3>
+                                            <p className="text-xs sm:text-[13px] text-gray-500 dark:text-slate-400 leading-relaxed px-1 sm:px-2">
                                                 {step.desc}
                                             </p>
                                         </motion.div>
@@ -416,29 +415,29 @@ const Home: React.FC = () => {
 
                     {/* Comparison Table */}
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-slate-700 to-transparent my-2 opacity-50"></div>
-                    <section className="bg-white dark:bg-slate-950 py-24 relative z-10">
-                        <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
-                            <p className="text-md font-bold text-[#C25844] tracking-[0.25em] mb-4">Why Ease2event Wins</p>
-                            <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
+                    <section className="bg-white dark:bg-slate-950 py-16 sm:py-24 relative z-10">
+                        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 text-center mb-10 sm:mb-16">
+                            <p className="text-xs sm:text-sm font-bold text-[#C25844] tracking-[0.25em] mb-2 sm:mb-4 uppercase">Why Ease2event Wins</p>
+                            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] dark:text-white mb-4 sm:mb-6 font-serif tracking-tight">
                                 How We Stack Up Against Planning on Your Own
                             </h2>
-                            <p className="text-gray-600 dark:text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
+                            <p className="text-gray-600 dark:text-slate-300 text-xs sm:text-base max-w-2xl mx-auto">
                                 See why 10,000+ hosts chose Ease2event over DIY or traditional planners.
                             </p>
                         </div>
 
-                        <div className="max-w-[1536px] mx-auto px-4 md:px-8">
-                            <div className="overflow-x-auto rounded-lg shadow-2xl bg-[#FAF8F5] dark:bg-slate-900 border border-gray-200 dark:border-slate-700">
-                                <table className="w-full text-left border-collapse min-w-[800px]">
+                        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8">
+                            <div className="overflow-x-auto rounded-2xl shadow-2xl bg-[#FAF8F5] dark:bg-slate-900 border border-gray-200 dark:border-slate-700 custom-scrollbar">
+                                <table className="w-full text-left border-collapse min-w-[700px]">
                                     <thead>
                                         <tr>
-                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 w-[35%] rounded-tl-lg">Feature</th>
-                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[20%]">DIY Planning</th>
-                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[20%]">Traditional Planner</th>
-                                            <th className="bg-[#C25844] text-white text-xs md:text-sm font-bold uppercase tracking-[0.15em] p-6 text-center w-[25%] rounded-tr-lg">Ease2event ✓</th>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] p-4 sm:p-6 w-[35%] rounded-tl-2xl">Feature</th>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] p-4 sm:p-6 text-center w-[20%]">DIY Planning</th>
+                                            <th className="bg-[#1A1A1A] text-gray-200 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] p-4 sm:p-6 text-center w-[20%]">Traditional Planner</th>
+                                            <th className="bg-[#C25844] text-white text-xs sm:text-sm font-bold uppercase tracking-[0.15em] p-4 sm:p-6 text-center w-[25%] rounded-tr-2xl">Ease2event ✓</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="text-sm md:text-[15px] text-gray-800 dark:text-gray-200">
+                                    <tbody className="text-xs sm:text-sm md:text-[15px] text-gray-800 dark:text-gray-200">
                                         {[
                                             { feature: 'Verified venue database', diy: 'X', trad: 'Partial', ease: '✓ 1,200+ venues' },
                                             { feature: 'Transparent pricing', diy: 'X', trad: 'X Hidden commissions', ease: '✓ All-inclusive quotes' },
@@ -455,10 +454,10 @@ const Home: React.FC = () => {
                                             };
                                             return (
                                                 <tr key={i} className={i % 2 === 0 ? 'bg-[#FAF8F5] dark:bg-slate-900/30' : 'bg-white dark:bg-slate-800'}>
-                                                    <td className="p-6 font-bold text-[#1A1A1A] dark:text-white border-b border-gray-200 dark:border-slate-700/50">{row.feature}</td>
-                                                    <td className="p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.diy)}</td>
-                                                    <td className="p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.trad)}</td>
-                                                    <td className="p-6 text-center bg-[#C25844]/5 border-b border-[#C25844]/10">{renderCell(row.ease)}</td>
+                                                    <td className="p-4 sm:p-6 font-bold text-[#1A1A1A] dark:text-white border-b border-gray-200 dark:border-slate-700/50">{row.feature}</td>
+                                                    <td className="p-4 sm:p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.diy)}</td>
+                                                    <td className="p-4 sm:p-6 text-center border-b border-gray-200 dark:border-slate-700/50">{renderCell(row.trad)}</td>
+                                                    <td className="p-4 sm:p-6 text-center bg-[#C25844]/5 border-b border-[#C25844]/10">{renderCell(row.ease)}</td>
                                                 </tr>
                                             );
                                         })}
@@ -469,10 +468,10 @@ const Home: React.FC = () => {
                     </section>
                 </>
             ) : (
-                <section id="marketplace-results" className="max-w-[1536px] mx-auto px-4 md:px-8 py-12">
+                <section id="marketplace-results" className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 py-10 sm:py-12">
                     <div className="mb-8">
-                        <h2 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} </h2>
-                        <p className="text-gray-500 text-sm mt-1">Discover premium listings specifically tailored for your choice.</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold capitalize text-gray-900 dark:text-white">{activeCategory} </h2>
+                        <p className="text-gray-500 text-xs sm:text-sm mt-1">Discover premium listings specifically tailored for your choice.</p>
                     </div>
                     {filteredEvents.length > 0 ? (
                         <CategorySection title="" items={filteredEvents} />
@@ -487,16 +486,16 @@ const Home: React.FC = () => {
             )}
 
             {/* Our Promise To You */}
-            <section className="bg-white dark:bg-slate-950 py-24 relative z-10 overflow-hidden border-t border-gray-100 dark:border-slate-800/50">
+            <section className="bg-white dark:bg-slate-950 py-16 sm:py-24 relative z-10 overflow-hidden border-t border-gray-100 dark:border-slate-800/50">
                 {/* Confined Falling Leaf Effect */}
                 <div className="absolute inset-0 pointer-events-none mix-blend-multiply dark:mix-blend-screen -z-10">
                     <FallingLeaves />
                 </div>
-                <div className="max-w-[1700px] mx-auto px-4 md:px-8 lg:px-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <div className="max-w-[1700px] mx-auto px-4 sm:px-6 md:px-8 lg:px-16">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center">
                         {/* Left Side: Image with Badges */}
                         <div className="relative">
-                            <div className="relative h-[500px] lg:h-[600px] rounded-sm overflow-hidden shadow-xl">
+                            <div className="relative h-[360px] sm:h-[480px] lg:h-[580px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl">
                                 <img
                                     src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
                                     alt="Event Planning"
@@ -506,74 +505,72 @@ const Home: React.FC = () => {
                             </div>
 
                             {/* Top Left Badge */}
-                            <div className="absolute top-10 left-0 md:left-4 bg-[#C25844] text-white px-6 py-5 rounded shadow-2xl z-20">
-                                <div className="text-4xl font-serif font-bold mb-1 leading-none">₹0</div>
-                                <div className="text-[10px] tracking-wider uppercase opacity-90 font-medium mt-1">Hidden Fees. Ever.</div>
+                            <div className="absolute top-4 left-4 sm:top-8 sm:left-6 bg-[#C25844] text-white px-4 py-3 sm:px-6 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl z-20">
+                                <div className="text-2xl sm:text-4xl font-serif font-bold mb-1 leading-none">₹0</div>
+                                <div className="text-[9px] sm:text-[10px] tracking-wider uppercase opacity-90 font-medium mt-1">Hidden Fees. Ever.</div>
                             </div>
 
                             {/* Bottom Right Badge */}
-                            <div className="absolute bottom-10 right-0 md:right-4 bg-white dark:bg-slate-800 px-8 py-6 rounded shadow-2xl z-20 text-center border border-gray-100 dark:border-slate-700">
-                                <div className="text-4xl font-serif font-bold text-[#C25844] mb-2 leading-none">98%</div>
-                                <div className="text-xs text-gray-500 font-medium">Client Satisfaction Score</div>
+                            <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-6 bg-white dark:bg-slate-800 px-5 py-4 sm:px-8 sm:py-6 rounded-xl sm:rounded-2xl shadow-2xl z-20 text-center border border-gray-100 dark:border-slate-700">
+                                <div className="text-2xl sm:text-4xl font-serif font-bold text-[#C25844] mb-1 sm:mb-2 leading-none">98%</div>
+                                <div className="text-[10px] sm:text-xs text-gray-500 font-medium">Client Satisfaction Score</div>
                             </div>
                         </div>
 
                         {/* Right Side: Content */}
                         <div>
-                            <p className="text-md font-bold text-[#C25844] tracking-[0.20em] mb-4">Our Promise To You</p>
-                            <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight leading-[1.1]">
+                            <p className="text-xs sm:text-sm font-bold text-[#C25844] tracking-[0.20em] mb-2 sm:mb-4 uppercase">Our Promise To You</p>
+                            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] dark:text-white mb-4 sm:mb-6 font-serif tracking-tight leading-[1.15]">
                                 5 Reasons 10,000+ Hosts Choose Ease2event
                             </h2>
-                            <p className="text-gray-500 dark:text-slate-400 mb-12 text-sm md:text-base">
+                            <p className="text-gray-500 dark:text-slate-400 mb-8 sm:mb-12 text-xs sm:text-base">
                                 We're not just a venues platform. We're your personal event team.
                             </p>
 
-                            <div className="space-y-8">
-                                <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
-                                        <CheckCircle2 size={22} strokeWidth={1.5} />
+                            <div className="space-y-6 sm:space-y-8">
+                                <div className="flex gap-4 sm:gap-5 group">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform">
+                                        <CheckCircle2 size={20} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Every Vendor is Personally Verified</h3>
-                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] dark:text-white mb-1 font-serif">Every Vendor is Personally Verified</h3>
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                             We physically inspect every venue. Only 1 in 4 applicants make it onto Ease2event.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
-                                        <DollarSign size={22} strokeWidth={1.5} />
+                                <div className="flex gap-4 sm:gap-5 group">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform">
+                                        <DollarSign size={20} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Price Match Guarantee</h3>
-                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] dark:text-white mb-1 font-serif">Price Match Guarantee</h3>
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                             Found the same venue cheaper? We'll match it — no arguments, no conditions.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-5 group relative">
-                                    {/* Decorative dot from image */}
-
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
-                                        <Phone size={22} strokeWidth={1.5} />
+                                <div className="flex gap-4 sm:gap-5 group relative">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform">
+                                        <Phone size={20} strokeWidth={1.5} />
                                     </div>
                                     <div className="lg:pr-12">
-                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Concierge Available 24/7</h3>
-                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] dark:text-white mb-1 font-serif">Concierge Available 24/7</h3>
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                             Call, WhatsApp, or email — your dedicated coordinator responds within the hour.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-5 group">
-                                    <div className="w-12 h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded flex items-center justify-center flex-shrink-0 transition-transform ">
-                                        <Shield size={22} strokeWidth={1.5} />
+                                <div className="flex gap-4 sm:gap-5 group">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F0E6] dark:bg-slate-800 text-[#C25844] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform">
+                                        <Shield size={20} strokeWidth={1.5} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-1.5 font-serif">Secure Payments & Cancellation Cover</h3>
-                                        <p className="text-[13px] md:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                        <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] dark:text-white mb-1 font-serif">Secure Payments & Cancellation Cover</h3>
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                             All bookings are protected. 100% refund within 48 hours. Partial refunds up to 7 days before.
                                         </p>
                                     </div>
@@ -585,19 +582,19 @@ const Home: React.FC = () => {
             </section>
 
             {/* FAQ Section */}
-            <section className="bg-[#FAF8F5] dark:bg-slate-900 py-24 relative z-10 border-t border-gray-200 dark:border-slate-800">
-                <div className="max-w-[1536px] mx-auto px-4 md:px-8 text-center mb-16">
-                    <p className="text-md font-bold text-[#C25844] mb-4">Get Questions?</p>
-                    <h2 className="text-3xl md:text-5xl lg:text-[54px] font-bold text-[#1A1A1A] dark:text-white mb-6 font-serif tracking-tight">
+            <section className="bg-[#FAF8F5] dark:bg-slate-900 py-16 sm:py-24 relative z-10 border-t border-gray-200 dark:border-slate-800">
+                <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 text-center mb-10 sm:mb-16">
+                    <p className="text-xs sm:text-sm font-bold text-[#C25844] mb-2 sm:mb-4 uppercase">Got Questions?</p>
+                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] dark:text-white mb-4 sm:mb-6 font-serif tracking-tight">
                         Everything You Need to Know Before Booking
                     </h2>
-                    <p className="text-gray-500 dark:text-slate-400 text-sm md:text-base">
+                    <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-base">
                         Still unsure? Chat with our team — available right now.
                     </p>
                 </div>
 
-                <div className="max-w-[1536px] mx-auto px-4 md:px-8 lg:px-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
+                <div className="max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 items-start">
                         {faqs.map((faq, idx) => (
                             <FAQItem
                                 key={idx}
@@ -612,7 +609,7 @@ const Home: React.FC = () => {
             </section>
 
             {/* Newsletter */}
-            <section className="relative py-28 px-4 md:px-8 bg-gradient-to-b from-[#1A1A1A] to-black overflow-hidden z-10">
+            <section className="relative py-16 sm:py-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-[#1A1A1A] to-black overflow-hidden z-10">
                 {/* Raining / Falling Flower Effect confined to this section */}
                 <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-60 -z-10">
                     <FallingPetals />
@@ -620,17 +617,17 @@ const Home: React.FC = () => {
 
                 <div className="max-w-[1536px] mx-auto text-center relative z-10">
                     <div className="max-w-4xl mx-auto">
-                        <p className="text-md font-bold text-[#C25844] tracking-[0.25em] mb-4">Stay in the loop</p>
-                        <h2 className="text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-white font-serif tracking-tight mb-8 leading-tight px-4 whitespace-normal md:whitespace-nowrap">
+                        <p className="text-xs sm:text-sm font-bold text-[#C25844] tracking-[0.25em] mb-3 sm:mb-4 uppercase">Stay in the loop</p>
+                        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-white font-serif tracking-tight mb-6 sm:mb-8 leading-snug px-2">
                             Exclusive Venues. Early Access. Every Week.
                         </h2>
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12 mt-4">
-                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> New venue alerts</span>
-                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Subscriber-only discounts</span>
-                            <span className="flex items-center gap-2 text-gray-300 text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Expert planning tips</span>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 md:gap-10 mb-8 sm:mb-12">
+                            <span className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> New venue alerts</span>
+                            <span className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Subscriber-only discounts</span>
+                            <span className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm md:text-base"><Star size={16} className="text-[#D2A04A]" fill="currentColor" /> Expert planning tips</span>
                         </div>
 
-                        <form className="flex flex-col md:flex-row max-w-3xl mx-auto relative mb-6 shadow-2xl" onSubmit={handleSubscribe} noValidate>
+                        <form className="flex flex-col md:flex-row max-w-3xl mx-auto relative mb-6 shadow-2xl gap-3 md:gap-0" onSubmit={handleSubscribe} noValidate>
                             <div className="flex-1 relative">
                                 <input
                                     type="email"
@@ -641,18 +638,18 @@ const Home: React.FC = () => {
                                     }}
                                     required
                                     placeholder="Enter your email address"
-                                    className={`w-full h-full px-8 py-5 rounded-t-md md:rounded-l-md md:rounded-tr-none border-0 bg-white/5 backdrop-blur-md text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-[#C25844] focus:z-10 relative transition-all`}
+                                    className={`w-full px-6 sm:px-8 py-4 sm:py-5 rounded-2xl md:rounded-l-2xl md:rounded-r-none border-0 bg-white/10 backdrop-blur-md text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#C25844] text-sm sm:text-base transition-all`}
                                 />
                                 {subscribeError && (
-                                    <p className="absolute -bottom-8 left-8 text-sm text-red-400 font-bold text-left">{subscribeError}</p>
+                                    <p className="text-xs text-red-400 font-bold text-left mt-2 md:absolute md:-bottom-6 md:left-6 md:mt-0">{subscribeError}</p>
                                 )}
                             </div>
-                            <button className="bg-[#C25844] hover:bg-[#d86650] text-white px-10 py-5 rounded-b-md md:rounded-r-md md:rounded-bl-none font-bold transition-colors whitespace-nowrap tracking-wide uppercase text-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#C25844] focus:z-10 relative">
+                            <button className="bg-[#C25844] hover:bg-[#d86650] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl md:rounded-r-2xl md:rounded-l-none font-bold transition-colors whitespace-nowrap tracking-wide uppercase text-xs sm:text-sm flex-shrink-0 min-h-[48px] cursor-pointer">
                                 JOIN 12,000+ HOSTS
                             </button>
                         </form>
 
-                        <p className="text-gray-500 text-xs md:text-sm tracking-wide mt-10">
+                        <p className="text-gray-500 text-xs sm:text-sm tracking-wide mt-6 sm:mt-10">
                             No spam. Unsubscribe anytime. We respect your privacy.
                         </p>
                     </div>

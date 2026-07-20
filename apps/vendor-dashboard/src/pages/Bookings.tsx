@@ -136,7 +136,7 @@ const Bookings: React.FC = () => {
  {/* Header: Bookings Management */}
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)]">
  <div >
- <h1 className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)]">Bookings Manager</h1>
+ <h1 className="text-xl font-bold tracking-tight text-[var(--ease2event-text-primary)]">Bookings Management</h1>
  <div className="flex items-center gap-3 mt-2">
  <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded-full border border-blue-500/30">
  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>

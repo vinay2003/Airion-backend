@@ -156,7 +156,7 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const response = await api.get(url);
     const data = response.data?.data?.vendors || response.data?.vendors || response.data || [];
     
-    return data.map((v: any) => ({
+    const realVendors = data.map((v: any) => ({
         id: v.id,
         vendorId: v.id,
         title: v.businessName || 'Unnamed Vendor',
@@ -174,6 +174,27 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
         isSponsored: !!v.isSponsored,
         isFeatured: !!v.isFeatured
     }));
+
+    if (realVendors.length > 0) return realVendors;
+
+    return mockServices.map((s, idx) => ({
+        id: s.id,
+        vendorId: s.id,
+        title: s.title,
+        category: s.category,
+        image: s.image,
+        images: [s.image],
+        rating: s.rating,
+        location: s.location,
+        reviews: s.reviews,
+        price: s.price,
+        capacity: (s as any).capacity || 'Contact Vendor',
+        description: s.description,
+        vendorName: s.title,
+        vendorImage: s.image,
+        isSponsored: idx % 3 === 0,
+        isFeatured: idx % 2 === 0
+    })) as Event[];
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {

@@ -8,6 +8,7 @@ import {
 
 import { fetchMyBookings } from '../../lib/api';
 import ReviewModal from '../../components/ReviewModal';
+import toast from 'react-hot-toast';
 
 const MOCK_BOOKINGS = [
     {
@@ -297,11 +298,14 @@ const MyBookings: React.FC = () => {
                                 {/* Right Side: Card Content */}
                                 <div className="flex-1 py-0.5 flex flex-col justify-between overflow-hidden">
                                     <div>
-                                        {/* Top Row: Code & Arrow */}
-                                        <div className="flex justify-between items-center mb-1 gap-2 h-5">
+                                        {/* Top Row: Code & Details Button */}
+                                        <div className="flex justify-between items-center mb-1 gap-2 h-8">
                                             <p className="text-xs font-mono font-bold text-neutral-400 tracking-wider">#{booking.bookingCode}</p>
-                                            <button onClick={() => setSelectedBooking(booking)} className="text-neutral-400 hover:text-red-500 shrink-0 p-1">
-                                                <ChevronRight size={18} />
+                                            <button
+                                                onClick={e => { e.stopPropagation(); setSelectedBooking(booking); }}
+                                                className="px-4 sm:px-5 h-8 flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 hover:text-white rounded-full text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
+                                            >
+                                                Details
                                             </button>
                                         </div>
 
@@ -380,13 +384,7 @@ const MyBookings: React.FC = () => {
                                                 </div>
                                             )}
 
-                                            {/* Fixed Details Button */}
-                                            <button
-                                                onClick={e => { e.stopPropagation(); setSelectedBooking(booking); }}
-                                                className="px-4 sm:px-5 h-8 sm:h-9 flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 hover:text-white rounded-full text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
-                                            >
-                                                Details
-                                            </button>
+
                                         </div>
                                     </div>
                                 </div>

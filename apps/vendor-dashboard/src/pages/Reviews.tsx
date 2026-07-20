@@ -110,7 +110,7 @@ const Reviews: React.FC = () => {
             queryClient.invalidateQueries({ queryKey: ['vendor-reviews'] });
         },
         onError: (err: any) => {
-            notify.error(err.response?.data?.message || 'Failed to post reply');
+            notify.error(err.response?.data?.message || err.message || 'Failed to post reply');
         }
     });
 

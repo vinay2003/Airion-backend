@@ -157,6 +157,7 @@ const VendorDiscovery: React.FC = () => {
             if (normalized === 'Weddings') normalized = 'Wedding';
             if (normalized === 'Parties') normalized = 'Party';
             if (normalized === 'Birthdays') normalized = 'Birthday';
+            if (normalized.toLowerCase() === 'av setup') normalized = 'AV Setup';
 
             const newFilters: FilterValues = {
                 locationInput: '',

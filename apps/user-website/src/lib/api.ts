@@ -69,7 +69,7 @@ export default api;
 
 export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Event[]> => {
     // 🎭 Robust & Premium Mock Repository (12 Items) - UPGRADED TO HD IMAGES
-    const mockServices = [
+    const initialMockServices = [
         // WEDDINGS
         { id: 'w-1', title: 'The Royal Grand Palace', category: 'Weddings', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop', rating: 4.9, location: 'Rajasthan', reviews: 156, price: '₹3,50,000', description: 'Experience royal luxury in a heritage palace setting. Perfect for grand destination weddings.', amenities: ['Parking', 'AC', 'Catering', 'Stage', 'Decor', 'Wifi', 'Bar', 'Pool'], capacity: '500+ guests' },
         { id: 'w-2', title: 'Emerald Garden Estate', category: 'Weddings', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2000&auto=format&fit=crop', rating: 4.8, location: 'South Delhi', reviews: 210, price: '₹4,20,000', description: 'A lush green oasis for a magical garden wedding.', amenities: ['Parking', 'Catering', 'Bar', 'Pool', 'Wifi', 'AC', 'Decor'], capacity: '300 guests' },
@@ -101,6 +101,26 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         { id: 'pp-2', title: 'VIP Skyline Lounge', category: 'Private Party', image: 'https://images.unsplash.com/photo-1545128485-c400e7702796?q=80&w=2000&auto=format&fit=crop', rating: 4.7, location: 'Chennai', reviews: 93, price: '₹70,000', description: 'Ultra-private skyline lounge for exclusive gatherings.', amenities: ['Wifi', 'AC', 'Bar', 'Parking', 'Catering', 'Decor'], capacity: '25 guests' }
     ];
 
+    // Ensure at least 10 items per category
+    const eventCategories = ['Weddings', 'Parties', 'Corporate', 'Birthday', 'Engagement', 'Private Party'];
+    const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
+    const mockServices = [...initialMockServices];
+
+    eventCategories.forEach(cat => {
+        const count = mockServices.filter(s => s.category === cat).length;
+        for (let i = count; i < 10; i++) {
+            const baseItem = initialMockServices.find(s => s.category === cat) || initialMockServices[0];
+            mockServices.push({
+                ...baseItem,
+                id: `gen-${cat}-${i}`,
+                title: `${baseItem.title} - Signature Edition ${i}`,
+                location: locations[i % locations.length],
+                rating: parseFloat((4.0 + Math.random()).toFixed(1)),
+                reviews: Math.floor(Math.random() * 300) + 50,
+                price: `₹${(Math.floor(Math.random() * 20) + 5)},00,000`
+            });
+        }
+    });
 
     // Priority: Fetch Real Vendor Services from Backend
     let realEvents: Event[] = [];
@@ -112,7 +132,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         const query = params.toString();
         const url = `/services${query ? `?${query}` : ''}`;
         
-        const response = await api.get(url);
+        const response = await api.get(url).catch(() => ({ data: [] }));
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data)) {
             realEvents = data.map(mapServiceToEvent);
@@ -131,9 +151,9 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
 
     const mappedMocks = mockResults.map((s, idx) => ({
         ...s,
-        images: (s as any).images || [],
+        images: (s as any).images || [s.image],
         vendorId: '550e8400-e29b-41d4-a716-446655440000',
-        vendorName: 'The Royal Grand Palace',
+        vendorName: 'Ease2Event Exclusive',
         vendorImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=200',
         reviews: s.reviews || 0,
         capacity: (s as any).capacity || 'Contact Vendor',
@@ -142,6 +162,51 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
 
     // Return real events first, then mocks
     return [...realEvents, ...mappedMocks];
+};
+
+const generateDummyVendors = (): Event[] => {
+    const categories = ['Caterer', 'Decor', 'Photographer', 'AV Setup'];
+    const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
+    
+    const namesMap: Record<string, string[]> = {
+        'Caterer': ['Elite Caterers', 'Royal Feast', 'Spice Route Catering', 'Divine Bites', 'Grand Banquet Caterers', 'Saffron Flavors', 'The Culinary Art', 'Heritage Dining', 'Mughlai Masters', 'Fusion Foods'],
+        'Decor': ['Royal Decorators', 'Floral Fantasies', 'Elegant Events', 'Crystal Decor', 'Majestic Mandaps', 'Dream Setup', 'Vintage Vibes', 'Glamour Events', 'Classic Touch', 'Aura Decor'],
+        'Photographer': ['Capture Moments', 'Lens & Light', 'Memories Studio', 'Candid Frames', 'Pixel Perfect', 'Golden Hour Photo', 'Evergreen Snaps', 'Visionary Lens', 'Timeless Clicks', 'Focus Studios'],
+        'AV Setup': ['Sonic Beats AV', 'Lumina Sound & Light', 'Echo Events', 'Crystal Audio', 'Pulse AV', 'Vibe Acoustics', 'Radiance Lighting', 'Beatbox Solutions', 'Strobe & Sound', 'Bassline Pro']
+    };
+    
+    const imageMap: Record<string, string> = {
+        'Caterer': 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200',
+        'Decor': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200',
+        'Photographer': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1200',
+        'AV Setup': 'https://images.unsplash.com/photo-1470229722913-7c092bce6283?q=80&w=1200'
+    };
+
+    const dummies: Event[] = [];
+    categories.forEach(cat => {
+        const names = namesMap[cat];
+        for (let i = 0; i < 10; i++) {
+            dummies.push({
+                id: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
+                vendorId: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
+                title: names[i],
+                category: cat,
+                image: imageMap[cat],
+                images: [imageMap[cat]],
+                rating: parseFloat((4.0 + Math.random()).toFixed(1)),
+                location: locations[i],
+                reviews: Math.floor(Math.random() * 300) + 50,
+                price: cat === 'Photographer' ? `₹${(i+5)*10},000 / day` : `₹${(i+2)*10},000+`,
+                capacity: 'Contact Vendor',
+                description: `Premium ${cat} services for your special events. Highly rated and professional.`,
+                vendorName: names[i],
+                vendorImage: imageMap[cat].replace('w=1200', 'w=200'),
+                isSponsored: i < 2,
+                isFeatured: i < 4
+            } as any);
+        }
+    });
+    return dummies;
 };
 
 export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): Promise<Event[]> => {
@@ -153,27 +218,42 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const query = params.toString();
     const url = `/vendors/discovery${query ? `?${query}` : ''}`;
     
-    const response = await api.get(url);
+    const response = await api.get(url).catch(() => ({ data: [] }));
     const data = response.data?.data?.vendors || response.data?.vendors || response.data || [];
     
-    return data.map((v: any) => ({
-        id: v.id,
-        vendorId: v.id,
-        title: v.businessName || 'Unnamed Vendor',
-        category: v.category?.name || v.category || 'Uncategorized',
-        image: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
-        images: v.portfolioImages || [],
-        rating: v.rating || 4.5,
-        location: v.businessAddress?.city || 'India',
-        reviews: v.totalReviews || 0,
-        price: 'Contact for Pricing',
-        capacity: 'Contact Vendor',
-        description: v.bio || '',
-        vendorName: v.businessName || 'Unnamed Vendor',
-        vendorImage: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200',
-        isSponsored: !!v.isSponsored,
-        isFeatured: !!v.isFeatured
-    }));
+    let realVendors = [];
+    if (Array.isArray(data)) {
+        realVendors = data.map((v: any) => ({
+            id: v.id,
+            vendorId: v.id,
+            title: v.businessName || 'Unnamed Vendor',
+            category: v.category?.name || v.category || 'Uncategorized',
+            image: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
+            images: v.portfolioImages || [],
+            rating: v.rating || 4.5,
+            location: v.businessAddress?.city || 'India',
+            reviews: v.totalReviews || 0,
+            price: 'Contact for Pricing',
+            capacity: 'Contact Vendor',
+            description: v.bio || '',
+            vendorName: v.businessName || 'Unnamed Vendor',
+            vendorImage: v.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200',
+            isSponsored: !!v.isSponsored,
+            isFeatured: !!v.isFeatured
+        }));
+    }
+
+    const dummyVendors = generateDummyVendors();
+
+    let combined = [...realVendors, ...dummyVendors];
+    
+    // Fallback filtering if search API didn't handle categories (like dummy data)
+    if (filters.search) {
+        const cat = filters.search.toLowerCase();
+        combined = combined.filter(s => s.category.toLowerCase().includes(cat) || cat.includes(s.category.toLowerCase()));
+    }
+
+    return combined;
 };
 
 export const fetchEventById = async (id: string): Promise<Event | undefined> => {

@@ -99,38 +99,39 @@ const ProfileSettings: React.FC = () => {
   useEffect(() => {
     if (user) {
       setPersonalData({
-        name: user.name || '',
-        phone: user.phoneNumber || '',
-        profileImage: (user as any).avatar || user.vendor?.logo || '',
-        aadharNumber: user.vendor?.aadharNumber || '',
-        panNumber: user.vendor?.panNumber || '',
-        gstNumber: user.vendor?.gstNumber || ''
+        name: user.name || 'Aditi Sharma',
+        phone: user.phoneNumber || '+91 9876543210',
+        profileImage: (user as any).avatar || user.vendor?.logo || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100',
+        aadharNumber: user.vendor?.aadharNumber || '1234 5678 9012',
+        panNumber: user.vendor?.panNumber || 'ABCDE1234F',
+        gstNumber: user.vendor?.gstNumber || '29ABCDE1234F1Z5'
       });
 
-      const v = user.vendor;
-      if (v) {
-        setBusinessData({
-          businessName: v.businessName || '',
-          businessEmail: v.businessEmail || '',
-          businessPhone: v.businessPhone || '',
-          gstNumber: v.gstNumber || '',
-          address: v.businessAddress?.street || v.businessAddress?.address || '',
-          city: v.businessAddress?.city || v.city || '',
-          state: v.businessAddress?.state || '',
-          zipCode: v.businessAddress?.zipCode || '',
-          description: v.businessDescription || '',
-          yearsInBusiness: v.yearsInBusiness || '',
-          avgBookingPrice: v.averageBookingPrice ? String(v.averageBookingPrice) : '',
-          website: v.socialLinks?.website || '',
-          instagram: v.socialLinks?.instagram || '',
-          monthlyEventVolume: v.monthlyEventVolume || '',
-          acquisitionChannels: v.acquisitionChannels || [],
-          painPoints: v.painPoints || [],
-          categoryId: v.categoryId || '',
-          subcategoryId: v.subcategoryId || '',
-          portfolioImages: v.portfolioImages || [],
-        });
-      }
+      const v = user.vendor || {} as any;
+      setBusinessData({
+        businessName: v.businessName || 'Elite Event Planners',
+        businessEmail: v.businessEmail || 'hello@eliteevents.com',
+        businessPhone: v.businessPhone || '+91 9876543210',
+        gstNumber: v.gstNumber || '29ABCDE1234F1Z5',
+        address: v.businessAddress?.street || v.businessAddress?.address || '123 MG Road',
+        city: v.businessAddress?.city || v.city || 'Bangalore',
+        state: v.businessAddress?.state || 'Karnataka',
+        zipCode: v.businessAddress?.zipCode || '560001',
+        description: v.businessDescription || 'We are a premier event planning agency specializing in luxury weddings and corporate events. With over 5 years of experience, we deliver unforgettable experiences.',
+        yearsInBusiness: v.yearsInBusiness || '5',
+        avgBookingPrice: v.averageBookingPrice ? String(v.averageBookingPrice) : '75000',
+        website: v.socialLinks?.website || 'https://eliteevents.com',
+        instagram: v.socialLinks?.instagram || 'elite.events.in',
+        monthlyEventVolume: v.monthlyEventVolume || '10-20',
+        acquisitionChannels: v.acquisitionChannels || [],
+        painPoints: v.painPoints || [],
+        categoryId: v.categoryId || '1',
+        subcategoryId: v.subcategoryId || '101',
+        portfolioImages: (v.portfolioImages && v.portfolioImages.length > 0) ? v.portfolioImages : [
+          'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=1000',
+          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
+        ],
+      });
     }
   }, [user]);
 

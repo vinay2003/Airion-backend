@@ -26,13 +26,13 @@ interface EventPlanningData {
 const EventPlanning: React.FC<EventPlanningProps> = ({ onComplete }) => {
  const [currentStep, setCurrentStep] = useState(0);
  const [formData, setFormData] = useState<EventPlanningData>({
- eventType: '',
- catering: [],
- additionalServices: [],
- guestCount: 0,
- eventDate: '',
- budget: '',
- specialRequests: '',
+ eventType: 'corporate',
+ catering: ['Buffet Style', 'Cocktail Reception'],
+ additionalServices: ['Photography', 'Lighting', 'Sound System'],
+ guestCount: 250,
+ eventDate: '2026-08-15',
+ budget: '₹2,50,000 - ₹5,00,000',
+ specialRequests: 'Need a dedicated VIP lounge area with premium seating. Dietary restrictions: 20 vegan meals, 5 gluten-free.',
  });
 
  const steps = [

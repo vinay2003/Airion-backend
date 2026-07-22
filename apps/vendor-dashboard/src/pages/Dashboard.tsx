@@ -10,18 +10,18 @@ import { Skeleton, Badge, Avatar, Button } from '@ease2event/ui';
 import toast from 'react-hot-toast';
 
 const MOCK_CHART_DATA = [
- { name: 'Jan', revenue: 2400 },
- { name: 'Feb', revenue: 1398 },
- { name: 'Mar', revenue: 9800 },
- { name: 'Apr', revenue: 3908 },
- { name: 'May', revenue: 4800 },
- { name: 'Jun', revenue: 3800 },
- { name: 'Jul', revenue: 4300 },
- { name: 'Aug', revenue: 5200 },
- { name: 'Sep', revenue: 6100 },
- { name: 'Oct', revenue: 3200 },
- { name: 'Nov', revenue: 8400 },
- { name: 'Dec', revenue: 9500 },
+ { name: 'Jan', revenue: 42000 },
+ { name: 'Feb', revenue: 38000 },
+ { name: 'Mar', revenue: 65000 },
+ { name: 'Apr', revenue: 82000 },
+ { name: 'May', revenue: 95000 },
+ { name: 'Jun', revenue: 88000 },
+ { name: 'Jul', revenue: 92000 },
+ { name: 'Aug', revenue: 115000 },
+ { name: 'Sep', revenue: 132000 },
+ { name: 'Oct', revenue: 145000 },
+ { name: 'Nov', revenue: 185000 },
+ { name: 'Dec', revenue: 210000 },
 ];
 
 /**
@@ -101,7 +101,7 @@ const Dashboard = () => {
  enabled: vendorId !== 'mock-id',
  });
 
- const { data: profileViewsData } = useQuery({
+ const { data: rawProfileViewsData } = useQuery({
  queryKey: ['vendor-profile-views', vendorId],
  queryFn: async () => {
  if (!vendorId || vendorId === 'mock-id') return null;
@@ -115,13 +115,28 @@ const Dashboard = () => {
  enabled: vendorId !== 'mock-id',
  });
 
+ // --- REALISTIC DUMMY DATA FALLBACKS ---
+ const displayStats = stats?.totalListings > 0 ? stats : {
+ activeEnquiries: 14,
+ totalListings: 8,
+ confirmedBookings: 23,
+ revenue: '1,285,000'
+ };
+
+ const profileViewsData = rawProfileViewsData?.totalUniqueViews > 0 ? rawProfileViewsData : {
+ totalUniqueViews: 14532,
+ todayUniqueViews: 84,
+ weekUniqueViews: 543,
+ monthUniqueViews: 2145
+ };
+
  const chartData = earningsData?.monthlyStats?.length ? earningsData.monthlyStats : MOCK_CHART_DATA;
  const enquiriesList = earningsData?.recentTransactions?.slice(0, 3) || [];
 
  const mockEnquiries = [
- { name: 'Sameer Malhotra', event: 'Wedding Decoration', time: '2h ago', avatar: 'S' },
- { name: 'Isha Gupta', event: 'Birthday Party', time: '5h ago', avatar: 'I' },
- { name: 'Rahul Verma', event: 'Corporate Seminar', time: '1d ago', avatar: 'R' },
+ { name: 'Aditi Sharma', event: 'Premium Wedding Decoration', time: '20 mins ago', avatar: 'A' },
+ { name: 'Kunal Kapoor', event: 'Corporate Annual Gala', time: '2 hrs ago', avatar: 'K' },
+ { name: 'Priya Desai', event: 'Engagement Party Catering', time: '5 hrs ago', avatar: 'P' },
  ];
 
  const handleExport = () => {
@@ -192,10 +207,10 @@ const Dashboard = () => {
 
  {/* KPI Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <StatCard title="Active Enquiries" value={stats?.activeEnquiries} trend="+24.2%" direction="up" icon={FileText} isLoading={statsLoading} />
- <StatCard title="Total Services Listed" value={stats?.totalListings} icon={Package} isLoading={statsLoading} />
- <StatCard title="Confirmed Bookings" value={stats?.confirmedBookings} trend="+8.4%" direction="up" icon={CheckCircle2} isLoading={statsLoading} />
- <StatCard title="Revenue" value={stats?.revenue} currency="₹" trend="+12.8%" direction="up" icon={DollarSign} isLoading={statsLoading} />
+ <StatCard title="Active Enquiries" value={displayStats.activeEnquiries} trend="+24.2%" direction="up" icon={FileText} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Total Services Listed" value={displayStats.totalListings} icon={Package} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Confirmed Bookings" value={displayStats.confirmedBookings} trend="+8.4%" direction="up" icon={CheckCircle2} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Revenue" value={displayStats.revenue} currency="₹" trend="+12.8%" direction="up" icon={DollarSign} isLoading={statsLoading && !displayStats} />
  </div>
 
  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

@@ -26,7 +26,16 @@ const Gallery: React.FC = () => {
  const [optimisticDeletedIds, setOptimisticDeletedIds] = useState<string[]>([]);
  const fileInputRef = useRef<HTMLInputElement>(null);
 
- const gallery = [...(user?.vendor?.gallery || []), ...optimisticImages]
+ const dummyGallery: GalleryItem[] = [
+ { id: 'gal-1', imageUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=1000', title: 'Elegant Wedding Decor', createdAt: new Date(new Date().setDate(new Date().getDate() - 10)) },
+ { id: 'gal-2', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000', title: 'Corporate Annual Gala', createdAt: new Date(new Date().setDate(new Date().getDate() - 15)) },
+ { id: 'gal-3', imageUrl: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=1000', title: 'Birthday Bash Setup', createdAt: new Date(new Date().setDate(new Date().getDate() - 20)) },
+ { id: 'gal-4', imageUrl: 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&q=80&w=1000', title: 'Outdoor Music Festival', createdAt: new Date(new Date().setDate(new Date().getDate() - 25)) }
+ ];
+
+ const baseGallery = (user?.vendor?.gallery && user.vendor.gallery.length > 0) ? user.vendor.gallery : dummyGallery;
+
+ const gallery = [...baseGallery, ...optimisticImages]
  .filter(item => !optimisticDeletedIds.includes(item.id)) as GalleryItem[];
 
  // Helper: convert file to base64 data URL
@@ -196,7 +205,7 @@ const Gallery: React.FC = () => {
  alt={item.title || 'Registry item'}
  className={`w-full h-auto object-cover transition-transform ${!item.isUploading && ' opacity-95 group-hover:opacity-100'}`}
  onError={(e) => {
- (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/2563eb/white?text=Uploading+Image';
+ (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/2563eb/white?text=Image+Unavailable';
  }}
  />
 

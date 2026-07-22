@@ -118,6 +118,7 @@ const Header: React.FC = () => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [hasNewNotifications, setHasNewNotifications] = useState(false);
+    const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -131,7 +132,16 @@ const Header: React.FC = () => {
 
     const navItems = [
         { name: 'Home', path: '/' },
-        { name: 'Vendors', path: '/search' },
+        { 
+            name: 'Vendors', 
+            path: '/search',
+            children: [
+                { name: 'Caterer', path: '/search?category=Caterer' },
+                { name: 'Decor', path: '/search?category=Decor' },
+                { name: 'Photographer', path: '/search?category=Photographer' },
+                { name: 'AV Setup', path: '/search?category=AV Setup' },
+            ]
+        },
         { name: 'Packages', path: '/packages' },
         {
             name: 'Events',
@@ -224,19 +234,25 @@ const Header: React.FC = () => {
             {/* ── Desktop Nav ── */}
             <nav className="hidden lg:flex items-center gap-3">
                 {navItems.map((item) => (
-                    <div key={item.name} className="relative group px-1">
+                    <div 
+                        key={item.name} 
+                        className="relative px-1"
+                        onMouseEnter={() => setHoveredMenu(item.name)}
+                        onMouseLeave={() => setHoveredMenu(null)}
+                    >
                         {item.children ? (
-                            <div className="flex items-center gap-1 group">
-                                <button className="flex items-center gap-1 text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-red-500 transition-all px-4 py-2 rounded-xl group-hover:bg-red-50 dark:group-hover:bg-red-900/20">
+                            <div className="flex items-center gap-1">
+                                <button className={`flex items-center gap-1 text-sm font-bold transition-all px-4 py-2 rounded-xl ${hoveredMenu === item.name ? 'bg-red-50 dark:bg-red-900/20 text-red-500' : 'text-gray-700 dark:text-gray-200 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'}`}>
                                     {item.name}
-                                    <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+                                    <ChevronDown size={14} className={`transition-transform duration-300 ${hoveredMenu === item.name ? 'rotate-180' : ''}`} />
                                 </button>
-                                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-50">
+                                <div className={`absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 transition-all duration-300 z-50 ${hoveredMenu === item.name ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                                     <div className="p-2">
                                         {item.children.map((child) => (
                                             <Link
                                                 key={child.name}
                                                 to={child.path}
+                                                onClick={() => setHoveredMenu(null)}
                                                 className="block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all"
                                             >
                                                 {child.name}

@@ -12,7 +12,6 @@ export class AnalyticsController {
     constructor(private readonly analyticsService: AnalyticsService) {}
 
     @Get('vendor/:id/performance')
-    @UseGuards(PremiumGuard)
     @Roles(UserRole.VENDOR, UserRole.ADMIN)
     async getPerformance(
         @Param('id') id: string,

@@ -41,7 +41,7 @@ const AdminLogin: React.FC = () => {
         try {
             const response = await adminAuth.verifyOtp(phone.trim(), code);
             if (response.require2fa) {
-                setTempToken(response.tempToken);
+                setTempToken(response.tempToken || '');
                 setShowOTP(false);
                 setShow2FA(true);
                 setOtp(['', '', '', '', '', '']); // Reset OTP for 2FA

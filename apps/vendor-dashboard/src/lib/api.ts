@@ -7,8 +7,14 @@ export const generateEasyReply = async (inquiry: string, voice?: string) =>
     await api.post('/ai/easy-reply', { inquiry, voice });
 
 // Analytics & Performance
-export const fetchVendorPerformance = async (vendorId: string, days: number = 7) =>
-    await api.get(`/analytics/vendor/${vendorId}/performance`, { params: { days } });
+export const fetchVendorPerformance = async (vendorId: string, days: number = 7) => {
+    try {
+        return await api.get(`/analytics/vendor/${vendorId}/performance`, { params: { days } });
+    } catch (error: any) {
+        if (error?.response?.status === 403) return { data: [] };
+        throw error;
+    }
+};
 
 // Wallet & Financials
 export const fetchWalletOverview = async () =>

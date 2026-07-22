@@ -8,6 +8,7 @@ import {
 
 import { fetchMyBookings } from '../../lib/api';
 import ReviewModal from '../../components/ReviewModal';
+import toast from 'react-hot-toast';
 
 const MOCK_BOOKINGS = [
     {
@@ -284,87 +285,106 @@ const MyBookings: React.FC = () => {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.3 }}
                                 key={booking.id}
-                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-5 shadow-sm border border-neutral-200 dark:border-slate-800 flex flex-col sm:flex-row gap-6"
+                                className="bg-white dark:bg-slate-800/50 rounded-3xl p-4 sm:p-5 shadow-sm border border-neutral-200 dark:border-slate-800 flex flex-col sm:flex-row gap-4 sm:gap-5 h-full min-h-[210px]"
                             >
-                                <div className="sm:w-44 h-36 sm:h-full rounded-2xl overflow-hidden shrink-0 relative cursor-pointer" onClick={() => setSelectedBooking(booking)}>
+                                {/* Left Side: Venue Image */}
+                                <div className="sm:w-40 h-40 sm:h-auto rounded-2xl overflow-hidden shrink-0 relative cursor-pointer" onClick={() => setSelectedBooking(booking)}>
                                     <img src={booking.vendor?.portfolioImages?.[0]} alt="Venue" className="w-full h-full object-cover" />
-                                    <div className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${style.bg.split(' ')[0]} ${style.text.split(' ')[0]}`}>
+                                    <div className={`absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${style.bg.split(' ')[0]} ${style.text.split(' ')[0]}`}>
                                         {style.label}
                                     </div>
                                 </div>
 
-                                <div className="flex-1 py-1 flex flex-col justify-between">
+                                {/* Right Side: Card Content */}
+                                <div className="flex-1 py-0.5 flex flex-col justify-between overflow-hidden">
                                     <div>
-                                        <div className="flex justify-between items-start mb-1 gap-2">
-                                            <p className="text-xs font-bold text-neutral-400 tracking-wider">#{booking.bookingCode}</p>
-                                            <button onClick={() => setSelectedBooking(booking)} className="text-neutral-400 hover:text-red-500 shrink-0">
-                                                <ChevronRight size={20} />
+                                        {/* Top Row: Code & Details Button */}
+                                        <div className="flex justify-between items-center mb-1 gap-2 h-8">
+                                            <p className="text-xs font-mono font-bold text-neutral-400 tracking-wider">#{booking.bookingCode}</p>
+                                            <button
+                                                onClick={e => { e.stopPropagation(); setSelectedBooking(booking); }}
+                                                className="px-4 sm:px-5 h-8 flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 hover:text-white rounded-full text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
+                                            >
+                                                Details
                                             </button>
                                         </div>
-                                        <h3 className="text-xl font-black text-neutral-900 dark:text-white mb-3 line-clamp-1">{booking.vendor?.businessName}</h3>
-                                        <div className="grid grid-cols-2 gap-y-2 text-sm text-neutral-600 dark:text-slate-400 mb-5 font-medium">
-                                            <div className="flex items-center gap-2">
-                                                <Calendar size={15} className="text-red-500" />
+
+                                        {/* Title */}
+                                        <h3 className="text-lg sm:text-xl font-black text-neutral-900 dark:text-white mb-2 line-clamp-1">{booking.vendor?.businessName}</h3>
+
+                                        {/* Date & Location Grid */}
+                                        <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-slate-400 font-medium mb-3 h-5">
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                <Calendar size={14} className="text-red-500" />
                                                 <span>{new Date(booking.eventDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <MapPin size={15} className="text-red-500" />
+                                            <div className="flex items-center gap-1.5 truncate">
+                                                <MapPin size={14} className="text-red-500 shrink-0" />
                                                 <span className="truncate">{booking.vendor?.city}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-neutral-100 dark:border-slate-800/80">
-                                        <div>
-                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Total</p>
-                                            <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
+                                    {/* Footer: Fixed Alignment Total & Buttons */}
+                                    <div className="flex items-center justify-between gap-2 pt-3 border-t border-neutral-100 dark:border-slate-800/80 mt-auto min-h-[46px]">
+                                        <div className="shrink-0">
+                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest leading-none mb-1">TOTAL</p>
+                                            <p className="font-black text-neutral-900 dark:text-white text-base sm:text-lg leading-none">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
-                                        <div className="flex gap-2 flex-wrap">
+
+                                        {/* Fixed Action Container */}
+                                        <div className="flex items-center gap-1.5 justify-end ml-auto shrink-0">
+                                            {/* Download Invoice Icon */}
                                             <button
                                                 onClick={e => { e.stopPropagation(); handleDownloadInvoice(booking); }}
                                                 title="Download Invoice"
-                                                className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors"
+                                                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors shrink-0"
                                             >
-                                                <FileText size={17} />
+                                                <FileText size={15} />
                                             </button>
+
+                                            {/* Cancel Icon */}
                                             {canCancel && (
                                                 <button
                                                     onClick={e => { e.stopPropagation(); setCancelModalBooking(booking); }}
                                                     title="Cancel Booking"
-                                                    className="p-2.5 rounded-xl border border-red-200 dark:border-red-500/30 text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                                                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-red-200 dark:border-red-500/30 text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-colors shrink-0"
                                                 >
-                                                    <X size={17} />
+                                                    <X size={15} />
                                                 </button>
                                             )}
-                                            <button
-                                                onClick={e => { e.stopPropagation(); setSelectedBooking(booking); }}
-                                                className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 hover:text-white rounded-xl text-sm font-bold transition-colors"
-                                            >
-                                                Details
-                                            </button>
+
+                                            {/* Review Star Icon */}
                                             {booking.status === 'completed' && (
                                                 <button
                                                     onClick={e => { e.stopPropagation(); setReviewModalBooking(booking); }}
                                                     title="Leave a Review"
-                                                    className="p-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors"
+                                                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-amber-300 bg-amber-50 text-amber-600 hover:bg-amber-100 flex items-center justify-center transition-colors shrink-0"
                                                 >
-                                                    <Star size={17} className="fill-amber-400 text-amber-400" />
+                                                    <Star size={15} className="fill-amber-400 text-amber-400" />
                                                 </button>
                                             )}
-                                             {booking.status === 'cancelled' && !booking.refundStatus && (
+
+                                            {/* Refund Icon Button */}
+                                            {booking.status === 'cancelled' && !booking.refundStatus && (
                                                 <button
                                                     onClick={e => { e.stopPropagation(); setRefundModalBooking(booking); }}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-bold border border-purple-100 dark:border-purple-500/20 hover:bg-purple-100"
+                                                    title="Request Refund"
+                                                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-100 flex items-center justify-center transition-colors shrink-0"
                                                 >
-                                                    <RefreshCw size={12} /> Request Refund
+                                                    <RefreshCw size={14} />
                                                 </button>
-                                             )}
-                                             {booking.status === 'cancelled' && booking.refundStatus && (
-                                                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-bold border border-purple-100 dark:border-purple-500/20">
-                                                    <RefreshCw size={12} />
-                                                    {booking.refundStatus === 'processing' ? 'Refund Processing' : 'Refunded'}
+                                            )}
+                                            {booking.status === 'cancelled' && booking.refundStatus && (
+                                                <div
+                                                    title={booking.refundStatus === 'processing' ? 'Refund Processing' : 'Refunded'}
+                                                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0"
+                                                >
+                                                    <RefreshCw size={14} />
                                                 </div>
-                                             )}
+                                            )}
+
+
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2, Wallet, Sparkles } from 'lucide-react';
+import { Download, Plus, Mail as MailIcon, MessageSquare, Phone, ChevronRight, FileText, CheckCircle, Clock, Send, ArrowLeft, Loader2, Wallet, Sparkles, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { askSupportAI } from '@/lib/api';
@@ -456,31 +456,135 @@ export const Support: React.FC = () => {
 };
 
 export const Terms: React.FC = () => (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-        <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-8">Terms of Service</h1>
-        <div className="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
-            <p>Welcome to Ease2event. By accessing our platform, you agree to be bound by these terms.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">1. Use of Service</h2>
-            <p>You agree to use Ease2event only for lawful purposes related to event planning and execution. Any fraudulent activities, including fake bookings or dummy vendor profiles, will result in immediate termination.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">2. User Responsibilities</h2>
-            <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">3. Limitation of Liability</h2>
-            <p>Ease2event acts as a platform bridging users and vendors. We are not liable for quality disputes between parties, though we provide resolution support services.</p>
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-neutral-800 dark:text-slate-200 transition-colors duration-300">
+        {/* Compact Banner Header */}
+        <div className="bg-gradient-to-b from-neutral-50/90 to-white dark:from-slate-900/70 dark:to-slate-950 border-b border-neutral-200/50 dark:border-slate-800/80 py-6 sm:py-9 px-4 sm:px-6">
+            <div className="max-w-2xl mx-auto space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <FileText size={11} />
+                    Legal Terms
+                </div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+                    Terms of Service
+                </h1>
+                <p className="text-[11px] sm:text-xs text-neutral-400 dark:text-slate-400 font-medium">
+                    Effective: March 2026 • Rules and guidelines for using Ease2event.
+                </p>
+            </div>
+        </div>
+
+        {/* Compact Cards Container */}
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-4">
+            {/* Intro Alert Box */}
+            <div className="p-3.5 sm:p-4 bg-red-500/5 dark:bg-red-500/10 rounded-xl border border-red-500/10 dark:border-red-500/20 text-xs sm:text-sm text-neutral-700 dark:text-slate-300 leading-relaxed font-medium">
+                Welcome to Ease2event. By accessing or using our platform, you agree to be bound by these terms. If you do not agree to all terms, please refrain from using the platform.
+            </div>
+
+            {/* Section 1 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">1</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        Use of Service
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    You agree to use Ease2event only for lawful purposes related to event planning and execution. Any fraudulent activities, including fake bookings or dummy vendor profiles, will result in immediate termination of your account and access privileges.
+                </p>
+            </div>
+
+            {/* Section 2 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">2</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        User Responsibilities
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account. You must notify us immediately of any unauthorized use or security breach.
+                </p>
+            </div>
+
+            {/* Section 3 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">3</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        Limitation of Liability
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    Ease2event acts as a platform bridging users and vendors. We are not liable for quality disputes between parties, though we provide dedicated resolution support services to facilitate fair outcomes.
+                </p>
+            </div>
         </div>
     </div>
 );
 
 export const Privacy: React.FC = () => (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-        <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-8">Privacy Policy</h1>
-        <div className="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
-            <p>Your privacy is paramount at Ease2event. We are committed to protecting your personal data across the decentralized matrix.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">1. Data Collection</h2>
-            <p>We collect essential identity parameters including phone numbers, emails, and event preferences to synthesize a personalized experience.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">2. Security Protocols</h2>
-            <p>We implement end-to-end encryption for all sensitive transactions and communications within the registry.</p>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white pt-4">3. Data Usage</h2>
-            <p>Your data is exclusively used for event orchestration and portal synchronization. We do not sell identity telemetry to external entities.</p>
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-neutral-800 dark:text-slate-200 transition-colors duration-300">
+        {/* Compact Banner Header */}
+        <div className="bg-gradient-to-b from-neutral-50/90 to-white dark:from-slate-900/70 dark:to-slate-950 border-b border-neutral-200/50 dark:border-slate-800/80 py-6 sm:py-9 px-4 sm:px-6">
+            <div className="max-w-2xl mx-auto space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <Shield size={11} />
+                    Data Protection
+                </div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+                    Privacy Policy
+                </h1>
+                <p className="text-[11px] sm:text-xs text-neutral-400 dark:text-slate-400 font-medium">
+                    Effective: March 2026 • How Ease2event respects and protects your data.
+                </p>
+            </div>
+        </div>
+
+        {/* Compact Cards Container */}
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-4">
+            {/* Intro Alert Box */}
+            <div className="p-3.5 sm:p-4 bg-red-500/5 dark:bg-red-500/10 rounded-xl border border-red-500/10 dark:border-red-500/20 text-xs sm:text-sm text-neutral-700 dark:text-slate-300 leading-relaxed font-medium">
+                Your privacy is paramount at Ease2event. We are committed to protecting your personal data and maintaining full transparency across our event platform.
+            </div>
+
+            {/* Section 1 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">1</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        Data Collection
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    We collect essential identity parameters including phone numbers, emails, and event preferences to synthesize a personalized experience and facilitate direct coordination with verified service providers.
+                </p>
+            </div>
+
+            {/* Section 2 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">2</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        Security Protocols
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    We implement end-to-end encryption and industry-standard security safeguards for all sensitive transactions, communications, and data storage within our registry.
+                </p>
+            </div>
+
+            {/* Section 3 */}
+            <div className="p-4 sm:p-5 bg-neutral-50/50 dark:bg-slate-900/40 rounded-2xl border border-neutral-200/60 dark:border-slate-800/80 shadow-xs space-y-2 transition-colors hover:border-red-500/20">
+                <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-md bg-red-500 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 shadow-sm">3</span>
+                    <h2 className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white">
+                        Data Usage
+                    </h2>
+                </div>
+                <p className="text-xs sm:text-sm font-normal text-neutral-600 dark:text-slate-300 leading-relaxed sm:leading-6 sm:pl-8">
+                    Your data is exclusively used for event orchestration and portal synchronization. We do not sell identity telemetry or personal information to external entities.
+                </p>
+            </div>
         </div>
     </div>
 );

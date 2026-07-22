@@ -315,16 +315,24 @@ const Header: React.FC = () => {
                             </nav>
 
                             <div className="mt-8 pt-8 border-t border-gray-100 dark:border-slate-800 space-y-4">
-                                <div className="flex items-center justify-between px-2">
-                                    <span className="text-sm font-black uppercase text-gray-400">Appearance</span>
-                                    <button
-                                        onClick={toggleTheme}
-                                        className="flex items-center gap-2 bg-gray-50 dark:bg-slate-900 px-4 py-2 rounded-xl text-gray-900 dark:text-white font-bold text-sm border border-gray-100 dark:border-slate-800 shadow-sm"
-                                    >
-                                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                                        {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                                    </button>
-                                </div>
+                                <button
+                                    type="button"
+                                    onClick={toggleTheme}
+                                    className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800/80 rounded-2xl border border-gray-100 dark:border-slate-800 transition-all cursor-pointer select-none active:scale-[0.99]"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                            {theme === 'dark' ? <Moon size={18} className="text-blue-400" /> : <Sun size={18} className="text-amber-500" />}
+                                        </div>
+                                        <div className="text-left">
+                                            <span className="block text-sm font-bold text-gray-900 dark:text-white">Appearance</span>
+                                            <span className="block text-[11px] text-gray-400 font-medium">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
+                                        </div>
+                                    </div>
+                                    <div className={`w-12 h-6.5 p-0.5 rounded-full transition-colors flex items-center ${theme === 'dark' ? 'bg-red-500 justify-end' : 'bg-gray-300 dark:bg-slate-700 justify-start'}`}>
+                                        <div className="w-5 h-5 rounded-full bg-white shadow-md" />
+                                    </div>
+                                </button>
                             </div>
                         </div>
 

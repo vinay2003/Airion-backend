@@ -125,16 +125,16 @@ const MyBookings: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-slate-800/80">
-                                        <div>
-                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">Total</p>
-                                            <p className="font-black text-neutral-900 dark:text-white text-lg">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
+                                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-neutral-100 dark:border-slate-800/80 mt-auto min-h-[52px]">
+                                        <div className="shrink-0">
+                                            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5 leading-none">Total</p>
+                                            <p className="font-black text-neutral-900 dark:text-white text-lg leading-none">₹{parseFloat(booking.totalAmount).toLocaleString()}</p>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button className="p-2.5 rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors tooltip" title="Download Invoice">
+                                        <div className="flex items-center gap-2 justify-end ml-auto shrink-0">
+                                            <button className="w-10 h-10 flex items-center justify-center rounded-xl border border-neutral-200 dark:border-slate-700 text-neutral-600 dark:text-slate-300 hover:bg-neutral-100 dark:hover:bg-slate-800 transition-colors shrink-0" title="Download Invoice">
                                                 <FileText size={18} />
                                             </button>
-                                            <button className="px-5 py-2.5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors">
+                                            <button className="px-5 h-10 flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-red-600 dark:hover:bg-red-500 hover:text-white dark:hover:text-white rounded-xl text-sm font-bold transition-colors shrink-0 whitespace-nowrap">
                                                 Details
                                             </button>
                                         </div>

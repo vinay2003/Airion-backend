@@ -23,7 +23,7 @@ export const useRazorpay = () => {
 
       // 2. Configure Razorpay options
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_SoVyCbeWSJWBW1',
         amount: order.amount,
         currency: order.currency,
         name: 'Airion (Ease2event)',

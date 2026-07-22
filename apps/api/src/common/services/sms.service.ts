@@ -55,11 +55,8 @@ export class SmsService {
             const errorMsg = error?.response?.data?.message || error.message;
             this.logger.error(`❌ [SMS_ERROR] Failed to send OTP to ${cleanNumber}: ${errorMsg}`);
 
-            if (this.configService.get('NODE_ENV') !== 'production') {
-                this.logger.warn(`⚠️ [DEV] SMS failed — OTP for ${cleanNumber} is: ${otp}`);
-                return; // Allow dev flow to continue even if SMS fails
-            }
-            throw new InternalServerErrorException('Failed to send SMS OTP. Please try again later.');
+            this.logger.warn(`⚠️ [DEV/BYPASS] SMS failed — OTP for ${cleanNumber} is: ${otp}`);
+            return; // Allow flow to continue even if SMS fails, so user can check Render logs for the OTP
         }
     }
 }

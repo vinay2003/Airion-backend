@@ -306,15 +306,15 @@ export class AuthService {
     // Send OTP for Admin Login
     async sendAdminOtp(dto: { email: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
         const adminEmails = ['vinaysharma31681@gmail.com', 'abhishekkumar518@gmail.com'];
+        const identifier = dto.email?.trim().toLowerCase() || '';
 
-        if (!adminEmails.includes(dto.email)) {
+        if (!adminEmails.includes(identifier)) {
             this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.email}`);
             throw new ForbiddenException('Unauthorized access attempt: Email not authorized');
         }
 
         // Email is authorized — generate and send OTP
         // (DB record check happens at verifyAdminOtp when issuing the JWT)
-        const identifier = dto.email.trim().toLowerCase();
         await this.otpRepository.delete({ identifier });
 
         const otpCode = this.generateOTP();
@@ -484,12 +484,11 @@ export class AuthService {
     // Verify OTP for Admin
     async verifyAdminOtp(dto: { email: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
         const adminEmails = ['vinaysharma31681@gmail.com', 'abhishekkumar518@gmail.com'];
+        const identifier = dto.email?.trim().toLowerCase() || '';
 
-        if (!adminEmails.includes(dto.email)) {
+        if (!adminEmails.includes(identifier)) {
             throw new ForbiddenException('Unauthorized access attempt: Email not authorized');
         }
-
-        const identifier = dto.email.trim().toLowerCase();
         const otpRecord = await this.otpRepository.findOne({
             where: { identifier },
             order: { createdAt: 'DESC' },

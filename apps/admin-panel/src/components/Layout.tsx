@@ -32,7 +32,7 @@ const Layout: React.FC = () => {
                     {/* Mobile: hamburger */}
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="md:hidden p-2 -ml-1 text-gray-600 dark:text-slate-400 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+                        className="md:hidden p-2 -ml-1 text-gray-600 dark:text-slate-400 rounded-lg  "
                     >
                         <Menu size={22} />
                     </button>
@@ -45,7 +45,7 @@ const Layout: React.FC = () => {
                     {/* Desktop: View Website button */}
                     <button
                         onClick={handleGoToLanding}
-                        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors border border-indigo-100 dark:border-indigo-800/50"
+                        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30   transition-colors border border-indigo-100 dark:border-indigo-800/50"
                         title="Go to website"
                     >
                         <Home size={16} />
@@ -53,7 +53,7 @@ const Layout: React.FC = () => {
                     </button>
 
                     {/* Notification bell */}
-                    <button className="relative p-2 text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                    <button className="relative p-2 text-gray-500 dark:text-slate-400   rounded-xl   transition-colors">
                         <Bell size={20} />
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900" />
                     </button>
@@ -73,7 +73,7 @@ const Layout: React.FC = () => {
                     {/* Mobile: Home icon */}
                     <button
                         onClick={handleGoToLanding}
-                        className="md:hidden p-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+                        className="md:hidden p-2 text-gray-600 dark:text-slate-400  rounded-lg  "
                         title="Go to Homepage"
                     >
                         <Home size={20} />

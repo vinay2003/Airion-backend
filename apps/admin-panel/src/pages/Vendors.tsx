@@ -30,7 +30,7 @@ interface Vendor {
 const VendorDetailDrawer: React.FC<{ vendor: Vendor; onClose: () => void; onAction: (id: string, action: 'approve' | 'reject' | 'kyc') => void }> = ({ vendor, onClose, onAction }) => (
     <div className="fixed inset-0 z-50 flex justify-end">
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col overflow-y-auto">
+        <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 h-full  flex flex-col overflow-y-auto">
             {/* Header */}
             <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
                 {/* Banner */}
@@ -40,7 +40,7 @@ const VendorDetailDrawer: React.FC<{ vendor: Vendor; onClose: () => void; onActi
                     )}
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 w-8 h-8 bg-black/30 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-black/50"
+                        className="absolute top-4 right-4 w-8 h-8 bg-black/30 backdrop-blur-md text-white rounded-full flex items-center justify-center "
                     >
                         <X size={16} />
                     </button>
@@ -48,7 +48,7 @@ const VendorDetailDrawer: React.FC<{ vendor: Vendor; onClose: () => void; onActi
 
                 <div className="p-6 -mt-6 flex items-end justify-between gap-4">
                     <div className="flex items-end gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border-2 border-white dark:border-slate-900 shadow-lg flex items-center justify-center text-2xl font-black text-indigo-600">
+                        <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border-2 border-white dark:border-slate-900  flex items-center justify-center text-2xl font-black text-indigo-600">
                             {vendor.businessName[0]}
                         </div>
                         <div>
@@ -147,7 +147,7 @@ const VendorDetailDrawer: React.FC<{ vendor: Vendor; onClose: () => void; onActi
                 {!vendor.isVerified && vendor.verificationStatus !== 'rejected' && (
                     <button
                         onClick={() => { onAction(vendor.id, 'kyc'); onClose(); }}
-                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-3 bg-indigo-600  text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
                     >
                         <ShieldCheck size={16} /> Verify KYC & Approve
                     </button>
@@ -156,13 +156,13 @@ const VendorDetailDrawer: React.FC<{ vendor: Vendor; onClose: () => void; onActi
                     <div className="grid grid-cols-2 gap-3">
                         <button
                             onClick={() => { onAction(vendor.id, 'approve'); onClose(); }}
-                            className="py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                            className="py-3 bg-emerald-600  text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
                         >
                             <Check size={16} /> Approve
                         </button>
                         <button
                             onClick={() => { onAction(vendor.id, 'reject'); onClose(); }}
-                            className="py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                            className="py-3 bg-rose-600  text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
                         >
                             <X size={16} /> Reject
                         </button>
@@ -294,8 +294,8 @@ const Vendors: React.FC = () => {
                         onClick={() => setFilter(status)}
                         className={`px-4 py-2 rounded-lg text-sm font-bold capitalize whitespace-nowrap transition-colors ${
                             filter === status
-                                ? 'bg-indigo-600 text-white shadow-sm'
-                                : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800'
+                                ? 'bg-indigo-600 text-white '
+                                : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-800  '
                         }`}
                     >
                         {status}
@@ -304,7 +304,7 @@ const Vendors: React.FC = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden ">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
@@ -312,13 +312,13 @@ const Vendors: React.FC = () => {
                                 <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Business</th>
                                 <th className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Location & Tier</th>
                                 <th
-                                    className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600"
+                                    className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer "
                                     onClick={() => handleSort('rating')}
                                 >
                                     <div className="flex items-center gap-1">Rating <ArrowUpDown size={14} /></div>
                                 </th>
                                 <th
-                                    className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600"
+                                    className="px-5 py-4 text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer "
                                     onClick={() => handleSort('totalReviews')}
                                 >
                                     <div className="flex items-center gap-1">Reviews <ArrowUpDown size={14} /></div>
@@ -329,7 +329,7 @@ const Vendors: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {sortedVendors.map((vendor) => (
-                                <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                <tr key={vendor.id} className="  transition-colors">
                                     <td className="px-5 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
@@ -375,22 +375,22 @@ const Vendors: React.FC = () => {
                                             {/* View Details — now opens drawer */}
                                             <button
                                                 onClick={() => setSelectedVendor(vendor)}
-                                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg"
+                                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500   rounded-lg"
                                                 title="View Details"
                                             >
                                                 <Eye size={16} />
                                             </button>
                                             {!vendor.isVerified && vendor.verificationStatus !== 'rejected' && (
-                                                <button onClick={() => handleAction(vendor.id, 'kyc')} className="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 hover:bg-blue-100 rounded-lg" title="KYC Verify">
+                                                <button onClick={() => handleAction(vendor.id, 'kyc')} className="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600  rounded-lg" title="KYC Verify">
                                                     <ShieldCheck size={16} />
                                                 </button>
                                             )}
                                             {vendor.verificationStatus === 'pending' && (
                                                 <>
-                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Approve">
+                                                    <button onClick={() => handleAction(vendor.id, 'approve')} className="p-1.5 bg-emerald-50 text-emerald-600  rounded-lg" title="Approve">
                                                         <Check size={16} />
                                                     </button>
-                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Reject">
+                                                    <button onClick={() => handleAction(vendor.id, 'reject')} className="p-1.5 bg-rose-50 text-rose-600  rounded-lg" title="Reject">
                                                         <X size={16} />
                                                     </button>
                                                 </>
@@ -426,10 +426,10 @@ const Vendors: React.FC = () => {
             {rejectionModalVendorId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setRejectionModalVendorId(null)} />
-                    <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md p-6">
+                    <div className="relative bg-white dark:bg-slate-900 rounded-2xl  w-full max-w-md p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Reject Vendor</h3>
-                            <button onClick={() => setRejectionModalVendorId(null)} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">
+                            <button onClick={() => setRejectionModalVendorId(null)} className="p-1 text-gray-400   rounded-lg bg-gray-50 dark:bg-slate-800  ">
                                 <X size={20} />
                             </button>
                         </div>
@@ -448,13 +448,13 @@ const Vendors: React.FC = () => {
                             <div className="flex gap-3 pt-2">
                                 <button
                                     onClick={() => setRejectionModalVendorId(null)}
-                                    className="flex-1 py-2.5 px-4 rounded-xl border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                                    className="flex-1 py-2.5 px-4 rounded-xl border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 font-bold text-sm   transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={submitRejection}
-                                    className="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm transition-colors flex justify-center items-center gap-2"
+                                    className="flex-1 py-2.5 px-4 rounded-xl bg-rose-600  text-white font-bold text-sm transition-colors flex justify-center items-center gap-2"
                                 >
                                     <X size={16} /> Confirm Rejection
                                 </button>

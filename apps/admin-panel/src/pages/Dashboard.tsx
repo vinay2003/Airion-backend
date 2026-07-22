@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Warning Banner for Suspicious Activity */}
-            <div className="mb-8 p-4 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-between shadow-sm">
+            <div className="mb-8 p-4 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-between ">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-orange-100 text-orange-600 rounded-xl">
                         <AlertTriangle size={20} />
@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <button 
                     onClick={() => setIsLogsModalOpen(true)}
-                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-colors"
+                    className="px-4 py-2 bg-orange-600  text-white text-xs font-bold rounded-xl transition-colors"
                 >
                     Review Logs
                 </button>
@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
                     <div className="grid grid-cols-2 gap-4 mt-4">
                         {categoryData.map((entry: any, index: number) => (
                             <div key={index} className="flex items-center gap-2 text-xs font-bold text-[var(--ease2event-text-secondary)]">
-                                <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                                <div className="w-2.5 h-2.5 rounded-full " style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                                 {entry.name}
                             </div>
                         ))}
@@ -181,7 +181,7 @@ const Dashboard: React.FC = () => {
                     <div className="space-y-4">
                         {dashboardData?.pendingApprovals?.length ? (
                             dashboardData.pendingApprovals.map((vendor, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl shadow-sm  ">
+                                <div key={i} className="flex items-center justify-between p-4 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl   ">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
                                             {vendor.businessName?.[0] || 'V'}
@@ -234,14 +234,14 @@ const Dashboard: React.FC = () => {
                             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                             Suspicious Users
                         </h2>
-                        <button className="text-xs font-bold text-orange-600 hover:text-orange-700">View All</button>
+                        <button className="text-xs font-bold text-orange-600 ">View All</button>
                     </div>
                     <div className="space-y-3">
                         {[
                             { name: 'Unknown Device', ip: '192.168.x.x', reason: 'Failed logins (5)', risk: 'High' },
                             { name: 'John Doe', ip: '10.0.x.x', reason: 'Multiple IP jump', risk: 'Medium' },
                         ].map((user, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                            <div key={i} className="flex items-center justify-between p-3 rounded-xl   transition-colors border border-transparent  ">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
                                         <AlertTriangle size={16} />
@@ -252,7 +252,7 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-[10px] font-bold transition-colors">Block</button>
+                                    <button className="px-3 py-1.5 bg-red-50 text-red-600  rounded-lg text-[10px] font-bold transition-colors">Block</button>
                                 </div>
                             </div>
                         ))}
@@ -263,11 +263,11 @@ const Dashboard: React.FC = () => {
             {/* Review Logs Modal */}
             {isLogsModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-2xl relative p-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-2xl relative p-8">
                         <button 
                             type="button" 
                             onClick={() => setIsLogsModalOpen(false)} 
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                            className="absolute top-6 right-6 text-gray-400  "
                         >
                             <Icons.X size={24} />
                         </button>
@@ -292,7 +292,7 @@ const Dashboard: React.FC = () => {
                                         { name: 'Rahul S.', ip: '172.16.89.2', event: 'Brute-force blocked', time: '1 hour ago', risk: 'High', riskColor: 'text-red-650 bg-red-50 dark:bg-red-500/10' },
                                         { name: 'Priya K.', ip: '192.168.1.102', event: 'Mismatched user agent', time: '3 hours ago', risk: 'Low', riskColor: 'text-gray-600 bg-gray-50 dark:bg-slate-800' }
                                     ].map((log, i) => (
-                                        <tr key={i} className="hover:bg-gray-50 dark:hover:bg-slate-800/25 transition-colors">
+                                        <tr key={i} className="  transition-colors">
                                             <td className="px-4 py-3 text-sm font-bold text-gray-900 dark:text-white">{log.name}</td>
                                             <td className="px-4 py-3 text-xs text-gray-500">{log.event}</td>
                                             <td className="px-4 py-3 text-xs font-mono text-gray-700 dark:text-slate-350">{log.ip}</td>
@@ -311,7 +311,7 @@ const Dashboard: React.FC = () => {
                         <div className="pt-6 border-t border-gray-200 dark:border-slate-800 flex justify-end gap-3 mt-6">
                             <button 
                                 onClick={() => setIsLogsModalOpen(false)}
-                                className="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
+                                className="px-6 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
                             >
                                 Close Logs
                             </button>

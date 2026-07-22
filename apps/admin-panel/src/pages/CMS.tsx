@@ -94,7 +94,7 @@ const CMS: React.FC = () => {
                     <button 
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-xl text-sm font-bold   disabled:opacity-50"
                     >
                         <Save size={18} /> {isSaving ? 'Publishing...' : 'Publish Changes'}
                     </button>
@@ -117,7 +117,7 @@ const CMS: React.FC = () => {
                             onClick={() => setActiveTab(tab.id)}
                             className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl  ${
                                 activeTab === tab.id 
-                                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20 translate-x-2' 
+                                ? 'bg-red-500 text-white   translate-x-2' 
                                 : 'bg-white dark:bg-slate-900 text-gray-500 dark:text-slate-400 border border-gray-100 dark:border-slate-800'
                             }`}
                         >
@@ -131,7 +131,7 @@ const CMS: React.FC = () => {
 
                 {/* Editor Content */}
                 <div className="lg:col-span-3">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 p-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl  border border-gray-100 dark:border-slate-800 p-8">
                         {activeTab === 'hero' && (
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
@@ -198,7 +198,7 @@ const CMS: React.FC = () => {
                                 <div className="flex justify-between items-center mb-2">
                                     <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Featured Categories</h2>
                                     <button 
-                                        className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20"
+                                        className="p-2 bg-red-500 text-white rounded-xl  "
                                         onClick={() => setCategories([...categories, { id: Date.now(), name: 'New Category', slug: 'new', icon: 'Sparkles', image: '', gridClass: 'col-span-1 h-64', count: 0 }])}
                                     >
                                         <Plus size={18} />
@@ -235,7 +235,7 @@ const CMS: React.FC = () => {
                                                         }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
                                                     </div>
                                                 </div>
-                                                <button onClick={() => setCategories(categories.filter((_, idx) => idx !== i))} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg self-start mt-6"><Trash2 size={16} /></button>
+                                                <button onClick={() => setCategories(categories.filter((_, idx) => idx !== i))} className="p-2 text-red-500   rounded-lg self-start mt-6"><Trash2 size={16} /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -248,7 +248,7 @@ const CMS: React.FC = () => {
                                 <div className="flex justify-between items-center mb-2">
                                     <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Frequently Asked Questions</h2>
                                     <button 
-                                        className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20"
+                                        className="p-2 bg-red-500 text-white rounded-xl  "
                                         onClick={() => setFaqs([...faqs, { question: 'New Question', answer: 'New Answer' }])}
                                     >
                                         <Plus size={18} />
@@ -269,7 +269,7 @@ const CMS: React.FC = () => {
                                                     const newFaqs = [...faqs]; newFaqs[i].answer = e.target.value; setFaqs(newFaqs);
                                                 }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white resize-none" rows={3} />
                                             </div>
-                                            <button onClick={() => setFaqs(faqs.filter((_, idx) => idx !== i))} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg self-end"><Trash2 size={16} /> Delete</button>
+                                            <button onClick={() => setFaqs(faqs.filter((_, idx) => idx !== i))} className="p-2 text-red-500   rounded-lg self-end"><Trash2 size={16} /> Delete</button>
                                         </div>
                                     ))}
                                 </div>

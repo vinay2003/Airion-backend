@@ -19,14 +19,14 @@ interface Booking {
 const BookingDetailPanel: React.FC<{ booking: Booking; onClose: () => void }> = ({ booking, onClose }) => (
     <div className="fixed inset-0 z-50 flex justify-end">
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col overflow-y-auto">
+        <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 h-full  flex flex-col overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 z-10">
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Booking Details</h2>
                     <p className="text-sm text-indigo-600 font-mono font-bold mt-0.5">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</p>
                 </div>
-                <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800">
+                <button onClick={onClose} className="p-2 text-gray-400   rounded-xl  ">
                     <X size={20} />
                 </button>
             </div>
@@ -92,7 +92,7 @@ const BookingDetailPanel: React.FC<{ booking: Booking; onClose: () => void }> = 
                 </button>
                 <button
                     onClick={() => { toast.success('Invoice downloaded'); onClose(); }}
-                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm  transition-colors"
                 >
                     Download Invoice
                 </button>
@@ -157,7 +157,7 @@ const Bookings: React.FC = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between">
+                    <div key={idx} className="bg-white dark:bg-slate-900 p-5 rounded-2xl  border border-gray-200 dark:border-slate-800 flex items-center justify-between">
                         <div>
                             <p className="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1">{stat.label}</p>
                             <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
@@ -170,7 +170,7 @@ const Bookings: React.FC = () => {
             </div>
 
             {/* Filters bar */}
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl  border border-gray-200 dark:border-slate-800 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
                 <div className="relative flex-1 min-w-0">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -231,7 +231,7 @@ const Bookings: React.FC = () => {
                     ) : filteredBookings.map((booking) => (
                         <div
                             key={booking.id}
-                            className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-all hover:border-indigo-500/30"
+                            className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-gray-200 dark:border-slate-800  flex flex-col justify-between transition-all "
                         >
                             {/* Card Header (Fixed Row) */}
                             <div>
@@ -245,7 +245,7 @@ const Bookings: React.FC = () => {
                                         </span>
                                         <button
                                             onClick={() => setSelectedBooking(booking)}
-                                            className="text-gray-400 hover:text-indigo-600 shrink-0 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+                                            className="text-gray-400  shrink-0 p-1 rounded-lg  "
                                             title="View Details"
                                         >
                                             <ExternalLink size={15} />
@@ -286,7 +286,7 @@ const Bookings: React.FC = () => {
                                     {booking.status === 'Pending' && (
                                         <button
                                             onClick={() => updateStatus(booking.id, 'Confirmed')}
-                                            className="w-9 h-9 flex items-center justify-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl transition-colors shrink-0"
+                                            className="w-9 h-9 flex items-center justify-center bg-emerald-50 text-emerald-600  rounded-xl transition-colors shrink-0"
                                             title="Confirm"
                                         >
                                             <CheckCircle size={16} />
@@ -295,7 +295,7 @@ const Bookings: React.FC = () => {
                                     {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
                                         <button
                                             onClick={() => updateStatus(booking.id, 'Cancelled')}
-                                            className="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl transition-colors shrink-0"
+                                            className="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600  rounded-xl transition-colors shrink-0"
                                             title="Cancel"
                                         >
                                             <XCircle size={16} />
@@ -304,7 +304,7 @@ const Bookings: React.FC = () => {
                                     {booking.status === 'Cancelled' && (
                                         <button
                                             onClick={() => updateStatus(booking.id, 'Refunded')}
-                                            className="w-9 h-9 flex items-center justify-center bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-xl transition-colors shrink-0"
+                                            className="w-9 h-9 flex items-center justify-center bg-purple-50 text-purple-600  rounded-xl transition-colors shrink-0"
                                             title="Process Refund"
                                         >
                                             <RefreshCcw size={16} />
@@ -313,7 +313,7 @@ const Bookings: React.FC = () => {
                                     {/* Fixed Details Button */}
                                     <button
                                         onClick={() => setSelectedBooking(booking)}
-                                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
+                                        className="px-4 py-2 bg-indigo-600  text-white rounded-xl text-xs font-bold transition-colors shrink-0 whitespace-nowrap"
                                     >
                                         Details
                                     </button>
@@ -324,7 +324,7 @@ const Bookings: React.FC = () => {
                 </div>
 
                 {/* Desktop Table View (screen >= lg) */}
-                <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-2xl  border border-gray-200 dark:border-slate-800 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse min-w-[800px]">
                             <thead>
@@ -350,7 +350,7 @@ const Bookings: React.FC = () => {
                                         </tr>
                                     ))
                                 ) : filteredBookings.map((booking) => (
-                                    <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                    <tr key={booking.id} className="  transition-colors">
                                         <td className="px-5 py-4 whitespace-nowrap">
                                             <div className="text-sm font-black text-indigo-600 dark:text-indigo-400">#{booking.bookingCode || booking.id.substring(0, 8).toUpperCase()}</div>
                                             <div className="text-xs text-gray-400 mt-0.5">{booking.category}</div>
@@ -382,24 +382,24 @@ const Bookings: React.FC = () => {
                                         <td className="px-5 py-4 whitespace-nowrap text-right">
                                             <div className="flex justify-end items-center gap-2">
                                                 {booking.status === 'Pending' && (
-                                                    <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors" title="Confirm">
+                                                    <button onClick={() => updateStatus(booking.id, 'Confirmed')} className="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-600  rounded-lg transition-colors" title="Confirm">
                                                         <CheckCircle size={15} />
                                                     </button>
                                                 )}
                                                 {(booking.status === 'Pending' || booking.status === 'Confirmed') && (
-                                                    <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="w-8 h-8 flex items-center justify-center bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition-colors" title="Cancel">
+                                                    <button onClick={() => updateStatus(booking.id, 'Cancelled')} className="w-8 h-8 flex items-center justify-center bg-rose-50 text-rose-600  rounded-lg transition-colors" title="Cancel">
                                                         <XCircle size={15} />
                                                     </button>
                                                 )}
                                                 {booking.status === 'Cancelled' && (
-                                                    <button onClick={() => updateStatus(booking.id, 'Refunded')} className="w-8 h-8 flex items-center justify-center bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors" title="Process Refund">
+                                                    <button onClick={() => updateStatus(booking.id, 'Refunded')} className="w-8 h-8 flex items-center justify-center bg-purple-50 text-purple-600  rounded-lg transition-colors" title="Process Refund">
                                                         <RefreshCcw size={15} />
                                                     </button>
                                                 )}
                                                 {/* Primary Details button anchored right */}
                                                 <button
                                                     onClick={() => setSelectedBooking(booking)}
-                                                    className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg text-indigo-600 dark:text-indigo-400 font-bold text-xs transition-colors shrink-0"
+                                                    className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10   rounded-lg text-indigo-600 dark:text-indigo-400 font-bold text-xs transition-colors shrink-0"
                                                 >
                                                     Details
                                                 </button>

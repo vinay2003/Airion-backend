@@ -48,7 +48,7 @@ const ShopOrders = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-wrap gap-4">
+            <div className="bg-white rounded-2xl  border border-gray-100 p-4 mb-6 flex flex-wrap gap-4">
                 <div className="flex-1 min-w-[250px] relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input 
@@ -73,7 +73,7 @@ const ShopOrders = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-2xl  border border-gray-100 overflow-hidden">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50 text-gray-500 font-bold text-xs uppercase tracking-wider">
                         <tr>
@@ -90,7 +90,7 @@ const ShopOrders = () => {
                                 <td colSpan={5} className="p-8 text-center text-gray-500 font-medium">No orders found.</td>
                             </tr>
                         ) : filtered.map(order => (
-                            <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                            <tr key={order.id} className=" transition-colors">
                                 <td className="p-4">
                                     <div className="font-bold text-gray-900">ORD-{order.id.substring(0,8).toUpperCase()}</div>
                                     <div className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</div>

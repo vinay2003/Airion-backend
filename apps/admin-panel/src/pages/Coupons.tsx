@@ -100,14 +100,14 @@ const Coupons: React.FC = () => {
                 </div>
                 <button 
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600  text-white font-bold rounded-xl   transition-all"
                 >
                     <Plus size={18} />
                     <span>Create Coupon</span>
                 </button>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl  border border-gray-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -122,7 +122,7 @@ const Coupons: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {filteredCoupons.map((coupon) => (
-                    <div key={coupon.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[24px] overflow-hidden shadow-sm flex flex-col sm:flex-row">
+                    <div key={coupon.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[24px] overflow-hidden  flex flex-col sm:flex-row">
                         {/* Left - Discount Value */}
                         <div className="bg-indigo-600 p-8 flex flex-col items-center justify-center text-white sm:w-1/3 relative overflow-hidden">
                             <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
@@ -155,7 +155,7 @@ const Coupons: React.FC = () => {
                             <div>
                                 <div className="flex justify-between items-start mb-4">
                                     <div 
-                                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors group"
+                                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-slate-800 rounded-lg cursor-pointer   transition-colors group"
                                         onClick={() => copyCode(coupon.code)}
                                     >
                                         <span className="font-mono font-bold text-gray-900 dark:text-white tracking-widest">{coupon.code}</span>
@@ -191,7 +191,7 @@ const Coupons: React.FC = () => {
                             </div>
 
                             <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-slate-800">
-                                <button onClick={() => deleteCoupon(coupon.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                <button onClick={() => deleteCoupon(coupon.id)} className="p-2 text-gray-400   rounded-lg transition-colors" title="Delete">
                                     <Trash2 size={18} />
                                 </button>
                             </div>
@@ -212,11 +212,11 @@ const Coupons: React.FC = () => {
             {/* Create Coupon Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-lg relative p-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-lg relative p-8">
                         <button 
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                            className="absolute top-6 right-6 text-gray-400  "
                         >
                             <X size={24} />
                         </button>
@@ -306,14 +306,14 @@ const Coupons: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={createMutation.isPending}
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
                                 >
                                     {createMutation.isPending ? 'Creating Coupon...' : 'Create Coupon'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
+                                    className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
                                 >
                                     Cancel
                                 </button>

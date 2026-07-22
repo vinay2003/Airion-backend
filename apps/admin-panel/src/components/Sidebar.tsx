@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             onClick={() => window.innerWidth < 768 && onClose()}
                             className={({ isActive }) =>
                                 `flex items-center gap-3 px-4 py-3 rounded-xl   ${isActive
-                                    ? 'bg-red-500 text-white font-medium shadow-md shadow-red-500/20'
+                                    ? 'bg-red-500 text-white font-medium  '
                                     : 'text-gray-600 dark:text-slate-400  dark:  dark:'
                                 }`
                             }

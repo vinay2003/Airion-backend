@@ -59,7 +59,7 @@ const Reports: React.FC = () => {
                                 className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-colors ${
                                     timeRange === range 
                                     ? 'bg-gray-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400' 
-                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    : 'text-gray-500  '
                                 }`}
                             >
                                 {range}
@@ -68,14 +68,14 @@ const Reports: React.FC = () => {
                     </div>
                     <button 
                         onClick={handleExportCSV}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600  text-white font-bold rounded-xl   transition-all"
                     >
                         <Download size={18} />
                         <span>Export CSV</span>
                     </button>
                     <button 
                         onClick={handleExportPDF}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl   transition-all "
                     >
                         <Download size={18} />
                         <span>Export PDF</span>
@@ -85,7 +85,7 @@ const Reports: React.FC = () => {
 
             {/* Quick KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl  border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Total Revenue</p>
                         <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{formatCurrency(totalRevenue)}</h3>
@@ -97,7 +97,7 @@ const Reports: React.FC = () => {
                         <DollarSign size={28} />
                     </div>
                 </div>
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl  border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Commission Earned</p>
                         <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{formatCurrency(commissionEarned)}</h3>
@@ -109,7 +109,7 @@ const Reports: React.FC = () => {
                         <BarChart size={28} />
                     </div>
                 </div>
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl  border border-gray-200 dark:border-slate-800 flex items-center justify-between group">
                     <div>
                         <p className="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1">Avg. Conversion Rate</p>
                         <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{avgConversionRate}%</h3>
@@ -125,12 +125,12 @@ const Reports: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 {/* Main Revenue Chart */}
-                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl  border border-gray-200 dark:border-slate-800">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Breakdown</h2>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => setReportType('Revenue')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Revenue' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}>Revenue</button>
-                            <button onClick={() => setReportType('Engagement')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Engagement' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}>Engagement</button>
+                            <button onClick={() => setReportType('Revenue')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Revenue' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 '}`}>Revenue</button>
+                            <button onClick={() => setReportType('Engagement')} className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${reportType === 'Engagement' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 '}`}>Engagement</button>
                         </div>
                     </div>
                     <div className="h-80">
@@ -170,7 +170,7 @@ const Reports: React.FC = () => {
                 </div>
 
                 {/* Conversion Rates by Occasion */}
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl  border border-gray-200 dark:border-slate-800">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Conversion Rates</h2>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
@@ -187,10 +187,10 @@ const Reports: React.FC = () => {
             </div>
 
             {/* Top Performing Vendors Leaderboard */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl  border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 dark:border-slate-800 flex justify-between items-center">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Top Performing Vendors</h2>
-                    <button className="text-sm font-bold text-indigo-600 hover:text-indigo-700">View All</button>
+                    <button className="text-sm font-bold text-indigo-600 ">View All</button>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
@@ -205,7 +205,7 @@ const Reports: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {topVendors.map((vendor: any, i: number) => (
-                                <tr key={vendor.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                <tr key={vendor.id} className="  transition-colors">
                                     <td className="px-6 py-4">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-amber-100 text-amber-600' : i === 1 ? 'bg-gray-200 text-gray-600' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
                                             #{i + 1}

@@ -8,6 +8,7 @@ import { useAuth, otpAuth, commonAuth, UserRole, decodeToken, tokenService, getP
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
+import { VendorRegistrationForm } from '../components/auth/VendorRegistrationForm';
 import { auth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from '../lib/firebase';
 
 
@@ -31,7 +32,7 @@ const UnifiedAuth: React.FC = () => {
     const [mode, setMode] = useState<AuthMode>(() => {
         return location.pathname.includes('signup') ? 'signup' : 'login';
     });
-    const [step, setStep] = useState<'email' | 'otp' | 'details'>('email');
+    const [step, setStep] = useState<'email' | 'otp' | 'details' | 'vendor_registration'>('email');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.USER);
 
     // Form Data
@@ -70,6 +71,7 @@ const UnifiedAuth: React.FC = () => {
             const tokenParam = token ? `?token=${token}` : '';
 
             if (user.role === UserRole.VENDOR) {
+                if (step === 'vendor_registration') return;
                 const targetUrl = getPortalUrl('vendor');
                 const baseUrl = targetUrl.endsWith('/') ? targetUrl : `${targetUrl}/`;
                 window.location.href = token ? `${baseUrl}${tokenParam}` : baseUrl;
@@ -262,10 +264,9 @@ const UnifiedAuth: React.FC = () => {
                         setLoading(false);
                         return;
                     } else if (selectedRole === UserRole.VENDOR) {
-                        toast.success('Account created! Redirecting to vendor setup...');
-                        const targetUrl = getPortalUrl('vendor');
-                        const baseUrl = targetUrl.endsWith('/') ? targetUrl : targetUrl + '/';
-                        setTimeout(() => window.location.href = baseUrl + 'signup-form?token=' + response.access_token, 800);
+                        toast.success('Account created! Please complete vendor registration.');
+                        setStep('vendor_registration');
+                        setLoading(false);
                         return;
                     }
                 }
@@ -645,6 +646,20 @@ const UnifiedAuth: React.FC = () => {
                                     {loading ? <Loader className="animate-spin" size={24} /> : <>Finalize synchronization <ArrowRight size={24} /></>}
                                 </button>
                             </motion.form>
+                        )}
+
+                        {/* ── Step 4: Complete Profile (Signup → Vendor only) ── */}
+                        {step === 'vendor_registration' && (
+                            <motion.div key="vendor_registration"
+                                initial={{ opacity: 0, x: 25 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -25 }}
+                                className="w-full"
+                            >
+                                <VendorRegistrationForm onSuccess={() => {
+                                    const targetUrl = getPortalUrl('vendor');
+                                    const baseUrl = targetUrl.endsWith('/') ? targetUrl : targetUrl + '/';
+                                    window.location.href = baseUrl + '?token=' + tokenService.getAccessToken();
+                                }} />
+                            </motion.div>
                         )}
 
                     </AnimatePresence>

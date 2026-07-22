@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Phone, ArrowRight } from 'lucide-react';
+import { Shield, Mail, ArrowRight } from 'lucide-react';
 import { useAuth, adminAuth } from '@ease2event/shared';
 import toast from 'react-hot-toast';
 
@@ -8,21 +8,21 @@ const AdminLogin: React.FC = () => {
     const { loginWithResponse } = useAuth();
     const navigate = useNavigate();
 
-    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [showOTP, setShowOTP] = useState(false);
     const [show2FA, setShow2FA] = useState(false);
     const [tempToken, setTempToken] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Step 1: Send OTP to admin phone
+    // Step 1: Send OTP to admin email
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!phone.trim()) return toast.error('Enter your admin phone number');
+        if (!email.trim()) return toast.error('Enter your admin email');
         setLoading(true);
         try {
-            const res = await adminAuth.sendOtp(phone.trim());
-            toast.success(res.message || 'OTP sent to your phone');
+            const res = await adminAuth.sendOtp(email.trim());
+            toast.success(res.message || 'OTP sent to your email');
             setShowOTP(true);
         } catch (err: any) {
             const message = err?.response?.data?.message || 'Failed to send OTP';
@@ -39,7 +39,7 @@ const AdminLogin: React.FC = () => {
         if (code.length < 6) return toast.error('Enter the complete 6-digit OTP');
         setLoading(true);
         try {
-            const response = await adminAuth.verifyOtp(phone.trim(), code);
+            const response = await adminAuth.verifyOtp(email.trim(), code);
             if (response.require2fa) {
                 setTempToken(response.tempToken || '');
                 setShowOTP(false);
@@ -114,28 +114,28 @@ const AdminLogin: React.FC = () => {
                     </h2>
                     <p className="text-center text-sm text-gray-500 dark:text-slate-400 mb-8">
                         {showOTP
-                            ? `Enter the 6-digit OTP sent to ${phone}`
+                            ? `Enter the 6-digit OTP sent to ${email}`
                             : 'Secure access for Ease2event administrators'}
                     </p>
 
-                    {/* Step 1: Phone Number */}
+                    {/* Step 1: Email Address */}
                     {!showOTP && !show2FA && (
                         <form onSubmit={handleSendOTP} className="space-y-5">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
-                                    Admin Phone Number
+                                    Admin Email Address
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <Phone size={18} />
+                                        <Mail size={18} />
                                     </div>
                                     <input
-                                        type="tel"
+                                        type="email"
                                         required
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                         className="pl-10 w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
-                                        placeholder="e.g. 9876543210"
+                                        placeholder="admin@ease2event.com"
                                     />
                                 </div>
                             </div>

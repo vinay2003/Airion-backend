@@ -294,6 +294,7 @@ export const fetchMessages = async (id: string) => (await api.get(`/chat/message
 export const startConversation = async (vId: string) => await api.post('/chat/start', { participantId: vId });
 export const updateProfile = async (d: any) => await api.patch('/auth/profile', d);
 export const changePassword = async (d: any) => await api.post('/auth/change-password', d);
+export const updateVendorProfile = async (d: any) => await api.put('/vendors/me', d);
 // --- VENDOR DASHBOARD & ANALYTICS (Step 6 Coordination) ---
 export const fetchWalletOverview = async () => await api.get('/wallet/overview');
 export const requestWithdrawal = async (amount: number, bankDetails?: any) => await api.post('/wallet/withdraw', { amount, bankDetails });

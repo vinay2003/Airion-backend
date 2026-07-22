@@ -100,6 +100,9 @@ export class Vendor {
     @Column('uuid', { name: 'subcategory_id', nullable: true })
     subcategoryId: string;
 
+    @Column('varchar', { name: 'vendor_type', nullable: true })
+    vendorType: string | null;
+
     @Column('jsonb', { name: 'business_hours', nullable: true })
     businessHours: Record<string, { open: string; close: string }> | null;
 

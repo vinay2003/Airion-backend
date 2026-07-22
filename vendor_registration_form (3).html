@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vendor Registration - Airion Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-100 text-gray-800">
+  <div class="max-w-4xl mx-auto px-6 py-10 my-10 bg-white shadow-2xl rounded-3xl">
+    <h1 class="text-3xl md:text-4xl font-extrabold mb-8 text-center text-indigo-700">Register as a Verified Vendor</h1>
+    <p class="text-center text-gray-600 mb-10">Join the Airion Solutions platform and grow your business with trusted leads and premium visibility.</p>
+
+    <form class="space-y-6">
+      <!-- Business Details -->
+      <div>
+        <label class="block font-semibold text-sm">Business/Brand Name</label>
+        <input type="text" name="business_name" placeholder="e.g., Royal Banquets" required
+          class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <!-- Owner Details -->
+      <div>
+        <label class="block font-semibold text-sm">Owner/Manager Full Name</label>
+        <input type="text" name="owner_name" placeholder="e.g., Abhishek Kumar" required
+          class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <!-- Contact Info -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label class="block font-semibold text-sm">Phone Number</label>
+          <input type="tel" name="phone" placeholder="e.g., +91 98765 43210" required
+            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3">
+        </div>
+        <div>
+          <label class="block font-semibold text-sm">Email Address</label>
+          <input type="email" name="email" placeholder="example@email.com" required
+            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3">
+        </div>
+      </div>
+
+      <!-- Business Type -->
+      <div>
+        <label class="block font-semibold text-sm">Type of Vendor/Service</label>
+        <select name="vendor_type" required
+          class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 bg-white">
+          <option disabled selected>Select your category</option>
+          <option>Banquet Hall</option>
+          <option>Caterer</option>
+          <option>Photographer</option>
+          <option>Makeup Artist</option>
+          <option>DJ & Music</option>
+          <option>Decorator</option>
+          <option>Sweet Shop</option>
+          <option>Venue Owner</option>
+          <option>Florist</option>
+          <option>Lighting & Sound</option>
+          <option>Event Planner</option>
+          <option>Invitation Designer</option>
+          <option>Costume Rental</option>
+          <option>Mehendi Artist</option>
+          <option>Choreographer</option>
+          <option>Security Service</option>
+          <option>Transport & Cab</option>
+          <option>Hotel/Resort Partner</option>
+          <option>Anchor/Emcee</option>
+          <option>Drone Photography</option>
+          <option>Live Streaming Service</option>
+          <option>Stage Designer</option>
+          <option>Bartender & Beverage Services</option>
+          <option>Rental Furniture & Props</option>
+          <option>Return Gift Providers</option>
+          <option>Food Truck/Live Counter</option>
+          <option>Fireworks Supplier</option>
+          <option>Priest / Purohit</option>
+          <option>Destination Wedding Organizer</option>
+          <option>Other Services</option>
+        </select>
+      </div>
+
+      <!-- Location -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label class="block font-semibold text-sm">District</label>
+          <input type="text" name="district" placeholder="e.g., Patna" required
+            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3">
+        </div>
+        <div>
+          <label class="block font-semibold text-sm">Pin Code</label>
+          <input type="text" name="pincode" placeholder="e.g., 800001" required
+            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3">
+        </div>
+      </div>
+
+      <!-- Upload Documents -->
+      <div>
+        <label class="block font-semibold text-sm">Upload Business Logo / Banner (optional)</label>
+        <input type="file" name="business_file"
+          class="mt-2 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
+          file:rounded-md file:border-0 file:text-sm file:font-semibold
+          file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100" />
+      </div>
+
+      <!-- Agreement Checkbox -->
+      <div class="flex items-start">
+        <input type="checkbox" required id="terms" class="h-5 w-5 text-indigo-600 mt-1">
+        <label for="terms" class="ml-3 text-sm text-gray-700">
+          I have read and agree to the 
+          <a href="#" class="text-indigo-600 underline">Terms & Conditions</a> and 
+          <a href="#" class="text-indigo-600 underline">Vendor Agreement</a>.
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <button type="submit"
+          class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold text-lg shadow-md hover:shadow-lg transition duration-300">
+          🚀 Register Now
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

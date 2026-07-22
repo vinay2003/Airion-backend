@@ -43,9 +43,11 @@ export class EmailService {
         this.logger.log('📧 [Email] Gmail SMTP transporter initialized.');
     }
 
-    async sendOtpEmail(to: string, otp: string, purpose: 'login' | 'signup'): Promise<void> {
+    async sendOtpEmail(to: string, otp: string, purpose: 'login' | 'signup' | 'admin_login'): Promise<void> {
         const subject = purpose === 'signup'
             ? 'Your Ease2event Signup Verification Code'
+            : purpose === 'admin_login'
+            ? 'Your Admin Login Verification Code'
             : 'Your Ease2event Login Verification Code';
 
         const html = this.buildOtpEmailTemplate(otp, purpose);
@@ -102,8 +104,8 @@ export class EmailService {
         }
     }
 
-    private buildOtpEmailTemplate(otp: string, purpose: 'login' | 'signup'): string {
-        const action = purpose === 'signup' ? 'complete your registration' : 'sign in to your account';
+    private buildOtpEmailTemplate(otp: string, purpose: 'login' | 'signup' | 'admin_login'): string {
+        const action = purpose === 'signup' ? 'complete your registration' : purpose === 'admin_login' ? 'access the admin portal' : 'sign in to your account';
         const currentYear = new Date().getFullYear();
 
         return `

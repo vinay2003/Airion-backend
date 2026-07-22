@@ -304,21 +304,17 @@ export class AuthService {
     }
 
     // Send OTP for Admin Login
-    async sendAdminOtp(dto: { phone: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
-        // Authorized admin phone numbers (comma-separated in ADMIN_PHONE_NUMBERS env var)
-        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
-            .split(',')
-            .map((p: string) => p.trim())
-            .filter(Boolean);
+    async sendAdminOtp(dto: { email: string }): Promise<{ message: string; otp?: string; _dev_otp?: string }> {
+        const adminEmails = ['vinaysharma31681@gmail.com', 'abhishekkumar518@gmail.com'];
 
-        if (!adminPhones.includes(dto.phone)) {
-            this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.phone}`);
-            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
+        if (!adminEmails.includes(dto.email)) {
+            this.logger.warn(`🚨 SECURITY ALERT: Unauthorized Admin OTP request from ${dto.email}`);
+            throw new ForbiddenException('Unauthorized access attempt: Email not authorized');
         }
 
-        // Phone is authorized — generate and send OTP
+        // Email is authorized — generate and send OTP
         // (DB record check happens at verifyAdminOtp when issuing the JWT)
-        const identifier = dto.phone.trim();
+        const identifier = dto.email.trim().toLowerCase();
         await this.otpRepository.delete({ identifier });
 
         const otpCode = this.generateOTP();
@@ -337,11 +333,11 @@ export class AuthService {
         this.logger.log(`🔑 [OTP_DEBUG] Admin OTP for ${identifier}: ${otpCode}`);
         this.logger.log(`🔒 [ADMIN_AUDIT] OTP sent to Admin: ${identifier}`);
 
-        await this.smsService.sendOtpSms(identifier, otpCode, 'admin_login');
+        await this.emailService.sendOtpEmail(identifier, otpCode, 'admin_login');
 
         const isProduction = this.configService.get('NODE_ENV') === 'production';
         return {
-            message: 'OTP sent successfully to admin number',
+            message: 'OTP sent successfully to admin email',
             ...(!isProduction && { _dev_otp: otpCode }),
         };
     }
@@ -486,18 +482,14 @@ export class AuthService {
     }
 
     // Verify OTP for Admin
-    async verifyAdminOtp(dto: { phone: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
-        // Support multiple admin phone numbers (comma-separated in env)
-        const adminPhones = (this.configService.get('ADMIN_PHONE_NUMBERS') || this.configService.get('ADMIN_PHONE_NUMBER') || '9616981292,8130607796')
-            .split(',')
-            .map((p: string) => p.trim())
-            .filter(Boolean);
+    async verifyAdminOtp(dto: { email: string; otp: string }): Promise<{ access_token: string; user: Partial<User> }> {
+        const adminEmails = ['vinaysharma31681@gmail.com', 'abhishekkumar518@gmail.com'];
 
-        if (!adminPhones.includes(dto.phone)) {
-            throw new ForbiddenException('Unauthorized access attempt: Phone number not authorized');
+        if (!adminEmails.includes(dto.email)) {
+            throw new ForbiddenException('Unauthorized access attempt: Email not authorized');
         }
 
-        const identifier = dto.phone.trim();
+        const identifier = dto.email.trim().toLowerCase();
         const otpRecord = await this.otpRepository.findOne({
             where: { identifier },
             order: { createdAt: 'DESC' },
@@ -531,13 +523,13 @@ export class AuthService {
 
         // Raw SQL query — bypasses TypeORM metadata/module cache entirely
         const rows = await this.userRepository.query(
-            `SELECT id, name, phone_number as "phoneNumber", role FROM users WHERE phone_number = $1 AND role = 'admin' LIMIT 1`,
+            `SELECT id, name, email as "email", role FROM users WHERE email = $1 AND role = 'admin' LIMIT 1`,
             [identifier]
         );
         const adminUser = rows[0];
 
         if (!adminUser) {
-            this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for phone: ${identifier}`);
+            this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for email: ${identifier}`);
             throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
         }
 
@@ -566,7 +558,7 @@ export class AuthService {
 
         return {
             access_token,
-            user: { id: adminUser.id, name: adminUser.name, role: adminUser.role, phoneNumber: adminUser.phoneNumber }
+            user: { id: adminUser.id, name: adminUser.name, role: adminUser.role, email: adminUser.email }
         };
     }
 

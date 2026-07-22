@@ -294,18 +294,18 @@ export const adminAuth = {
     },
 
     /**
-     * Send OTP to admin phone number
+     * Send OTP to admin email
      */
-    sendOtp: async (phone: string): Promise<{ message: string; _dev_otp?: string }> => {
-        const response = await authApi.post(AUTH_ENDPOINTS.ADMIN_SEND_OTP, { phone });
+    sendOtp: async (email: string): Promise<{ message: string; _dev_otp?: string }> => {
+        const response = await authApi.post(AUTH_ENDPOINTS.ADMIN_SEND_OTP, { email });
         return response.data;
     },
 
     /**
      * Verify OTP and get access token
      */
-    verifyOtp: async (phone: string, otp: string): Promise<AuthResponse> => {
-        const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.ADMIN_VERIFY_OTP, { phone, otp });
+    verifyOtp: async (email: string, otp: string): Promise<AuthResponse> => {
+        const response = await authApi.post<AuthResponse>(AUTH_ENDPOINTS.ADMIN_VERIFY_OTP, { email, otp });
         return response.data;
     },
 };

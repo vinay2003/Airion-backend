@@ -55,7 +55,7 @@ export class AuthController {
     @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 per hour
     @Post('admin/send-otp')
     @HttpCode(HttpStatus.OK)
-    async sendAdminOTP(@Body() dto: { phone: string }) {
+    async sendAdminOTP(@Body() dto: { email: string }) {
         return this.authService.sendAdminOtp(dto);
     }
 
@@ -63,7 +63,7 @@ export class AuthController {
     @Throttle({ default: { limit: 5, ttl: 3600000 } }) // 5 per hour
     @Post('admin/verify-otp')
     @HttpCode(HttpStatus.OK)
-    async verifyAdminOTP(@Body() dto: { phone: string; otp: string }) {
+    async verifyAdminOTP(@Body() dto: { email: string; otp: string }) {
         return this.authService.verifyAdminOtp(dto);
     }
 

@@ -104,7 +104,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
     // Ensure at least 10 items per category
     const eventCategories = ['Weddings', 'Parties', 'Corporate', 'Birthday', 'Engagement', 'Private Party'];
     const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
-    
+
     // Use the mockServices from outside the function
     const expandedMockServices = [...mockServices];
 
@@ -133,7 +133,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         }
         const query = params.toString();
         const url = `/services${query ? `?${query}` : ''}`;
-        
+
         const response = await api.get(url).catch(() => ({ data: [] }));
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data)) {
@@ -159,7 +159,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         vendorImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=200',
         reviews: s.reviews || 0,
         capacity: (s as any).capacity || 'Contact Vendor',
-        isSponsored: idx % 3 === 0 
+        isSponsored: idx % 3 === 0
     })) as Event[];
 
     // Return real events first, then mocks
@@ -188,7 +188,8 @@ const generateDummyVendors = (): Event[] => {
         'Banquet Hall': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200',
         'Makeup Artist': 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?q=80&w=1200',
         'DJ & Music': 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200',
-        'Venue Owner': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200'
+        'Venue Owner': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200',
+        'AV Setup': 'https://images.unsplash.com/photo-1774118042995-b7c9d9fc0c05?w=600&auto=format&fit=crop&q=60'
     };
     
     const getDefaultImage = (cat: string) => imageMap[cat] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200';
@@ -209,7 +210,7 @@ const generateDummyVendors = (): Event[] => {
                 rating: parseFloat((4.0 + Math.random()).toFixed(1)),
                 location: locations[i % locations.length],
                 reviews: Math.floor(Math.random() * 300) + 50,
-                price: `₹${(i+2)*10},000+`,
+                price: cat === 'Photographer' ? `₹${(i + 5) * 10},000 / day` : `₹${(i+2)*10},000+`,
                 capacity: 'Contact Vendor',
                 description: `Premium ${cat} services for your special events. Highly rated and professional.`,
                 vendorName: vendorName,
@@ -226,14 +227,14 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const params = new URLSearchParams();
     if (filters.city) params.append('city', filters.city);
     if (filters.search) params.append('search', filters.search);
-    
+
     // Convert to query string
     const query = params.toString();
     const url = `/vendors/discovery${query ? `?${query}` : ''}`;
-    
+
     const response = await api.get(url).catch(() => ({ data: [] }));
     const data = response.data?.data?.vendors || response.data?.vendors || response.data || [];
-    
+
     let realVendors = [];
     if (Array.isArray(data)) {
         realVendors = data.map((v: any) => ({
@@ -259,7 +260,7 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const dummyVendors = generateDummyVendors();
 
     let combined = [...realVendors, ...dummyVendors];
-    
+
     // Fallback filtering if search API didn't handle categories (like dummy data)
     if (filters.search) {
         const cat = filters.search.toLowerCase();

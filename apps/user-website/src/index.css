@@ -174,43 +174,10 @@ body {
 }
 
 /* ── 5. MOBILE RESPONSIVE OVERRIDES (≤767px) ─────────────── */
-/* MOBILE FIX: Enforcing Senior Engineering Standards for Mobile UX */
+/* MOBILE FIX: Enforcing Accessibility & Touch Target Standards for Mobile UX */
 @media (max-width: 767px) {
-  /* MOBILE FIX: Section rhythm and padding */
-  section {
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    gap: 32px !important;
-  }
-
-  /* MOBILE FIX: Typography scale (reduce h1 ~30%, h2 ~20%) */
-  h1, .text-6xl, .text-5xl {
-    font-size: clamp(2.25rem, 10vw, 2.75rem) !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.02em !important;
-  }
-  
-  h2, .text-4xl, .text-3xl {
-    font-size: clamp(1.75rem, 8vw, 2.125rem) !important;
-    line-height: 1.2 !important;
-  }
-
-  body, p, .text-sm, .text-base {
-    font-size: 16px !important; /* Apple HIG: Prevent auto-zoom and ensure readability */
-  }
-
-  /* MOBILE FIX: Layout stack */
-  .grid, .flex-row {
-     display: flex !important;
-     flex-direction: column !important;
-     width: 100% !important;
-  }
-
   /* MOBILE FIX: Touch Targets (Apple HIG: 44x44px min) */
   button, a, .cursor-pointer {
-    min-height: 44px;
     touch-action: manipulation;
   }
 

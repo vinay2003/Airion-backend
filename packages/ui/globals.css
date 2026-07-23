@@ -109,10 +109,6 @@
     letter-spacing: -0.02em;
   }
 
-  /* Touch-friendly minimum targets (WCAG 2.5.5) */
-  @media (max-width: 768px) {
-    button, a { min-height: 44px; }
-  }
 }
 
 /* ─────────────────────────────────────────────

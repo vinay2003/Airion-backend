@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
 import { Booking } from './entities/booking.entity';
+import { ServicePackage } from '../services/entities/service-package.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 import { WalletModule } from '../wallet/wallet.module';
@@ -13,7 +14,7 @@ import { EmailService } from '../common/services/email.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Booking]),
+    TypeOrmModule.forFeature([Booking, ServicePackage]),
     NotificationsModule,
     WalletModule,
     AvailabilityModule

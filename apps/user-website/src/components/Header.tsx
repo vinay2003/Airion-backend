@@ -136,10 +136,36 @@ const Header: React.FC = () => {
             name: 'Vendors', 
             path: '/search',
             children: [
+                { name: 'Banquet Hall', path: '/search?category=Banquet Hall' },
                 { name: 'Caterer', path: '/search?category=Caterer' },
-                { name: 'Decor', path: '/search?category=Decor' },
                 { name: 'Photographer', path: '/search?category=Photographer' },
-                { name: 'AV Setup', path: '/search?category=AV Setup' },
+                { name: 'Makeup Artist', path: '/search?category=Makeup Artist' },
+                { name: 'DJ & Music', path: '/search?category=DJ & Music' },
+                { name: 'Decorator', path: '/search?category=Decorator' },
+                { name: 'Sweet Shop', path: '/search?category=Sweet Shop' },
+                { name: 'Venue Owner', path: '/search?category=Venue Owner' },
+                { name: 'Florist', path: '/search?category=Florist' },
+                { name: 'Lighting & Sound', path: '/search?category=Lighting & Sound' },
+                { name: 'Event Planner', path: '/search?category=Event Planner' },
+                { name: 'Invitation Designer', path: '/search?category=Invitation Designer' },
+                { name: 'Costume Rental', path: '/search?category=Costume Rental' },
+                { name: 'Mehendi Artist', path: '/search?category=Mehendi Artist' },
+                { name: 'Choreographer', path: '/search?category=Choreographer' },
+                { name: 'Security Service', path: '/search?category=Security Service' },
+                { name: 'Transport & Cab', path: '/search?category=Transport & Cab' },
+                { name: 'Hotel/Resort Partner', path: '/search?category=Hotel/Resort Partner' },
+                { name: 'Anchor/Emcee', path: '/search?category=Anchor/Emcee' },
+                { name: 'Drone Photography', path: '/search?category=Drone Photography' },
+                { name: 'Live Streaming Service', path: '/search?category=Live Streaming Service' },
+                { name: 'Stage Designer', path: '/search?category=Stage Designer' },
+                { name: 'Bartender & Beverage', path: '/search?category=Bartender & Beverage Services' },
+                { name: 'Rental Props', path: '/search?category=Rental Furniture & Props' },
+                { name: 'Return Gifts', path: '/search?category=Return Gift Providers' },
+                { name: 'Food Truck', path: '/search?category=Food Truck/Live Counter' },
+                { name: 'Fireworks', path: '/search?category=Fireworks Supplier' },
+                { name: 'Priest / Purohit', path: '/search?category=Priest / Purohit' },
+                { name: 'Destination Wedding', path: '/search?category=Destination Wedding Organizer' },
+                { name: 'Other Services', path: '/search?category=Other Services' }
             ]
         },
         { name: 'Packages', path: '/packages' },
@@ -246,7 +272,7 @@ const Header: React.FC = () => {
                                     {item.name}
                                     <ChevronDown size={14} className={`transition-transform duration-300 ${hoveredMenu === item.name ? 'rotate-180' : ''}`} />
                                 </button>
-                                <div className={`absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 transition-all duration-300 z-50 ${hoveredMenu === item.name ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+                                <div className={`absolute top-full left-0 mt-1 w-64 max-h-[70vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 transition-all duration-300 z-50 styled-scrollbar ${hoveredMenu === item.name ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                                     <div className="p-2">
                                         {item.children.map((child) => (
                                             <Link

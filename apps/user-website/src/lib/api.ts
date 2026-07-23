@@ -167,42 +167,53 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
 };
 
 const generateDummyVendors = (): Event[] => {
-    const categories = ['Caterer', 'Decor', 'Photographer', 'AV Setup'];
-    const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
+    const ALL_CATEGORIES = [
+        'Banquet Hall', 'Caterer', 'Photographer', 'Makeup Artist', 'DJ & Music',
+        'Decorator', 'Sweet Shop', 'Venue Owner', 'Florist', 'Lighting & Sound',
+        'Event Planner', 'Invitation Designer', 'Costume Rental', 'Mehendi Artist',
+        'Choreographer', 'Security Service', 'Transport & Cab', 'Hotel/Resort Partner',
+        'Anchor/Emcee', 'Drone Photography', 'Live Streaming Service', 'Stage Designer',
+        'Bartender & Beverage Services', 'Rental Furniture & Props', 'Return Gift Providers',
+        'Food Truck/Live Counter', 'Fireworks Supplier', 'Priest / Purohit',
+        'Destination Wedding Organizer', 'Other Services'
+    ];
     
-    const namesMap: Record<string, string[]> = {
-        'Caterer': ['Elite Caterers', 'Royal Feast', 'Spice Route Catering', 'Divine Bites', 'Grand Banquet Caterers', 'Saffron Flavors', 'The Culinary Art', 'Heritage Dining', 'Mughlai Masters', 'Fusion Foods'],
-        'Decor': ['Royal Decorators', 'Floral Fantasies', 'Elegant Events', 'Crystal Decor', 'Majestic Mandaps', 'Dream Setup', 'Vintage Vibes', 'Glamour Events', 'Classic Touch', 'Aura Decor'],
-        'Photographer': ['Capture Moments', 'Lens & Light', 'Memories Studio', 'Candid Frames', 'Pixel Perfect', 'Golden Hour Photo', 'Evergreen Snaps', 'Visionary Lens', 'Timeless Clicks', 'Focus Studios'],
-        'AV Setup': ['Sonic Beats AV', 'Lumina Sound & Light', 'Echo Events', 'Crystal Audio', 'Pulse AV', 'Vibe Acoustics', 'Radiance Lighting', 'Beatbox Solutions', 'Strobe & Sound', 'Bassline Pro']
-    };
+    const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
     
     const imageMap: Record<string, string> = {
         'Caterer': 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200',
         'Decor': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200',
+        'Decorator': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200',
         'Photographer': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1200',
-        'AV Setup': 'https://images.unsplash.com/photo-1470229722913-7c092bce6283?q=80&w=1200'
+        'Banquet Hall': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200',
+        'Makeup Artist': 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?q=80&w=1200',
+        'DJ & Music': 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200',
+        'Venue Owner': 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1200'
     };
+    
+    const getDefaultImage = (cat: string) => imageMap[cat] || 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200';
 
     const dummies: Event[] = [];
-    categories.forEach(cat => {
-        const names = namesMap[cat];
+    ALL_CATEGORIES.forEach(cat => {
         for (let i = 0; i < 10; i++) {
+            const suffixes = ['Pro', 'Experts', 'Studio', 'Hub', 'Collective', 'Masters', 'Elite', 'Premium', 'Specialists', 'Services'];
+            const vendorName = `${cat} ${suffixes[i]} ${i + 1}`;
+            
             dummies.push({
                 id: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
                 vendorId: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
-                title: names[i],
+                title: vendorName,
                 category: cat,
-                image: imageMap[cat],
-                images: [imageMap[cat]],
+                image: getDefaultImage(cat),
+                images: [getDefaultImage(cat)],
                 rating: parseFloat((4.0 + Math.random()).toFixed(1)),
-                location: locations[i],
+                location: locations[i % locations.length],
                 reviews: Math.floor(Math.random() * 300) + 50,
-                price: cat === 'Photographer' ? `₹${(i+5)*10},000 / day` : `₹${(i+2)*10},000+`,
+                price: `₹${(i+2)*10},000+`,
                 capacity: 'Contact Vendor',
                 description: `Premium ${cat} services for your special events. Highly rated and professional.`,
-                vendorName: names[i],
-                vendorImage: imageMap[cat].replace('w=1200', 'w=200'),
+                vendorName: vendorName,
+                vendorImage: getDefaultImage(cat).replace('w=1200', 'w=200'),
                 isSponsored: i < 2,
                 isFeatured: i < 4
             } as any);

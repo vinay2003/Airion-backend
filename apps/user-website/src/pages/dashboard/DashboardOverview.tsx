@@ -165,9 +165,9 @@ const DashboardOverview: React.FC = () => {
                 {/* Active Booking Nodes */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Active Registries</h2>
+                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Active Bookings</h2>
                         <Link to="/dashboard/bookings" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2">
-                            Full Registry <ArrowRight size={16} />
+                            View All <ArrowRight size={16} />
                         </Link>
                     </div>
                     <div className="space-y-4">

@@ -11,9 +11,9 @@ export class BookingsController {
      * Create a new booking
      */
     @Post()
-    async create(@Body() body: { vendorId: string; serviceId?: string; packageId?: string; totalAmount: number; eventDate: string; specialRequirements?: string }, @Req() req: any) {
-        if (!body.vendorId || !body.totalAmount) {
-            throw new BadRequestException('Vendor and Amount are required');
+    async create(@Body() body: { vendorId: string; serviceId?: string; packageId?: string; totalAmount: number; eventDate: string; specialRequirements?: string; eventAddress?: any }, @Req() req: any) {
+        if (!body.vendorId && !body.packageId) {
+            throw new BadRequestException('Vendor ID or Package ID is required');
         }
 
         const booking = await this.bookingsService.create({
@@ -23,6 +23,7 @@ export class BookingsController {
             packageId: body.packageId,
             totalAmount: body.totalAmount,
             eventDate: body.eventDate ? new Date(body.eventDate) : undefined,
+            eventAddress: body.eventAddress,
             specialRequirements: body.specialRequirements,
             bookingDate: new Date(),
             currency: 'INR',

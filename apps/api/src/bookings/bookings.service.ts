@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './entities/booking.entity';
+import { ServicePackage } from '../services/entities/service-package.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 import { WalletService } from '../wallet/wallet.service';
 import { AvailabilityService } from '../availability/availability.service';
@@ -12,6 +13,8 @@ export class BookingsService {
     constructor(
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
+        @InjectRepository(ServicePackage)
+        private servicePackageRepository: Repository<ServicePackage>,
         private readonly notificationsService: NotificationsService,
         private readonly walletService: WalletService,
         private readonly availabilityService: AvailabilityService,
@@ -19,18 +22,45 @@ export class BookingsService {
     ) {}
 
     async create(bookingData: Partial<Booking>): Promise<Booking> {
+        let finalAmount = bookingData.totalAmount;
+        let finalVendorId = bookingData.vendorId;
+        let finalServiceId = bookingData.serviceId;
+
+        // --- PRODUCTION AUDIT FIX: Secure Server-Side Pricing ---
+        if (bookingData.packageId) {
+            const servicePackage = await this.servicePackageRepository.findOne({
+                where: { id: bookingData.packageId },
+                relations: ['service', 'service.vendor']
+            });
+
+            if (!servicePackage) {
+                throw new BadRequestException('Invalid package selected.');
+            }
+            if (!servicePackage.service) {
+                throw new BadRequestException('Package is not associated with any service.');
+            }
+            if (!servicePackage.service.vendorId) {
+                throw new BadRequestException('Service is not associated with any vendor.');
+            }
+            
+            // Server-side overrides (ignore frontend payloads for these fields)
+            finalAmount = servicePackage.price;
+            finalVendorId = servicePackage.service.vendorId;
+            finalServiceId = servicePackage.service.id;
+        }
+
         // --- PRODUCTION AUDIT FIX: Atomic Double-Booking Protection ---
-        if (bookingData.vendorId && bookingData.eventDate) {
-            const vendor = await this.availabilityService.getVendorWithUser(bookingData.vendorId);
+        if (finalVendorId && bookingData.eventDate) {
+            const vendor = await this.availabilityService.getVendorWithUser(finalVendorId);
             
             // PREVENT SELF-BOOKING
             if (vendor && vendor.userId === bookingData.userId) {
-                throw new Error('Security Violation: You cannot book your own vendor profile.');
+                throw new ForbiddenException('Security Violation: You cannot book your own vendor profile.');
             }
 
             const existing = await this.bookingsRepository.findOne({
                 where: {
-                    vendorId: bookingData.vendorId,
+                    vendorId: finalVendorId,
                     eventDate: bookingData.eventDate,
                     status: 'confirmed', // Or other active statuses
                 }
@@ -38,7 +68,7 @@ export class BookingsService {
 
             if (existing) {
                 const dateStr = new Date(bookingData.eventDate).toLocaleDateString();
-                throw new Error(`Vendor already has a confirmed booking on ${dateStr}. Please select another date.`);
+                throw new BadRequestException(`Vendor already has a confirmed booking on ${dateStr}. Please select another date.`);
             }
         }
 
@@ -46,6 +76,9 @@ export class BookingsService {
         const bookingCode = `B-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const booking = this.bookingsRepository.create({
             ...bookingData,
+            vendorId: finalVendorId,
+            serviceId: finalServiceId,
+            totalAmount: finalAmount,
             bookingCode,
             status: 'pending',
             paymentStatus: 'pending',

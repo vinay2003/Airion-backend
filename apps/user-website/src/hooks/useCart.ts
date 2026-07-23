@@ -67,7 +67,7 @@ export const useCart = () => {
         queryKey: ['cart'],
         queryFn: async () => {
             const res = await api.get('/cart');
-            return (res as any).data;
+            return res;
         },
         enabled: isLoggedIn,
     });
@@ -76,7 +76,7 @@ export const useCart = () => {
         mutationFn: async (item: { itemType: 'BOOKING' | 'MERCHANDISE'; referenceId: string; quantity?: number; metadata?: any }) => {
             if (isLoggedIn) {
                 const res = await api.post('/cart/items', item);
-                return (res as any).data;
+                return res;
             } else {
                 // Local state update
                 setLocalCart(prev => {
@@ -89,27 +89,31 @@ export const useCart = () => {
                 return null;
             }
         },
-        onSuccess: () => {
-            if (isLoggedIn) queryClient.invalidateQueries({ queryKey: ['cart'] });
+        onSuccess: (data) => {
+            if (isLoggedIn) {
+                if (data) {
+                    queryClient.setQueryData(['cart'], data);
+                }
+                queryClient.invalidateQueries({ queryKey: ['cart'] });
+            }
         },
     });
 
     const removeItemMutation = useMutation({
         mutationFn: async (args: { itemId: string, itemType?: 'BOOKING' | 'MERCHANDISE', referenceId?: string }) => {
             if (isLoggedIn) {
-                // To remove from server, we need the cartItem ID (which might be passed, or we find it)
-                // Assuming we pass the actual DB ID, or referenceId
-                // The backend uses cart_item.id for DELETE. So we need to match it.
-                // For simplicity, let's just delete by itemId.
                 const res = await api.delete(`/cart/items/${args.itemId}`);
-                return (res as any).data;
+                return res;
             } else {
                 setLocalCart(prev => prev.filter(i => i.id !== args.itemId && i.referenceId !== args.referenceId));
                 return null;
             }
         },
-        onSuccess: () => {
-            if (isLoggedIn) queryClient.invalidateQueries({ queryKey: ['cart'] });
+        onSuccess: (data) => {
+            if (isLoggedIn) {
+                if (data) queryClient.setQueryData(['cart'], data);
+                queryClient.invalidateQueries({ queryKey: ['cart'] });
+            }
         },
     });
 
@@ -117,14 +121,17 @@ export const useCart = () => {
         mutationFn: async () => {
             if (isLoggedIn) {
                 const res = await api.delete('/cart');
-                return (res as any).data;
+                return res;
             } else {
                 setLocalCart([]);
                 return null;
             }
         },
-        onSuccess: () => {
-            if (isLoggedIn) queryClient.invalidateQueries({ queryKey: ['cart'] });
+        onSuccess: (data) => {
+            if (isLoggedIn) {
+                if (data) queryClient.setQueryData(['cart'], data);
+                queryClient.invalidateQueries({ queryKey: ['cart'] });
+            }
         },
     });
 
@@ -132,14 +139,17 @@ export const useCart = () => {
         mutationFn: async (args: { itemId: string, quantity: number }) => {
             if (isLoggedIn) {
                 const res = await api.put(`/cart/items/${args.itemId}`, { quantity: args.quantity });
-                return (res as any).data;
+                return res;
             } else {
                 setLocalCart(prev => prev.map(i => i.id === args.itemId ? { ...i, quantity: args.quantity } : i));
                 return null;
             }
         },
-        onSuccess: () => {
-            if (isLoggedIn) queryClient.invalidateQueries({ queryKey: ['cart'] });
+        onSuccess: (data) => {
+            if (isLoggedIn) {
+                if (data) queryClient.setQueryData(['cart'], data);
+                queryClient.invalidateQueries({ queryKey: ['cart'] });
+            }
         },
     });
 

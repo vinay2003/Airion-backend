@@ -50,7 +50,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             quantity: quantity,
             metadata: product
         });
-        setIsCartOpen(true);
     };
 
     const removeFromCart = async (id: string) => {

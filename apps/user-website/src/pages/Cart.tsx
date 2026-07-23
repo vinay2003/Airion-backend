@@ -6,6 +6,26 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, ArrowRight } from 'lucide-
 const Cart: React.FC = () => {
     const { items, removeFromCart, updateQuantity, totalPrice } = useCart();
     const navigate = useNavigate();
+    const [updatingItems, setUpdatingItems] = React.useState<Record<string, boolean>>({});
+    const [deletingItems, setDeletingItems] = React.useState<Record<string, boolean>>({});
+
+    const handleUpdateQuantity = async (id: string, newQuantity: number) => {
+        setUpdatingItems(prev => ({ ...prev, [id]: true }));
+        try {
+            await updateQuantity(id, newQuantity);
+        } finally {
+            setUpdatingItems(prev => ({ ...prev, [id]: false }));
+        }
+    };
+
+    const handleRemove = async (id: string) => {
+        setDeletingItems(prev => ({ ...prev, [id]: true }));
+        try {
+            await removeFromCart(id);
+        } finally {
+            setDeletingItems(prev => ({ ...prev, [id]: false }));
+        }
+    };
 
     return (
         <main className="min-h-screen bg-neutral-50 dark:bg-slate-950 pt-28 pb-16">
@@ -58,10 +78,15 @@ const Cart: React.FC = () => {
                                                     {item.title}
                                                 </h4>
                                                 <button
-                                                    onClick={() => removeFromCart(item.id)}
-                                                    className="text-neutral-400 hover:text-red-500 transition-colors"
+                                                    onClick={() => handleRemove(item.id)}
+                                                    disabled={deletingItems[item.id]}
+                                                    className="text-neutral-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    {deletingItems[item.id] ? (
+                                                        <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                                                    ) : (
+                                                        <Trash2 size={16} />
+                                                    )}
                                                 </button>
                                             </div>
                                             <p className="text-xs text-neutral-500 dark:text-slate-400 mt-1">{item.category}</p>
@@ -71,17 +96,25 @@ const Cart: React.FC = () => {
                                             {/* Quantity Selector */}
                                             <div className="flex items-center gap-2.5 bg-neutral-50 dark:bg-slate-800 rounded-lg p-1 border border-neutral-200 dark:border-slate-700">
                                                 <button
-                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                    className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors"
+                                                    onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                                                    disabled={updatingItems[item.id]}
+                                                    className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     <Minus size={12} className="text-neutral-600 dark:text-slate-350" />
                                                 </button>
-                                                <span className="text-xs font-bold text-neutral-900 dark:text-white w-4 text-center">
-                                                    {item.quantity}
-                                                </span>
+                                                <div className="w-4 flex justify-center">
+                                                    {updatingItems[item.id] ? (
+                                                        <div className="w-3 h-3 border-[1.5px] border-neutral-400 border-t-neutral-900 dark:border-t-white rounded-full animate-spin" />
+                                                    ) : (
+                                                        <span className="text-xs font-bold text-neutral-900 dark:text-white">
+                                                            {item.quantity}
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <button
-                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                    className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors"
+                                                    onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                                                    disabled={updatingItems[item.id]}
+                                                    className="p-1 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     <Plus size={12} className="text-neutral-600 dark:text-slate-350" />
                                                 </button>

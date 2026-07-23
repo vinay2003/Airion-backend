@@ -7,12 +7,10 @@ const client = new Client({
 async function run() {
   try {
     await client.connect();
-    const res = await client.query(`
-        SELECT column_name, data_type 
-        FROM information_schema.columns 
-        WHERE table_name = 'cart_items';
-    `);
-    console.log('Columns:', res.rows);
+    
+    await client.query(`TRUNCATE TABLE cart_items CASCADE;`);
+    console.log('cart_items truncated successfully.');
+    
   } catch (err) {
     console.error('Error:', err.message);
   } finally {

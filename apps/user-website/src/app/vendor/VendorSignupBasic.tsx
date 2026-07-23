@@ -9,6 +9,13 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../lib/apiClient';
 import toast from 'react-hot-toast';
 import OTPInput from '@shared/components/OTPInput';
+import { auth, signInWithPhoneNumber, RecaptchaVerifier } from '../../lib/firebase';
+
+declare global {
+    interface Window {
+        recaptchaVerifier: any;
+    }
+}
 
 interface BasicDetails {
     firstName: string;
@@ -27,6 +34,7 @@ const VendorSignupBasic: React.FC = () => {
     const [error, setError] = useState('');
     const [otp, setOtp] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
+    const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
     const [basicDetails, setBasicDetails] = useState<BasicDetails>({
         firstName: '',
@@ -43,6 +51,18 @@ const VendorSignupBasic: React.FC = () => {
             return () => clearTimeout(timer);
         }
     }, [resendTimer]);
+
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            try {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible',
+                });
+            } catch (error) {
+                console.error("Error initializing recaptcha verifier:", error);
+            }
+        }
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBasicDetails({
@@ -78,23 +98,28 @@ const VendorSignupBasic: React.FC = () => {
         setError('');
 
         try {
-            const response = await api.post('/auth/signup/send-otp', {
-                phone: basicDetails.phone,
-                email: basicDetails.email
-            });
-
-            const res = response as any;
-            const devCode = res?._dev_otp || res?.data?._dev_otp;
-            if (import.meta.env.DEV && devCode) {
-                console.log('📱 Dev-Only OTP:', devCode);
-                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
+            let sanitizedPhone = basicDetails.phone.replace(/\s+/g, '').trim();
+            if (sanitizedPhone.length === 10) {
+                sanitizedPhone = '+91' + sanitizedPhone;
+            } else if (!sanitizedPhone.startsWith('+')) {
+                sanitizedPhone = '+' + sanitizedPhone;
             }
+
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+            setConfirmationResult(confirmation);
 
             toast.success('Verification code sent');
             setStep('otp');
             setResendTimer(60);
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to send verification code.');
+            console.error("Firebase send OTP error:", err);
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.render().then((widgetId: any) => {
+                    (window as any).grecaptcha.reset(widgetId);
+                });
+            }
+            toast.error(err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
@@ -111,17 +136,26 @@ const VendorSignupBasic: React.FC = () => {
         setError('');
 
         try {
-            const response = await api.post('/auth/signup/verify-otp', {
-                phone: basicDetails.phone,
-                otp: otpValue,
-                name: `${basicDetails.firstName} ${basicDetails.lastName}`,
-                email: basicDetails.email,
+            if (!confirmationResult) {
+                throw new Error("No OTP request found. Please resend the code.");
+            }
+
+            // 1. Verify with Firebase
+            const result = await confirmationResult.confirm(otpValue.trim());
+            
+            // 2. Get the Firebase ID token
+            const idToken = await result.user.getIdToken();
+
+            // 3. Authenticate with our NestJS backend
+            const response = await api.post('/auth/firebase/verify-token', {
+                idToken,
                 role: 'vendor'
             });
 
-            const authData = response as any;
+            const authData = response.data || response;
             if (authData.access_token) {
                 login(authData.access_token);
+                // Save basic details so the next screen can update the profile
                 localStorage.setItem('vendorBasicDetails', JSON.stringify(basicDetails));
             }
 
@@ -133,12 +167,12 @@ const VendorSignupBasic: React.FC = () => {
                 if (role === 'vendor' || role === 'admin') {
                     navigate('/signup-form', { state: { basicDetails } });
                 } else {
-                    // Normal users shouldn't be here, send them back to the main site
                     window.location.href = '/dashboard';
                 }
             }, 1000);
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'The code you entered is invalid.');
+            console.error("OTP verification error:", err);
+            toast.error(err.response?.data?.message || err.message || 'The code you entered is invalid.');
         } finally {
             setLoading(false);
         }
@@ -399,6 +433,8 @@ const VendorSignupBasic: React.FC = () => {
                     </form>
                 </CardContent>
             </Card>
+            {/* Firebase reCAPTCHA Container */}
+            <div id="recaptcha-container"></div>
         </div>
     );
 };

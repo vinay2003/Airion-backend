@@ -1,77 +1,50 @@
 const fs = require('fs');
 const path = require('path');
 
-const dirPath = path.join(__dirname, 'apps/vendor-dashboard/src/pages');
+const targetDir = path.join(process.cwd(), 'apps', 'admin-panel', 'src');
 
-function processFile(filePath) {
-  let content = fs.readFileSync(filePath, 'utf8');
-  let original = content;
-
-  // 1. Remove Tailwind animation classes
-  const classesToRemove = [
-    'animate-in',
-    'fade-in',
-    'zoom-in',
-    /slide-in-from-[a-z0-9-]+/g,
-    /duration-\d+/g,
-    /delay-\d+/g,
-  ];
-
-  classesToRemove.forEach(cls => {
-    if (typeof cls === 'string') {
-      content = content.split(cls).join('');
-    } else {
-      content = content.replace(cls, '');
-    }
-  });
-
-  // 2. Replace motion.div with div
-  content = content.replace(/<motion\.div/g, '<div');
-  content = content.replace(/<\/motion\.div>/g, '</div>');
-  content = content.replace(/<motion\.span/g, '<span');
-  content = content.replace(/<\/motion\.span>/g, '</span>');
-  content = content.replace(/<motion\.button/g, '<button');
-  content = content.replace(/<\/motion\.button>/g, '</button>');
-  
-  // 3. Remove framer-motion props
-  // Handles double braces: initial={{ opacity: 0 }}
-  content = content.replace(/\b(initial|animate|exit|transition|variants)=\{\s*\{[^}]*\}\s*\}/g, '');
-  // Handles single braces: variants={itemVariants}
-  content = content.replace(/\b(initial|animate|exit|transition|variants)=\{[^}]*\}/g, '');
-  
-  // Clean up any stray variants="" if people used strings
-  content = content.replace(/\b(initial|animate|exit|transition|variants)="[^"]*"/g, '');
-
-  // 4. Remove framer-motion imports if unused (optional but good)
-  // Let's just leave imports to avoid regex breaking other things, 
-  // TS might complain about unused imports but it won't break the build.
-  // We'll clean up multiple spaces.
-  content = content.replace(/  +/g, ' ');
-
-  if (content !== original) {
-    fs.writeFileSync(filePath, content, 'utf8');
-    console.log(`Updated: ${path.basename(filePath)}`);
-  }
-}
-
-// Process all files in pages
-function traverseDir(dir) {
-    fs.readdirSync(dir).forEach(file => {
-      const fullPath = path.join(dir, file);
-      if (fs.statSync(fullPath).isDirectory()) {
-          traverseDir(fullPath);
-      } else if (fullPath.endsWith('.tsx') || fullPath.endsWith('.ts')) {
-          processFile(fullPath);
-      }
+function walkDir(dir, callback) {
+    fs.readdirSync(dir).forEach(f => {
+        const dirPath = path.join(dir, f);
+        if (fs.statSync(dirPath).isDirectory()) {
+            walkDir(dirPath, callback);
+        } else {
+            callback(dirPath);
+        }
     });
 }
 
-traverseDir(dirPath);
+// hover classes: hover:bg-red-500, dark:hover:text-white, md:hover:scale-105, focus:hover:..., etc.
+// Note: we can just match any modifier chain ending with hover:
+const hoverRegex = /(?<=\s|['"`])([a-z0-9-:]+:)?hover:[a-zA-Z0-9_\[\]\/-]+(?=\s|['"`])/g;
 
-// Also check components
-const compPath = path.join(__dirname, 'apps/vendor-dashboard/src/components');
-if (fs.existsSync(compPath)) {
-    traverseDir(compPath);
-}
+// shadow classes: shadow, shadow-sm, shadow-none, drop-shadow, drop-shadow-xl, etc.
+const shadowRegex = /(?<=\s|['"`])(shadow(-[a-zA-Z0-9_\[\]\/-]+)?|drop-shadow(-[a-zA-Z0-9_\[\]\/-]+)?)(?=\s|['"`])/g;
 
-console.log('Done!');
+// Also might want to remove "transition-*" since without hover, transitions are mostly useless (though they might apply to focus/active too, but usually hover). The user specifically asked for shadow and hover. I will just do shadow and hover.
+
+let totalFiles = 0;
+let modifiedFiles = 0;
+
+walkDir(targetDir, (filePath) => {
+    if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
+        totalFiles++;
+        let content = fs.readFileSync(filePath, 'utf-8');
+        let originalContent = content;
+
+        // Apply multiple passes in case of consecutive matches sharing a space (lookarounds don't consume characters, but it's safer)
+        content = content.replace(hoverRegex, '');
+        content = content.replace(shadowRegex, '');
+        
+        // Since lookarounds don't consume spaces, replacing them with empty string will leave double spaces, e.g. "a  b".
+        // This is perfectly fine in HTML classes.
+
+        if (content !== originalContent) {
+            fs.writeFileSync(filePath, content, 'utf-8');
+            modifiedFiles++;
+            console.log('Modified:', filePath);
+        }
+    }
+});
+
+console.log(`\nProcessed ${totalFiles} files. Modified ${modifiedFiles} files.`);

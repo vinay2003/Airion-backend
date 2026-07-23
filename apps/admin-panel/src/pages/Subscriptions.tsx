@@ -187,7 +187,7 @@ export default function Subscriptions() {
                 </div>
                 <button
                     onClick={openCreate}
-                    className="flex items-center gap-2 bg-blue-600  text-white px-5 py-2.5 rounded-xl font-semibold text-sm  shadow-lg shadow-blue-500/20 /30"
+                    className="flex items-center gap-2 bg-blue-600  text-white px-5 py-2.5 rounded-xl font-semibold text-sm    /30"
                 >
                     <Plus size={16} />
                     Create Plan
@@ -342,7 +342,7 @@ export default function Subscriptions() {
                     >
                         <motion.div
                             initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 16 }}
-                            className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-lg border border-[var(--ease2event-border-base)] overflow-hidden"
+                            className="bg-[var(--ease2event-bg-surface)] rounded-2xl  w-full max-w-lg border border-[var(--ease2event-border-base)] overflow-hidden"
                         >
                             {/* Modal header */}
                             <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--ease2event-border-subtle)]">
@@ -493,7 +493,7 @@ export default function Subscriptions() {
                                 <button
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600  disabled:opacity-60 text-white font-semibold text-sm rounded-xl  shadow-md shadow-blue-500/20"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600  disabled:opacity-60 text-white font-semibold text-sm rounded-xl   "
                                 >
                                     {saving && <Loader2 size={14} className="" />}
                                     {saving ? 'Saving…' : editingPlan ? 'Save changes' : 'Create plan'}
@@ -513,7 +513,7 @@ export default function Subscriptions() {
                     >
                         <motion.div
                             initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
-                            className="bg-[var(--ease2event-bg-surface)] rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-[var(--ease2event-border-base)] text-center"
+                            className="bg-[var(--ease2event-bg-surface)] rounded-2xl  w-full max-w-sm p-6 border border-[var(--ease2event-border-base)] text-center"
                         >
                             <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <AlertTriangle size={24} className="text-red-400" />

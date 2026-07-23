@@ -184,14 +184,14 @@ const Advertisements: React.FC = () => {
                 </div>
                 <button 
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600  text-white font-bold rounded-xl   transition-all"
                 >
                     <Plus size={18} />
                     <span>Create Campaign</span>
                 </button>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl  border border-gray-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -210,9 +210,9 @@ const Advertisements: React.FC = () => {
                     onClick={() => setIsModalOpen(true)}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
-                    className="bg-gray-50 dark:bg-slate-900/50 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-[32px] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group min-h-[400px]"
+                    className="bg-gray-50 dark:bg-slate-900/50 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-[32px] p-8 flex flex-col items-center justify-center text-center   transition-colors cursor-pointer group min-h-[400px]"
                 >
-                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mb-4  group-hover:scale-110 transition-transform">
                         <UploadCloud size={28} className="text-indigo-500" />
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Create New Ad Campaign</h3>
@@ -220,14 +220,14 @@ const Advertisements: React.FC = () => {
                     <button 
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
-                        className="px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-bold rounded-xl shadow-sm hover:border-indigo-500 transition-colors"
+                        className="px-6 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white font-bold rounded-xl   transition-colors"
                     >
                         Start Campaign Builder
                     </button>
                 </div>
 
                 {filteredAds.map((ad) => (
-                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px] shadow-sm border border-gray-200 dark:border-slate-800 flex flex-col justify-between min-h-[400px]">
+                    <div key={ad.id} className="bg-white dark:bg-slate-900 p-8 rounded-[32px]  border border-gray-200 dark:border-slate-800 flex flex-col justify-between min-h-[400px]">
                         <div>
                             <div className="flex justify-between items-start mb-6">
                                 <div>
@@ -275,21 +275,21 @@ const Advertisements: React.FC = () => {
                         <div className="pt-6 border-t border-gray-100 dark:border-slate-800 flex gap-3">
                             {ad.status === 'pending' && (
                                 <>
-                                    <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50  text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <CheckCircle size={18} /> Approve
                                     </button>
-                                    <button onClick={() => handleReject(ad.id)} className="flex-1 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <button onClick={() => handleReject(ad.id)} className="flex-1 py-3 bg-rose-50  text-rose-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                         <XCircle size={18} /> Reject
                                     </button>
                                 </>
                             )}
                             {ad.status === 'active' && (
-                                <button onClick={() => handleExpire(ad.id)} className="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <button onClick={() => handleExpire(ad.id)} className="flex-1 py-3 bg-amber-50  text-amber-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <PauseCircle size={18} /> End Campaign
                                 </button>
                             )}
                             {(ad.status === 'paused' || ad.status === 'rejected') && (
-                                <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <button onClick={() => handleApprove(ad.id)} className="flex-1 py-3 bg-emerald-50  text-emerald-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <Activity size={18} /> Restart Campaign
                                 </button>
                             )}
@@ -301,11 +301,11 @@ const Advertisements: React.FC = () => {
             {/* Campaign Creator Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-8">
                         <button 
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                            className="absolute top-6 right-6 text-gray-400  "
                         >
                             <X size={24} />
                         </button>
@@ -415,7 +415,7 @@ const Advertisements: React.FC = () => {
                                     onDragOver={handleDragOver}
                                     onDrop={handleDrop}
                                     onClick={handleBrowseClick}
-                                    className="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl p-6 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors flex flex-col items-center justify-center gap-2"
+                                    className="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl p-6 text-center cursor-pointer   transition-colors flex flex-col items-center justify-center gap-2"
                                 >
                                     {uploading ? (
                                         <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
@@ -425,7 +425,7 @@ const Advertisements: React.FC = () => {
                                             <button 
                                                 type="button"
                                                 onClick={(e) => { e.stopPropagation(); setImageUrl(''); }}
-                                                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 shadow hover:bg-red-700 transition-colors"
+                                                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5   transition-colors"
                                             >
                                                 <X size={16} />
                                             </button>
@@ -444,14 +444,14 @@ const Advertisements: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={createAdMutation.isPending || uploading}
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
                                 >
                                     {createAdMutation.isPending ? 'Creating Campaign...' : 'Launch Campaign'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
+                                    className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors"
                                 >
                                     Cancel
                                 </button>

@@ -191,7 +191,7 @@ const Categories: React.FC = () => {
                         else if (activeTab === 'locations') setIsLocationModalOpen(true);
                         else setIsLanguageModalOpen(true);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600  text-white font-bold rounded-xl   transition-all"
                 >
                     <Plus size={18} />
                     {activeTab === 'categories' ? 'Add New Category' : activeTab === 'locations' ? 'Add New Region' : 'Add New Language'}
@@ -202,19 +202,19 @@ const Categories: React.FC = () => {
             <div className="flex border-b border-gray-200 dark:border-slate-800 mb-8 overflow-x-auto">
                 <button
                     onClick={() => setActiveTab('categories')}
-                    className={`flex items-center gap-2 pb-4 px-2 text-sm font-bold transition-colors border-b-2 ${activeTab === 'categories' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                    className={`flex items-center gap-2 pb-4 px-2 text-sm font-bold transition-colors border-b-2 ${activeTab === 'categories' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500  '}`}
                 >
                     <Grid size={18} /> Service Categories
                 </button>
                 <button
                     onClick={() => setActiveTab('locations')}
-                    className={`flex items-center gap-2 pb-4 px-6 text-sm font-bold transition-colors border-b-2 ${activeTab === 'locations' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                    className={`flex items-center gap-2 pb-4 px-6 text-sm font-bold transition-colors border-b-2 ${activeTab === 'locations' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500  '}`}
                 >
                     <MapPin size={18} /> Regions & Locations
                 </button>
                 <button
                     onClick={() => setActiveTab('languages')}
-                    className={`flex items-center gap-2 pb-4 px-2 text-sm font-bold transition-colors border-b-2 ${activeTab === 'languages' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                    className={`flex items-center gap-2 pb-4 px-2 text-sm font-bold transition-colors border-b-2 ${activeTab === 'languages' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500  '}`}
                 >
                     <Languages size={18} /> Languages
                 </button>
@@ -227,13 +227,13 @@ const Categories: React.FC = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {categories.map((category: Category) => (
-                            <div key={category.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm group">
+                            <div key={category.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-6 rounded-2xl  group">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl">
                                         {category.name[0]}
                                     </div>
                                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onClick={() => handleDeleteCategory(category.id)} className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
+                                        <button onClick={() => handleDeleteCategory(category.id)} className="p-1.5 text-gray-400  rounded-lg  transition-colors"><Trash2 size={16} /></button>
                                     </div>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">{category.name}</h3>
@@ -241,7 +241,7 @@ const Categories: React.FC = () => {
                                     <span className="text-sm font-medium text-gray-500">{category.vendorsCount || 0} Vendors</span>
                                     <button 
                                         onClick={() => toggleCategoryStatus(category.id, !category.isActive)}
-                                        className={`px-2 py-1 rounded-md text-xs font-bold transition-colors ${category.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                        className={`px-2 py-1 rounded-md text-xs font-bold transition-colors ${category.isActive ? 'bg-emerald-50 text-emerald-600 ' : 'bg-gray-100 text-gray-600 '}`}
                                     >
                                         {category.isActive ? 'Active' : 'Inactive'}
                                     </button>
@@ -256,7 +256,7 @@ const Categories: React.FC = () => {
                 isLoadingLocations ? (
                     <div className="flex justify-center py-12"><div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div></div>
                 ) : (
-                    <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden ">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
@@ -269,7 +269,7 @@ const Categories: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                                 {locations.map((loc: Location) => (
-                                    <tr key={loc.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                    <tr key={loc.id} className="  transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2">
                                                 <MapPin size={16} className="text-gray-400" />
@@ -286,14 +286,14 @@ const Categories: React.FC = () => {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <button 
                                                 onClick={() => toggleLocationStatus(loc.id, !loc.isActive)}
-                                                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${loc.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${loc.isActive ? 'bg-emerald-50 text-emerald-600 ' : 'bg-gray-100 text-gray-600 '}`}
                                             >
                                                 {loc.isActive ? 'Active' : 'Inactive'}
                                             </button>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => handleDeleteLocation(loc.id)} className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                                                <button onClick={() => handleDeleteLocation(loc.id)} className="p-1.5 bg-red-50 text-red-600  rounded-lg transition-colors"><Trash2 size={16} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -305,7 +305,7 @@ const Categories: React.FC = () => {
             )}
 
             {activeTab === 'languages' && (
-                <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden ">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -319,7 +319,7 @@ const Categories: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                                 {languages.map((lang) => (
-                                    <tr key={lang.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                    <tr key={lang.id} className="  transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="font-bold text-gray-900 dark:text-white">{lang.name}</div>
                                         </td>
@@ -348,7 +348,7 @@ const Categories: React.FC = () => {
                                             ) : (
                                                 <button 
                                                     onClick={() => setDefaultLanguage(lang.id)}
-                                                    className="text-xs font-bold text-indigo-650 dark:text-indigo-400 hover:text-indigo-850 dark:hover:text-indigo-300"
+                                                    className="text-xs font-bold text-indigo-650 dark:text-indigo-400  "
                                                 >
                                                     Set Default
                                                 </button>
@@ -359,7 +359,7 @@ const Categories: React.FC = () => {
                                                 <button 
                                                     onClick={() => handleDeleteLanguage(lang.id)} 
                                                     disabled={lang.isDefault}
-                                                    className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-40 rounded-lg transition-colors"
+                                                    className="p-1.5 bg-red-50 text-red-600  disabled:opacity-40 rounded-lg transition-colors"
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -376,8 +376,8 @@ const Categories: React.FC = () => {
             {/* Category Creator Modal */}
             {isCategoryModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
-                        <button type="button" onClick={() => setIsCategoryModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
+                        <button type="button" onClick={() => setIsCategoryModalOpen(false)} className="absolute top-6 right-6 text-gray-400  ">
                             <X size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add Service Category</h2>
@@ -411,11 +411,11 @@ const Categories: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={createCategoryMutation.isPending}
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
                                 >
                                     {createCategoryMutation.isPending ? 'Creating...' : 'Add Category'}
                                 </button>
-                                <button type="button" onClick={() => setIsCategoryModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                                <button type="button" onClick={() => setIsCategoryModalOpen(false)} className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                                     Cancel
                                 </button>
                             </div>
@@ -427,8 +427,8 @@ const Categories: React.FC = () => {
             {/* Location Creator Modal */}
             {isLocationModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
-                        <button type="button" onClick={() => setIsLocationModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
+                        <button type="button" onClick={() => setIsLocationModalOpen(false)} className="absolute top-6 right-6 text-gray-400  ">
                             <X size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add New Location</h2>
@@ -463,11 +463,11 @@ const Categories: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={createLocationMutation.isPending}
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
                                 >
                                     {createLocationMutation.isPending ? 'Creating...' : 'Add Location'}
                                 </button>
-                                <button type="button" onClick={() => setIsLocationModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                                <button type="button" onClick={() => setIsLocationModalOpen(false)} className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                                     Cancel
                                 </button>
                             </div>
@@ -479,8 +479,8 @@ const Categories: React.FC = () => {
             {/* Language Creator Modal */}
             {isLanguageModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
-                        <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
+                        <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="absolute top-6 right-6 text-gray-400  ">
                             <X size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Add New Language</h2>
@@ -514,11 +514,11 @@ const Categories: React.FC = () => {
                             <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
                                 <button
                                     type="submit"
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  text-white rounded-xl font-bold transition-all  "
                                 >
                                     Add Language
                                 </button>
-                                <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                                <button type="button" onClick={() => setIsLanguageModalOpen(false)} className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                                     Cancel
                                 </button>
                             </div>

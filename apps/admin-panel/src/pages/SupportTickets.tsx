@@ -72,7 +72,7 @@ const SupportTickets: React.FC = () => {
 
             <div className="flex gap-6 flex-1 min-h-0">
                 {/* Tickets List */}
-                <div className={`flex-col bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden w-full lg:w-1/3 flex ${selectedTicket ? 'hidden lg:flex' : 'flex'}`}>
+                <div className={`flex-col bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl  overflow-hidden w-full lg:w-1/3 flex ${selectedTicket ? 'hidden lg:flex' : 'flex'}`}>
                     <div className="p-4 border-b border-gray-200 dark:border-slate-800 space-y-4">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -92,7 +92,7 @@ const SupportTickets: React.FC = () => {
                                     className={`px-3 py-1 text-xs font-bold rounded-lg whitespace-nowrap transition-colors ${
                                         statusFilter === status 
                                         ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400' 
-                                        : 'bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100'
+                                        : 'bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400 '
                                     }`}
                                 >
                                     {status}
@@ -106,7 +106,7 @@ const SupportTickets: React.FC = () => {
                             <div 
                                 key={ticket.id} 
                                 onClick={() => setSelectedTicket(ticket)}
-                                className={`p-4 border-b border-gray-100 dark:border-slate-800/50 cursor-pointer transition-colors ${selectedTicket?.id === ticket.id ? 'bg-indigo-50/50 dark:bg-indigo-900/10 border-l-4 border-l-indigo-500' : 'hover:bg-gray-50 dark:hover:bg-slate-800/20 border-l-4 border-l-transparent'}`}
+                                className={`p-4 border-b border-gray-100 dark:border-slate-800/50 cursor-pointer transition-colors ${selectedTicket?.id === ticket.id ? 'bg-indigo-50/50 dark:bg-indigo-900/10 border-l-4 border-l-indigo-500' : '  border-l-4 border-l-transparent'}`}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="text-xs font-bold text-gray-500">{ticket.id}</span>
@@ -128,13 +128,13 @@ const SupportTickets: React.FC = () => {
                 </div>
 
                 {/* Ticket Details & Chat */}
-                <div className={`flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex-col ${selectedTicket ? 'flex' : 'hidden lg:flex'}`}>
+                <div className={`flex-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl  overflow-hidden flex-col ${selectedTicket ? 'flex' : 'hidden lg:flex'}`}>
                     {selectedTicket ? (
                         <>
                             {/* Chat Header */}
                             <div className="p-6 border-b border-gray-200 dark:border-slate-800 flex justify-between items-start bg-gray-50/50 dark:bg-slate-900 shrink-0">
                                 <div className="flex gap-4">
-                                    <button className="lg:hidden p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg" onClick={() => setSelectedTicket(null)}>
+                                    <button className="lg:hidden p-2 -ml-2 text-gray-500  rounded-lg" onClick={() => setSelectedTicket(null)}>
                                         &larr; Back
                                     </button>
                                     <div>
@@ -152,12 +152,12 @@ const SupportTickets: React.FC = () => {
                                 </div>
                                 <div className="flex gap-2">
                                     {selectedTicket.status !== 'Resolved' && (
-                                        <button onClick={() => updateStatus(selectedTicket.id, 'Resolved')} className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors" title="Mark Resolved">
+                                        <button onClick={() => updateStatus(selectedTicket.id, 'Resolved')} className="p-2 bg-emerald-50 text-emerald-600  rounded-lg transition-colors" title="Mark Resolved">
                                             <CheckCircle size={18} />
                                         </button>
                                     )}
                                     {selectedTicket.priority === 'Critical' && (
-                                        <button className="p-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition-colors" title="Escalate">
+                                        <button className="p-2 bg-rose-50 text-rose-600  rounded-lg transition-colors" title="Escalate">
                                             <AlertTriangle size={18} />
                                         </button>
                                     )}
@@ -176,7 +176,7 @@ const SupportTickets: React.FC = () => {
                                             <span className="text-xs font-bold text-gray-900 dark:text-white">{selectedTicket.user}</span>
                                             <span className="text-[10px] text-gray-500">Yesterday, 10:45 AM</span>
                                         </div>
-                                        <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-4 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                        <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-4 rounded-2xl rounded-tl-none  text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                             Hi Team, I am facing an issue regarding my recent transaction. The amount was deducted but the booking still shows as pending. Can you please look into this urgently?
                                         </div>
                                     </div>
@@ -192,7 +192,7 @@ const SupportTickets: React.FC = () => {
                                             <span className="text-[10px] text-gray-500">Yesterday, 11:30 AM</span>
                                             <span className="text-xs font-bold text-gray-900 dark:text-white">Admin (You)</span>
                                         </div>
-                                        <div className="bg-indigo-600 text-white p-4 rounded-2xl rounded-tr-none shadow-sm text-sm leading-relaxed">
+                                        <div className="bg-indigo-600 text-white p-4 rounded-2xl rounded-tr-none  text-sm leading-relaxed">
                                             Hello {selectedTicket.user.split(' ')[0]}, apologies for the inconvenience. We have escalated this to our payment gateway partner. You will receive an update shortly.
                                         </div>
                                     </div>
@@ -211,7 +211,7 @@ const SupportTickets: React.FC = () => {
                                     />
                                     <button 
                                         onClick={handleSendReply}
-                                        className="absolute right-4 bottom-4 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                                        className="absolute right-4 bottom-4 p-2 bg-indigo-600  text-white rounded-lg transition-colors"
                                     >
                                         <Send size={16} />
                                     </button>

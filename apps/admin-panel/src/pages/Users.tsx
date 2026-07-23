@@ -83,7 +83,7 @@ const Users: React.FC = () => {
             </div>
 
             {/* Users Table */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden ">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -97,7 +97,7 @@ const Users: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors cursor-pointer" onClick={() => setSelectedUser(user)}>
+                                <tr key={user.id} className="  transition-colors cursor-pointer" onClick={() => setSelectedUser(user)}>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-sm">
@@ -126,7 +126,7 @@ const Users: React.FC = () => {
                                         <p className="text-xs text-gray-500">{user.device || 'Unknown Device'}</p>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onClick={(e) => { e.stopPropagation(); setSelectedUser(user); }}>
+                                        <button className="p-2   rounded-lg transition-colors" onClick={(e) => { e.stopPropagation(); setSelectedUser(user); }}>
                                             <MoreHorizontal size={18} className="text-gray-400" />
                                         </button>
                                     </td>
@@ -144,10 +144,10 @@ const Users: React.FC = () => {
             {selectedUser && (
                 <>
                     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity" onClick={() => setSelectedUser(null)}></div>
-                    <div className="fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl z-50 transform transition-transform border-l border-gray-200 dark:border-slate-800 flex flex-col">
+                    <div className="fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-slate-900  z-50 transform transition-transform border-l border-gray-200 dark:border-slate-800 flex flex-col">
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-800">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white">User Profile</h2>
-                            <button onClick={() => setSelectedUser(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
+                            <button onClick={() => setSelectedUser(null)} className="p-2   rounded-lg">
                                 <X size={20} className="text-gray-500" />
                             </button>
                         </div>
@@ -218,8 +218,8 @@ const Users: React.FC = () => {
                                 onClick={() => toggleBlockStatus(selectedUser)}
                                 className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-colors ${
                                     selectedUser.isBlocked 
-                                    ? 'bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900' 
-                                    : 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'
+                                    ? 'bg-gray-900  text-white dark:bg-white dark:text-gray-900' 
+                                    : 'bg-red-50  text-red-600 border border-red-200'
                                 }`}
                             >
                                 {selectedUser.isBlocked ? <Unlock size={18} /> : <Ban size={18} />}

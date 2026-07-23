@@ -76,7 +76,7 @@ const Refunds = () => {
                             <tr><td colSpan={7} className="text-center py-4">Loading...</td></tr>
                         )}
                         {!isLoading && filtered.map((refund: any) => (
-                            <tr key={refund.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                            <tr key={refund.id} className=" ">
                                 <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{refund.id.split('-')[0]}...</td>
                                 <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{refund.bookingId?.split('-')[0]}...</td>
                                 <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{refund.userId?.split('-')[0]}...</td>
@@ -95,16 +95,16 @@ const Refunds = () => {
                                 <td className="px-6 py-4 text-right">
                                     {refund.status === 'pending' && (
                                         <div className="flex justify-end gap-2">
-                                            <button onClick={() => handleAction(refund.id, 'approved')} className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg" title="Approve">
+                                            <button onClick={() => handleAction(refund.id, 'approved')} className="p-2 bg-emerald-50 text-emerald-600  rounded-lg" title="Approve">
                                                 <Check size={18} />
                                             </button>
-                                            <button onClick={() => handleAction(refund.id, 'rejected')} className="p-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg" title="Reject">
+                                            <button onClick={() => handleAction(refund.id, 'rejected')} className="p-2 bg-rose-50 text-rose-600  rounded-lg" title="Reject">
                                                 <X size={18} />
                                             </button>
                                         </div>
                                     )}
                                     {refund.status === 'approved' && (
-                                        <button onClick={() => handleComplete(refund.id)} className="px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg">
+                                        <button onClick={() => handleComplete(refund.id)} className="px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-600  rounded-lg">
                                             Mark Processed
                                         </button>
                                     )}

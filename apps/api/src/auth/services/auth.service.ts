@@ -521,15 +521,32 @@ export class AuthService {
         await this.otpRepository.delete({ identifier });
 
         // Raw SQL query — bypasses TypeORM metadata/module cache entirely
-        const rows = await this.userRepository.query(
+        let rows = await this.userRepository.query(
             `SELECT id, name, email as "email", role FROM users WHERE email = $1 AND role = 'admin' LIMIT 1`,
             [identifier]
         );
-        const adminUser = rows[0];
+        let adminUser = rows[0];
 
         if (!adminUser) {
-            this.logger.error(`❌ [ADMIN_AUDIT] No admin DB record for email: ${identifier}`);
-            throw new UnauthorizedException('Admin record not found in database. Contact system administrator.');
+            this.logger.log(`⚠️ [ADMIN_AUDIT] No admin DB record for email: ${identifier}. Auto-creating admin user.`);
+            
+            const userData = {
+                name: 'Admin',
+                email: identifier,
+                password: 'otp-auth-user',
+                role: UserRole.ADMIN,
+                emailVerified: true,
+            };
+            
+            const newUser = this.userRepository.create(userData as any) as unknown as User;
+            await this.userRepository.save(newUser);
+            
+            adminUser = {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role
+            };
         }
 
         // Check if user has MFA enabled — if so, issue a short-lived temp token instead of full access

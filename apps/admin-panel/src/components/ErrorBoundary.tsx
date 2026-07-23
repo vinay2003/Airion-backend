@@ -27,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
         if (this.state.hasError) {
             return (
                 <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
-                    <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 text-center border border-gray-100 dark:border-slate-800">
+                    <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-2xl  p-8 text-center border border-gray-100 dark:border-slate-800">
                         <div className="w-16 h-16 bg-blue-100 dark:bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <svg
                                 className="w-8 h-8 text-blue-500"
@@ -51,7 +51,7 @@ class ErrorBoundary extends Component<Props, State> {
                         </p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="px-6 py-3 bg-blue-500  text-white rounded-xl font-medium  shadow-lg shadow-blue-500/20"
+                            className="px-6 py-3 bg-blue-500  text-white rounded-xl font-medium   "
                         >
                             Refresh Page
                         </button>

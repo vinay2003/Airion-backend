@@ -103,7 +103,7 @@ const AdminLogin: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
-            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl  border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <div className="p-8">
                     <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                         <Shield size={32} />
@@ -143,7 +143,7 @@ const AdminLogin: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
+                                className="w-full flex items-center justify-center gap-2 bg-red-600  text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
                             >
                                 {loading
                                     ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -174,7 +174,7 @@ const AdminLogin: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
+                                className="w-full flex items-center justify-center gap-2 bg-red-600  text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
                             >
                                 {loading
                                     ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -184,7 +184,7 @@ const AdminLogin: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => { setShowOTP(false); setOtp(['', '', '', '', '', '']); }}
-                                className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300"
+                                className="w-full text-sm font-medium text-gray-500  "
                             >
                                 ← Back / Resend OTP
                             </button>
@@ -216,7 +216,7 @@ const AdminLogin: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
+                                className="w-full flex items-center justify-center gap-2 bg-red-600  text-white py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-70"
                             >
                                 {loading
                                     ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -226,7 +226,7 @@ const AdminLogin: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => { setShow2FA(false); setShowOTP(false); setOtp(['', '', '', '', '', '']); }}
-                                className="w-full text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-slate-300"
+                                className="w-full text-sm font-medium text-gray-500  "
                             >
                                 ← Back to Login
                             </button>

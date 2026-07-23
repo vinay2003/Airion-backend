@@ -104,14 +104,14 @@ const Settings: React.FC = () => {
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Sidebar Tabs */}
                 <div className="w-full lg:w-64 shrink-0">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-2 space-y-1">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl  border border-gray-200 dark:border-slate-800 p-2 space-y-1">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
                                     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold'
-                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium'
+                                    : 'text-gray-600 dark:text-gray-400   font-medium'
                                     }`}
                             >
                                 <tab.icon size={18} />
@@ -123,7 +123,7 @@ const Settings: React.FC = () => {
 
                 {/* Content Area */}
                 <div className="flex-1 min-w-0">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-8">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl  border border-gray-200 dark:border-slate-800 p-8">
 
                         {activeTab === 'general' && (
                             <div className="space-y-8 animate-in fade-in">
@@ -139,7 +139,7 @@ const Settings: React.FC = () => {
                                         </div>
                                         <button
                                             onClick={toggleTheme}
-                                            className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+                                            className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl  transition-colors "
                                         >
                                             {theme === 'light' ? <Moon size={18} className="text-gray-600" /> : <Sun size={18} className="text-gray-300" />}
                                             <span className="text-sm font-bold text-gray-700 dark:text-slate-200">
@@ -169,7 +169,7 @@ const Settings: React.FC = () => {
                                 <div className="pt-4 flex justify-end">
                                     <button
                                         onClick={handleSaveGeneral}
-                                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600  text-white rounded-xl font-bold transition-all  "
                                     >
                                         <Save size={18} />
                                         Save Changes
@@ -187,7 +187,7 @@ const Settings: React.FC = () => {
                                     </div>
                                     <button
                                         onClick={() => setIsAdminModalOpen(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all text-sm"
+                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600  text-white font-bold rounded-xl  transition-all text-sm"
                                     >
                                         <Plus size={16} /> Add Admin
                                     </button>
@@ -205,7 +205,7 @@ const Settings: React.FC = () => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                                             {admins.map((admin) => (
-                                                <tr key={admin.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                <tr key={admin.id} className="  transition-colors">
                                                     <td className="px-6 py-4">
                                                         <div className="font-bold text-gray-900 dark:text-white">{admin.name}</div>
                                                         <div className="text-xs text-gray-500 font-medium flex items-center gap-1 mt-1"><Mail size={12} /> {admin.email}</div>
@@ -221,7 +221,7 @@ const Settings: React.FC = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                                         <button
                                                             onClick={() => handleDeleteAdmin(admin.id)}
-                                                            className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 rounded-lg transition-colors"
+                                                            className="p-1.5 bg-red-50 text-red-600  dark:bg-red-950/30 dark:text-red-400 rounded-lg transition-colors"
                                                             title="Delete admin"
                                                         >
                                                             <Trash2 size={16} />
@@ -309,8 +309,8 @@ const Settings: React.FC = () => {
                                             }}
                                             className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-colors border flex items-center gap-2 ${
                                                 isTwoFactorEnabled 
-                                                    ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-450 dark:border-emerald-500/20' 
-                                                    : 'bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-200 dark:bg-rose-500/10 dark:text-rose-450 dark:border-rose-500/20'
+                                                    ? 'bg-emerald-50 text-emerald-600  border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-450 dark:border-emerald-500/20' 
+                                                    : 'bg-rose-50 text-rose-600  border-rose-200 dark:bg-rose-500/10 dark:text-rose-450 dark:border-rose-500/20'
                                             }`}
                                         >
                                             {isTwoFactorEnabled ? (
@@ -383,7 +383,7 @@ const Settings: React.FC = () => {
                                 <div className="pt-4 flex justify-end">
                                     <button
                                         onClick={handleSavePlatform}
-                                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600  text-white rounded-xl font-bold transition-all  "
                                     >
                                         <Save size={18} />
                                         Save Configuration
@@ -435,7 +435,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <button
                                                 onClick={handleBackupDatabase}
-                                                className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 transition-colors font-bold text-sm text-gray-700 dark:text-slate-200 shadow-sm flex items-center justify-center gap-2"
+                                                className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl  transition-colors font-bold text-sm text-gray-700 dark:text-slate-200  flex items-center justify-center gap-2"
                                             >
                                                 <Database size={16} /> Export Backup File
                                             </button>
@@ -448,7 +448,7 @@ const Settings: React.FC = () => {
                                             </div>
                                             <button
                                                 onClick={handleClearCache}
-                                                className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 transition-colors font-bold text-sm text-gray-700 dark:text-slate-200 shadow-sm flex items-center justify-center gap-2"
+                                                className="w-full py-2.5 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl  transition-colors font-bold text-sm text-gray-700 dark:text-slate-200  flex items-center justify-center gap-2"
                                             >
                                                 <RefreshCw size={16} /> Clear All Caches
                                             </button>
@@ -464,8 +464,8 @@ const Settings: React.FC = () => {
             {/* Add Admin User Modal */}
             {isAdminModalOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
-                        <button type="button" onClick={() => setIsAdminModalOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <div className="bg-white dark:bg-slate-900 rounded-[32px]  border border-gray-200 dark:border-slate-800 w-full max-w-md relative p-8">
+                        <button type="button" onClick={() => setIsAdminModalOpen(false)} className="absolute top-6 right-6 text-gray-400  ">
                             <X size={24} />
                         </button>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Administrative Account</h2>
@@ -511,11 +511,11 @@ const Settings: React.FC = () => {
                             <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
                                 <button
                                     type="submit"
-                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+                                    className="flex-1 py-3 bg-indigo-600  text-white rounded-xl font-bold transition-all  "
                                 >
                                     Add Account
                                 </button>
-                                <button type="button" onClick={() => setIsAdminModalOpen(false)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                                <button type="button" onClick={() => setIsAdminModalOpen(false)} className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                                     Cancel
                                 </button>
                             </div>
@@ -527,8 +527,8 @@ const Settings: React.FC = () => {
             {/* Maintenance Mode Confirmation Modal */}
             {maintenanceConfirmOpen && (
                 <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-slate-900 rounded-[28px] shadow-2xl border border-gray-200 dark:border-slate-800 w-full max-w-md p-8 relative">
-                        <button onClick={() => setMaintenanceConfirmOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                    <div className="bg-white dark:bg-slate-900 rounded-[28px]  border border-gray-200 dark:border-slate-800 w-full max-w-md p-8 relative">
+                        <button onClick={() => setMaintenanceConfirmOpen(false)} className="absolute top-5 right-5 text-gray-400  ">
                             <X size={22} />
                         </button>
                         <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center mb-5">
@@ -552,15 +552,15 @@ const Settings: React.FC = () => {
                                 }}
                                 className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
                                     pendingMaintenanceState
-                                        ? 'bg-rose-600 hover:bg-rose-700 text-white'
-                                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                        ? 'bg-rose-600  text-white'
+                                        : 'bg-emerald-600  text-white'
                                 }`}
                             >
                                 {pendingMaintenanceState ? 'Yes, Enable' : 'Yes, Disable'}
                             </button>
                             <button
                                 onClick={() => setMaintenanceConfirmOpen(false)}
-                                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl font-bold text-sm"
+                                className="flex-1 py-3 bg-gray-100  dark:bg-slate-800  text-gray-900 dark:text-white rounded-xl font-bold text-sm"
                             >
                                 Cancel
                             </button>

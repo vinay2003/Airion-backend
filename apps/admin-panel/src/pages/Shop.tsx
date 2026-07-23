@@ -93,7 +93,7 @@ const ShopAdmin = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                         {filtered.map((product) => (
-                            <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                            <tr key={product.id} className=" ">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
@@ -136,13 +136,13 @@ const ShopAdmin = () => {
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 onClick={() => handleApproval(product.id, 'approved')}
-                                                className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+                                                className="p-2 bg-emerald-50 text-emerald-600  rounded-lg transition-colors"
                                             >
                                                 <Check size={18} />
                                             </button>
                                             <button
                                                 onClick={() => handleApproval(product.id, 'rejected')}
-                                                className="p-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition-colors"
+                                                className="p-2 bg-rose-50 text-rose-600  rounded-lg transition-colors"
                                             >
                                                 <X size={18} />
                                             </button>

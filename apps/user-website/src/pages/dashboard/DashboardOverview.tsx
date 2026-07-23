@@ -147,7 +147,7 @@ const DashboardOverview: React.FC = () => {
                                 </div>
                                 <h3 className="text-neutral-900 dark:text-white text-3xl font-black max-w-[400px] leading-tight mb-6">{deals[currentBanner].title}</h3>
                                 <Link to={deals[currentBanner].link} className="w-fit bg-red-500 text-white hover:bg-black dark:hover:bg-white dark:hover:text-black text-xs font-black px-8 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-xl">
-                                    SYNCHRONIZE NOW <ChevronRight size={18} />
+                                    VIEW MORE <ChevronRight size={18} />
                                 </Link>
                             </div>
                         </motion.div>

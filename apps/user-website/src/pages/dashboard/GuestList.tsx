@@ -13,6 +13,7 @@ const GuestList: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('All');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [editingGuestId, setEditingGuestId] = useState<string | null>(null);
 
     // New Guest Form State
     const [newGuest, setNewGuest] = useState({
@@ -23,30 +24,20 @@ const GuestList: React.FC = () => {
         rsvpStatus: 'pending'
     });
 
-    const mockGuests = [
-        { id: 'g1', name: 'Rohan Sharma', email: 'rohan@example.com', phone: '+91 98765 43210', group: 'Bride Side', rsvpStatus: 'confirmed' },
-        { id: 'g2', name: 'Ananya Iyer', email: 'ananya@example.com', phone: '+91 87654 32109', group: 'Groom Side', rsvpStatus: 'pending' },
-        { id: 'g3', name: 'Vikram Malhotra', email: 'vikram@example.com', phone: '+91 76543 21098', group: 'VVIP', rsvpStatus: 'confirmed' },
-        { id: 'g4', name: 'Priya Verma', email: 'priya@example.com', phone: '+91 65432 10987', group: 'Friends', rsvpStatus: 'declined' },
-        { id: 'g5', name: 'Siddharth Jain', email: 'sid@example.com', phone: '+91 54321 09876', group: 'Family', rsvpStatus: 'pending' },
-    ];
-
     const { data: rawGuestsData = [], isLoading } = useQuery({
         queryKey: ['guests'],
         queryFn: fetchGuests,
     });
 
     // Safely ensure it's an array to fix TS and runtime spread issues
-    const guestsData: any[] = Array.isArray(rawGuestsData) ? rawGuestsData : (rawGuestsData as any).data || [];
-
-    // Merge real guests with mocks to keep the UI populated during testing
-    const guests = [...guestsData, ...mockGuests.filter(mg => !guestsData.find((g: any) => g.email === mg.email))];
+    const guests: any[] = Array.isArray(rawGuestsData) ? rawGuestsData : (rawGuestsData as any).data || [];
 
     const createMutation = useMutation({
         mutationFn: createGuest,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['guests'] });
             setIsAddModalOpen(false);
+            setEditingGuestId(null);
             setNewGuest({ name: '', email: '', phone: '', group: 'Bride Side', rsvpStatus: 'pending' });
             toast.success('Guest added successfully');
         }
@@ -56,6 +47,9 @@ const GuestList: React.FC = () => {
         mutationFn: ({ id, data }: { id: string, data: any }) => updateGuest(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['guests'] });
+            setIsAddModalOpen(false);
+            setEditingGuestId(null);
+            setNewGuest({ name: '', email: '', phone: '', group: 'Bride Side', rsvpStatus: 'pending' });
             toast.success('Guest updated');
         }
     });
@@ -101,7 +95,7 @@ const GuestList: React.FC = () => {
                     <h1 className="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">Guest List</h1>
                     <p className="text-neutral-500 dark:text-slate-400 font-medium">Manage your event attendees and status.</p>
                 </div>
-                <Button onClick={() => setIsAddModalOpen(true)} className="bg-red-600 hover:bg-neutral-900 text-white font-bold rounded-xl flex items-center gap-2">
+                <Button onClick={() => { setEditingGuestId(null); setNewGuest({ name: '', email: '', phone: '', group: 'Bride Side', rsvpStatus: 'pending' }); setIsAddModalOpen(true); }} className="bg-red-600 hover:bg-neutral-900 text-white font-bold rounded-xl flex items-center gap-2">
                     <Plus size={18} /> Add Guest
                 </Button>
             </header>
@@ -192,8 +186,15 @@ const GuestList: React.FC = () => {
                                                 <div className="flex justify-end gap-2">
                                                     <button
                                                         onClick={() => {
-                                                            const nextStatus = guest.rsvpStatus === 'pending' ? 'confirmed' : guest.rsvpStatus === 'confirmed' ? 'declined' : 'pending';
-                                                            updateMutation.mutate({ id: guest.id, data: { rsvpStatus: nextStatus } });
+                                                            setEditingGuestId(guest.id);
+                                                            setNewGuest({
+                                                                name: guest.name || '',
+                                                                email: guest.email || '',
+                                                                phone: guest.phone || '',
+                                                                group: guest.group || 'Bride Side',
+                                                                rsvpStatus: guest.rsvpStatus || 'pending'
+                                                            });
+                                                            setIsAddModalOpen(true);
                                                         }}
                                                         className="p-2 hover:bg-neutral-100 dark:hover:bg-slate-800 rounded-lg text-neutral-400 hover:text-red-500 transition-colors"
                                                     >
@@ -265,7 +266,7 @@ const GuestList: React.FC = () => {
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-8 shadow-2xl">
-                        <h2 className="text-2xl font-black mb-6">Add New Guest</h2>
+                        <h2 className="text-2xl font-black mb-6">{editingGuestId ? 'Edit Guest' : 'Add New Guest'}</h2>
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-neutral-500">Name</label>
@@ -289,15 +290,35 @@ const GuestList: React.FC = () => {
                                     {groups.filter(g => g !== 'All').map(g => <option key={g} value={g}>{g}</option>)}
                                 </select>
                             </div>
+                            {editingGuestId && (
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold uppercase text-neutral-500">Status</label>
+                                    <select
+                                        className="w-full bg-neutral-50 dark:bg-slate-800 p-3 rounded-xl outline-none"
+                                        value={newGuest.rsvpStatus}
+                                        onChange={e => setNewGuest({ ...newGuest, rsvpStatus: e.target.value })}
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="declined">Declined</option>
+                                    </select>
+                                </div>
+                            )}
                         </div>
                         <div className="flex gap-4 mt-8">
                             <Button onClick={() => setIsAddModalOpen(false)} className="flex-1 rounded-xl bg-neutral-100 text-neutral-900 font-bold hover:bg-neutral-200">Cancel</Button>
                             <Button
-                                onClick={() => createMutation.mutate(newGuest)}
-                                disabled={createMutation.isPending || !newGuest.name}
+                                onClick={() => {
+                                    if (editingGuestId) {
+                                        updateMutation.mutate({ id: editingGuestId, data: newGuest });
+                                    } else {
+                                        createMutation.mutate(newGuest);
+                                    }
+                                }}
+                                disabled={createMutation.isPending || updateMutation.isPending || !newGuest.name}
                                 className="flex-1 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700"
                             >
-                                {createMutation.isPending ? 'Adding...' : 'Add Guest'}
+                                {createMutation.isPending || updateMutation.isPending ? 'Saving...' : editingGuestId ? 'Save Changes' : 'Add Guest'}
                             </Button>
                         </div>
                     </motion.div>

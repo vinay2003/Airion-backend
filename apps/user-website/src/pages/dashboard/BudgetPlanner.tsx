@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDashboardStore, BudgetItem } from '../../store/useDashboardStore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
-import { Plus, Download, AlertCircle, CheckCircle, TrendingUp, DollarSign, FileText } from 'lucide-react';
+import { Plus, Download, AlertCircle, CheckCircle, TrendingUp, IndianRupee, FileText, Edit2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7'];
 
 const BudgetPlanner: React.FC = () => {
-    const { budgetItems, totalBudget, updateBudgetAllocation, addExpense, fetchBudget } = useDashboardStore();
+    const { budgetItems, totalBudget, setTotalBudget, updateBudgetAllocation, addExpense, fetchBudget } = useDashboardStore();
     const [isAddingExpense, setIsAddingExpense] = useState(false);
+    const [isEditingBudget, setIsEditingBudget] = useState(false);
+    const [editBudgetAmount, setEditBudgetAmount] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [expenseAmount, setExpenseAmount] = useState<string>('');
 
@@ -92,12 +94,42 @@ const BudgetPlanner: React.FC = () => {
 
             {/* Overview Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl p-6">
+                <div className="bg-white dark:bg-slate-900 border border-neutral-200/60 dark:border-slate-800 rounded-2xl p-6 relative group">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-semibold text-neutral-500">Total Budget</span>
-                        <div className="p-2 bg-neutral-100 dark:bg-slate-800 rounded-lg"><DollarSign size={18} /></div>
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => { setIsEditingBudget(true); setEditBudgetAmount(totalBudget.toString()); }} className="text-neutral-400 hover:text-red-500 transition-colors p-1">
+                                <Edit2 size={14} />
+                            </button>
+                            <div className="p-2 bg-neutral-100 dark:bg-slate-800 rounded-lg"><IndianRupee size={18} /></div>
+                        </div>
                     </div>
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white">₹{totalBudget.toLocaleString()}</h2>
+                    {isEditingBudget ? (
+                        <div className="flex items-center gap-2">
+                            <span className="text-xl font-black text-neutral-900 dark:text-white">₹</span>
+                            <input 
+                                type="number" 
+                                value={editBudgetAmount}
+                                onChange={(e) => setEditBudgetAmount(e.target.value)}
+                                className="bg-transparent border-b border-red-500 text-2xl font-black text-neutral-900 dark:text-white focus:outline-none w-32"
+                                autoFocus
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        setTotalBudget(parseFloat(editBudgetAmount) || 0);
+                                        setIsEditingBudget(false);
+                                    } else if (e.key === 'Escape') {
+                                        setIsEditingBudget(false);
+                                    }
+                                }}
+                                onBlur={() => {
+                                    setTotalBudget(parseFloat(editBudgetAmount) || 0);
+                                    setIsEditingBudget(false);
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <h2 className="text-2xl font-black text-neutral-900 dark:text-white">₹{totalBudget.toLocaleString()}</h2>
+                    )}
                     <div className="w-full bg-neutral-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
                         <div className="bg-red-500 h-full" style={{ width: `${Math.min(spentPercentage, 100)}%` }} />
                     </div>

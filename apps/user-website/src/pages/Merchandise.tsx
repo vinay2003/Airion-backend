@@ -144,22 +144,126 @@ const MOCK_PRODUCTS: (Product & { description: string; rating: number; reviewsCo
 
 const CATEGORIES = ['All', 'Decor', 'Apparel', 'Signage', 'Gifts', 'Entertainment'];
 
+const AddToCartWidget = ({ product, variant = 'text' }: { product: Product, variant?: 'text' | 'icon' }) => {
+    const { items, addToCart, updateQuantity } = useCart();
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    
+    const cartItem = items.find(i => i.id === product.id);
+    const [isAdding, setIsAdding] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const handleAddToCart = async () => {
+        if (!user) {
+            navigate('/login', { state: { returnTo: '/merchandise' } });
+            return;
+        }
+        setIsAdding(true);
+        try {
+            await addToCart(product, 1);
+        } catch (e) {
+            toast.error('Failed to add item to cart.');
+        } finally {
+            setIsAdding(false);
+        }
+    };
+
+    const handleUpdateQuantity = async (newQuantity: number) => {
+        setIsUpdating(true);
+        try {
+            await updateQuantity(product.id, newQuantity);
+        } catch (e) {
+            toast.error('Failed to update quantity.');
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    if (cartItem) {
+        return (
+            <div className={`flex items-center gap-1.5 bg-neutral-100 dark:bg-slate-800 rounded px-1 py-1 ${variant === 'icon' ? '' : 'h-[28px]'}`}>
+                <button
+                    onClick={(e) => { e.preventDefault(); handleUpdateQuantity(cartItem.quantity - 1); }}
+                    disabled={isUpdating}
+                    className="w-6 h-6 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    -
+                </button>
+                <div className="w-4 flex justify-center">
+                    {isUpdating ? (
+                        <div className="w-3 h-3 border-[1.5px] border-neutral-400 border-t-neutral-900 dark:border-t-white rounded-full animate-spin" />
+                    ) : (
+                        <span className="text-xs font-bold text-neutral-950 dark:text-white">{cartItem.quantity}</span>
+                    )}
+                </div>
+                <button
+                    onClick={(e) => { e.preventDefault(); handleUpdateQuantity(cartItem.quantity + 1); }}
+                    disabled={isUpdating}
+                    className="w-6 h-6 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    +
+                </button>
+            </div>
+        );
+    }
+
+    if (variant === 'icon') {
+        return (
+            <button
+                onClick={(e) => { e.preventDefault(); handleAddToCart(); }}
+                disabled={isAdding}
+                className="p-2 bg-neutral-100 hover:bg-neutral-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-neutral-800 dark:text-neutral-200 rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Add to Cart"
+            >
+                {isAdding ? (
+                    <div className="w-4 h-4 border-2 border-neutral-500 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                    <ShoppingBag size={16} />
+                )}
+            </button>
+        );
+    }
+
+    return (
+        <button
+            onClick={(e) => { e.preventDefault(); handleAddToCart(); }}
+            disabled={isAdding}
+            className="px-3 py-1.5 bg-red-650 hover:bg-red-700 text-white text-xs font-bold rounded flex items-center justify-center gap-1.5 disabled:opacity-75 disabled:cursor-not-allowed h-[28px] min-w-[90px]"
+        >
+            {isAdding ? (
+                <>
+                    <div className="w-3 h-3 border-[1.5px] border-white/30 border-t-white rounded-full animate-spin" />
+                    Adding
+                </>
+            ) : (
+                'Add to Cart'
+            )}
+        </button>
+    );
+};
+
 const Merchandise: React.FC = () => {
-    const { addToCart } = useCart();
+    const { addToCart, items } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+    const [isAddingHero, setIsAddingHero] = useState(false);
 
-    const handleAddToCart = (product: Product) => {
+    const handleAddToCart = async (product: Product) => {
         if (!user) {
-            toast.error('Please login to add items to cart.');
             navigate('/login', { state: { returnTo: '/merchandise' } });
             return;
         }
-        addToCart(product);
-        toast.success('Added to Cart 🛒');
+        setIsAddingHero(true);
+        try {
+            await addToCart(product, 1);
+        } catch (error) {
+            toast.error('Failed to add item to cart.');
+        } finally {
+            setIsAddingHero(false);
+        }
     };
 
     React.useEffect(() => {
@@ -210,11 +314,11 @@ const Merchandise: React.FC = () => {
                                 Browse Collection
                             </a>
                             <button
-                                onClick={() => {
-                                    handleAddToCart(MOCK_PRODUCTS[0]);
-                                }}
-                                className="px-6 py-3 bg-neutral-800 text-white font-bold rounded-lg border border-neutral-700 text-xs tracking-wider uppercase"
+                                onClick={() => handleAddToCart(MOCK_PRODUCTS[0])}
+                                disabled={isAddingHero}
+                                className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-bold rounded-lg border border-neutral-700 text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                             >
+                                {isAddingHero ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
                                 Get Featured Lights (₹1,200)
                             </button>
                         </div>
@@ -243,12 +347,7 @@ const Merchandise: React.FC = () => {
                                 </p>
                                 <div className="flex items-center justify-between pt-1">
                                     <span className="font-bold text-sm text-white">₹1,200</span>
-                                    <button
-                                        onClick={() => handleAddToCart(MOCK_PRODUCTS[0])}
-                                        className="px-3 py-1.5 bg-red-650 text-white text-xs font-bold rounded"
-                                    >
-                                        Add to Cart
-                                    </button>
+                                    <AddToCartWidget product={MOCK_PRODUCTS[0]} />
                                 </div>
                             </div>
                         </div>
@@ -354,13 +453,7 @@ const Merchandise: React.FC = () => {
                                     <div className="flex flex-col">
                                         <span className="text-[10px] font-bold text-neutral-900 dark:text-white">₹{product.price.toLocaleString()}</span>
                                     </div>
-                                    <button
-                                        onClick={(e) => { e.preventDefault(); handleAddToCart(product); }}
-                                        className="p-2 bg-neutral-100 hover:bg-neutral-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-neutral-800 dark:text-neutral-200 rounded cursor-pointer"
-                                        title="Add to Cart"
-                                    >
-                                        <ShoppingBag size={16} />
-                                    </button>
+                                    <AddToCartWidget product={product} variant="icon" />
                                 </div>
                             </div>
                         );

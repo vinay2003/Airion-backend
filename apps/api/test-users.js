@@ -8,11 +8,9 @@ async function run() {
   try {
     await client.connect();
     const res = await client.query(`
-        SELECT column_name, data_type 
-        FROM information_schema.columns 
-        WHERE table_name = 'cart_items';
+        SELECT id, email FROM users;
     `);
-    console.log('Columns:', res.rows);
+    console.log('Users:', res.rows);
   } catch (err) {
     console.error('Error:', err.message);
   } finally {

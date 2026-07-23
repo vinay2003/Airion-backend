@@ -67,6 +67,7 @@ interface DashboardState {
     fetchBudget: () => Promise<void>;
     updateBudgetAllocation: (id: string, allocated: number) => void;
     addExpense: (id: string, amount: number) => void;
+    setTotalBudget: (amount: number) => void;
     markNotificationRead: (id: string) => void;
     markAllRead: () => void;
     sendMessage: (threadId: string, text: string) => void;
@@ -185,6 +186,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
         });
     },
 
+    setTotalBudget: (amount) => set({ totalBudget: amount }),
     addExpense: async (id, amount) => {
         set((state) => {
             const newItems = state.budgetItems.map(item => item.id === id ? { ...item, spent: item.spent + amount } : item);

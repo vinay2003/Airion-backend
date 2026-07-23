@@ -97,9 +97,12 @@ const MOCK_PRODUCTS: Product[] = [
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { addToCart } = useCart();
-    const [quantity, setQuantity] = useState(1);
+    const { items, addToCart, updateQuantity } = useCart();
     const [product, setProduct] = useState<Product | undefined>(() => MOCK_PRODUCTS.find(p => p.id === id));
+    const cartItem = items.find(i => i.id === product?.id);
+    const [quantity, setQuantity] = useState(1);
+    const [isAdding, setIsAdding] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const [loading, setLoading] = useState(true);
 
     React.useEffect(() => {
@@ -146,14 +149,31 @@ const ProductDetails: React.FC = () => {
 
     const { user } = useAuth();
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!user) {
             toast.error('Please login to add items to cart.');
             navigate('/login', { state: { returnTo: `/merchandise/${id}` } });
             return;
         }
-        addToCart(product, quantity);
-        toast.success(`Added ${quantity} ${product.title} to cart!`);
+        setIsAdding(true);
+        try {
+            await addToCart(product, quantity);
+        } catch (e) {
+            toast.error('Failed to add item to cart.');
+        } finally {
+            setIsAdding(false);
+        }
+    };
+
+    const handleUpdateQuantity = async (newQuantity: number) => {
+        setIsUpdating(true);
+        try {
+            await updateQuantity(product!.id, newQuantity);
+        } catch (e) {
+            toast.error('Failed to update quantity.');
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     return (
@@ -203,35 +223,78 @@ const ProductDetails: React.FC = () => {
                         </div>
 
                         <div className="mt-8 pt-8 border-t border-neutral-100 dark:border-slate-800">
-                            {/* Quantity Selector */}
-                            <div className="flex items-center gap-4 mb-6">
-                                <span className="text-sm font-bold text-neutral-700 dark:text-slate-300">Quantity:</span>
-                                <div className="flex items-center bg-neutral-50 dark:bg-slate-800 rounded-xl p-1 border border-neutral-200 dark:border-slate-700">
+                            {cartItem ? (
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex items-center justify-between bg-neutral-50 dark:bg-slate-800 rounded-2xl p-2 border border-neutral-200 dark:border-slate-700">
+                                        <button
+                                            onClick={() => handleUpdateQuantity(cartItem.quantity - 1)}
+                                            disabled={isUpdating}
+                                            className="w-12 h-12 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            -
+                                        </button>
+                                        <div className="flex flex-col items-center">
+                                            {isUpdating ? (
+                                                <div className="w-6 h-6 border-2 border-neutral-300 border-t-neutral-900 dark:border-slate-600 dark:border-t-white rounded-full animate-spin my-[2px]" />
+                                            ) : (
+                                                <span className="text-xl font-black text-neutral-950 dark:text-white">{cartItem.quantity}</span>
+                                            )}
+                                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">in cart</span>
+                                        </div>
+                                        <button
+                                            onClick={() => handleUpdateQuantity(cartItem.quantity + 1)}
+                                            disabled={isUpdating}
+                                            className="w-12 h-12 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                     <button
-                                        onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                        className="w-8 h-8 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors"
+                                        onClick={() => navigate('/cart')}
+                                        className="w-full py-4 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-2xl font-black uppercase tracking-wider text-sm transition-all flex items-center justify-center gap-3"
                                     >
-                                        -
-                                    </button>
-                                    <span className="w-12 text-center font-bold text-neutral-950 dark:text-white">{quantity}</span>
-                                    <button
-                                        onClick={() => setQuantity(q => q + 1)}
-                                        className="w-8 h-8 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors"
-                                    >
-                                        +
+                                        <ShoppingCart size={18} /> Go to Cart
                                     </button>
                                 </div>
-                            </div>
+                            ) : (
+                                <>
+                                    {/* Quantity Selector */}
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <span className="text-sm font-bold text-neutral-700 dark:text-slate-300">Quantity:</span>
+                                        <div className="flex items-center bg-neutral-50 dark:bg-slate-800 rounded-xl p-1 border border-neutral-200 dark:border-slate-700">
+                                            <button
+                                                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                                                className="w-8 h-8 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="w-12 text-center font-bold text-neutral-950 dark:text-white">{quantity}</span>
+                                            <button
+                                                onClick={() => setQuantity(q => q + 1)}
+                                                className="w-8 h-8 flex items-center justify-center font-bold text-neutral-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
 
-                            {/* CTAs */}
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button
-                                    onClick={handleAddToCart}
-                                    className="flex-1 py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black uppercase tracking-wider text-sm transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-3"
-                                >
-                                    <ShoppingCart size={18} /> Add to Cart
-                                </button>
-                            </div>
+                                    {/* CTAs */}
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <button
+                                            onClick={handleAddToCart}
+                                            disabled={isAdding}
+                                            className="flex-1 py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black uppercase tracking-wider text-sm transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-3 disabled:opacity-75 disabled:cursor-not-allowed"
+                                        >
+                                            {isAdding ? (
+                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            ) : (
+                                                <ShoppingCart size={18} />
+                                            )}
+                                            {isAdding ? 'Adding...' : 'Add to Cart'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         {/* Badges */}

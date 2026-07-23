@@ -21,7 +21,7 @@ export class CartItem {
     @Column({ type: 'enum', enum: CartItemType })
     itemType: CartItemType;
 
-    @Column({ type: 'uuid' })
+    @Column({ type: 'varchar' })
     referenceId: string; // ID of the Service Package or Shop Product
 
     @Column({ type: 'int', default: 1 })

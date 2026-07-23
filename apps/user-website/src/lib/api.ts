@@ -104,7 +104,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
     // Ensure at least 10 items per category
     const eventCategories = ['Weddings', 'Parties', 'Corporate', 'Birthday', 'Engagement', 'Private Party'];
     const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
-    
+
     // Use the mockServices from outside the function
     const expandedMockServices = [...mockServices];
 
@@ -133,7 +133,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         }
         const query = params.toString();
         const url = `/services${query ? `?${query}` : ''}`;
-        
+
         const response = await api.get(url).catch(() => ({ data: [] }));
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data)) {
@@ -159,7 +159,7 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
         vendorImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=200',
         reviews: s.reviews || 0,
         capacity: (s as any).capacity || 'Contact Vendor',
-        isSponsored: idx % 3 === 0 
+        isSponsored: idx % 3 === 0
     })) as Event[];
 
     // Return real events first, then mocks
@@ -169,19 +169,19 @@ export const fetchEvents = async (filters: Record<string, any> = {}): Promise<Ev
 const generateDummyVendors = (): Event[] => {
     const categories = ['Caterer', 'Decor', 'Photographer', 'AV Setup'];
     const locations = ['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Goa', 'Jaipur', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'];
-    
+
     const namesMap: Record<string, string[]> = {
         'Caterer': ['Elite Caterers', 'Royal Feast', 'Spice Route Catering', 'Divine Bites', 'Grand Banquet Caterers', 'Saffron Flavors', 'The Culinary Art', 'Heritage Dining', 'Mughlai Masters', 'Fusion Foods'],
         'Decor': ['Royal Decorators', 'Floral Fantasies', 'Elegant Events', 'Crystal Decor', 'Majestic Mandaps', 'Dream Setup', 'Vintage Vibes', 'Glamour Events', 'Classic Touch', 'Aura Decor'],
         'Photographer': ['Capture Moments', 'Lens & Light', 'Memories Studio', 'Candid Frames', 'Pixel Perfect', 'Golden Hour Photo', 'Evergreen Snaps', 'Visionary Lens', 'Timeless Clicks', 'Focus Studios'],
         'AV Setup': ['Sonic Beats AV', 'Lumina Sound & Light', 'Echo Events', 'Crystal Audio', 'Pulse AV', 'Vibe Acoustics', 'Radiance Lighting', 'Beatbox Solutions', 'Strobe & Sound', 'Bassline Pro']
     };
-    
+
     const imageMap: Record<string, string> = {
         'Caterer': 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=1200',
         'Decor': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200',
         'Photographer': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1200',
-        'AV Setup': 'https://images.unsplash.com/photo-1470229722913-7c092bce6283?q=80&w=1200'
+        'AV Setup': 'https://images.unsplash.com/photo-1774118042995-b7c9d9fc0c05?w=600&auto=format&fit=crop&q=60'
     };
 
     const dummies: Event[] = [];
@@ -189,8 +189,8 @@ const generateDummyVendors = (): Event[] => {
         const names = namesMap[cat];
         for (let i = 0; i < 10; i++) {
             dummies.push({
-                id: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
-                vendorId: `dv-${cat.replace(/\s+/g, '-')}-${i+1}`,
+                id: `dv-${cat.replace(/\s+/g, '-')}-${i + 1}`,
+                vendorId: `dv-${cat.replace(/\s+/g, '-')}-${i + 1}`,
                 title: names[i],
                 category: cat,
                 image: imageMap[cat],
@@ -198,7 +198,7 @@ const generateDummyVendors = (): Event[] => {
                 rating: parseFloat((4.0 + Math.random()).toFixed(1)),
                 location: locations[i],
                 reviews: Math.floor(Math.random() * 300) + 50,
-                price: cat === 'Photographer' ? `₹${(i+5)*10},000 / day` : `₹${(i+2)*10},000+`,
+                price: cat === 'Photographer' ? `₹${(i + 5) * 10},000 / day` : `₹${(i + 2) * 10},000+`,
                 capacity: 'Contact Vendor',
                 description: `Premium ${cat} services for your special events. Highly rated and professional.`,
                 vendorName: names[i],
@@ -215,14 +215,14 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const params = new URLSearchParams();
     if (filters.city) params.append('city', filters.city);
     if (filters.search) params.append('search', filters.search);
-    
+
     // Convert to query string
     const query = params.toString();
     const url = `/vendors/discovery${query ? `?${query}` : ''}`;
-    
+
     const response = await api.get(url).catch(() => ({ data: [] }));
     const data = response.data?.data?.vendors || response.data?.vendors || response.data || [];
-    
+
     let realVendors = [];
     if (Array.isArray(data)) {
         realVendors = data.map((v: any) => ({
@@ -248,7 +248,7 @@ export const fetchVendorDiscovery = async (filters: Record<string, any> = {}): P
     const dummyVendors = generateDummyVendors();
 
     let combined = [...realVendors, ...dummyVendors];
-    
+
     // Fallback filtering if search API didn't handle categories (like dummy data)
     if (filters.search) {
         const cat = filters.search.toLowerCase();

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin, Search, Users, Check, Minus, Plus, Sparkles, LocateFixed, Loader2, PartyPopper, Heart, Cake, Briefcase, Mic2, Wine, Flower2, Music, Image as ImageIcon, type LucideIcon } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
+import { toast } from 'react-hot-toast';
 
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
@@ -186,8 +187,13 @@ const SearchBar = () => {
 
     const handleSearch = () => {
         const params = new URLSearchParams();
-        if (searchMode === 'ai' && aiQuery) {
-            params.append('ai_query', aiQuery);
+        if (searchMode === 'ai') {
+            if (!aiQuery || !aiQuery.trim()) {
+                toast.error("Please enter a description for the AI Assistant first!");
+                return;
+            }
+            params.append('ai_query', aiQuery.trim());
+            toast("AI Is Searching...", { icon: '🔍' });
         } else {
             if (location) params.append('location', location);
             if (eventType) params.append('category', eventType); // VendorDiscovery reads 'category'

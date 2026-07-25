@@ -271,7 +271,7 @@ const Dashboard = () => {
  <p className="text-xs font-medium text-[var(--ease2event-text-secondary)]">Unique visitors to your vendor profile</p>
  </div>
 
- <div className="grid grid-cols-2 gap-4 z-10 relative mt-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 z-10 relative mt-4">
     <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-none mb-2">Total Unique Views</span>
         <span className="text-2xl font-black text-[var(--ease2event-text-primary)] leading-none">{profileViewsData?.totalUniqueViews || 0}</span>

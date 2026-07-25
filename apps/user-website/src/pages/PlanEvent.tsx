@@ -144,6 +144,8 @@ const PlanEvent: React.FC = () => {
     const handleBack = () => {
         if (currentStep > 0) {
             setCurrentStep(currentStep - 1);
+        } else {
+            navigate(-1);
         }
     };
 
@@ -418,15 +420,13 @@ const PlanEvent: React.FC = () => {
 
                             {/* Navigation Buttons */}
                             <div className="flex justify-center gap-4 mt-12">
-                                {currentStep > 0 && (
-                                    <button
-                                        onClick={handleBack}
-                                        className="px-8 py-3 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-xl font-medium transition-all flex items-center gap-2"
-                                    >
-                                        <ChevronLeft size={20} />
-                                        Back
-                                    </button>
-                                )}
+                                <button
+                                    onClick={handleBack}
+                                    className="px-8 py-3 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-xl font-medium transition-all flex items-center gap-2"
+                                >
+                                    <ChevronLeft size={20} />
+                                    Back
+                                </button>
                                 <button
                                     onClick={handleNext}
                                     disabled={loading}

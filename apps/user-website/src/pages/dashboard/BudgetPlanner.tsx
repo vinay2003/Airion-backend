@@ -121,11 +121,16 @@ const BudgetPlanner: React.FC = () => {
                                         setIsEditingBudget(false);
                                     }
                                 }}
-                                onBlur={() => {
+                            />
+                            <button
+                                onClick={() => {
                                     setTotalBudget(parseFloat(editBudgetAmount) || 0);
                                     setIsEditingBudget(false);
                                 }}
-                            />
+                                className="ml-2 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-sm shadow-red-500/20 hover:bg-red-600 transition-colors"
+                            >
+                                Save
+                            </button>
                         </div>
                     ) : (
                         <h2 className="text-2xl font-black text-neutral-900 dark:text-white">₹{totalBudget.toLocaleString()}</h2>

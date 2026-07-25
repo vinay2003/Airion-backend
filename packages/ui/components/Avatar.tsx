@@ -1,4 +1,5 @@
 import React from 'react';
+import { User } from 'lucide-react';
 
 type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -21,8 +22,6 @@ const sizeMap: Record<AvatarSize, { container: string; text: string }> = {
 /** Derives 1–2 letter initials from name, email, or phone */
 function getInitials(name?: string | null, phoneNumber?: string | null): string {
   if (name) {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
     return name.trim()[0]?.toUpperCase() ?? '?';
   }
   if (phoneNumber) {
@@ -64,9 +63,7 @@ export const Avatar = ({
           }}
         />
       ) : (
-        <span className={`${text} font-bold text-white leading-none select-none`}>
-          {initials}
-        </span>
+        <User className="text-white w-1/2 h-1/2" />
       )}
     </div>
   );

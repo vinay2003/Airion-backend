@@ -99,9 +99,9 @@ const DashboardOverview: React.FC = () => {
             {/* 💎 Global Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                    { title: 'Upcoming nodes', value: stats.upcomingEvents, icon: Calendar, bg: 'bg-blue-500/10', text: 'text-blue-500', link: '/dashboard/bookings' },
-                    { title: 'Capital Deployed', value: `₹${stats.budgetSpent.toLocaleString()}`, icon: CreditCard, bg: 'bg-emerald-500/10', text: 'text-emerald-500', link: '/dashboard/budget' },
-                    { title: 'System Alerts', value: stats.pendingTasks, icon: TrendingUp, bg: 'bg-amber-500/10', text: 'text-amber-500', link: '/dashboard/bookings' },
+                    { title: 'Upcoming Events', value: stats.upcomingEvents, icon: Calendar, bg: 'bg-blue-500/10', text: 'text-blue-500', link: '/dashboard/bookings' },
+                    { title: 'Total Spent', value: `₹${stats.budgetSpent.toLocaleString()}`, icon: CreditCard, bg: 'bg-emerald-500/10', text: 'text-emerald-500', link: '/dashboard/budget' },
+                    { title: 'Notifications', value: stats.pendingTasks, icon: TrendingUp, bg: 'bg-amber-500/10', text: 'text-amber-500', link: '/dashboard/bookings' },
                 ].map((stat, i) => (
                     <motion.div
                         key={stat.title}
@@ -226,7 +226,7 @@ const DashboardOverview: React.FC = () => {
 
                 {/* Economic Matrix (Budget) */}
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Budget</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Budget Overview</h2>
                     <div className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
                         <div className="h-56 w-full relative z-10">
                             <ResponsiveContainer width="100%" height="100%">
@@ -249,8 +249,8 @@ const DashboardOverview: React.FC = () => {
                             <h3 className="text-3xl font-black text-neutral-900 dark:text-white">₹{(500000 - stats.budgetSpent).toLocaleString()}</h3>
                             <p className="text-xs text-neutral-500 font-bold tracking-tighter">of ₹5,00,000 threshold</p>
                         </div>
-                        <Link to="/dashboard/budget" className="w-full text-center text-xs font-black text-red-500 hover:tracking-[0.2em] transition-all mt-8 pt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 z-10">
-                            Fiscal Analytics <ArrowRight size={16} />
+                        <Link to="/dashboard/budget" className="w-full py-4 mt-6 border-t border-neutral-100 dark:border-slate-800 flex items-center justify-center gap-2 text-xs font-black text-neutral-400 hover:text-red-500 transition-colors uppercase tracking-widest relative z-10">
+                            Budget Analytics <ArrowRight size={16} />
                         </Link>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 -mr-16 -mt-16 rounded-full blur-3xl" />
                     </div>
@@ -260,7 +260,7 @@ const DashboardOverview: React.FC = () => {
             {/* 🔥 High-Value Recommendations */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Custom Options 🔥</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">More Options 🔥</h2>
                     <Link to="/marketplace" className="text-xs font-black text-red-500 hover:tracking-widest transition-all flex items-center gap-2">
                         Expand Results <ArrowRight size={16} />
                     </Link>

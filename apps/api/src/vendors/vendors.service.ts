@@ -51,7 +51,7 @@ export class VendorsService {
         Object.assign(vendor, {
             ...(createVendorDto as Record<string, any>),
             userId: user.userId,
-            verificationStatus: 'pending',
+            verificationStatus: 'KYC_PENDING',
             isVerified: false,
         });
 
@@ -85,7 +85,7 @@ export class VendorsService {
             businessAddress: dto.address ? { street: dto.address, city: '', state: '', country: 'India', zipCode: '' } : null,
             businessDescription: dto.businessDescription || null,
             isProfileComplete: true,
-            verificationStatus: vendor.verificationStatus || 'pending',
+            verificationStatus: vendor.verificationStatus || 'KYC_PENDING',
         });
 
         const saved = await this.vendorRepository.save(vendor);

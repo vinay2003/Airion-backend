@@ -83,8 +83,8 @@ const Hero: React.FC = () => {
 
     useEffect(() => {
         api.get('/cms/landing_page_hero').then((res: any) => {
-            if (res?.data) {
-                const config = res.data;
+            const config = res?.data || res;
+            if (config && config.title) {
                 const newContent = [...HERO_CONTENT];
                 newContent[0] = {
                     ...newContent[0],

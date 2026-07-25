@@ -62,18 +62,18 @@ const Settings: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col xl:flex-row gap-8">
         {/* 🧭 Navigation */}
-        <div className="w-full lg:w-72 shrink-0">
+        <div className="w-full xl:w-72 shrink-0">
           {/* Mobile/Tablet Horizontal Scrollable Tabs */}
-          <div className="flex lg:flex-col overflow-x-auto lg:overflow-visible gap-3 pb-4 lg:pb-0 hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
+          <div className="flex xl:flex-col overflow-x-auto xl:overflow-visible gap-3 pb-4 xl:pb-0 hide-scrollbar -mx-6 px-6 xl:mx-0 xl:px-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`flex-shrink-0 lg:flex-shrink-auto flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group relative overflow-hidden cursor-pointer whitespace-nowrap lg:whitespace-normal text-left min-w-[200px] lg:min-w-0 ${
+                className={`flex-shrink-0 xl:flex-shrink-auto flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group relative overflow-hidden cursor-pointer whitespace-nowrap xl:whitespace-normal text-left min-w-[200px] xl:min-w-0 ${
                   currentTab === tab.id
-                    ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-md lg:scale-105 z-10'
+                    ? 'bg-[var(--ease2event-brand-primary)] text-white shadow-md xl:scale-105 z-10'
                     : 'bg-[var(--ease2event-bg-surface)] text-[var(--ease2event-text-muted)] border border-[var(--ease2event-border-base)] hover:text-[var(--ease2event-text-primary)] hover:border-[var(--ease2event-border-subtle)]'
                 }`}
               >

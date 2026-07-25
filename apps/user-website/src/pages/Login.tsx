@@ -101,21 +101,16 @@ const Login: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            // Using Custom Backend OTP instead of Firebase Phone Auth
-            const portal = searchParams.get('portal');
-            const roleContext = portal === 'vendor' ? UserRole.VENDOR : portal === 'admin' ? UserRole.ADMIN : UserRole.USER;
-            const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone, role: roleContext });
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+            setConfirmationResult(confirmation);
             
-            if (response.message) {
-                toast.success('Verification code sent via SMS');
-                setStep('otp');
-                startResendTimer();
-            } else {
-                throw new Error('Failed to send OTP');
-            }
+            toast.success('Verification code sent via Firebase');
+            setStep('otp');
+            startResendTimer();
         } catch (err: any) {
-            console.error("Send OTP error:", err);
-            toast.error(err.response?.data?.message || err.message || 'Failed to send verification code.');
+            console.error("Firebase send OTP error:", err);
+            toast.error(err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
@@ -125,23 +120,19 @@ const Login: React.FC = () => {
         const otpValue = finalOtp || otp;
         if (otpValue.length < 6) return;
 
+        if (!confirmationResult) {
+            return toast.error("Session expired. Please request OTP again.");
+        }
+
         setLoading(true);
         try {
-            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            if (sanitizedPhone.length === 10) {
-                sanitizedPhone = '+91' + sanitizedPhone;
-            } else if (!sanitizedPhone.startsWith('+')) {
-                sanitizedPhone = '+' + sanitizedPhone;
-            }
+            const result = await confirmationResult.confirm(otpValue.trim());
+            const idToken = await result.user.getIdToken();
 
-            // Verify using custom backend
+            // Verify using custom backend via Firebase token
             const portal = searchParams.get('portal');
             const roleContext = portal === 'vendor' ? UserRole.VENDOR : portal === 'admin' ? UserRole.ADMIN : UserRole.USER;
-            const response = await otpAuth.verifyLoginOTP({
-                phone: sanitizedPhone,
-                otp: otpValue.trim(),
-                role: roleContext
-            });
+            const response = await otpAuth.verifyFirebaseToken(idToken, roleContext);
 
             if (response.access_token) {
                 // Determine portal redirection based on user role

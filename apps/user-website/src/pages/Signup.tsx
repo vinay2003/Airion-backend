@@ -59,23 +59,20 @@ const Signup: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            // Using Custom Backend OTP instead of Firebase Phone Auth
-            const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+            setConfirmationResult(confirmation);
             
-            if (response.message) {
-                toast.success('Verification code sent via SMS');
-                setStep('otp');
-                startResendTimer();
-            } else {
-                throw new Error('Failed to send OTP');
-            }
+            toast.success('Verification code sent via Firebase');
+            setStep('otp');
+            startResendTimer();
         } catch (err: any) {
-            console.error("Send OTP error:", err);
+            console.error("Firebase send OTP error:", err);
             if (err.response?.status === 409 || err.message?.includes('already exists')) {
                 toast.error('Account already exists. Please login.');
                 setTimeout(() => navigate('/login'), 1500);
             } else {
-                toast.error(err.response?.data?.message || err.message || 'Failed to send verification code.');
+                toast.error(err.message || 'Failed to send verification code.');
             }
         } finally {
             setLoading(false);
@@ -85,22 +82,17 @@ const Signup: React.FC = () => {
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;
         if (otpValue.length < 6) return;
+        if (!confirmationResult) {
+            return toast.error("Session expired. Please request OTP again.");
+        }
 
         setLoading(true);
         try {
-            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            if (sanitizedPhone.length === 10) {
-                sanitizedPhone = '+91' + sanitizedPhone;
-            } else if (!sanitizedPhone.startsWith('+')) {
-                sanitizedPhone = '+' + sanitizedPhone;
-            }
+            const result = await confirmationResult.confirm(otpValue.trim());
+            const idToken = await result.user.getIdToken();
 
-            // Verify using custom backend
-            const response = await otpAuth.verifySignupOTP({
-                phone: sanitizedPhone,
-                otp: otpValue.trim(),
-                role: UserRole.USER
-            });
+            // Verify using custom backend via Firebase token
+            const response = await otpAuth.verifyFirebaseToken(idToken, UserRole.USER);
 
             if (response.access_token) {
                 const user = response?.user;

@@ -175,7 +175,7 @@ const Services: React.FC = () => {
  try {
  const submission = {
  ...formData,
- vendorId,
+ vendorId: vendorId || undefined,
  // Ensure empty strings don't break UUID validation in backend
  categoryId: formData.categoryId || undefined,
  subcategoryId: formData.subcategoryId || undefined,

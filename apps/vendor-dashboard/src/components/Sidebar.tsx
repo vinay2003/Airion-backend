@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
  const navItems = [
  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
  { icon: Ticket, label: 'Events', path: '/events' },
- { icon: Briefcase, label: 'Services List', path: '/services' },
+ { icon: Package, label: 'Packages & Services', path: '/services' },
  { icon: Calendar, label: 'Bookings', path: '/bookings' },
  { icon: CalendarDays, label: 'Calendar', path: '/calendar' },
  { icon: DollarSign, label: 'Earnings', path: '/earnings' },

@@ -94,4 +94,9 @@
   .admin-stat-card {
     @apply bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-subtle)] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:border-[var(--ease2event-brand-primary)]/30;
   }
+  
+  /* Remove hover and shadow for premium cards in admin */
+  .card-premium {
+    @apply hover:-translate-y-0 hover:shadow-none shadow-none;
+  }
 }

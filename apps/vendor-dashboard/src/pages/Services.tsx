@@ -229,7 +229,7 @@ const Services: React.FC = () => {
  const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
  if (imageUrl) {
  setFormData(prev => ({ ...prev, images: [...prev.images, imageUrl] }));
- toast.success('Visual Node Linked', { id: 'upload' });
+ toast.success('Image Uploaded', { id: 'upload' });
  }
  } catch (err) {
  toast.error('Visual Link Failed', { id: 'upload' });
@@ -297,7 +297,7 @@ const Services: React.FC = () => {
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
- {/* Section: Basic Intelligence */}
+ {/* Section: Basic Info */}
  <div className="card-minimal p-6 space-y-6 bg-[var(--ease2event-bg-surface)] ">
  <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-8">
  <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl border border-blue-500/10">
@@ -374,7 +374,7 @@ const Services: React.FC = () => {
  <div className="grid grid-cols-2 gap-4">
  {formData.images.map((img, i) => (
  <div key={i} className="aspect-square rounded-2xl overflow-hidden relative group border border-[var(--ease2event-border-subtle)]">
- <img src={img} className="w-full h-full object-cover transition-transform " alt="Node Visual" />
+ <img src={img} className="w-full h-full object-cover transition-transform " alt="Service Image" />
  <button
  onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
  className="absolute top-2 right-2 p-2 bg-rose-500 text-white rounded-xl scale-0  transition-all "
@@ -562,7 +562,7 @@ const Services: React.FC = () => {
  </div>
  </div>
 
- {/* Matrix Filters */}
+ {/* Filters */}
  <div className="flex flex-col xl:flex-row gap-6 p-4 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] rounded-3xl ">
  <div className="relative flex-1 group">
  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-muted)] group-focus-within:text-[var(--ease2event-brand-primary)] transition-colors" size={16} />

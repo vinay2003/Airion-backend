@@ -77,7 +77,7 @@ const DashboardOverview: React.FC = () => {
                     </div>
                     <div className="space-y-1">
                         <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                            Ease2event Matrix, Welcome {firstName}
+                            Welcome to Ease2event, {firstName}
                         </h1>
                         <p className="text-s sm:text-base text-neutral-500 dark:text-slate-400 font-medium tracking-tight">Managing your events in real time</p>
                     </div>
@@ -160,7 +160,7 @@ const DashboardOverview: React.FC = () => {
                 </section>
             )}
 
-            {/* 📊 Main Intelligence Matrix */}
+            {/* 📊 Main Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Active Booking Nodes */}
                 <div className="lg:col-span-2 space-y-6">
@@ -226,7 +226,7 @@ const DashboardOverview: React.FC = () => {
 
                 {/* Economic Matrix (Budget) */}
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Capital Matrix</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tight">Budget</h2>
                     <div className="bg-white dark:bg-slate-900 border border-neutral-300 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden group shadow-xl">
                         <div className="h-56 w-full relative z-10">
                             <ResponsiveContainer width="100%" height="100%">

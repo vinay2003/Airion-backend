@@ -8,7 +8,7 @@ import { fetchVendorSchedule, blockDate, unblockDate } from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * 🗓 Operational Matrix (Calendar)
+ * 🗓 Calendar
  * Modernized with theme-aware tokens, large typography, and premium glassmorphism.
  */
 const CalendarPage: React.FC = () => {
@@ -72,7 +72,7 @@ const CalendarPage: React.FC = () => {
  }
  ];
 
- const displayBlocks = (availabilityBlocks && availabilityBlocks.length > 0) ? availabilityBlocks : [
+ const displayBlocks = (Array.isArray(availabilityBlocks) && availabilityBlocks.length > 0) ? availabilityBlocks : [
  {
  id: 'cal-blk-1',
  date: new Date(new Date().setDate(new Date().getDate() + 10)).toISOString().split('T')[0],

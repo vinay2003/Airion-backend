@@ -153,7 +153,7 @@ const Analytics: React.FC = () => {
 
             className="space-y-5 pb-32 px-6 w-full max-w-7xl mx-auto"
         >
-            {/* 🛸 Intelligence Matrix Header */}
+            {/* 🛸 Main Header */}
             <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 sm:gap-6 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)] relative overflow-hidden">
                 <div className="relative z-10 space-y-6">
                     <h1 className="text-xl font-bold tracking-tight">Analytics Dashboard</h1>
@@ -298,7 +298,7 @@ const Analytics: React.FC = () => {
             </div>
             </div>
 
-            {/* 🏰 Node Leadership Matrix */}
+            {/* 🏰 Vendor Leadership stats */}
             <div className="card-premium p-6 sm:!p-12 border-[var(--ease2event-border-base)] relative group">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between mb-8 sm:mb-10 pb-8 sm:pb-6 border-b border-[var(--ease2event-border-subtle)] gap-5">
                     <div className="flex items-center gap-5 sm:gap-5">

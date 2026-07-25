@@ -31,7 +31,7 @@ import { fetchWalletOverview, requestWithdrawal, updateWalletTarget } from '../l
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 /**
- * 💹 Financial Intelligence Matrix: Autonomous Revenue Monitoring
+ * 💹 Financial Overview: Revenue Monitoring
  * Full Dynamic Data Integration with Premium SaaS Aesthetics.
  */
 const Earnings: React.FC = () => {
@@ -98,7 +98,7 @@ const Earnings: React.FC = () => {
         return months.map(m => ({ name: m, revenue: chartMap[m] }));
     }, [selectedYear, walletData]);
 
-    // 💎 Intelligence KPIs (Real Data)
+    // 💎 Financial KPIs (Real Data)
     const displayData = useMemo(() => {
         const txs = (walletData as any)?.transactions || [];
         let periodRev = 0;
@@ -487,7 +487,7 @@ const Earnings: React.FC = () => {
                 </div>
             </div>
 
-            {/* 🧾 Intelligence Registry (Enhanced Table) */}
+            {/* 🧾 Transaction Registry (Enhanced Table) */}
             <div id="transactions-registry" className="card-minimal !p-0 overflow-hidden border-[var(--ease2event-border-base)] bg-[var(--ease2event-bg-surface)] rounded-[40px]">
                 <div className="p-6 border-b border-[var(--ease2event-border-subtle)] bg-[var(--ease2event-bg-elevated)] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6">
                     <div>
@@ -623,7 +623,7 @@ const Earnings: React.FC = () => {
                 </div>
             </Modal>
 
-            <Modal isOpen={isTargetModalOpen} onClose={() => setIsTargetModalOpen(false)} title="Edit Target Matrix">
+            <Modal isOpen={isTargetModalOpen} onClose={() => setIsTargetModalOpen(false)} title="Edit Target Goal">
                 <div className="space-y-4 p-4">
                     <div>
                         <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">New Monthly Target (₹)</label>

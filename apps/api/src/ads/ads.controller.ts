@@ -36,6 +36,11 @@ export class AdsController {
     return this.adsService.findAll();
   }
 
+  @Get('active')
+  findActive(@Query('city') city?: string) {
+    return this.adsService.findActiveAds({ city });
+  }
+
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
@@ -73,10 +78,7 @@ export class AdsController {
 
   // ─── Public Endpoints (User Website) ────────────────────────────────
 
-  @Get('active')
-  findActive(@Query('city') city?: string) {
-    return this.adsService.findActiveAds({ city });
-  }
+
 
   @Post(':id/click')
   async recordClick(@Param('id') id: string) {

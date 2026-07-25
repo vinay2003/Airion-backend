@@ -49,8 +49,7 @@ export class AuthService {
             const isDummyConfig = !clientEmail || 
                 clientEmail.includes('xxxxx') || 
                 !privateKey || 
-                privateKey.includes('REPLACE_WITH_REAL') ||
-                privateKey.includes('MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSk'); // Old placeholder key fragment
+                privateKey.includes('REPLACE_WITH_REAL');
 
             if (!projectId || isDummyConfig) {
                 this.logger.warn('⚠️ Firebase Admin SDK: Service account credentials are placeholder/missing.');
@@ -875,8 +874,7 @@ export class AuthService {
         const isDummyConfig = !clientEmail || 
             clientEmail.includes('xxxxx') || 
             !privateKey || 
-            privateKey.includes('REPLACE_WITH_REAL') ||
-            privateKey.includes('MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSk');
+            privateKey.includes('REPLACE_WITH_REAL');
         
         const isNotConfigured = admin.apps.length === 0 || isDummyConfig;
 

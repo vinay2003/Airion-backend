@@ -44,28 +44,10 @@ const BudgetPlanner: React.FC = () => {
     };
 
     const handleExportPDF = () => {
-        toast.loading('Generating budget report...', { duration: 2000 });
-
+        toast.loading('Opening print dialog...', { duration: 1000 });
         setTimeout(() => {
-            // Mock PDF generation and download
-            const reportData = `
-                EASE2EVENT Budget Planner Report
-                Total Budget: ₹${totalBudget.toLocaleString()}
-                Total Spent: ₹${totalSpent.toLocaleString()}
-                Remaining: ₹${remainingBudget.toLocaleString()}
-            `;
-            const blob = new Blob([reportData], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `Ease2event_Budget_Report_${new Date().toISOString().split('T')[0]}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            toast.success('Budget PDF exported successfully!');
-        }, 2000);
+            window.print();
+        }, 1000);
     };
 
     return (

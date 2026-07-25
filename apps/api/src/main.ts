@@ -78,7 +78,7 @@ async function bootstrap() {
 
     // Global validation pipes: support both class-validator and Zod
     app.useGlobalPipes(
-        new ValidationPipe({ transform: true, whitelist: true }),
+        new ValidationPipe({ transform: true, whitelist: false }),
         new ZodValidationPipe()
     );
 

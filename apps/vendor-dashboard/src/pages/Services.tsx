@@ -629,17 +629,28 @@ const Services: React.FC = () => {
  className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] tracking-widest transition-all"
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- />
+ /> <Button
+ onClick={() => setIsAdding(true)}
+ className="shrink-0 h-11 px-5 bg-[var(--ease2event-brand-primary)] text-white rounded-2xl text-[11px] font-bold tracking-widest shadow-md shadow-indigo-500/20 hover:-translate-y-0.5 active:scale-95 transition-all"
+ leftIcon={<Plus size={18} />}
+ >
+ Add New Package/Service
+ </Button>
  </div>
- <div className="flex flex-wrap gap-5 items-center px-4">
+ </div>
+
+ <div className="border-b-2 border-[var(--ease2event-border-subtle)] px-6">
+ <div className="flex gap-8 overflow-x-auto no-scrollbar">
  {['ALL_SERVICES', 'ACTIVE', 'ARCHIVED'].map(tab => (
  <button
  key={tab}
  onClick={() => setActiveTab(tab)}
- className={`cursor-pointer py-4 text-sm font-bold tracking-widest transition-all group ${activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-red-500'}`}
+ className={`pb-4 pt-2 font-bold text-xs tracking-widest relative group whitespace-nowrap transition-colors ${
+ activeTab === tab ? 'text-red-500' : 'text-[var(--ease2event-text-secondary)] hover:text-[var(--ease2event-text-primary)]'
+ }`}
  >
- <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-'}`}>
- {tab.replace('_', ' ')}
+ <span className={`pb-2 border-b-2 transition-all ${activeTab === tab ? 'border-red-500' : 'border-transparent group-hover:border-[var(--ease2event-border-subtle)]'}`}>
+ {tab.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
  </span>
  </button>
  ))}

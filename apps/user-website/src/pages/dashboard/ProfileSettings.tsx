@@ -327,14 +327,6 @@ const ProfileSettings: React.FC = () => {
                                         </Button>
                                     </form>
                                 </div>
-
-                                <div className="p-6 border border-neutral-200 dark:border-slate-800 rounded-2xl bg-neutral-50 dark:bg-slate-800/30">
-                                    <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">Two-Factor Authentication</h3>
-                                    <p className="text-sm text-neutral-500 dark:text-slate-400 mb-4">Add an extra layer of security to your account.</p>
-                                    <Button variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 font-bold px-6 py-2 rounded-xl">
-                                        Enable 2FA
-                                    </Button>
-                                </div>
                             </div>
                         </motion.div>
                     )}

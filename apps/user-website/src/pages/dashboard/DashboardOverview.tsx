@@ -303,7 +303,7 @@ const DashboardOverview: React.FC = () => {
                                         <span className="text-xl font-black text-neutral-900 dark:text-white">{vendor.price}</span>
                                     </div>
                                     <Link to={`/event/${vendor.id}`} className="bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-red-500 hover:text-white text-[10px] font-black px-6 py-3 rounded-xl transition-all shadow-xl tracking-widest">
-                                        Lock Node
+                                        Book Now
                                     </Link>
                                 </div>
                             </div>

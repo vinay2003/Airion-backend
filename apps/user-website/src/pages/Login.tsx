@@ -5,6 +5,13 @@ import { useAuth, otpAuth, commonAuth } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
+import { auth, signInWithPhoneNumber, RecaptchaVerifier } from '../lib/firebase';
+
+declare global {
+    interface Window {
+        recaptchaVerifier: any;
+    }
+}
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -22,6 +29,7 @@ const Login: React.FC = () => {
     const [otp, setOtp] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
+    const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
     const [loading, setLoading] = useState(false);
 
@@ -32,6 +40,18 @@ const Login: React.FC = () => {
             navigate(from);
         }
     }, [searchParams, loginWithToken, navigate, from]);
+
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            try {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible',
+                });
+            } catch (error) {
+                console.error("Error initializing recaptcha verifier:", error);
+            }
+        }
+    }, []);
 
     const handlePasswordLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -74,21 +94,29 @@ const Login: React.FC = () => {
 
         setLoading(true);
         try {
-            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone });
-
-            // Handle dev-only code
-            const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
-            if (import.meta.env.DEV && devCode) {
-                console.log('📱 Dev-Only OTP:', devCode);
-                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
+            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            if (sanitizedPhone.length === 10) {
+                sanitizedPhone = '+91' + sanitizedPhone;
+            } else if (!sanitizedPhone.startsWith('+')) {
+                sanitizedPhone = '+' + sanitizedPhone;
             }
+
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+            setConfirmationResult(confirmation);
 
             toast.success('Verification code sent');
             setStep('otp');
             startResendTimer();
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to send verification code.');
+            console.error("Firebase send OTP error:", err);
+            // Reset reCAPTCHA if it failed
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.render().then((widgetId: any) => {
+                    (window as any).grecaptcha.reset(widgetId);
+                });
+            }
+            toast.error(err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
@@ -100,8 +128,20 @@ const Login: React.FC = () => {
 
         setLoading(true);
         try {
-            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            const response = await otpAuth.verifyLoginOTP({ phone: sanitizedPhone, otp: otpValue.trim() });
+            if (!confirmationResult) {
+                throw new Error("No OTP request found. Please resend the code.");
+            }
+
+            // 1. Verify with Firebase
+            const result = await confirmationResult.confirm(otpValue.trim());
+            
+            // 2. Get the Firebase ID token
+            const idToken = await result.user.getIdToken();
+
+            // 3. Authenticate with our NestJS backend
+            const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
+            const response = await otpAuth.verifyFirebaseToken(idToken, roleContext);
+
             if (response.access_token) {
                 // Determine portal redirection based on user role
                 const user = response?.user;
@@ -121,7 +161,8 @@ const Login: React.FC = () => {
                 }, 800);
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'The code you entered is incorrect.');
+            console.error("OTP verification error:", err);
+            toast.error(err.response?.data?.message || err.message || 'The code you entered is incorrect.');
         } finally {
             setLoading(false);
         }
@@ -324,6 +365,8 @@ const Login: React.FC = () => {
                     </p>
                 </div>
             </div>
+            {/* Firebase reCAPTCHA Container */}
+            <div id="recaptcha-container"></div>
         </div>
     );
 };

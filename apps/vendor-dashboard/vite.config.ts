@@ -19,6 +19,10 @@ export default defineConfig({
     },
   },
   server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+    },
     port: Number(process.env.VITE_VENDOR_PORT) || 5174,
     strictPort: true,
     host: true,

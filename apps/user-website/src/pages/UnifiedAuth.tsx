@@ -12,6 +12,11 @@ import { VendorRegistrationForm } from '../components/auth/VendorRegistrationFor
 import { auth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from '../lib/firebase';
 import { userService } from '../lib/api/userService';
 
+declare global {
+    interface Window {
+        recaptchaVerifier: any;
+    }
+}
 
 type AuthMode = 'login' | 'signup';
 
@@ -97,6 +102,18 @@ const UnifiedAuth: React.FC = () => {
         }
     }, [resendTimer]);
 
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            try {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible',
+                });
+            } catch (error) {
+                console.error("Error initializing recaptcha verifier:", error);
+            }
+        }
+    }, []);
+
 
     // ─── Google OAuth ────────────────────────────────────────────────────────
     const handleGoogleLogin = async () => {
@@ -178,28 +195,35 @@ const UnifiedAuth: React.FC = () => {
                     setLoading(false);
                     return;
                 }
-                if (!phoneNumber.startsWith('+')) {
-                    phoneNumber = '+91' + phoneNumber;
+                let sanitizedPhone = phoneNumber.replace(/\s+/g, '').trim();
+                if (sanitizedPhone.length === 10) {
+                    sanitizedPhone = '+91' + sanitizedPhone;
+                } else if (!sanitizedPhone.startsWith('+')) {
+                    sanitizedPhone = '+' + sanitizedPhone;
                 }
 
-                let response: any;
-                if (mode === 'signup') {
-                    response = await otpAuth.sendSignupOTP({ phone: phoneNumber, role: selectedRole });
-                } else {
-                    response = await otpAuth.sendLoginOTP({ phone: phoneNumber, role: selectedRole });
-                }
-                toast.success('Verification code sent to ' + phoneNumber);
-                if (response?._dev_otp) {
-                    console.warn('🛠️ [DEV OTP]:', response._dev_otp);
-                }
+                const appVerifier = window.recaptchaVerifier;
+                const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+                setConfirmationResult(confirmation);
+
+                toast.success('Verification code sent to ' + sanitizedPhone);
             }
 
             setStep('otp');
             setResendTimer(60);
         } catch (err: any) {
             console.error('[OTP] ❌ Error:', err);
-            if (authMethod === 'phone' && err.code === 'auth/too-many-requests') {
-                toast.error('Too many requests. Please try again later.');
+            if (authMethod === 'phone') {
+                if (window.recaptchaVerifier) {
+                    window.recaptchaVerifier.render().then((widgetId: any) => {
+                        (window as any).grecaptcha.reset(widgetId);
+                    });
+                }
+                if (err.code === 'auth/too-many-requests') {
+                    toast.error('Too many requests. Please try again later.');
+                } else {
+                    toast.error(err.message || 'Failed to send verification code.');
+                }
             } else {
                 toast.error(err?.response?.data?.error || err?.message || 'Failed to send verification code.');
             }
@@ -221,23 +245,18 @@ const UnifiedAuth: React.FC = () => {
             let response: any;
             
             if (authMethod === 'phone') {
-                let phoneNumber = phone.trim();
-                if (!phoneNumber.startsWith('+')) {
-                    phoneNumber = '+91' + phoneNumber;
+                if (!confirmationResult) {
+                    throw new Error("No OTP request found. Please resend the code.");
                 }
-                if (mode === 'signup') {
-                    response = await otpAuth.verifySignupOTP({
-                        phone: phoneNumber,
-                        otp: otpValue.trim(),
-                        role: selectedRole,
-                        name: fullName || undefined,
-                    });
-                } else {
-                    response = await otpAuth.verifyLoginOTP({
-                        phone: phoneNumber,
-                        otp: otpValue.trim(),
-                    });
-                }
+
+                // 1. Verify with Firebase
+                const result = await confirmationResult.confirm(otpValue.trim());
+                
+                // 2. Get the Firebase ID token
+                const idToken = await result.user.getIdToken();
+
+                // 3. Verify with our backend
+                response = await otpAuth.verifyFirebaseToken(idToken, selectedRole);
             } else {
                 const trimmedEmail = email.trim().toLowerCase();
                 if (mode === 'signup') {
@@ -683,6 +702,9 @@ const UnifiedAuth: React.FC = () => {
                     </div>
                 </div>
             </div>
+            
+            {/* Firebase reCAPTCHA Container */}
+            <div id="recaptcha-container"></div>
         </div>
     );
 };

@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, Loader, CheckCircle2, ArrowLeft, Phone, Clock } from 'lucide-react';
-import { useAuth, otpAuth, getPortalUrl } from '@ease2event/shared/auth';
+import { useAuth, commonAuth, otpAuth, getPortalUrl } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
+import { auth, signInWithPhoneNumber, RecaptchaVerifier } from '../lib/firebase';
+
+declare global {
+    interface Window {
+        recaptchaVerifier: any;
+    }
+}
 
 const Signup: React.FC = () => {
     const navigate = useNavigate();
@@ -14,6 +21,7 @@ const Signup: React.FC = () => {
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
     const [resendTimer, setResendTimer] = useState(0);
+    const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
     const [loading, setLoading] = useState(false);
 
@@ -26,30 +34,50 @@ const Signup: React.FC = () => {
         }
     }, [resendTimer]);
 
+    useEffect(() => {
+        if (!window.recaptchaVerifier) {
+            try {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible',
+                });
+            } catch (error) {
+                console.error("Error initializing recaptcha verifier:", error);
+            }
+        }
+    }, []);
+
     const handleSendOTP = useCallback(async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (resendTimer > 0) return;
 
         setLoading(true);
         try {
-            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
-
-            const devCode = (response as any)?._dev_otp || (response as any)?.data?._dev_otp;
-            if (import.meta.env.DEV && devCode) {
-                console.log('📱 Dev-Only OTP:', devCode);
-                toast(`Dev Code: ${devCode}`, { icon: '🔑', duration: 10000 });
+            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            if (sanitizedPhone.length === 10) {
+                sanitizedPhone = '+91' + sanitizedPhone;
+            } else if (!sanitizedPhone.startsWith('+')) {
+                sanitizedPhone = '+' + sanitizedPhone;
             }
+
+            const appVerifier = window.recaptchaVerifier;
+            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
+            setConfirmationResult(confirmation);
 
             toast.success('Verification code sent');
             setStep('otp');
             startResendTimer();
         } catch (err: any) {
+            console.error("Firebase send OTP error:", err);
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.render().then((widgetId: any) => {
+                    (window as any).grecaptcha.reset(widgetId);
+                });
+            }
             if (err.response?.status === 409) {
                 toast.error('Account already exists. Please login.');
                 setTimeout(() => navigate('/login'), 1500);
             } else {
-                toast.error(err.response?.data?.message || 'Failed to send verification code.');
+                toast.error(err.message || 'Failed to send verification code.');
             }
         } finally {
             setLoading(false);
@@ -62,12 +90,19 @@ const Signup: React.FC = () => {
 
         setLoading(true);
         try {
-            const sanitizedPhone = phone.replace(/\s+/g, '').trim();
-            const response = await otpAuth.verifySignupOTP({
-                phone: sanitizedPhone,
-                otp: otpValue.trim(),
-                name: `User ${sanitizedPhone}`,
-            });
+            if (!confirmationResult) {
+                throw new Error("No OTP request found. Please resend the code.");
+            }
+
+            // 1. Verify with Firebase
+            const result = await confirmationResult.confirm(otpValue.trim());
+            
+            // 2. Get the Firebase ID token
+            const idToken = await result.user.getIdToken();
+
+            // 3. Authenticate with our NestJS backend (which handles auto-signup)
+            // By default signup creates a 'user' unless otherwise specified.
+            const response = await otpAuth.verifyFirebaseToken(idToken, 'user');
 
             if (response.access_token) {
                 const user = response?.user;
@@ -87,7 +122,8 @@ const Signup: React.FC = () => {
                 }, 800);
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'The code you entered is invalid.');
+            console.error("OTP verification error:", err);
+            toast.error(err.response?.data?.message || err.message || 'The code you entered is invalid.');
         } finally {
             setLoading(false);
         }
@@ -240,6 +276,8 @@ const Signup: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {/* Firebase reCAPTCHA Container */}
+            <div id="recaptcha-container"></div>
         </div>
     );
 };

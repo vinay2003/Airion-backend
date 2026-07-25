@@ -246,7 +246,7 @@ const Gallery: React.FC = () => {
  </div>
  )}
 
- {/* Matrix Preview Overlay */}
+ {/* Preview Overlay */}
  <AnimatePresence>
  {selectedImage && (
  <div

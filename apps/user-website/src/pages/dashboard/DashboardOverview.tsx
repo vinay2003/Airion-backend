@@ -160,7 +160,7 @@ const DashboardOverview: React.FC = () => {
                 </section>
             )}
 
-            {/* 📊 Main Intelligence Matrix */}
+            {/* 📊 Main Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Active Booking Nodes */}
                 <div className="lg:col-span-2 space-y-6">

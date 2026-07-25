@@ -55,6 +55,7 @@ export class AdsController {
     return this.adsService.findAll();
   }
 
+
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)

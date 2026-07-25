@@ -11,7 +11,28 @@ interface RazorpayResponse {
 export const useRazorpay = () => {
   const [loading, setLoading] = useState(false);
 
+  const loadRazorpayScript = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const openCheckout = async (amount: number, metadata: any = {}) => {
+    setLoading(true);
+    const isLoaded = await loadRazorpayScript();
+    if (!isLoaded) {
+      toast.error('Failed to load Razorpay checkout (check adblocker).');
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       // 1. Create order on backend

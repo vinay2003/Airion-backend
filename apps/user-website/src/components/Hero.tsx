@@ -23,7 +23,7 @@ const HERO_CONTENT = [
         title: <>Turn Your Dream <br className="hidden md:block" /> <span className="font-medium">Event Into Reality</span></>,
         description: "From intimate gatherings to grand celebrations — Ease2event connects you with India's finest venues and vendors.",
         authTitle: <>Your Event Dashboard <br className="hidden md:block" /> <span className="font-medium">is Waiting for You</span></>,
-        authDescription: "Synchronize your bookings, track mission progress, and bridge with elite vendor nodes.",
+        authDescription: "Synchronize your bookings, track progress, and connect with elite vendors.",
         badge: { icon: "★", text: "4.9/5 · 8,200+ reviews", color: "text-yellow-400" }
     },
     {

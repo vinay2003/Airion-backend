@@ -36,7 +36,7 @@ const NAV_CONFIG: Record<Role, NavItem[]> = {
         { label: 'Configuration', icon: Settings, path: '/vendor/settings' },
     ],
     ADMIN: [
-        { label: 'Node Overview', icon: LayoutDashboard, path: '/admin' },
+        { label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
         { label: 'User Directory', icon: Users, path: '/admin/users' },
         { label: 'Vendor Directory', icon: ShoppingBag, path: '/admin/vendors' },
         { label: 'Intel Moderation', icon: ShieldAlert, path: '/admin/moderation', count: 3 },
@@ -131,7 +131,7 @@ const DashboardLayout: React.FC<{ portalRole: Role }> = ({ portalRole }) => {
                                 <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-lg shadow-xl shadow-slate-900/10 group-hover:bg-red-600 transition-colors">{user?.name?.charAt(0) || 'A'}</div>
                                 <div className="hidden sm:block text-left pr-4">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-900 leading-none">{user?.name}</p>
-                                    <p className="text-[10px] text-slate-300 font-bold mt-1 uppercase tracking-widest italic">{portalRole} NODE ACTIVE</p>
+                                    <p className="text-[10px] text-slate-300 font-bold mt-1 uppercase tracking-widest italic">{portalRole}</p>
                                 </div>
                             </button>
                             <AnimatePresence>

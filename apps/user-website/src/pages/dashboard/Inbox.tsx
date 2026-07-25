@@ -365,7 +365,7 @@ export const Inbox: React.FC = () => {
                             <Send size={48} className="text-red-500" strokeWidth={1} />
                         </div>
                         <h3 className="text-2xl font-black text-neutral-900 dark:text-white tracking-tighter mb-2">Ready to Connect?</h3>
-                        <p className="text-sm opacity-40">Select a node to start messaging</p>
+                        <p className="text-sm opacity-40">Select a chat to start messaging</p>
                     </div>
                 )}
             </div>

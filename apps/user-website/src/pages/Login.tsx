@@ -42,15 +42,34 @@ const Login: React.FC = () => {
     }, [searchParams, loginWithToken, navigate, from]);
 
     useEffect(() => {
-        if (!window.recaptchaVerifier) {
+        if (window.recaptchaVerifier) {
             try {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    size: 'invisible',
-                });
-            } catch (error) {
-                console.error("Error initializing recaptcha verifier:", error);
+                window.recaptchaVerifier.clear();
+            } catch (e) {
+                // Ignore clear errors
             }
+            window.recaptchaVerifier = null;
         }
+
+        try {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                size: 'invisible',
+            });
+            window.recaptchaVerifier.render();
+        } catch (error) {
+            console.error("Error initializing recaptcha verifier:", error);
+        }
+
+        return () => {
+            if (window.recaptchaVerifier) {
+                try {
+                    window.recaptchaVerifier.clear();
+                } catch (e) {
+                    // Ignore clear errors
+                }
+                window.recaptchaVerifier = null;
+            }
+        };
     }, []);
 
     const handlePasswordLogin = async (e: React.FormEvent) => {

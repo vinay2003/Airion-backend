@@ -49,11 +49,7 @@ const Services: React.FC = () => {
  state: '',
  images: [] as string[],
  features: [] as { name: string; included: boolean }[],
- packages: [
- { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
- { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
- { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
- ] as Package[]
+ packages: [] as Package[]
  });
 
  useEffect(() => {
@@ -120,11 +116,7 @@ const Services: React.FC = () => {
  state: '',
  images: [],
  features: [],
- packages: [
- { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
- { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
- { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
- ]
+ packages: []
  });
  };
 
@@ -146,11 +138,7 @@ const Services: React.FC = () => {
  packages: product.packages && product.packages.length > 0 ? product.packages.map((p: any) => ({
  ...p,
  price: String(p.price || '')
- })) : [
- { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
- { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
- { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
- ]
+ })) : []
  });
  setIsAdding(true);
  };
@@ -271,7 +259,7 @@ const Services: React.FC = () => {
  {/* Header Section */}
  <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 py-10 border-b border-[var(--ease2event-border-subtle)]">
  <div >
- <h1 className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">Inventory Configuration</h1>
+ <h1 className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tighter leading-none">Packages & Service Configuration</h1>
  <div className="flex items-center gap-3 mt-4">
  <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded-full border border-blue-500/20">
  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
@@ -435,49 +423,118 @@ const Services: React.FC = () => {
  <div className="space-y-5">
  <div className="flex items-center justify-between px-2">
  <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)] tracking-tight">Tier Architecture</h3>
- <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-2xl font-bold text-sm tracking-widest ">Autonomous Tiering Active</Badge>
+ <Button
+ onClick={() => {
+ setFormData({
+ ...formData,
+ packages: [...formData.packages, { name: '', price: '', description: '', features: [], isPopular: false }]
+ });
+ }}
+ className="cursor-pointer flex items-center justify-center h-10 px-4 rounded-xl font-bold text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
+ >
+ <Plus size={14} className="mr-2" /> Add Package
+ </Button>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
  {formData.packages.map((pkg, i) => (
  <div
- key={pkg.name}
+ key={i}
  className={`card-minimal p-6 transition-all border relative overflow-hidden rounded-xl ${pkg.isPopular ? 'bg-gradient-to-br from-[var(--ease2event-brand-primary)]/[0.05] to-transparent border-[var(--ease2event-brand-primary)]/30' : 'bg-[var(--ease2event-bg-surface)] border-[var(--ease2event-border-base)]'}`}
  >
  <div className="space-y-6 relative z-10">
- <div className="flex justify-between items-center">
- <span className="text-xl font-bold text-[var(--ease2event-text-primary)]">{pkg.name}</span>
- {pkg.isPopular && <Badge className="bg-[var(--ease2event-brand-primary)] text-white text-[9px] font-bold non-italic px-4 py-1.5 rounded-full /30">Popular</Badge>}
+ <div className="flex justify-between items-start gap-4">
+ <div className="flex-1 space-y-3">
+ <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Package Name</label>
+ <input
+ type="text"
+ value={pkg.name}
+ onChange={(e) => updatePackage(i, 'name', e.target.value)}
+ placeholder="e.g. Standard"
+ className="w-full h-12 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-sm font-bold outline-none text-[var(--ease2event-text-primary)] tracking-widest"
+ />
  </div>
+ <div className="flex flex-col gap-2 pt-6">
+ <button
+ onClick={() => {
+ const newPackages = [...formData.packages];
+ newPackages.splice(i, 1);
+ setFormData({ ...formData, packages: newPackages });
+ }}
+ className="p-2 text-rose-500 bg-rose-500/10 rounded-lg hover:bg-rose-500/20 transition-colors"
+ title="Remove Package"
+ >
+ <Trash2 size={14} />
+ </button>
+ <button
+ onClick={() => {
+ const newPackages = formData.packages.map((p, idx) => ({ ...p, isPopular: idx === i }));
+ setFormData({ ...formData, packages: newPackages });
+ }}
+ className={`p-2 rounded-lg transition-colors ${pkg.isPopular ? 'text-amber-500 bg-amber-500/10' : 'text-neutral-400 bg-neutral-100 dark:bg-slate-800 hover:bg-neutral-200 dark:hover:bg-slate-700'}`}
+ title="Mark as Popular"
+ >
+ <Star size={14} className={pkg.isPopular ? "fill-amber-500" : ""} />
+ </button>
+ </div>
+ </div>
+ 
  <div className="space-y-3">
- <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Tier Capture (₹)</label>
+ <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Package Price (₹)</label>
  <input
  type="number"
  value={pkg.price}
  onChange={(e) => updatePackage(i, 'price', e.target.value)}
- placeholder="VAL"
+ placeholder="0"
  className="w-full h-12 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-sm font-bold outline-none text-[var(--ease2event-text-primary)] tracking-widest"
  />
  </div>
- <div className="space-y-5">
- <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Capability Modules</label>
- <div className="grid grid-cols-2 gap-3">
- {['Catering', 'Decor', 'Audio', 'Visuals'].map(feat => (
- <button
- key={feat}
+
+ <div className="space-y-3">
+ <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Description</label>
+ <textarea
+ value={pkg.description}
+ onChange={(e) => updatePackage(i, 'description', e.target.value)}
+ placeholder="Describe what's included..."
+ className="w-full h-20 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 py-3 text-sm font-bold outline-none text-[var(--ease2event-text-primary)] resize-none"
+ />
+ </div>
+
+ <div className="space-y-3">
+ <label className="text-[9px] font-bold text-[var(--ease2event-text-secondary)] tracking-[0.3em]">Features</label>
+ <div className="flex flex-wrap gap-2 mb-2">
+ {pkg.features.map((feat, fIdx) => (
+ <span key={fIdx} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded-lg border border-blue-500/20">
+ {feat}
+ <X
+ size={12}
+ className="cursor-pointer hover:text-red-500"
  onClick={() => {
- const current = pkg.features;
- const next = current.includes(feat) ? current.filter(c => c !== feat) : [...current, feat];
+ const next = pkg.features.filter((_, idx) => idx !== fIdx);
  updatePackage(i, 'features', next);
  }}
- className={`flex items-center justify-center gap-2 h-10 rounded-xl text-[9px] font-bold transition-all border ${pkg.features.includes(feat) ? 'bg-blue-500/10 text-blue-500 border-blue-500/30' : 'bg-[var(--ease2event-bg-elevated)] text-[var(--ease2event-text-secondary)] border-[var(--ease2event-border-subtle)]'}`}
- >
- {pkg.features.includes(feat) && <CheckCircle2 size={12} />}
- {feat}
- </button>
+ />
+ </span>
  ))}
  </div>
+ <input
+ type="text"
+ placeholder="Add feature & press Enter..."
+ className="w-full h-10 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-xs font-bold outline-none text-[var(--ease2event-text-primary)]"
+ onKeyDown={(e) => {
+ if (e.key === 'Enter') {
+ e.preventDefault();
+ const val = (e.target as HTMLInputElement).value.trim();
+ if (val && !pkg.features.includes(val)) {
+ const next = [...pkg.features, val];
+ updatePackage(i, 'features', next);
+ (e.target as HTMLInputElement).value = '';
+ }
+ }
+ }}
+ />
  </div>
+
  </div>
  </div>
  ))}
@@ -515,7 +572,7 @@ const Services: React.FC = () => {
   <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-2">
   <Trash2 size={32} />
   </div>
-  <h2 className="text-2xl font-black text-[var(--ease2event-text-primary)] tracking-tight">Delete Service?</h2>
+  <h2 className="text-2xl font-black text-gray-900 tracking-tight">Delete Service?</h2>
   <p className="text-sm font-bold text-[var(--ease2event-text-secondary)]">This action cannot be undone. This service will be permanently removed from your inventory.</p>
   <div className="flex w-full gap-4 pt-6">
   <Button
@@ -542,7 +599,7 @@ const Services: React.FC = () => {
   {/* Header Section */}
  <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pt-0 pb-6 border-b border-[var(--ease2event-border-subtle)]">
  <div >
- <h1 className="text-xl font-bold normal-case tracking-normal leading-normal">Services List</h1>
+ <h1 className="text-xl font-bold normal-case tracking-normal leading-normal">Packages & Services List</h1>
  <div className="flex items-center gap-3 mt-4">
  <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold rounded-full border border-emerald-500/20">
  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
@@ -557,7 +614,7 @@ const Services: React.FC = () => {
  className="cursor-pointer flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
  leftIcon={<Plus size={18} />}
  >
- Add New Service
+ <Plus size={18} /> Add New Package/Service
  </Button>
  </div>
  </div>
@@ -568,7 +625,7 @@ const Services: React.FC = () => {
  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--ease2event-text-muted)] group-focus-within:text-[var(--ease2event-brand-primary)] transition-colors" size={16} />
  <input
  type="text"
- placeholder="Search Services..."
+ placeholder="Search Packages & Services..."
  className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] tracking-widest transition-all"
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}

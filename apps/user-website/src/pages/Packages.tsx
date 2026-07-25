@@ -151,7 +151,7 @@ const Packages: React.FC = () => {
 
                     <div className="mt-auto">
                       <button
-                        onClick={() => navigate(`/packages/${pkg.id}`)}
+                        onClick={() => navigate(`/event/${pkg.service?.id}?package=${pkg.id}`)}
                         className="w-full py-4 rounded-2xl font-black text-sm tracking-widest bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                       >
                         View Package <ArrowRight size={16} />

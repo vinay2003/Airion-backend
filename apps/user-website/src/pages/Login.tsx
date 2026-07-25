@@ -53,7 +53,13 @@ const Login: React.FC = () => {
 
         try {
             window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                size: 'invisible',
+                size: 'normal', // Changed to normal to ensure visibility
+                callback: (response: any) => {
+                    console.log("reCAPTCHA solved:", response);
+                },
+                'expired-callback': () => {
+                    console.log("reCAPTCHA expired");
+                }
             });
             window.recaptchaVerifier.render();
         } catch (error) {
@@ -302,6 +308,7 @@ const Login: React.FC = () => {
                                             />
                                         </div>
                                     </div>
+                                    <div id="recaptcha-container" className="flex justify-center mt-4"></div>
                                     <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] mt-2">
                                         {loading ? <Loader className="animate-spin" /> : <>Continue securely <ArrowRight size={18} /></>}
                                     </button>
@@ -376,8 +383,6 @@ const Login: React.FC = () => {
                     </p>
                 </div>
             </div>
-            {/* Firebase reCAPTCHA Container */}
-            <div id="recaptcha-container"></div>
         </div>
     );
 };

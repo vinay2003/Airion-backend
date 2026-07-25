@@ -42,37 +42,12 @@ const Login: React.FC = () => {
     }, [searchParams, loginWithToken, navigate, from]);
 
     useEffect(() => {
-        if (window.recaptchaVerifier) {
-            try {
-                window.recaptchaVerifier.clear();
-            } catch (e) {
-                // Ignore clear errors
-            }
-            window.recaptchaVerifier = null;
-        }
-
-        try {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                size: 'normal', // Changed to normal to ensure visibility
-                callback: (response: any) => {
-                    console.log("reCAPTCHA solved:", response);
-                },
-                'expired-callback': () => {
-                    console.log("reCAPTCHA expired");
-                }
-            });
-            window.recaptchaVerifier.render();
-        } catch (error) {
-            console.error("Error initializing recaptcha verifier:", error);
-        }
-
+        // Cleanup on unmount
         return () => {
             if (window.recaptchaVerifier) {
                 try {
                     window.recaptchaVerifier.clear();
-                } catch (e) {
-                    // Ignore clear errors
-                }
+                } catch (e) {}
                 window.recaptchaVerifier = null;
             }
         };
@@ -126,6 +101,12 @@ const Login: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible'
+                });
+            }
+
             const appVerifier = window.recaptchaVerifier;
             const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
             setConfirmationResult(confirmation);
@@ -135,6 +116,10 @@ const Login: React.FC = () => {
             startResendTimer();
         } catch (err: any) {
             console.error("Firebase send OTP error:", err);
+            if (window.recaptchaVerifier) {
+                try { window.recaptchaVerifier.clear(); } catch(e) {}
+                window.recaptchaVerifier = null;
+            }
             toast.error(err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
@@ -308,7 +293,7 @@ const Login: React.FC = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div id="recaptcha-container" className="flex justify-center mt-4"></div>
+                                    <div id="recaptcha-container"></div>
                                     <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] mt-2">
                                         {loading ? <Loader className="animate-spin" /> : <>Continue securely <ArrowRight size={18} /></>}
                                     </button>

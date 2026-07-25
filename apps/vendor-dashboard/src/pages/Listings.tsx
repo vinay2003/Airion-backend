@@ -43,16 +43,19 @@ const Listings: React.FC = () => {
 
  const saveMutation = useMutation({
  mutationFn: async (data: any) => {
- const payload = {
- vendorId,
+ const payload: any = {
  title: data.title,
  description: data.description,
- basePrice: Number(data.price),
- availableLocations: [data.location],
+ basePrice: Number(data.price) || 0,
+ availableLocations: data.location ? [data.location] : [],
  guestCapacity: Number(data.capacity) || 1,
  images: data.image ? [data.image] : [],
  locationType: 'onsite'
  };
+
+ if (vendorId !== 'mock-id') {
+ payload.vendorId = vendorId;
+ }
 
  if (editingListing) {
  return api.put(`/services/${editingListing.id}`, payload);

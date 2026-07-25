@@ -234,6 +234,7 @@ const UnifiedAuth: React.FC = () => {
 
     // ─── Verify OTP ───────────────────────────────────────────────────────────
     const handleVerifyOTP = async (finalOtp?: string) => {
+        if (loading) return; // Prevent double submission when OTPInput auto-submits and user clicks Verify simultaneously
         const otpValue = finalOtp || otp;
         if (!otpValue || otpValue.length !== 6) {
             toast.error('Please enter a valid 6-digit code.');

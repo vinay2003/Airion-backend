@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, Clock } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth } from '@ease2event/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
@@ -102,7 +102,8 @@ const Login: React.FC = () => {
             }
 
             // Using Custom Backend OTP instead of Firebase Phone Auth
-            const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
+            const portal = searchParams.get('portal');
+            const roleContext = portal === 'vendor' ? UserRole.VENDOR : portal === 'admin' ? UserRole.ADMIN : UserRole.USER;
             const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone, role: roleContext });
             
             if (response.message) {
@@ -134,7 +135,8 @@ const Login: React.FC = () => {
             }
 
             // Verify using custom backend
-            const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
+            const portal = searchParams.get('portal');
+            const roleContext = portal === 'vendor' ? UserRole.VENDOR : portal === 'admin' ? UserRole.ADMIN : UserRole.USER;
             const response = await otpAuth.verifyLoginOTP({
                 phone: sanitizedPhone,
                 otp: otpValue.trim(),

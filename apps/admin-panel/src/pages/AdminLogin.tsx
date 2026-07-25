@@ -151,6 +151,23 @@ const AdminLogin: React.FC = () => {
                             </button>
                         </form>
                     )}
+                    
+                    {!showOTP && !show2FA && (
+                        <div className="mt-4 border-t border-gray-200 dark:border-slate-800 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const authUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                                        ? 'http://localhost:5173/login?portal=admin'
+                                        : '/login?portal=admin';
+                                    window.location.href = authUrl;
+                                }}
+                                className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-xl font-bold transition-all hover:bg-gray-50 dark:hover:bg-slate-700"
+                            >
+                                Login via Mobile Number
+                            </button>
+                        </div>
+                    )}
 
                     {/* Step 2: OTP Verification */}
                     {showOTP && (

@@ -101,26 +101,24 @@ const Login: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            const appVerifier = window.recaptchaVerifier;
-            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
-            setConfirmationResult(confirmation);
-
-            toast.success('Verification code sent');
-            setStep('otp');
-            startResendTimer();
-        } catch (err: any) {
-            console.error("Firebase send OTP error:", err);
-            // Reset reCAPTCHA if it failed
-            if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.render().then((widgetId: any) => {
-                    (window as any).grecaptcha.reset(widgetId);
-                });
+            // Using Custom Backend OTP instead of Firebase Phone Auth
+            const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
+            const response = await otpAuth.sendLoginOTP({ phone: sanitizedPhone, role: roleContext });
+            
+            if (response.message) {
+                toast.success('Verification code sent via SMS');
+                setStep('otp');
+                startResendTimer();
+            } else {
+                throw new Error('Failed to send OTP');
             }
-            toast.error(err.message || 'Failed to send verification code.');
+        } catch (err: any) {
+            console.error("Send OTP error:", err);
+            toast.error(err.response?.data?.message || err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
-    }, [phone, resendTimer, navigate]);
+    }, [phone, resendTimer, navigate, searchParams]);
 
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;
@@ -128,19 +126,20 @@ const Login: React.FC = () => {
 
         setLoading(true);
         try {
-            if (!confirmationResult) {
-                throw new Error("No OTP request found. Please resend the code.");
+            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            if (sanitizedPhone.length === 10) {
+                sanitizedPhone = '+91' + sanitizedPhone;
+            } else if (!sanitizedPhone.startsWith('+')) {
+                sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            // 1. Verify with Firebase
-            const result = await confirmationResult.confirm(otpValue.trim());
-            
-            // 2. Get the Firebase ID token
-            const idToken = await result.user.getIdToken();
-
-            // 3. Authenticate with our NestJS backend
+            // Verify using custom backend
             const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
-            const response = await otpAuth.verifyFirebaseToken(idToken, roleContext);
+            const response = await otpAuth.verifyLoginOTP({
+                phone: sanitizedPhone,
+                otp: otpValue.trim(),
+                role: roleContext
+            });
 
             if (response.access_token) {
                 // Determine portal redirection based on user role

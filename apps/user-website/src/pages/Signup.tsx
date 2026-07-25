@@ -59,25 +59,23 @@ const Signup: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            const appVerifier = window.recaptchaVerifier;
-            const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
-            setConfirmationResult(confirmation);
-
-            toast.success('Verification code sent');
-            setStep('otp');
-            startResendTimer();
-        } catch (err: any) {
-            console.error("Firebase send OTP error:", err);
-            if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.render().then((widgetId: any) => {
-                    (window as any).grecaptcha.reset(widgetId);
-                });
+            // Using Custom Backend OTP instead of Firebase Phone Auth
+            const response = await otpAuth.sendSignupOTP({ phone: sanitizedPhone });
+            
+            if (response.message) {
+                toast.success('Verification code sent via SMS');
+                setStep('otp');
+                startResendTimer();
+            } else {
+                throw new Error('Failed to send OTP');
             }
-            if (err.response?.status === 409) {
+        } catch (err: any) {
+            console.error("Send OTP error:", err);
+            if (err.response?.status === 409 || err.message?.includes('already exists')) {
                 toast.error('Account already exists. Please login.');
                 setTimeout(() => navigate('/login'), 1500);
             } else {
-                toast.error(err.message || 'Failed to send verification code.');
+                toast.error(err.response?.data?.message || err.message || 'Failed to send verification code.');
             }
         } finally {
             setLoading(false);
@@ -90,19 +88,19 @@ const Signup: React.FC = () => {
 
         setLoading(true);
         try {
-            if (!confirmationResult) {
-                throw new Error("No OTP request found. Please resend the code.");
+            let sanitizedPhone = phone.replace(/\s+/g, '').trim();
+            if (sanitizedPhone.length === 10) {
+                sanitizedPhone = '+91' + sanitizedPhone;
+            } else if (!sanitizedPhone.startsWith('+')) {
+                sanitizedPhone = '+' + sanitizedPhone;
             }
 
-            // 1. Verify with Firebase
-            const result = await confirmationResult.confirm(otpValue.trim());
-            
-            // 2. Get the Firebase ID token
-            const idToken = await result.user.getIdToken();
-
-            // 3. Authenticate with our NestJS backend (which handles auto-signup)
-            // By default signup creates a 'user' unless otherwise specified.
-            const response = await otpAuth.verifyFirebaseToken(idToken, 'user');
+            // Verify using custom backend
+            const response = await otpAuth.verifySignupOTP({
+                phone: sanitizedPhone,
+                otp: otpValue.trim(),
+                role: 'user'
+            });
 
             if (response.access_token) {
                 const user = response?.user;

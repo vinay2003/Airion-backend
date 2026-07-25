@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
 import { VendorRegistrationForm } from '../components/auth/VendorRegistrationForm';
 import { auth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from '../lib/firebase';
+import { userService } from '../lib/api/userService';
 
 
 type AuthMode = 'login' | 'signup';
@@ -304,10 +305,19 @@ const UnifiedAuth: React.FC = () => {
         }
         setLoading(true);
         try {
+            await userService.updateProfile({ name: fullName });
+            
+            // If the user's name is updated successfully on backend, we can navigate.
+            // We could also call a context reload if available, but a page reload or navigate is usually enough.
+            
             toast.success('Profile saved! Taking you to your dashboard.');
-            setTimeout(() => navigate('/dashboard'), 800);
+            setTimeout(() => {
+                // Force a reload so the header fetches the updated user
+                window.location.href = '/dashboard';
+            }, 800);
         } catch (err) {
-            toast.error('Something went wrong. Taking you to dashboard.');
+            console.error('Failed to update profile:', err);
+            toast.error('Failed to save profile. Taking you to dashboard.');
             setTimeout(() => navigate('/dashboard'), 1500);
         } finally {
             setLoading(false);

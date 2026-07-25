@@ -50,9 +50,9 @@ const Services: React.FC = () => {
  images: [] as string[],
  features: [] as { name: string; included: boolean }[],
  packages: [
- { name: 'Silver', price: '', description: 'Basic tier with essential features', features: [], isPopular: false },
- { name: 'Gold', price: '', description: 'Most popular choice for premium events', features: [], isPopular: true },
- { name: 'Platinum', price: '', description: 'Luxury all-inclusive experience', features: [], isPopular: false },
+ { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
+ { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
+ { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
  ] as Package[]
  });
 
@@ -121,9 +121,9 @@ const Services: React.FC = () => {
  images: [],
  features: [],
  packages: [
- { name: 'Silver', price: '', description: 'Basic tier with essential features', features: [], isPopular: false },
- { name: 'Gold', price: '', description: 'Most popular choice for premium events', features: [], isPopular: true },
- { name: 'Platinum', price: '', description: 'Luxury all-inclusive experience', features: [], isPopular: false },
+ { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
+ { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
+ { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
  ]
  });
  };
@@ -147,9 +147,9 @@ const Services: React.FC = () => {
  ...p,
  price: String(p.price || '')
  })) : [
- { name: 'Silver', price: '', description: 'Basic tier with essential features', features: [], isPopular: false },
- { name: 'Gold', price: '', description: 'Most popular choice for premium events', features: [], isPopular: true },
- { name: 'Platinum', price: '', description: 'Luxury all-inclusive experience', features: [], isPopular: false },
+ { name: 'Silver', price: '25000', description: 'Basic tier with essential features', features: ['Standard Setup', '4 Hours Coverage', 'Basic Support'], isPopular: false },
+ { name: 'Gold', price: '45000', description: 'Most popular choice for premium events', features: ['Premium Setup', '8 Hours Coverage', 'Priority Support', 'Custom Requests'], isPopular: true },
+ { name: 'Platinum', price: '85000', description: 'Luxury all-inclusive experience', features: ['Luxury Setup', 'Full Day Coverage', 'Dedicated Manager', 'Unlimited Revisions', 'Exclusive Add-ons'], isPopular: false },
  ]
  });
  setIsAdding(true);

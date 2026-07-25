@@ -99,38 +99,35 @@ const ProfileSettings: React.FC = () => {
   useEffect(() => {
     if (user) {
       setPersonalData({
-        name: user.name || 'Aditi Sharma',
-        phone: user.phoneNumber || '+91 9876543210',
-        profileImage: (user as any).avatar || user.vendor?.logo || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100',
-        aadharNumber: user.vendor?.aadharNumber || '1234 5678 9012',
-        panNumber: user.vendor?.panNumber || 'ABCDE1234F',
-        gstNumber: user.vendor?.gstNumber || '29ABCDE1234F1Z5'
+        name: user.name || '',
+        phone: user.phoneNumber || '',
+        profileImage: (user as any).avatar || user.vendor?.logo || '',
+        aadharNumber: user.vendor?.aadharNumber || '',
+        panNumber: user.vendor?.panNumber || '',
+        gstNumber: user.vendor?.gstNumber || ''
       });
 
       const v = user.vendor || {} as any;
       setBusinessData({
-        businessName: v.businessName || 'Elite Event Planners',
-        businessEmail: v.businessEmail || 'hello@eliteevents.com',
-        businessPhone: v.businessPhone || '+91 9876543210',
-        gstNumber: v.gstNumber || '29ABCDE1234F1Z5',
-        address: v.businessAddress?.street || v.businessAddress?.address || '123 MG Road',
-        city: v.businessAddress?.city || v.city || 'Bangalore',
-        state: v.businessAddress?.state || 'Karnataka',
-        zipCode: v.businessAddress?.zipCode || '560001',
-        description: v.businessDescription || 'We are a premier event planning agency specializing in luxury weddings and corporate events. With over 5 years of experience, we deliver unforgettable experiences.',
-        yearsInBusiness: v.yearsInBusiness || '5',
-        avgBookingPrice: v.averageBookingPrice ? String(v.averageBookingPrice) : '75000',
-        website: v.socialLinks?.website || 'https://eliteevents.com',
-        instagram: v.socialLinks?.instagram || 'elite.events.in',
-        monthlyEventVolume: v.monthlyEventVolume || '10-20',
+        businessName: v.businessName || '',
+        businessEmail: v.businessEmail || '',
+        businessPhone: v.businessPhone || '',
+        gstNumber: v.gstNumber || '',
+        address: v.businessAddress?.street || v.businessAddress?.address || '',
+        city: v.businessAddress?.city || v.city || '',
+        state: v.businessAddress?.state || '',
+        zipCode: v.businessAddress?.zipCode || '',
+        description: v.businessDescription || '',
+        yearsInBusiness: v.yearsInBusiness || '',
+        avgBookingPrice: v.averageBookingPrice ? String(v.averageBookingPrice) : '',
+        website: v.socialLinks?.website || '',
+        instagram: v.socialLinks?.instagram || '',
+        monthlyEventVolume: v.monthlyEventVolume || '',
         acquisitionChannels: v.acquisitionChannels || [],
         painPoints: v.painPoints || [],
-        categoryId: v.categoryId || '1',
-        subcategoryId: v.subcategoryId || '101',
-        portfolioImages: (v.portfolioImages && v.portfolioImages.length > 0) ? v.portfolioImages : [
-          'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=1000',
-          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
-        ],
+        categoryId: v.categoryId || '',
+        subcategoryId: v.subcategoryId || '',
+        portfolioImages: (v.portfolioImages && v.portfolioImages.length > 0) ? v.portfolioImages : [],
       });
     }
   }, [user]);
@@ -212,7 +209,7 @@ const ProfileSettings: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="flex flex-col md:flex-row items-center gap-5 sm:gap-6 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-6 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] relative">
+        <div className="flex flex-col xl:flex-row items-center gap-5 sm:gap-6 group bg-[var(--ease2event-bg-elevated)]/30 p-6 sm:p-6 rounded-2xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] relative">
           <input
             type="file"
             id="profile-upload"
@@ -240,7 +237,7 @@ const ProfileSettings: React.FC = () => {
               <Camera size={18} />
             </label>
           </div>
-          <div className="space-y-4 sm:space-y-5 text-center md:text-left flex-1">
+          <div className="space-y-4 sm:space-y-5 text-center xl:text-left flex-1">
             <h3 className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal">Profile Picture</h3>
             <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed max-w-sm">Upload a professional photo to improve your credibility and brand visibility.</p>
             <label htmlFor="profile-upload" className="cursor-pointer inline-flex items-center justify-center h-10 sm:h-11 px-6 sm:px-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm text-[var(--ease2event-text-primary)] font-bold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto transition-all">
@@ -249,7 +246,7 @@ const ProfileSettings: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div className="space-y-3">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Participant Name</label>
             <div className="relative group">
@@ -307,7 +304,7 @@ const ProfileSettings: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Business Name</label>
             <input value={businessData.businessName} onChange={(e: any) => setBusinessData({ ...businessData, businessName: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all tracking-tight" placeholder="Business Name" />
@@ -359,7 +356,7 @@ const ProfileSettings: React.FC = () => {
           <textarea value={businessData.description} onChange={(e: any) => setBusinessData({ ...businessData, description: e.target.value })} rows={5} className="w-full h-auto min-h-[140px] sm:min-h-[160px] bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 py-4 sm:py-5 rounded-xl sm:rounded-3xl border border-[var(--ease2event-border-subtle)] font-bold leading-relaxed text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Describe your services and business philosophy..." />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">City</label>
             <input value={businessData.city} onChange={(e: any) => setBusinessData({ ...businessData, city: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] px-5 sm:px-6 rounded-xl sm:rounded-2xl border border-[var(--ease2event-border-subtle)] font-bold text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="City" />
@@ -371,7 +368,7 @@ const ProfileSettings: React.FC = () => {
         </div>
 
         {/* GST/PAN Documents grouped at the bottom */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-[var(--ease2event-border-subtle)]">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pt-6 border-t border-[var(--ease2event-border-subtle)]">
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Aadhar Number</label>
             <input type="text" value={personalData.aadharNumber} onChange={(e: any) => setPersonalData({ ...personalData, aadharNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Optional" />

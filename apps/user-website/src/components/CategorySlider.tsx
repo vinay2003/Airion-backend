@@ -51,9 +51,10 @@ const CategorySlider: React.FC = () => {
     };
 
     useEffect(() => {
-        api.get('/cms/landing_page_categories').then(res => {
-            if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-                const mapped = res.data.map(cat => ({
+        api.get('/cms/landing_page_categories').then((res: any) => {
+            const data = res?.data || res;
+            if (data && Array.isArray(data) && data.length > 0) {
+                const mapped = data.map((cat: any) => ({
                     id: cat.slug || cat.name.toLowerCase(),
                     label: cat.name,
                     icon: ICON_MAP[cat.icon] || Sparkles,

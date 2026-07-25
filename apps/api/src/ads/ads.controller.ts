@@ -27,6 +27,25 @@ export class AdsController {
     return this.adsService.findByVendor(req.user.userId);
   }
 
+  // ─── Public Endpoints (User Website) ────────────────────────────────
+
+  @Get('active')
+  findActive(@Query('city') city?: string) {
+    return this.adsService.findActiveAds({ city });
+  }
+
+  @Post(':id/click')
+  async recordClick(@Param('id') id: string) {
+    await this.adsService.incrementClick(id);
+    return { success: true };
+  }
+
+  @Post(':id/impression')
+  async recordImpression(@Param('id') id: string) {
+    await this.adsService.incrementImpression(id);
+    return { success: true };
+  }
+
   // ─── Admin Endpoints ────────────────────────────────────────────────
   
   @Get()
@@ -70,23 +89,5 @@ export class AdsController {
   expire(@Param('id') id: string) {
     return this.adsService.expireCampaign(id);
   }
-
-  // ─── Public Endpoints (User Website) ────────────────────────────────
-
-  @Get('active')
-  findActive(@Query('city') city?: string) {
-    return this.adsService.findActiveAds({ city });
-  }
-
-  @Post(':id/click')
-  async recordClick(@Param('id') id: string) {
-    await this.adsService.incrementClick(id);
-    return { success: true };
-  }
-
-  @Post(':id/impression')
-  async recordImpression(@Param('id') id: string) {
-    await this.adsService.incrementImpression(id);
-    return { success: true };
-  }
 }
+

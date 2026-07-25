@@ -134,10 +134,11 @@ export class VendorsController {
     async updateProfile(@Body() updateVendorDto: UpdateVendorDto, @Request() req: any) {
         try {
             const userId = req.user.userId || req.user.sub;
-            const vendor = await this.vendorsService.findByUserId(userId);
+            let vendor = await this.vendorsService.findByUserId(userId);
 
             if (!vendor) {
-                throw new NotFoundException('Vendor profile not found');
+                vendor = await this.vendorsService.create(updateVendorDto as any, { userId });
+                return vendor;
             }
 
             return await this.vendorsService.update(vendor.id, updateVendorDto, userId);

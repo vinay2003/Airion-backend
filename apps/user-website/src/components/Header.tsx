@@ -27,7 +27,12 @@ const UserProfileMenu = ({
     setIsUserMenuOpen: (o: boolean) => void;
     userMenuRef: React.RefObject<HTMLDivElement>;
     logout: () => Promise<void>;
-}) => (
+}) => {
+    const displayName = user?.name && !user.name.startsWith('User ') 
+        ? user.name 
+        : (user?.name?.startsWith('User ') ? user.name.replace('User ', '').split('@')[0] : (user?.email?.split('@')[0] || user?.phoneNumber || 'My Account'));
+        
+    return (
     <div className="relative" ref={userMenuRef}>
         <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -38,7 +43,7 @@ const UserProfileMenu = ({
             </div>
             <div className="hidden xl:block text-left">
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[100px]">
-                    {user?.name || user?.phoneNumber || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                    {displayName}
                 </p>
                 <p className="text-[10px] text-gray-500 font-medium">Account</p>
             </div>
@@ -58,9 +63,8 @@ const UserProfileMenu = ({
                 >
                     <div className="p-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
                         <p className="text-sm font-bold text-gray-900 dark:text-white">
-                            {user?.name || user?.phoneNumber || (user?.email && user.email.split('@')[0]) || 'My Account'}
+                            {displayName}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email || user?.phoneNumber}</p>
                     </div>
                     <div className="p-2">
                         {user?.role === 'user' ? (
@@ -107,7 +111,8 @@ const UserProfileMenu = ({
             )}
         </AnimatePresence>
     </div>
-);
+    );
+};
 
 
 // ─────────────────────────────────────────────

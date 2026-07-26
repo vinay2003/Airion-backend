@@ -66,8 +66,8 @@ export const useCart = () => {
     const { data: serverCart, isLoading: serverLoading } = useQuery({
         queryKey: ['cart'],
         queryFn: async () => {
-            const res = await api.get('/cart');
-            return res;
+            const res = await api.get('/cart') as any;
+            return res.data || res;
         },
         enabled: isLoggedIn,
     });

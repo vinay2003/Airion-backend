@@ -92,11 +92,13 @@ export const createAuthApi = (baseURL?: string): AxiosInstance => {
                             refresh_token: refreshToken
                         });
 
-                        tokenService.setAccessToken(response.data.access_token);
-
-                        // Retry original request
-                        originalRequest.headers.Authorization = `Bearer ${response.data.access_token}`;
-                        return api(originalRequest);
+                        if (response.data.access_token) {
+                            tokenService.setAccessToken(response.data.access_token);
+                            
+                            // Retry original request
+                            originalRequest.headers.Authorization = `Bearer ${response.data.access_token}`;
+                            return api(originalRequest);
+                        }
                     }
                 } catch (refreshError) {
                     tokenService.clearTokens();

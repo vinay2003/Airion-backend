@@ -165,7 +165,8 @@ export const useDashboardStore = create<DashboardState>((set) => ({
 
     fetchBudget: async () => {
         try {
-            const data = await apiFetchBudget();
+            const response = await apiFetchBudget() as any;
+            const data = response.data || response;
             if (data) {
                 set({ 
                     totalBudget: parseFloat(data.totalBudget), 

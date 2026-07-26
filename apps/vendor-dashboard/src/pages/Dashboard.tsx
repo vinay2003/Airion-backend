@@ -207,10 +207,10 @@ const Dashboard = () => {
 
  {/* KPI Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <StatCard title="Active Enquiries" value={displayStats.activeEnquiries} trend="+24.2%" direction="up" icon={FileText} isLoading={statsLoading && !displayStats} />
- <StatCard title="Total Services Listed" value={displayStats.totalListings} icon={Package} isLoading={statsLoading && !displayStats} />
- <StatCard title="Confirmed Bookings" value={displayStats.confirmedBookings} trend="+8.4%" direction="up" icon={CheckCircle2} isLoading={statsLoading && !displayStats} />
- <StatCard title="Revenue" value={displayStats.revenue} currency="₹" trend="+12.8%" direction="up" icon={DollarSign} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Active Enquiries" value={displayStats?.activeEnquiries || 0} trend="+24.2%" direction="up" icon={FileText} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Total Services Listed" value={displayStats?.totalListings || 0} icon={Package} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Confirmed Bookings" value={displayStats?.confirmedBookings || 0} trend="+8.4%" direction="up" icon={CheckCircle2} isLoading={statsLoading && !displayStats} />
+ <StatCard title="Revenue" value={displayStats?.revenue || 0} currency="₹" trend="+12.8%" direction="up" icon={DollarSign} isLoading={statsLoading && !displayStats} />
  </div>
 
  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

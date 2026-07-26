@@ -31,14 +31,10 @@ const Layout: React.FC = () => {
  const { theme } = useTheme();
 
  return (
- <div className="flex min-h-screen bg-[var(--ease2event-bg-base)] text-[var(--ease2event-text-primary)] font-sans antialiased overflow-hidden transition-colors relative">
+ <div className="flex min-h-screen bg-[var(--ease2event-bg-base)] text-[var(--ease2event-text-primary)] font-sans antialiased transition-colors relative">
  {theme === 'dark' && (
- <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
- <div
- 
- 
- className="absolute inset-0"
- >
+ <div className="fixed inset-0 z-0 pointer-events-none select-none">
+ <div className="absolute inset-0">
  <div className="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] rounded-full bg-red-600/10 dark:bg-red-500/[0.15] blur-[100px] sm:blur-[160px]" />
  <div className="absolute top-[20%] -right-[5%] w-[35%] h-[35%] rounded-full bg-blue-600/10 dark:bg-indigo-500/[0.15] blur-[100px] sm:blur-[140px]" />
  <div className="absolute -bottom-[10%] left-[15%] w-[45%] h-[45%] rounded-full bg-purple-600/10 dark:bg-purple-500/[0.15] blur-[100px] sm:blur-[180px]" />
@@ -48,9 +44,11 @@ const Layout: React.FC = () => {
  )}
 
  <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
- <div className="flex-1 flex flex-col min-w-0 transition-all h-screen overflow-hidden relative z-10">
- <Topbar title={pageTitle} onMenuClick={() => setIsSidebarOpen(true)} />
- <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full max-w-[1440px] mx-auto text-xl relative z-20">
+ <div className="flex-1 flex flex-col min-w-0 transition-all relative z-10">
+ <div className="sticky top-0 z-30 bg-[var(--ease2event-bg-base)]/80 backdrop-blur-md">
+   <Topbar title={pageTitle} onMenuClick={() => setIsSidebarOpen(true)} />
+ </div>
+ <main className="flex-1 p-4 md:p-8 w-full max-w-[1440px] mx-auto text-xl relative z-20">
  <Outlet />
  </main>
  </div>

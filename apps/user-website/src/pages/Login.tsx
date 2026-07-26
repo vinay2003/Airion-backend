@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Phone, ArrowRight, Loader, Sparkles, Clock } from 'lucide-react';
-import { useAuth, otpAuth, commonAuth } from '@ease2event/shared/auth';
+import { useAuth, otpAuth, commonAuth, UserRole } from '@ease2event/shared/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import OTPInput from '@ease2event/shared/components/OTPInput';
@@ -42,15 +42,15 @@ const Login: React.FC = () => {
     }, [searchParams, loginWithToken, navigate, from]);
 
     useEffect(() => {
-        if (!window.recaptchaVerifier) {
-            try {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    size: 'invisible',
-                });
-            } catch (error) {
-                console.error("Error initializing recaptcha verifier:", error);
+        // Cleanup on unmount
+        return () => {
+            if (window.recaptchaVerifier) {
+                try {
+                    window.recaptchaVerifier.clear();
+                } catch (e) {}
+                window.recaptchaVerifier = null;
             }
-        }
+        };
     }, []);
 
     const handlePasswordLogin = async (e: React.FormEvent) => {
@@ -101,45 +101,47 @@ const Login: React.FC = () => {
                 sanitizedPhone = '+' + sanitizedPhone;
             }
 
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    size: 'invisible'
+                });
+            }
+
             const appVerifier = window.recaptchaVerifier;
             const confirmation = await signInWithPhoneNumber(auth, sanitizedPhone, appVerifier);
             setConfirmationResult(confirmation);
-
-            toast.success('Verification code sent');
+            
+            toast.success('Verification code sent via Firebase');
             setStep('otp');
             startResendTimer();
         } catch (err: any) {
             console.error("Firebase send OTP error:", err);
-            // Reset reCAPTCHA if it failed
             if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.render().then((widgetId: any) => {
-                    (window as any).grecaptcha.reset(widgetId);
-                });
+                try { window.recaptchaVerifier.clear(); } catch(e) {}
+                window.recaptchaVerifier = null;
             }
             toast.error(err.message || 'Failed to send verification code.');
         } finally {
             setLoading(false);
         }
-    }, [phone, resendTimer, navigate]);
+    }, [phone, resendTimer, navigate, searchParams]);
 
     const handleVerifyOTP = async (finalOtp?: string) => {
         const otpValue = finalOtp || otp;
         if (otpValue.length < 6) return;
 
+        if (!confirmationResult) {
+            return toast.error("Session expired. Please request OTP again.");
+        }
+
         setLoading(true);
         try {
-            if (!confirmationResult) {
-                throw new Error("No OTP request found. Please resend the code.");
-            }
-
-            // 1. Verify with Firebase
             const result = await confirmationResult.confirm(otpValue.trim());
-            
-            // 2. Get the Firebase ID token
             const idToken = await result.user.getIdToken();
 
-            // 3. Authenticate with our NestJS backend
-            const roleContext = searchParams.get('portal') === 'vendor' ? 'vendor' : 'user';
+            // Verify using custom backend via Firebase token
+            const portal = searchParams.get('portal');
+            const roleContext = portal === 'vendor' ? UserRole.VENDOR : portal === 'admin' ? UserRole.ADMIN : UserRole.USER;
             const response = await otpAuth.verifyFirebaseToken(idToken, roleContext);
 
             if (response.access_token) {
@@ -291,6 +293,7 @@ const Login: React.FC = () => {
                                             />
                                         </div>
                                     </div>
+                                    <div id="recaptcha-container"></div>
                                     <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-neutral-900 dark:hover:bg-white text-white dark:hover:text-neutral-900 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98] mt-2">
                                         {loading ? <Loader className="animate-spin" /> : <>Continue securely <ArrowRight size={18} /></>}
                                     </button>
@@ -365,8 +368,6 @@ const Login: React.FC = () => {
                     </p>
                 </div>
             </div>
-            {/* Firebase reCAPTCHA Container */}
-            <div id="recaptcha-container"></div>
         </div>
     );
 };

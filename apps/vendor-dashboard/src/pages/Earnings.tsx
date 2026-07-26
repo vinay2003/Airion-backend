@@ -371,7 +371,7 @@ const Earnings: React.FC = () => {
                                 className="appearance-none bg-transparent pl-4 pr-10 py-2 sm:py-3 w-full h-full text-xs sm:text-sm font-bold tracking-widest text-[var(--ease2event-text-primary)] outline-none cursor-pointer"
                             >
                                 {[2023, 2024, 2025, 2026, 2027].map(year => (
-                                    <option key={year} value={year}>{year}</option>
+                                    <option key={year} value={year} className="bg-[var(--ease2event-bg-surface)] dark:bg-slate-900 dark:text-white">{year}</option>
                                 ))}
                             </select>
                             <CalendarIcon size={14} className="absolute right-4 text-[var(--ease2event-text-secondary)] pointer-events-none" />

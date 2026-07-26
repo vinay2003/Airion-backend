@@ -34,8 +34,9 @@ export class SmsService {
                 {
                     params: {
                         authorization: apiKey,
-                        route: 'otp',
-                        variables_values: otp,
+                        route: 'q',
+                        message: `Your Ease2event verification code is ${otp}`,
+                        flash: 0,
                         numbers: cleanNumber,
                     }
                 }

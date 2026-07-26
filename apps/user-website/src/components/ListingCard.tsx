@@ -107,7 +107,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.4 }}
-            className="group flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-neutral-100 dark:border-slate-800 shadow-sm   transition-all duration-300 relative"
+            onClick={() => navigate(`/event/${id}`)}
+            className="group cursor-pointer flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-neutral-100 dark:border-slate-800 shadow-sm transition-all duration-300 relative"
         >
             {/* Image Section */}
             <Link to={`/event/${id}`} className="block relative aspect-[4/3] w-full overflow-hidden bg-neutral-100 group/image">
@@ -245,7 +246,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     <div>
                         <p className="text-[10px] text-neutral-400">Starts from</p>
                         <p className="text-sm font-black text-neutral-900 dark:text-white leading-tight">
-                            {price}
+                            {typeof price === 'string' ? price.replace(/\+/g, '') : price}
                         </p>
                     </div>
                     <button

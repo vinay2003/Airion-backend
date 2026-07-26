@@ -76,8 +76,11 @@ async function bootstrap() {
     app.useGlobalFilters(new HttpExceptionFilter());
     app.useGlobalInterceptors(new LoggingInterceptor(), new TransformInterceptor());
 
-    // Global validation pipe
-    app.useGlobalPipes(new ZodValidationPipe());
+    // Global validation pipes: support both class-validator and Zod
+    app.useGlobalPipes(
+        new ValidationPipe({ transform: true, whitelist: false }),
+        new ZodValidationPipe()
+    );
 
     // --- PRODUCTION STABILITY: GRACEFUL SHUTDOWN ---
     app.enableShutdownHooks();

@@ -54,8 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
  {/* Sidebar Container */}
  <aside
- className={`fixed md:static inset-y-0 left-0 z-40 w-64 glass-panel border-y-0 border-l-0 border-r border-[var(--ease2event-border-subtle)] transform transition-transform ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
- } flex flex-col`}
+ className={`fixed md:sticky top-0 h-screen inset-y-0 left-0 z-40 w-64 glass-panel border-y-0 border-l-0 border-r border-[var(--ease2event-border-subtle)] transform transition-transform ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+ } flex flex-col shrink-0`}
  >
  <div className="h-[70px] border-b border-[var(--ease2event-border-subtle)] flex justify-between items-center px-6">
  <h1 className="text-xl font-display font-bold text-[var(--ease2event-text-primary)] flex items-center gap-2">

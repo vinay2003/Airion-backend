@@ -305,7 +305,7 @@ const Bookings: React.FC = () => {
  <p className="text-[10px] font-black text-[var(--ease2event-text-secondary)] tracking-widest opacity-70">Registry Authority</p>
  <h4 className="font-black text-lg text-[var(--ease2event-text-primary)] tracking-tight">{booking.clientName}</h4>
  </div>
- <button className="p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
+ <button onClick={() => handleOpenDetails(booking)} className="cursor-pointer p-3 bg-[var(--ease2event-bg-surface)] rounded-2xl border border-[var(--ease2event-border-subtle)] text-[var(--ease2event-text-muted)] hover:text-[var(--ease2event-brand-primary)] transition-all">
  <MoreVertical size={16} />
  </button>
  </div>

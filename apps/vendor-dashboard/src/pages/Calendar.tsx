@@ -95,6 +95,10 @@ const CalendarPage: React.FC = () => {
    queryClient.invalidateQueries({ queryKey: ['vendor-availability'] });
    setIsModalOpen(false);
    notify.success('Calendar updated successfully!');
+ },
+ onError: (err) => {
+ console.error(err);
+ notify.error('Failed to update calendar. Please try again.');
  }
  });
 
@@ -103,6 +107,10 @@ const CalendarPage: React.FC = () => {
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ['vendor-availability'] });
  notify.success('Event deleted successfully!');
+ },
+ onError: (err) => {
+ console.error(err);
+ notify.error('Failed to delete event.');
  }
  });
 
@@ -311,9 +319,15 @@ const CalendarPage: React.FC = () => {
  </div>
  <h2 className="text-xl md:text-xl font-bold text-[var(--ease2event-text-primary)] tracking-tighter truncate min-w-0">
  {monthNames[currentDate.getMonth()]}
- <span className="text-[var(--ease2event-brand-primary)] font-bold ml-2 md:ml-4 tracking-wide text-lg md:text-lg">
- {currentDate.getFullYear()}
- </span>
+ <select
+ value={currentDate.getFullYear()}
+ onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value), currentDate.getMonth(), 1))}
+ className="bg-transparent text-[var(--ease2event-brand-primary)] font-bold ml-2 md:ml-4 tracking-wide text-lg md:text-lg outline-none cursor-pointer appearance-none border-none focus:ring-0"
+ >
+ {Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - 5 + i).map(year => (
+ <option key={year} value={year}>{year}</option>
+ ))}
+ </select>
  </h2>
  </div>
  </div>

@@ -202,7 +202,7 @@ const MerchandiseOrders: React.FC = () => {
                                             disabled={updatingId === item.id}
                                             onClick={() => handleUpdateStatus(item.id, item.fulfillmentStatus)}
                                         >
-                                            {updatingId === item.id ? 'Updating...' : `Mark ${STATUSES[STATUSES.indexOf(item.fulfillmentStatus) + 1]}`}
+                                            {updatingId === item.id ? 'Updating...' : `Mark as ${STATUSES[STATUSES.indexOf(item.fulfillmentStatus) + 1].charAt(0) + STATUSES[STATUSES.indexOf(item.fulfillmentStatus) + 1].slice(1).toLowerCase()}`}
                                         </Button>
                                     )}
                                 </div>

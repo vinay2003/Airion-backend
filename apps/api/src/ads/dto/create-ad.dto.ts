@@ -5,6 +5,10 @@ export class CreateAdDto {
   @IsString()
   campaignName: string;
 
+  @IsOptional()
+  @IsString()
+  vendorId?: string;
+
   @IsEnum(AdType)
   adType: AdType;
 

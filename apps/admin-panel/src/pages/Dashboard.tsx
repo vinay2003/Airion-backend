@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -7,6 +8,7 @@ import { Skeleton, SkeletonText } from '@ease2event/ui';
 import { useAdminDashboard } from '../hooks/useDashboard';
 
 const Dashboard: React.FC = () => {
+    const navigate = useNavigate();
     const { data: dashboardData, isLoading: statsLoading } = useAdminDashboard();
     const [isLogsModalOpen, setIsLogsModalOpen] = useState(false);
 
@@ -192,7 +194,7 @@ const Dashboard: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold  ">Review</button>
+                                        <button onClick={() => navigate(`/vendors?vendorId=${vendor.id}`)} className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors">Review</button>
                                     </div>
                                 </div>
                             ))
@@ -234,7 +236,7 @@ const Dashboard: React.FC = () => {
                             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                             Suspicious Users
                         </h2>
-                        <button className="text-xs font-bold text-orange-600 ">View All</button>
+                        <button onClick={() => navigate('/users?tab=suspicious')} className="text-xs font-bold text-orange-600 hover:text-orange-700 transition-colors">View All</button>
                     </div>
                     <div className="space-y-3">
                         {[

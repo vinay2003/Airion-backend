@@ -614,7 +614,7 @@ const Services: React.FC = () => {
  className="cursor-pointer flex items-center justify-center h-11 sm:h-12 px-4 sm:px-6 rounded-2xl font-bold text-[9px] sm:text-[11px] tracking-widest bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
  leftIcon={<Plus size={18} />}
  >
- <Plus size={18} /> Add New Package/Service
+ Add New Package/Service
  </Button>
  </div>
  </div>
@@ -629,13 +629,7 @@ const Services: React.FC = () => {
  className="w-full bg-transparent border-none rounded-2xl py-5 pl-16 pr-6 text-base font-bold text-[var(--ease2event-text-primary)] focus:ring-0 outline-none placeholder:text-[var(--ease2event-text-secondary)] tracking-widest transition-all"
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- /> <Button
- onClick={() => setIsAdding(true)}
- className="shrink-0 h-11 px-5 bg-[var(--ease2event-brand-primary)] text-white rounded-2xl text-[11px] font-bold tracking-widest shadow-md shadow-indigo-500/20 hover:-translate-y-0.5 active:scale-95 transition-all"
- leftIcon={<Plus size={18} />}
- >
- Add New Package/Service
- </Button>
+ />
  </div>
  </div>
 

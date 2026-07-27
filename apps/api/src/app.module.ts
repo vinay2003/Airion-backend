@@ -99,7 +99,7 @@ import { CmsModule } from './cms/cms.module';
                         keepAlive: true,
                         keepAliveInitialDelayMillis: 10000,
                         // NeonDB free tier cold starts can take up to 30-45s
-                        max: isProd ? 100 : 5, // Increased for prod to handle 50k users
+                        max: isProd ? 100 : 20, // Increased for prod to handle 50k users, and 20 for dev to avoid pool exhaustion
                         idleTimeoutMillis: 30000, // Reduced to 30s to prevent NeonDB from terminating stale connections
                         connectionTimeoutMillis: 60000,
                         // Pool-level SSL must mirror top-level ssl config
@@ -107,7 +107,7 @@ import { CmsModule } from './cms/cms.module';
                     },
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     autoLoadEntities: true,
-                    synchronize: !isProd,
+                    synchronize: false, // Disabled because NeonDB hangs/deadlocks on heavy introspection
                     logging: !isProd ? ['error', 'warn'] : false,
                     retryAttempts: 20,
                     retryDelay: 5000,

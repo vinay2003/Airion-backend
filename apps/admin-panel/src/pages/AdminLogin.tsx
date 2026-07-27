@@ -149,6 +149,28 @@ const AdminLogin: React.FC = () => {
                                     ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     : <><span>Send OTP</span><ArrowRight size={16} /></>}
                             </button>
+
+                            {/* DEV BYPASS */}
+                            {import.meta.env.DEV && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        loginWithResponse({
+                                            access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MGVlYmRlYS1jOTg0LTQ3MzEtYjgxYy1lMDE5OWQ3ZjdiMDIiLCJlbWFpbCI6ImFkbWluQGVhc2UyZXZlbnQuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg1MTMxNjE5LCJleHAiOjE3ODU3MzY0MTl9.B_9m-7IQ49e4Y9cs0vE2ZjKOv391kOQ4-vdJ8TALkf4',
+                                            user: {
+                                                id: '50eebdea-c984-4731-b81c-e0199d7f7b02',
+                                                email: 'admin@ease2event.com',
+                                                role: 'admin'
+                                            } as any
+                                        });
+                                        toast.success('Dev Bypass Login Successful');
+                                        navigate('/');
+                                    }}
+                                    className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-xl font-bold transition-all"
+                                >
+                                    Dev Bypass Login
+                                </button>
+                            )}
                         </form>
                     )}
                     

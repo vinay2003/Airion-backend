@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
     Search, Check, X, Eye, Building2, MapPin, Calendar, ShieldCheck,
     Star, ArrowUpDown, Phone, Mail, Globe, Instagram, Facebook,
@@ -183,9 +184,18 @@ const Vendors: React.FC = () => {
     const [page, setPage] = useState(1);
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+    const [searchParams] = useSearchParams();
+    const vendorIdFromQuery = searchParams.get('vendorId');
 
     const { data: response, isLoading: loading } = useAdminVendors(page, 20, searchQuery, filter, 'all');
     const vendors: Vendor[] = response?.data || [];
+
+    useEffect(() => {
+        if (vendorIdFromQuery && vendors.length > 0 && !selectedVendor) {
+            const v = vendors.find(v => v.id === vendorIdFromQuery);
+            if (v) setSelectedVendor(v);
+        }
+    }, [vendorIdFromQuery, vendors]);
 
     const verifyMutation = useVerifyVendor();
     const suspendMutation = useSuspendVendor();

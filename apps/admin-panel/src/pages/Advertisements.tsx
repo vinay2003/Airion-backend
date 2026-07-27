@@ -9,7 +9,7 @@ interface Ad {
     id: string;
     campaignName: string;
     vendorName: string;
-    adType: 'Banner' | 'Featured' | 'Category' | 'City' | 'Event';
+    adType: string;
     status: 'pending' | 'active' | 'paused' | 'rejected';
     dailyBudget: number;
     totalBudget: number;
@@ -122,7 +122,7 @@ const Advertisements: React.FC = () => {
             await createAdMutation.mutateAsync({
                 vendorId,
                 campaignName: campaignName.trim(),
-                adType,
+                adType: adType.toLowerCase(),
                 dailyBudget: parseFloat(dailyBudget),
                 totalBudget: parseFloat(totalBudget),
                 startDate,
@@ -238,7 +238,7 @@ const Advertisements: React.FC = () => {
                                             {ad.status}
                                         </span>
                                         <span className="text-xs px-3 py-1 rounded-full font-bold uppercase border bg-gray-100 text-gray-600 border-gray-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 flex items-center gap-1">
-                                            {ad.adType === 'Video' ? <Activity size={12}/> : <ImageIcon size={12}/>}
+                                            {(ad.adType as any) === 'Video' ? <Activity size={12}/> : <ImageIcon size={12}/>}
                                             {ad.adType}
                                         </span>
                                     </div>

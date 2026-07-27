@@ -15,7 +15,7 @@ const ShopOrders = () => {
 
     const fetchOrders = async () => {
         try {
-            const { data } = await api.get<any>('/merchandise/admin/orders');
+            const data = await api.get<any[]>('/merchandise/admin/orders');
             setOrders(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error(error);

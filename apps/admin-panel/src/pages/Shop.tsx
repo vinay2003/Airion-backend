@@ -15,8 +15,8 @@ const ShopAdmin = () => {
 
     const fetchProducts = async () => {
         try {
-            const { data } = await api.get('/merchandise/admin/all');
-            setProducts(data);
+            const data = await api.get<any[]>('/merchandise/admin/all');
+            setProducts(data || []);
         } catch (error) {
             console.error(error);
         } finally {

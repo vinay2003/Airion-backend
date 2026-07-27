@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Req, BadRequestException, ParseUUIDPipe } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -64,7 +64,7 @@ export class BookingsController {
      * Get single booking details
      */
     @Get(':id')
-    async findOne(@Param('id') id: string, @Req() req: any) {
+    async findOne(@Param('id', ParseUUIDPipe) id: string, @Req() req: any) {
         return this.bookingsService.findOne(id, req.user);
     }
 
@@ -72,7 +72,7 @@ export class BookingsController {
      * Update booking status (e.g., cancelled, in-progress)
      */
     @Patch(':id/status')
-    async updateStatus(@Param('id') id: string, @Body() body: { status: 'pending' | 'confirmed' | 'completed' | 'canceled'; paymentId?: string; paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded' }, @Req() req: any) {
+    async updateStatus(@Param('id', ParseUUIDPipe) id: string, @Body() body: { status: 'pending' | 'confirmed' | 'completed' | 'canceled'; paymentId?: string; paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded' }, @Req() req: any) {
         if (!body.status) {
             throw new BadRequestException('Status is required');
         }

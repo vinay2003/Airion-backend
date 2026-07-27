@@ -330,12 +330,13 @@ const Bookings: React.FC = () => {
  Approve
  </Button>
  )}
- <button
+ <Button
+ variant="secondary"
  onClick={() => handleOpenDetails(booking)}
  className="flex-1 min-w-[120px] h-11 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-xl text-[11px] font-bold tracking-widest hover:bg-[var(--ease2event-bg-elevated)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/30 transition-all cursor-pointer flex items-center justify-center shrink-0"
  >
  View Details
- </button>
+ </Button>
  </div>
  </div>
  </div>

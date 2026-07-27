@@ -36,6 +36,10 @@ export class MerchandiseService {
     }
 
     async findOne(id: string): Promise<Product> {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) {
+            throw new NotFoundException(`Product with ID ${id} not found`);
+        }
         const product = await this.productRepository.findOne({ where: { id } });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);

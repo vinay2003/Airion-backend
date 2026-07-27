@@ -115,11 +115,14 @@ const ShopItems: React.FC = () => {
         try {
             setSubmitting(true);
             
-            if (editingId) {
+            if (editingId && !editingId.startsWith('shop-')) {
                 await api.put(`/merchandise/${editingId}`, payload);
                 toast.success('Item updated successfully!');
             } else {
                 await api.post('/merchandise', payload);
+                if (editingId && editingId.startsWith('shop-')) {
+                    setItems(prev => prev.filter(item => item.id !== editingId));
+                }
                 toast.success('Item created! It is pending approval.');
             }
             
@@ -140,6 +143,14 @@ const ShopItems: React.FC = () => {
 
     const confirmDelete = async () => {
         if (!itemToDelete) return;
+
+        if (itemToDelete.startsWith('shop-')) {
+            setItems(prev => prev.filter(item => item.id !== itemToDelete));
+            toast.success("Item deleted.");
+            setItemToDelete(null);
+            return;
+        }
+
         try {
             setIsDeleting(true);
             await api.delete(`/merchandise/${itemToDelete}`);

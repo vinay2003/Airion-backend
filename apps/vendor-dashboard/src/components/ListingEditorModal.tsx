@@ -142,7 +142,8 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  // Clear local blob preview so it is NOT sent to DB
  URL.revokeObjectURL(localUrl);
  setFormData(prev => ({ ...prev, image: '' }));
- alert('Image upload failed. The listing will be saved without an image. Please configure Supabase credentials to enable image uploads.');
+ const backendError = err?.response?.data?.message || err?.message || 'Unknown error occurred.';
+ alert(`Image upload failed: ${backendError}`);
  } finally {
  setLoading(false);
  }

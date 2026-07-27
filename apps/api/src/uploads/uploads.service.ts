@@ -44,7 +44,7 @@ export class UploadsService {
       const fileName = `${uuidv4()}.${fileExt}`;
       const filePath = `uploads/${fileName}`;
 
-      // 10-second timeout for upload — prevents 30s hangs when Supabase is unreachable
+      // 30-second timeout for upload
       const uploadPromise = this.supabase.storage
           .from(this.bucket)
           .upload(filePath, file.buffer, {
@@ -53,7 +53,7 @@ export class UploadsService {
           });
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Upload timed out after 10 seconds. Supabase Storage may be unreachable.')), 10000)
+          setTimeout(() => reject(new Error('Upload timed out after 30 seconds. Supabase Storage may be unreachable.')), 30000)
       );
 
       const { data, error } = await Promise.race([uploadPromise, timeoutPromise]) as any;
@@ -73,7 +73,7 @@ export class UploadsService {
       };
     } catch (err: any) {
       console.warn(`⚠️ Cloud Storage Failed or Not Configured: ${err.message}`);
-      throw new BadRequestException(`Cloud Storage Failed or Not Configured. Please configure Supabase credentials.`);
+      throw new BadRequestException(`Supabase Error: ${err.message}`);
     }
   }
 }

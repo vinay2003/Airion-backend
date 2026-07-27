@@ -44,12 +44,10 @@ export const uploadImage = async (file: File) => {
     const fd = new FormData();
     fd.append('file', file, file.name);
     
-    // Use transformRequest to ensure Axios lets the browser set the multipart boundary
     return await api.post<any>('/uploads/image', fd, {
-        transformRequest: [(data, headers) => {
-            delete headers['Content-Type'];
-            return data;
-        }]
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     });
 };
 

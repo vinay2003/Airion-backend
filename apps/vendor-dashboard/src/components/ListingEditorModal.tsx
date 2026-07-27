@@ -135,14 +135,14 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  // Upload didn't produce a valid cloud URL — clear preview so blob isn't saved to DB
  URL.revokeObjectURL(localUrl);
  setFormData(prev => ({ ...prev, image: '' }));
- alert('Image upload failed: Cloud storage (Cloudinary) is not configured. The listing will be saved without an image.');
+ alert('Image upload failed: Cloud storage (Supabase) is not configured. The listing will be saved without an image.');
  }
  } catch (err: any) {
  console.error('[Upload Debug]:', err);
  // Clear local blob preview so it is NOT sent to DB
  URL.revokeObjectURL(localUrl);
  setFormData(prev => ({ ...prev, image: '' }));
- alert('Image upload failed. The listing will be saved without an image. Please configure Cloudinary credentials to enable image uploads.');
+ alert('Image upload failed. The listing will be saved without an image. Please configure Supabase credentials to enable image uploads.');
  } finally {
  setLoading(false);
  }

@@ -73,7 +73,7 @@ export class UploadsService {
       };
     } catch (err: any) {
       console.warn(`⚠️ Cloud Storage Failed or Not Configured: ${err.message}`);
-      throw new BadRequestException(`Cloud Storage Failed or Not Configured. Please configure Cloudinary credentials.`);
+      throw new BadRequestException(`Cloud Storage Failed or Not Configured. Please configure Supabase credentials.`);
     }
   }
 }

@@ -2,17 +2,28 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Re
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { VendorsService } from '../vendors/vendors.service';
 
 @Controller('services')
 export class ServicesController {
-    constructor(private readonly servicesService: ServicesService) { }
+    constructor(
+        private readonly servicesService: ServicesService,
+        private readonly vendorsService: VendorsService,
+    ) { }
 
     @Post()
     @UseGuards(JwtAuthGuard)
     async create(@Body() createDto: CreateServiceDto, @Request() req: any) {
-        // Enforce Vendor ID from Auth Header payload or body. NEVER fallback to userId.
-        const vendorId = req.user.vendorId || createDto.vendorId;
-        
+        // First try to get vendorId from JWT token (fast path)
+        let vendorId = req.user.vendorId || createDto.vendorId;
+
+        // Fallback: if vendorId not in token, look up vendor profile from DB using userId
+        // This handles users who completed onboarding but haven't refreshed their token
+        if (!vendorId && req.user.sub) {
+            const vendor = await this.vendorsService.findByUserId(req.user.sub);
+            vendorId = vendor?.id;
+        }
+
         if (!vendorId) {
             throw new BadRequestException('Vendor profile not found. Please complete vendor onboarding.');
         }

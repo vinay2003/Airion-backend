@@ -65,9 +65,9 @@ const ShopOrders = () => {
                         onChange={e => setStatusFilter(e.target.value)}
                         className="py-2 pl-3 pr-8 rounded-xl bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white border-transparent focus:bg-white dark:focus:bg-slate-700 focus:border-indigo-500 outline-none cursor-pointer"
                     >
-                        <option value="ALL" className="text-gray-900 dark:bg-slate-900">All Statuses</option>
+                        <option value="ALL" className="text-gray-900 dark:text-white bg-white dark:bg-slate-800">All status</option>
                         {['PENDING', 'PROCESSING', 'PARTIALLY_FULFILLED', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map(s => (
-                            <option key={s} value={s} className="text-gray-900 dark:bg-slate-900">{s}</option>
+                            <option key={s} value={s} className="text-gray-900 dark:text-white bg-white dark:bg-slate-800">{s}</option>
                         ))}
                     </select>
                 </div>

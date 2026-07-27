@@ -184,6 +184,11 @@ export class MerchandiseService {
         vendorId: string,
         payload: { status: string; trackingNumber?: string; courierName?: string }
     ): Promise<OrderItem> {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(orderItemId)) {
+            throw new NotFoundException('Order item not found');
+        }
+
         return this.dataSource.transaction(async (manager) => {
             const orderItem = await manager.findOne(OrderItem, {
                 where: { id: orderItemId },

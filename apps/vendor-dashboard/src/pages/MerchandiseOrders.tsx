@@ -82,6 +82,19 @@ const MerchandiseOrders: React.FC = () => {
             if (courier) payload.courierName = courier;
         }
 
+        if (itemId.startsWith('dummy-ord-')) {
+            toast.success(`Marked as ${nextStatus}`);
+            setItems(prev => prev.map(item => item.id === itemId ? {
+                ...item,
+                fulfillmentStatus: nextStatus,
+                trackingNumber: payload.trackingNumber || item.trackingNumber,
+                courierName: payload.courierName || item.courierName,
+                shippedAt: nextStatus === 'SHIPPED' ? new Date().toISOString() : item.shippedAt,
+                deliveredAt: nextStatus === 'DELIVERED' ? new Date().toISOString() : item.deliveredAt,
+            } : item));
+            return;
+        }
+
         try {
             setUpdatingId(itemId);
             await api.patch(`/merchandise/vendor/orders/${itemId}/status`, payload);

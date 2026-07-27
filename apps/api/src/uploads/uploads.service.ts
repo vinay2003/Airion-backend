@@ -3,21 +3,26 @@ import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 
+import fetch from 'cross-fetch';
+
 @Injectable()
 export class UploadsService {
   private supabase: SupabaseClient;
   private bucket: string;
 
   constructor(private configService: ConfigService) {
-    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
+    const supabaseUrl = (this.configService.get<string>('SUPABASE_URL') || '').trim();
+    const supabaseKey = (this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY') || '').trim();
     
     if (!supabaseUrl || !supabaseKey) {
        console.warn('⚠️ Supabase Storage not fully configured in .env');
     }
 
-    this.supabase = createClient(supabaseUrl || '', supabaseKey || '');
-    this.bucket = this.configService.get<string>('SUPABASE_STORAGE_BUCKET') || 'images';
+    this.supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { fetch: fetch },
+      auth: { persistSession: false },
+    });
+    this.bucket = (this.configService.get<string>('SUPABASE_STORAGE_BUCKET') || 'images').trim();
   }
 
   async uploadFile(file: Express.Multer.File): Promise<{ url: string; public_id: string; format?: string; duration?: number }> {

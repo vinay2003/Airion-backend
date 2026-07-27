@@ -443,8 +443,8 @@ const Advertisements: React.FC = () => {
                             <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
                                 <button
                                     type="submit"
-                                    disabled={createAdMutation.isPending || uploading}
-                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
+                                    disabled={!vendorId || !campaignName.trim() || !dailyBudget || !totalBudget || !startDate || !endDate || !imageUrl || createAdMutation.isPending || uploading}
+                                    className="flex-1 py-3 bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all"
                                 >
                                     {createAdMutation.isPending ? 'Creating Campaign...' : 'Launch Campaign'}
                                 </button>

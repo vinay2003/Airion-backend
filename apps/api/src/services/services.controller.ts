@@ -17,10 +17,13 @@ export class ServicesController {
         // First try to get vendorId from JWT token (fast path)
         let vendorId = req.user.vendorId || createDto.vendorId;
 
+        console.log('[Services] req.user:', JSON.stringify(req.user));
+        console.log('[Services] vendorId from token/body:', vendorId);
+
         // Fallback: if vendorId not in token, look up vendor profile from DB using userId
-        // This handles users who completed onboarding but haven't refreshed their token
         if (!vendorId && req.user.sub) {
             const vendor = await this.vendorsService.findByUserId(req.user.sub);
+            console.log('[Services] vendor from DB lookup:', vendor?.id ?? 'NOT FOUND');
             vendorId = vendor?.id;
         }
 

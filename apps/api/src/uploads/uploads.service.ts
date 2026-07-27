@@ -1,15 +1,23 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { v2 as cloudinary } from 'cloudinary';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UploadsService {
+  private supabase: SupabaseClient;
+  private bucket: string;
+
   constructor(private configService: ConfigService) {
-    cloudinary.config({
-      cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
-      api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
-      api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
-    });
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
+    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!supabaseUrl || !supabaseKey) {
+       console.warn('⚠️ Supabase Storage not fully configured in .env');
+    }
+
+    this.supabase = createClient(supabaseUrl || '', supabaseKey || '');
+    this.bucket = this.configService.get<string>('SUPABASE_STORAGE_BUCKET') || 'images';
   }
 
   async uploadFile(file: Express.Multer.File): Promise<{ url: string; public_id: string; format?: string; duration?: number }> {
@@ -32,42 +40,40 @@ export class UploadsService {
     }
 
     try {
-      return await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'airion/uploads',
-            resource_type: isVideo ? 'video' : 'image',
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            if (!result) return reject(new Error('No result from Cloudinary'));
+      const fileExt = file.originalname ? file.originalname.split('.').pop() : (isImage ? 'jpg' : 'mp4');
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `uploads/${fileName}`;
 
-            resolve({
-              url: result.secure_url,
-              public_id: result.public_id,
-              format: result.format,
-              duration: result.duration,
-            });
-          }
-        );
+      // 10-second timeout for upload — prevents 30s hangs when Supabase is unreachable
+      const uploadPromise = this.supabase.storage
+          .from(this.bucket)
+          .upload(filePath, file.buffer, {
+              contentType: file.mimetype,
+              upsert: false
+          });
 
-        uploadStream.end(file.buffer);
-      });
-    } catch (err: any) {
-      // --- DEVELOPER FALLBACK MODE ---
-      // If cloud storage fails, provide a high-quality placeholder base64
-      // so the user can continue testing the UI/Gallery even in production.
-      
-      console.warn(`⚠️ Cloud Storage Failed or Not Configured: ${err.message}. Using Base64 fallback.`);
-      
-      const base64Data = file.buffer.toString('base64');
-      const dataUrl = `data:${file.mimetype};base64,${base64Data}`;
-      
+      const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Upload timed out after 10 seconds. Supabase Storage may be unreachable.')), 10000)
+      );
+
+      const { data, error } = await Promise.race([uploadPromise, timeoutPromise]) as any;
+
+      if (error) {
+          throw new Error(`Supabase Storage Error: ${error.message}`);
+      }
+
+      const { data: { publicUrl } } = this.supabase.storage
+          .from(this.bucket)
+          .getPublicUrl(filePath);
+
       return {
-        url: dataUrl,
-        public_id: `local_${Date.now()}`,
-        format: file.mimetype.split('/')[1]
+          url: publicUrl,
+          public_id: data.path,
+          format: fileExt
       };
+    } catch (err: any) {
+      console.warn(`⚠️ Cloud Storage Failed or Not Configured: ${err.message}`);
+      throw new BadRequestException(`Cloud Storage Failed or Not Configured. Please configure Cloudinary credentials.`);
     }
   }
 }

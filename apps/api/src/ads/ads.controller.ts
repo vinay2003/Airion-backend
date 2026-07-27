@@ -15,9 +15,13 @@ export class AdsController {
   
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.VENDOR)
+  @Roles(UserRole.VENDOR, UserRole.ADMIN)
   create(@Body() createAdDto: CreateAdDto, @Req() req: any) {
-    return this.adsService.create(req.user.userId, createAdDto);
+    const userId = req.user.userId || req.user.sub;
+    const vendorId = (req.user.role === UserRole.ADMIN && createAdDto.vendorId) 
+                     ? createAdDto.vendorId 
+                     : userId;
+    return this.adsService.create(vendorId, createAdDto);
   }
 
   @Get('vendor/me')

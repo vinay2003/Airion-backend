@@ -49,7 +49,7 @@ const Listings: React.FC = () => {
  basePrice: Number(data.price) || 0,
  availableLocations: data.location ? [data.location] : [],
  guestCapacity: Number(data.capacity) || 1,
- images: data.image ? [data.image] : [],
+ images: data.image && data.image.startsWith('http') ? [data.image] : [],
  locationType: 'onsite'
  };
 

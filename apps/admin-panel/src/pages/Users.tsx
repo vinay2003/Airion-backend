@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, MoreHorizontal, Mail, Phone, Calendar, Shield, User as UserIcon, AlertCircle, Clock, MapPin, Activity, X, Ban, Unlock } from 'lucide-react';
 import { useAdminUsers, useBlockUser, useUnblockUser } from '../hooks/useUsers';
 
@@ -19,6 +20,10 @@ const Users: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [page, setPage] = useState(1);
     
+    const [searchParams] = useSearchParams();
+    const tab = searchParams.get('tab');
+    const [filter, setFilter] = useState<'all' | 'blocked'>(tab === 'suspicious' ? 'blocked' : 'all');
+
     // Instead of mock data, we fetch real data using the hook
     const { data: response, isLoading: loading, error } = useAdminUsers(page, 20, searchQuery, 'all', 'newest');
     const users: User[] = response?.data || [];
@@ -28,7 +33,7 @@ const Users: React.FC = () => {
 
     // The filtering is now handled server-side through the query hook search param.
     // However, for immediate UI feedback we can map the data directly.
-    const filteredUsers = users;
+    const filteredUsers = filter === 'blocked' ? users.filter(u => u.isBlocked) : users;
 
     const toggleBlockStatus = async (user: User) => {
         try {
@@ -83,6 +88,11 @@ const Users: React.FC = () => {
             </div>
 
             {/* Users Table */}
+            <div className="flex gap-4 mb-4">
+                <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-colors ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'}`}>All Users</button>
+                <button onClick={() => setFilter('blocked')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-colors ${filter === 'blocked' ? 'bg-rose-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Suspicious/Blocked</button>
+            </div>
+            
             <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl overflow-hidden ">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">

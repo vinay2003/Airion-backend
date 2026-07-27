@@ -103,15 +103,25 @@ const Bookings: React.FC = () => {
  { id: 'Cancelled', label: 'Cancelled' },
  ];
 
- const updateStatusMutation = useMutation({
- mutationFn: async ({ id, status }: { id: string, status: string }) => {
- return api.patch(`/bookings/${id}/status`, { status });
- },
- onSuccess: () => {
- queryClient.invalidateQueries({ queryKey: ['vendor-bookings'] });
- notify.success('Booking Status Updated');
- }
- });
+  const updateStatusMutation = useMutation({
+  mutationFn: async ({ id, status }: { id: string, status: string }) => {
+  if (id.startsWith('bk-')) {
+      return new Promise(resolve => setTimeout(() => resolve({ data: { success: true } }), 500));
+  }
+  return api.patch(`/bookings/${id}/status`, { status });
+  },
+  onSuccess: (_, variables) => {
+  if (variables.id.startsWith('bk-')) {
+      queryClient.setQueryData(['vendor-bookings'], (oldData: Booking[] | undefined) => {
+          if (!oldData) return oldData;
+          return oldData.map(b => b.id === variables.id ? { ...b, status: variables.status === 'confirmed' ? 'Confirmed' : 'Cancelled' } : b);
+      });
+  } else {
+      queryClient.invalidateQueries({ queryKey: ['vendor-bookings'] });
+  }
+  notify.success('Booking Status Updated');
+  }
+  });
 
  const handleApprove = (id: string) => {
  updateStatusMutation.mutate({ id, status: 'confirmed' });

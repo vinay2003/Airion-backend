@@ -128,13 +128,21 @@ const ListingEditorModal: React.FC<ListingEditorModalProps> = ({ isOpen, onClose
  // So result is { success: true, url: "...", message: "..." }
  const imageUrl = result?.url || (typeof result === 'string' ? result : null);
 
- if (imageUrl) {
- // 2. Update with permanent URL once upload succeeds
+ if (imageUrl && imageUrl.startsWith('http')) {
+ // 2. Update with permanent cloud URL once upload succeeds
  setFormData(prev => ({ ...prev, image: imageUrl }));
+ } else {
+ // Upload didn't produce a valid cloud URL — clear preview so blob isn't saved to DB
+ URL.revokeObjectURL(localUrl);
+ setFormData(prev => ({ ...prev, image: '' }));
+ alert('Image upload failed: Cloud storage (Cloudinary) is not configured. The listing will be saved without an image.');
  }
  } catch (err: any) {
  console.error('[Upload Debug]:', err);
- alert('Cloud Sync Failure: The image is visible locally but failed to sync to the server.');
+ // Clear local blob preview so it is NOT sent to DB
+ URL.revokeObjectURL(localUrl);
+ setFormData(prev => ({ ...prev, image: '' }));
+ alert('Image upload failed. The listing will be saved without an image. Please configure Cloudinary credentials to enable image uploads.');
  } finally {
  setLoading(false);
  }

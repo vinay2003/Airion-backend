@@ -32,6 +32,7 @@ export class ServicesService {
 
         const savedService = await this.serviceRepository.save(service);
         
+        
         // Prevent Circular JSON errors during serialization
         if (savedService.packages) {
             savedService.packages.forEach(pkg => {

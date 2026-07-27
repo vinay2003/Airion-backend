@@ -28,7 +28,7 @@ export const updateWalletTarget = async (target: number) =>
 
 // Availability & Calendar
 export const fetchVendorSchedule = async (vendorId: string) =>
-    await api.get(`/vendors/${vendorId}/availability`);
+    await api.get(`/availability/vendor/${vendorId}`);
 
 export const blockDate = async (date: string, reason?: string) =>
     await api.post('/availability/block', { date, reason });
@@ -44,11 +44,12 @@ export const uploadImage = async (file: File) => {
     const fd = new FormData();
     fd.append('file', file, file.name);
     
-    // api.post already unwraps the response data thanks to interceptors
+    // Use transformRequest to ensure Axios lets the browser set the multipart boundary
     return await api.post<any>('/uploads/image', fd, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
+        transformRequest: [(data, headers) => {
+            delete headers['Content-Type'];
+            return data;
+        }]
     });
 };
 

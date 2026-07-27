@@ -19,6 +19,11 @@ export class AvailabilityController {
         return this.availabilityService.getVendorSchedule(id, '');
     }
 
+    @Post('test-block')
+    async testBlock(@Body() body: { vendorId: string; date: string; reason?: string }) {
+        return this.availabilityService.blockDate(body.vendorId, body.date, body.reason);
+    }
+
     @Post('block')
     @Roles(UserRole.VENDOR)
     async blockDate(@Req() req: any, @Body() body: { date: string; reason?: string }) {

@@ -19,8 +19,12 @@ export const useApproveAdvertisement = () => {
             const { data } = await authApi.patch(`/ads/${id}/approve`);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (updatedAd) => {
             toast.success('Campaign approved successfully');
+            queryClient.setQueryData(['adminAdvertisements'], (old: any) => {
+                if (!old) return old;
+                return old.map((ad: any) => ad.id === updatedAd.id ? updatedAd : ad);
+            });
             queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
         },
         onError: () => {
@@ -36,8 +40,12 @@ export const useRejectAdvertisement = () => {
             const { data } = await authApi.patch(`/ads/${id}/reject`);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (updatedAd) => {
             toast.success('Campaign rejected successfully');
+            queryClient.setQueryData(['adminAdvertisements'], (old: any) => {
+                if (!old) return old;
+                return old.map((ad: any) => ad.id === updatedAd.id ? updatedAd : ad);
+            });
             queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
         },
         onError: () => {
@@ -53,8 +61,12 @@ export const useExpireAdvertisement = () => {
             const { data } = await authApi.patch(`/ads/${id}/expire`);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (updatedAd) => {
             toast.success('Campaign expired successfully');
+            queryClient.setQueryData(['adminAdvertisements'], (old: any) => {
+                if (!old) return old;
+                return old.map((ad: any) => ad.id === updatedAd.id ? updatedAd : ad);
+            });
             queryClient.invalidateQueries({ queryKey: ['adminAdvertisements'] });
         },
         onError: () => {

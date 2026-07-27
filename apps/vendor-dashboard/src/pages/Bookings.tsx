@@ -323,18 +323,19 @@ const Bookings: React.FC = () => {
  <div className="flex items-center justify-end gap-3 mt-auto pt-4 border-t border-[var(--ease2event-border-subtle)]">
  {booking.status === 'Pending' && (
  <Button
+ variant="primary"
  onClick={() => handleApprove(booking.id)}
- className="flex-1 h-11 bg-[var(--ease2event-brand-primary)] text-white rounded-xl text-[11px] font-bold tracking-widest transition-all"
+ className="flex-1 h-11 rounded-xl text-[11px] font-bold tracking-widest transition-all"
  >
  Approve
  </Button>
  )}
- <Button
+ <button
  onClick={() => handleOpenDetails(booking)}
- className="flex-1 min-w-[120px] h-11 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-xl text-[11px] font-bold tracking-widest hover:bg-[var(--ease2event-bg-elevated)] shrink-0"
+ className="flex-1 min-w-[120px] h-11 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[var(--ease2event-text-primary)] rounded-xl text-[11px] font-bold tracking-widest hover:bg-[var(--ease2event-bg-elevated)] hover:text-[var(--ease2event-brand-primary)] hover:border-[var(--ease2event-brand-primary)]/30 transition-all cursor-pointer flex items-center justify-center shrink-0"
  >
  View Details
- </Button>
+ </button>
  </div>
  </div>
  </div>

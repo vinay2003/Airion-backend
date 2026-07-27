@@ -82,6 +82,11 @@ const Listings: React.FC = () => {
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ['services', vendorId] });
  setIsEditorOpen(false);
+ toast.success(editingListing ? 'Service updated successfully.' : 'Service created successfully.');
+ },
+ onError: (error: any) => {
+ console.error('Failed to save listing:', error);
+ toast.error(error?.response?.data?.message || error?.message || 'Failed to save listing.');
  }
  });
 

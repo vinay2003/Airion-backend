@@ -88,15 +88,15 @@ export class ServicesService {
             qb.andWhere('(service.city ILIKE :loc OR :loc = ANY(service.availableLocations))', { loc: `%${query.location}%` });
         }
 
-        if (query.priceMin !== undefined) {
+        if (query.priceMin !== undefined && query.priceMin !== null && !isNaN(Number(query.priceMin))) {
             qb.andWhere('service.basePrice >= :priceMin', { priceMin: query.priceMin });
         }
 
-        if (query.priceMax !== undefined) {
+        if (query.priceMax !== undefined && query.priceMax !== null && !isNaN(Number(query.priceMax))) {
             qb.andWhere('service.basePrice <= :priceMax', { priceMax: query.priceMax });
         }
 
-        if (query.rating !== undefined) {
+        if (query.rating !== undefined && query.rating !== null && !isNaN(Number(query.rating))) {
             qb.andWhere('vendor.rating >= :rating', { rating: query.rating });
         }
 
@@ -109,8 +109,21 @@ export class ServicesService {
         }
 
         // Pagination
-        const limit = query.limit ? Math.min(query.limit, 100) : 10;
-        const offset = query.offset || 0;
+        let limit = 10;
+        if (query.limit !== undefined && query.limit !== null && String(query.limit) !== 'null' && String(query.limit) !== '') {
+            const parsedLimit = Number(query.limit);
+            if (!isNaN(parsedLimit)) {
+                limit = Math.min(parsedLimit, 100);
+            }
+        }
+
+        let offset = 0;
+        if (query.offset !== undefined && query.offset !== null && String(query.offset) !== 'null' && String(query.offset) !== '') {
+            const parsedOffset = Number(query.offset);
+            if (!isNaN(parsedOffset)) {
+                offset = parsedOffset;
+            }
+        }
         qb.take(limit).skip(offset);
 
         const [data, total] = await qb.getManyAndCount();

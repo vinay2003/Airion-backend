@@ -53,7 +53,7 @@ const Earnings: React.FC = () => {
             try {
                 const res: any = await fetchWalletOverview();
                 const data = res.data || res;
-                if (data && data.transactions && data.transactions.length > 0) return data;
+                if (data) return data;
             } catch (e) {
                 // use fallback
             }

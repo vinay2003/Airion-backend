@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Briefcase, Camera, Plus, Trash2, CheckCircle2, Loader2, Phone } from 'lucide-react';
+import { User, Briefcase, Camera, Plus, Trash2, CheckCircle2, Loader2, Phone, Mail, Edit3, X } from 'lucide-react';
 import { Avatar, Button } from '@ease2event/ui';
 import { useAuth } from '@ease2event/shared';
 import api, { uploadImage } from '../../lib/api';
@@ -8,11 +8,13 @@ import toast from 'react-hot-toast';
 const ProfileSettings: React.FC = () => {
   const { user, refreshUser } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
 
   const [personalData, setPersonalData] = useState({
     name: '',
+    email: '',
     phone: '',
     profileImage: '',
     aadharNumber: '',
@@ -99,8 +101,9 @@ const ProfileSettings: React.FC = () => {
   useEffect(() => {
     if (user) {
       setPersonalData({
-        name: user.name || '',
-        phone: user.phoneNumber || '',
+        name: (user.name && user.name.startsWith('User ') && user.name.includes('@')) ? (user.vendor?.businessName || '') : (user.name || user.vendor?.businessName || ''),
+        email: user.email || '',
+        phone: user.phoneNumber || user.vendor?.businessPhone || '',
         profileImage: (user as any).avatar || user.vendor?.logo || '',
         aadharNumber: user.vendor?.aadharNumber || '',
         panNumber: user.vendor?.panNumber || '',
@@ -185,6 +188,7 @@ const ProfileSettings: React.FC = () => {
 
       await api.put('/vendors/me', submissionData);
       toast.success('Profile updated successfully!');
+      setIsEditing(false);
       refreshUser();
     } catch (err: any) {
       console.error('Failed to update profile:', err);
@@ -198,13 +202,33 @@ const ProfileSettings: React.FC = () => {
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       {/* 👤 Personal Info Header */}
-      <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-6">
-        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] text-blue-500 shrink-0">
-          <User className="size-6 sm:size-8" />
+      <div className="flex items-center justify-between border-b border-[var(--ease2event-border-subtle)] pb-6">
+        <div className="flex items-center gap-4">
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-base)] text-blue-500 shrink-0">
+            <User className="size-6 sm:size-8" />
+          </div>
+          <div>
+            <h2 className="text-xl sm:text-lg font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Personal Information</h2>
+            <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Manage your personal profile and documents</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl sm:text-lg font-semibold text-[var(--ease2event-text-primary)] leading-none tracking-tight">Personal Information</h2>
-          <p className="text-[10px] sm:text-sm text-[var(--ease2event-text-secondary)] font-semibold mt-1.5 sm:mt-3 tracking-normal">Manage your personal profile and documents</p>
+        <div className="flex items-center gap-3">
+          {isEditing && (
+            <Button 
+              onClick={handleSaveProfile} 
+              disabled={submitting} 
+              className="h-10 px-4 text-xs font-bold rounded-xl bg-[var(--ease2event-brand-primary)] text-white hover:opacity-90 transition-all shadow-md"
+            >
+              {submitting ? <Loader2 className="animate-spin size-4" /> : <><CheckCircle2 size={14} className="mr-2" /> Save Changes</>}
+            </Button>
+          )}
+          <Button 
+            onClick={() => setIsEditing(!isEditing)}
+            variant={isEditing ? 'outline' : 'primary'}
+            className={`h-10 px-4 text-xs font-bold rounded-xl transition-all ${isEditing ? 'border-red-500 text-red-500 hover:bg-red-50' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          >
+            {isEditing ? <><X size={14} className="mr-2" /> Cancel</> : <><Edit3 size={14} className="mr-2" /> Edit</>}
+          </Button>
         </div>
       </div>
 
@@ -224,7 +248,10 @@ const ProfileSettings: React.FC = () => {
                 const imageUrl = data.url || data.data?.url || (typeof data === 'string' ? data : null);
                 if (imageUrl) {
                   setPersonalData(prev => ({ ...prev, profileImage: imageUrl }));
-                  toast.success('Profile picture updated', { id: loaderId });
+                  // Auto-save the avatar directly so it persists immediately
+                  await api.patch('/auth/profile', { avatar: imageUrl });
+                  refreshUser();
+                  toast.success('Profile picture updated and saved!', { id: loaderId });
                 }
               } catch (err) {
                 toast.error('Upload failed', { id: loaderId });
@@ -240,22 +267,36 @@ const ProfileSettings: React.FC = () => {
           <div className="space-y-4 sm:space-y-5 text-center xl:text-left flex-1">
             <h3 className="font-bold text-xs sm:text-sm text-[var(--ease2event-text-primary)] tracking-normal">Profile Picture</h3>
             <p className="text-[10px] sm:text-[11px] text-[var(--ease2event-text-secondary)] font-semibold leading-relaxed max-w-sm">Upload a professional photo to improve your credibility and brand visibility.</p>
-            <label htmlFor="profile-upload" className="cursor-pointer inline-flex items-center justify-center h-10 sm:h-11 px-6 sm:px-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm text-[var(--ease2event-text-primary)] font-bold tracking-normal rounded-xl hover:bg-[var(--ease2event-bg-elevated)] w-full sm:w-auto transition-all">
+            <label htmlFor="profile-upload" className={`cursor-pointer inline-flex items-center justify-center h-10 sm:h-11 px-6 sm:px-5 bg-[var(--ease2event-bg-surface)] border border-[var(--ease2event-border-base)] text-[10px] sm:text-sm text-[var(--ease2event-text-primary)] font-bold tracking-normal rounded-xl w-full sm:w-auto transition-all ${isEditing ? 'hover:bg-[var(--ease2event-bg-elevated)]' : 'opacity-50 pointer-events-none'}`}>
               Update Photo
             </label>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <div className="space-y-3">
-            <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Participant Name</label>
+            <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Name</label>
             <div className="relative group">
               <User className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
               <input
                 type="text"
                 value={personalData.name}
+                disabled={!isEditing}
                 onChange={(e) => setPersonalData({ ...personalData, name: e.target.value })}
-                className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl pl-12 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
+                className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl pl-12 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] disabled:opacity-60 disabled:cursor-not-allowed"
+                placeholder="Enter your name"
+              />
+            </div>
+          </div>
+          <div className="space-y-3">
+            <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Email Address</label>
+            <div className="relative group">
+              <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 opacity-50 transition-opacity" size={16} />
+              <input
+                type="email"
+                value={personalData.email}
+                disabled
+                className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl pl-12 pr-6 text-sm font-bold outline-none text-[var(--ease2event-text-muted)] cursor-not-allowed"
               />
             </div>
           </div>
@@ -266,8 +307,9 @@ const ProfileSettings: React.FC = () => {
               <input
                 type="text"
                 value={personalData.phone}
+                disabled={!isEditing}
                 onChange={(e: any) => setPersonalData({ ...personalData, phone: e.target.value })}
-                className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl pl-12 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
+                className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl pl-12 pr-6 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)] disabled:opacity-60 disabled:cursor-not-allowed"
                 placeholder="+91"
               />
             </div>
@@ -371,24 +413,20 @@ const ProfileSettings: React.FC = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pt-6 border-t border-[var(--ease2event-border-subtle)]">
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">Aadhar Number</label>
-            <input type="text" value={personalData.aadharNumber} onChange={(e: any) => setPersonalData({ ...personalData, aadharNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Optional" />
+            <input type="text" disabled={!isEditing} value={personalData.aadharNumber} onChange={(e: any) => setPersonalData({ ...personalData, aadharNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed" placeholder="Optional" />
           </div>
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">PAN Number</label>
-            <input type="text" value={personalData.panNumber} onChange={(e: any) => setPersonalData({ ...personalData, panNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Optional" />
+            <input type="text" disabled={!isEditing} value={personalData.panNumber} onChange={(e: any) => setPersonalData({ ...personalData, panNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed" placeholder="Optional" />
           </div>
           <div className="space-y-2">
             <label className="text-[11px] sm:text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-widest ml-1">GST Number</label>
-            <input type="text" value={personalData.gstNumber} onChange={(e: any) => setPersonalData({ ...personalData, gstNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all" placeholder="Optional" />
+            <input type="text" disabled={!isEditing} value={personalData.gstNumber} onChange={(e: any) => setPersonalData({ ...personalData, gstNumber: e.target.value })} className="w-full h-12 sm:h-10 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] rounded-xl sm:rounded-2xl px-5 sm:px-6 text-xs sm:text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed" placeholder="Optional" />
           </div>
         </div>
       </div>
 
-      <div className="pt-8 border-t border-[var(--ease2event-border-subtle)] mt-10 flex justify-end">
-        <Button onClick={handleSaveProfile} disabled={submitting} className="h-14 sm:h-12 w-full sm:w-auto sm:px-14 bg-[var(--ease2event-brand-primary)] text-white text-[11px] sm:text-[12px] font-bold tracking-widest rounded-xl sm:rounded-2xl hover:opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-[var(--ease2event-brand-primary)]/20">
-          {submitting ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={16} className="mr-3" /> SAVE PROFILE</>}
-        </Button>
-      </div>
+
     </div>
   );
 };

@@ -10,7 +10,6 @@ import toast from 'react-hot-toast';
 
 const Listings: React.FC = () => {
  const { user } = useAuth();
- const vendorId = user?.vendor?.id || 'mock-id';
  const queryClient = useQueryClient();
 
  const [searchTerm, setSearchTerm] = useState('');
@@ -20,10 +19,27 @@ const Listings: React.FC = () => {
  const [editingListing, setEditingListing] = useState<any>(null);
  const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
 
+ // Fetch vendorId: first from JWT token, then fallback to backend profile API
+ const { data: vendorId = null } = useQuery({
+  queryKey: ['vendorId', user?.id],
+  queryFn: async () => {
+    // Fast path: vendorId already in token
+    if (user?.vendor?.id) return user.vendor.id;
+    // Fallback: fetch from backend
+    try {
+      const profile: any = await api.get('/vendors/me');
+      return profile?.id || profile?.data?.id || null;
+    } catch {
+      return null;
+    }
+  },
+  enabled: !!user,
+ });
+
  const { data: listings = [], isLoading: loading, error } = useQuery({
  queryKey: ['services', vendorId],
  queryFn: async () => {
- if (vendorId === 'mock-id') return [];
+ if (!vendorId) return [];
  const response: any = await api.get(`/services?vendorId=${vendorId}&limit=100`);
  
  const dataList = Array.isArray(response) ? response : (response?.data || []);
@@ -38,7 +54,7 @@ const Listings: React.FC = () => {
  status: service.isActive ? 'Active' : 'Inactive',
  }));
  },
- enabled: vendorId !== 'mock-id',
+ enabled: !!vendorId,
  });
 
  const saveMutation = useMutation({
@@ -53,7 +69,7 @@ const Listings: React.FC = () => {
  locationType: 'onsite'
  };
 
- if (vendorId !== 'mock-id') {
+ if (vendorId) {
  payload.vendorId = vendorId;
  }
 
@@ -66,6 +82,11 @@ const Listings: React.FC = () => {
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ['services', vendorId] });
  setIsEditorOpen(false);
+ toast.success(editingListing ? 'Service updated successfully.' : 'Service created successfully.');
+ },
+ onError: (error: any) => {
+ console.error('Failed to save listing:', error);
+ toast.error(error?.response?.data?.message || error?.message || 'Failed to save listing.');
  }
  });
 

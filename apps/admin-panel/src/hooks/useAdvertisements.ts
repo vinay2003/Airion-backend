@@ -6,7 +6,7 @@ export const useAdminAdvertisements = () => {
     return useQuery({
         queryKey: ['adminAdvertisements'],
         queryFn: async () => {
-            const { data } = await authApi.get('/ads');
+            const { data } = await authApi.get('/admin/advertisements');
             return data.data || data;
         },
     });
@@ -16,7 +16,7 @@ export const useApproveAdvertisement = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            const { data } = await authApi.patch(`/ads/${id}/approve`);
+            const { data } = await authApi.patch(`/admin/advertisements/${id}/status`, { status: 'active' });
             return data;
         },
         onSuccess: (updatedAd) => {
@@ -37,7 +37,7 @@ export const useRejectAdvertisement = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            const { data } = await authApi.patch(`/ads/${id}/reject`);
+            const { data } = await authApi.patch(`/admin/advertisements/${id}/status`, { status: 'rejected' });
             return data;
         },
         onSuccess: (updatedAd) => {
@@ -58,7 +58,7 @@ export const useExpireAdvertisement = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            const { data } = await authApi.patch(`/ads/${id}/expire`);
+            const { data } = await authApi.patch(`/admin/advertisements/${id}/status`, { status: 'paused' });
             return data;
         },
         onSuccess: (updatedAd) => {
@@ -88,7 +88,7 @@ export const useCreateAdvertisement = () => {
             endDate: string;
             mediaUrls?: string[];
         }) => {
-            const { data } = await authApi.post('/ads', adData);
+            const { data } = await authApi.post('/admin/advertisements', adData);
             return data;
         },
         onSuccess: () => {

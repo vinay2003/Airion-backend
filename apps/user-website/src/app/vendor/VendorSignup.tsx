@@ -7,12 +7,12 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@ease2event/shared/auth/AuthContext';
-import api from '../lib/api';
+import api from '../../lib/api';
 import toast from 'react-hot-toast';
 
 const VendorSignupWizard: React.FC = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [currentStep, setCurrentStep] = useState(1);
@@ -144,6 +144,7 @@ const VendorSignupWizard: React.FC = () => {
             };
 
             await api.post('/vendors', submissionData);
+            await refreshUser(); // CRITICAL: Fetch updated user with vendor profile attached
             toast.success('Profile submitted! Our team is reviewing it.', {
                 icon: '🚀',
                 style: { borderRadius: '15px', background: '#10b981', color: '#fff' }

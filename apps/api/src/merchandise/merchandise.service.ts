@@ -36,6 +36,10 @@ export class MerchandiseService {
     }
 
     async findOne(id: string): Promise<Product> {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) {
+            throw new NotFoundException(`Product with ID ${id} not found`);
+        }
         const product = await this.productRepository.findOne({ where: { id } });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
@@ -180,6 +184,11 @@ export class MerchandiseService {
         vendorId: string,
         payload: { status: string; trackingNumber?: string; courierName?: string }
     ): Promise<OrderItem> {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(orderItemId)) {
+            throw new NotFoundException('Order item not found');
+        }
+
         return this.dataSource.transaction(async (manager) => {
             const orderItem = await manager.findOne(OrderItem, {
                 where: { id: orderItemId },

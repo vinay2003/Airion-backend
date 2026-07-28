@@ -81,7 +81,7 @@ const CMS: React.FC = () => {
         <div className="space-y-6 ">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Content Management</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Content Management</h1>
                     <p className="text-gray-500 dark:text-slate-400">Manage your platform's public facing content</p>
                 </div>
                 <div className="flex gap-2">
@@ -123,7 +123,7 @@ const CMS: React.FC = () => {
                         >
                             <div className="flex items-center gap-3">
                                 <tab.icon size={18} />
-                                <span className="font-bold text-xs uppercase tracking-widest">{tab.label}</span>
+                                <span className="font-bold text-xs tracking-widest">{tab.label}</span>
                             </div>
                         </button>
                     ))}
@@ -135,13 +135,13 @@ const CMS: React.FC = () => {
                         {activeTab === 'hero' && (
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Hero Section Settings</h2>
-                                    <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black uppercase rounded">LIVE</span>
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Hero Section Settings</h2>
+                                    <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black rounded">LIVE</span>
                                 </div>
                                 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Main Headline</label>
+                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-2">Main Headline</label>
                                         <input 
                                             type="text" 
                                             value={heroSection.title}
@@ -150,7 +150,7 @@ const CMS: React.FC = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Subheadline / Description</label>
+                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-2">Subheadline / Description</label>
                                         <textarea 
                                             rows={3}
                                             value={heroSection.subtitle}
@@ -160,7 +160,7 @@ const CMS: React.FC = () => {
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">CTA Button Text</label>
+                                            <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-2">CTA Button Text</label>
                                             <input 
                                                 type="text" 
                                                 value={heroSection.buttonText}
@@ -169,7 +169,7 @@ const CMS: React.FC = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">CTA Link URL</label>
+                                            <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-2">CTA Link URL</label>
                                             <input 
                                                 type="text" 
                                                 defaultValue="/marketplace"
@@ -178,7 +178,7 @@ const CMS: React.FC = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Hero Background Image URL</label>
+                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-2">Hero Background Image URL</label>
                                         <input
                                             type="text"
                                             value={heroSection.backgroundImage}
@@ -196,7 +196,7 @@ const CMS: React.FC = () => {
                         {activeTab === 'categories' && (
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Featured Categories</h2>
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Featured Categories</h2>
                                     <button 
                                         className="p-2 bg-red-500 text-white rounded-xl  "
                                         onClick={() => setCategories([...categories, { id: Date.now(), name: 'New Category', slug: 'new', icon: 'Sparkles', image: '', gridClass: 'col-span-1 h-64', count: 0 }])}
@@ -211,25 +211,25 @@ const CMS: React.FC = () => {
                                                 <MoveVertical className="text-gray-300 cursor-move" size={20} />
                                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Name</label>
+                                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Name</label>
                                                         <input type="text" value={cat.name} onChange={(e) => {
                                                             const newCats = [...categories]; newCats[i].name = e.target.value; setCategories(newCats);
                                                         }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Slug</label>
+                                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Slug</label>
                                                         <input type="text" value={cat.slug || ''} onChange={(e) => {
                                                             const newCats = [...categories]; newCats[i].slug = e.target.value; setCategories(newCats);
                                                         }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Image URL</label>
+                                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Image URL</label>
                                                         <input type="text" value={cat.image || ''} onChange={(e) => {
                                                             const newCats = [...categories]; newCats[i].image = e.target.value; setCategories(newCats);
                                                         }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Grid Class</label>
+                                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Grid Class</label>
                                                         <input type="text" value={cat.gridClass || 'col-span-1 h-64'} onChange={(e) => {
                                                             const newCats = [...categories]; newCats[i].gridClass = e.target.value; setCategories(newCats);
                                                         }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
@@ -246,7 +246,7 @@ const CMS: React.FC = () => {
                         {activeTab === 'faqs' && (
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center mb-2">
-                                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Frequently Asked Questions</h2>
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Frequently Asked Questions</h2>
                                     <button 
                                         className="p-2 bg-red-500 text-white rounded-xl  "
                                         onClick={() => setFaqs([...faqs, { question: 'New Question', answer: 'New Answer' }])}
@@ -258,13 +258,13 @@ const CMS: React.FC = () => {
                                     {faqs.map((faq, i) => (
                                         <div key={i} className="flex flex-col gap-4 p-4 bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-2xl">
                                             <div>
-                                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Question</label>
+                                                <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Question</label>
                                                 <input type="text" value={faq.question} onChange={(e) => {
                                                     const newFaqs = [...faqs]; newFaqs[i].question = e.target.value; setFaqs(newFaqs);
                                                 }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white" />
                                             </div>
                                             <div>
-                                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Answer</label>
+                                                <label className="block text-[10px] font-black text-gray-400 tracking-widest mb-1">Answer</label>
                                                 <textarea value={faq.answer} onChange={(e) => {
                                                     const newFaqs = [...faqs]; newFaqs[i].answer = e.target.value; setFaqs(newFaqs);
                                                 }} className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 dark:text-white resize-none" rows={3} />
@@ -277,7 +277,7 @@ const CMS: React.FC = () => {
                         )}
 
                         {activeTab !== 'hero' && activeTab !== 'categories' && activeTab !== 'faqs' && (
-                            <div className="py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-sm">
+                            <div className="py-20 text-center text-gray-400 font-bold tracking-widest text-sm">
                                 Feature Coming Soon
                             </div>
                         )}

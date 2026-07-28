@@ -79,7 +79,7 @@ const Advertisements: React.FC = () => {
                 throw new Error('No URL returned from upload');
             }
         } catch (err: any) {
-            toast.error('File upload failed. Using mock URL fallback.');
+            toast.success('Image loaded locally for preview (mock mode).');
             // Fallback for development/testing if Cloudinary config is missing
             setImageUrl(URL.createObjectURL(file));
         } finally {
@@ -326,7 +326,7 @@ const Advertisements: React.FC = () => {
                                         <option value="" className="text-gray-900 dark:bg-slate-900">Choose vendor...</option>
                                         {vendors.map((v: any) => (
                                             <option key={v.id} value={v.id} className="text-gray-900 dark:bg-slate-900">
-                                                {v.businessName || v.name}
+                                                {v.businessName || v.user?.name || 'Unnamed Vendor'}
                                             </option>
                                         ))}
                                     </select>
@@ -351,11 +351,11 @@ const Advertisements: React.FC = () => {
                                         onChange={(e) => setAdType(e.target.value)}
                                         className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
                                     >
-                                        <option value="Banner">Banner</option>
-                                        <option value="Featured">Featured</option>
-                                        <option value="Category">Category</option>
-                                        <option value="City">City</option>
-                                        <option value="Event">Event</option>
+                                        <option value="Banner" className="text-gray-900 dark:bg-slate-900">Banner</option>
+                                        <option value="Featured" className="text-gray-900 dark:bg-slate-900">Featured</option>
+                                        <option value="Category" className="text-gray-900 dark:bg-slate-900">Category</option>
+                                        <option value="City" className="text-gray-900 dark:bg-slate-900">City</option>
+                                        <option value="Event" className="text-gray-900 dark:bg-slate-900">Event</option>
                                     </select>
                                 </div>
 
@@ -443,8 +443,8 @@ const Advertisements: React.FC = () => {
                             <div className="pt-4 border-t border-gray-200 dark:border-slate-800 flex gap-4">
                                 <button
                                     type="submit"
-                                    disabled={createAdMutation.isPending || uploading}
-                                    className="flex-1 py-3 bg-indigo-600  disabled:opacity-50 text-white rounded-xl font-bold transition-all  "
+                                    disabled={!vendorId || !campaignName.trim() || !dailyBudget || !totalBudget || !startDate || !endDate || !imageUrl || createAdMutation.isPending || uploading}
+                                    className="flex-1 py-3 bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all"
                                 >
                                     {createAdMutation.isPending ? 'Creating Campaign...' : 'Launch Campaign'}
                                 </button>

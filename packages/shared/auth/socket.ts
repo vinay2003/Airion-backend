@@ -3,16 +3,18 @@ import { tokenService } from './tokenService';
 
 const getBaseUrl = () => {
     const envUrl = import.meta.env.VITE_API_URL;
+    let url = 'http://127.0.0.1:3000';
     if (envUrl) {
-        return envUrl.replace('/api', '');
-    }
-    if (typeof window !== 'undefined') {
+        url = envUrl.replace('/api', '');
+    } else if (typeof window !== 'undefined') {
         const hostname = window.location.hostname;
         if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-            return 'https://airion-backend-m3tb.onrender.com';
+            url = 'https://airion-backend-m3tb.onrender.com';
         }
     }
-    return 'http://localhost:3000';
+    // Force IPv4 loopback (127.0.0.1) instead of localhost for local websocket connections
+    // to prevent macOS IPv6 (::1) upgrade request ERR_CONNECTION_REFUSED errors.
+    return url.replace('//localhost', '//127.0.0.1');
 };
 
 let socket: Socket | null = null;

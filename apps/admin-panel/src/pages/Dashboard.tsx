@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
     const [isLogsModalOpen, setIsLogsModalOpen] = useState(false);
 
     const stats = [
-        { label: 'Total Revenue', value: `₹${((dashboardData?.revenue || 0) / 100000).toFixed(2)}L`, change: '+12%', icon: 'DollarSign', color: 'emerald' },
+        { label: 'Total Revenue', value: `₹${((dashboardData?.revenue || 0) / 100000).toFixed(2)}L`, change: '+12%', icon: 'IndianRupee', color: 'emerald' },
         { label: 'Active Vendors', value: dashboardData?.vendors || 0, change: '+8%', icon: 'Store', color: 'blue' },
         { label: 'Total Users', value: dashboardData?.users || 0, change: '+24%', icon: 'Users', color: 'purple' },
         { label: 'Total Bookings', value: dashboardData?.bookings || 0, change: '+2%', icon: 'Calendar', color: 'rose' },

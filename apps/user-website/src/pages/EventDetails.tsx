@@ -73,6 +73,17 @@ const EventDetails: React.FC = () => {
 
     const handleLike = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!user) {
+            toast('Please login or sign up for adding in wishlist.', {
+                icon: '🔒',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
+            return;
+        }
         if (!event) return;
         if (!isLiked) {
             addToWishlist(event);
@@ -229,7 +240,7 @@ const EventDetails: React.FC = () => {
                         </button>
                         <button
                             onClick={(e) => handleLike(e)}
-                            className={`p-2.5 rounded-full transition-all duration-300 ${isLiked ? 'bg-red-50 text-red-500 border border-red-100 shadow-lg shadow-red-500/10' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-110'}`}
+                            className={`p-2.5 rounded-full transition-all duration-300 cursor-pointer ${isLiked ? 'bg-red-50 text-red-500 border border-red-100 shadow-lg shadow-red-500/10' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-110'}`}
                         >
                             <Heart size={18} className={isLiked ? 'fill-current' : ''} />
                         </button>

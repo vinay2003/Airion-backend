@@ -55,6 +55,28 @@ export class MerchandiseController {
         return this.merchandiseService.getAdminOrders();
     }
 
+    @Get('wishlist/mine')
+    @UseGuards(JwtAuthGuard)
+    getMyWishlist(@Req() req: any) {
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.getUserWishlist(userId);
+    }
+
+    @Get(':id/wishlist/check')
+    @UseGuards(JwtAuthGuard)
+    async checkIsWishlisted(@Param('id') id: string, @Req() req: any) {
+        const userId = req.user.userId || req.user.sub;
+        const isSaved = await this.merchandiseService.checkIsWishlisted(userId, id);
+        return { isSaved };
+    }
+
+    @Post(':id/wishlist')
+    @UseGuards(JwtAuthGuard)
+    toggleWishlist(@Param('id') id: string, @Req() req: any) {
+        const userId = req.user.userId || req.user.sub;
+        return this.merchandiseService.toggleWishlist(userId, id);
+    }
+
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.merchandiseService.findOne(id);

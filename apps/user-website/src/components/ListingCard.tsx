@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Star, MapPin, Heart, ChevronLeft, ChevronRight, ShieldCheck, Sparkles, Plus, Zap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@ease2event/shared';
+import { toast } from 'react-hot-toast';
 
 interface ListingCardProps {
     id: string;
@@ -40,6 +42,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
     const isWishlisted = isInWishlist(id);
     const isCompared = isInCompare(id);
     
+    const { user } = useAuth();
+    
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
 
@@ -66,10 +70,23 @@ const ListingCard: React.FC<ListingCardProps> = ({
     const toggleWishlist = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!user) {
+            toast('Please login or sign up for adding in wishlist.', {
+                icon: '🔒',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
+            return;
+        }
         if (isWishlisted) {
             removeFromWishlist(id);
+            toast.success('Removed from wishlist');
         } else {
             addToWishlist(vendorObj);
+            toast.success('Added to wishlist');
         }
     };
 
@@ -154,7 +171,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 {/* Wishlist Button */}
                 <button
                     onClick={toggleWishlist}
-                    className="absolute top-3 right-3 z-10 p-1.5 bg-white/90 backdrop-blur-sm dark:bg-slate-900/80 rounded-full shadow-sm"
+                    className="absolute top-3 right-3 z-10 p-1.5 bg-white/90 backdrop-blur-sm dark:bg-slate-900/80 rounded-full shadow-sm cursor-pointer"
                     aria-label="Add to wishlist"
                 >
                     <Heart
@@ -163,14 +180,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     />
                 </button>
 
-                {/* Compare Button */}
-                <button
-                    onClick={handleCompare}
-                    className={`absolute top-14 right-3 z-10 p-1.5 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isCompared ? 'bg-red-500 text-white' : 'bg-white/90 dark:bg-slate-900/80 text-neutral-500'}`}
-                    aria-label="Compare"
-                >
-                    <Plus size={18} className={`transform transition-transform ${isCompared ? 'rotate-45' : ''}`} />
-                </button>
 
                 {/* Carousel Arrows */}
                 {imageList.length > 1 && (

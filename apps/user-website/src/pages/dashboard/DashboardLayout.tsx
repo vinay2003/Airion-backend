@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Calendar,
@@ -179,9 +179,11 @@ const DashboardLayout: React.FC = () => {
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
                 <div className="p-6 flex items-center justify-between border-b border-neutral-200 dark:border-slate-800">
-                    <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
-                        <span className="text-red-500">Ease2event</span>
-                    </h2>
+                    <Link to="/" className="cursor-pointer">
+                        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2 hover:opacity-80 transition-opacity">
+                            <span className="text-red-500">Ease2event</span>
+                        </h2>
+                    </Link>
                     <button className="lg:hidden text-neutral-500" onClick={() => setIsSidebarOpen(false)}>
                         <X size={20} />
                     </button>

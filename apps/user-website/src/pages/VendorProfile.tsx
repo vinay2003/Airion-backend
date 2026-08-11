@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     Star, MapPin, ShieldCheck, Mail, Phone,
     Share2, Heart, Info, CheckCircle2,
     Loader2, Camera, Instagram, Facebook, Globe,
-    Users, Tag, ChevronRight, MessageSquare
+    Users, Tag, ChevronRight, MessageSquare, X, Package as PackageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { toggleWishlist, checkIsWishlisted, recordVendorProfileView } from '../lib/api';
@@ -13,6 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import toast from 'react-hot-toast';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { useWishlist } from "../context/WishlistContext";
+import { useAuth } from "@ease2event/shared/auth";
+
 import { useBookingCart } from '../context/BookingCartContext';
 
 const MOCK_PROFILES: Record<string, any> = {
@@ -85,16 +88,57 @@ const MOCK_PROFILES: Record<string, any> = {
 };
 
 const VendorProfile: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id: routeId } = useParams<{ id: string }>();
+    const id = React.useMemo(() => {
+        if (!routeId) return '';
+        const match = routeId.match(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/);
+        return match ? match[0] : routeId;
+    }, [routeId]);
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const packageId = searchParams.get('package');
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { user } = useAuth();
     const { addToCart, isInCart } = useBookingCart();
     const [vendor, setVendor] = useState<any>(null);
     const [services, setServices] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isWishlisted, setIsWishlisted] = useState(false);
-    const [wishlistLoading, setWishlistLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+    
+    const selectedPackage = React.useMemo(() => {
+        if (!packageId || !services.length) return null;
+        
+        // Extract UUID if the packageId is a slugified string (e.g., 'updated-form-823b45e1-...')
+        const uuidMatch = packageId.match(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/);
+        const actualPackageId = uuidMatch ? uuidMatch[0] : packageId;
+        
+        // 1. First try to find it as a nested package
+        for (const service of services) {
+            const pkg = service.packages?.find((p: any) => p.id === actualPackageId || p.name === packageId || p.name === actualPackageId || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === packageId);
+            if (pkg) return { ...pkg, serviceTitle: service.title, serviceImage: service.images?.[0], allImages: service.images || [] };
+        }
+        
+        // 2. Fallback: Try to find it as a service itself (since Packages.tsx treats services as packages)
+        const srv = services.find((s: any) => s.id === actualPackageId || s.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === packageId);
+        if (srv) {
+             return {
+                 id: srv.id,
+                 name: srv.title,
+                 description: srv.description,
+                 price: srv.basePrice || srv.startingPrice,
+                 guestCapacity: srv.guestCapacity,
+                 features: srv.features,
+                 serviceTitle: srv.category?.name || 'Package',
+                 serviceImage: srv.images?.[0],
+                 allImages: srv.images || []
+             };
+        }
+        
+        return null;
+    }, [packageId, services]);
+    
+    const isWishlistedGlobal = vendor ? isInWishlist(vendor.id) : false;
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -105,13 +149,11 @@ const VendorProfile: React.FC = () => {
                     api.get(`/reviews?vendorId=${id}`).catch(() => ({ data: [] })),
                     checkIsWishlisted(id).catch(() => ({ isSaved: false }))
                 ]);
-                if (vendorRes.data) {
-                    setVendor(vendorRes.data);
-                    setServices(servicesRes.data);
-                    setReviews(reviewsRes.data);
-                    if (wishlistRes && typeof wishlistRes === 'object' && 'isSaved' in wishlistRes) {
-                        setIsWishlisted(wishlistRes.isSaved);
-                    }
+                const vendorData = vendorRes.data || vendorRes;
+                if (vendorData && (vendorData.id || vendorData.userId)) {
+                    setVendor(vendorData);
+                    setServices(Array.isArray(servicesRes) ? servicesRes : (servicesRes.data || []));
+                    setReviews(Array.isArray(reviewsRes) ? reviewsRes : (reviewsRes.data || []));
                 } else {
                     throw new Error('Not found');
                 }
@@ -185,16 +227,38 @@ const VendorProfile: React.FC = () => {
     }, [id]);
 
     const handleToggleWishlist = async () => {
-        if (!id || wishlistLoading) return;
-        setWishlistLoading(true);
-        try {
-            await toggleWishlist(id);
-            setIsWishlisted(!isWishlisted);
-            toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist!');
-        } catch (error) {
-            toast.error('Failed to update wishlist');
-        } finally {
-            setWishlistLoading(false);
+        if (!user) {
+            toast('Please login or sign up for adding in wishlist.', {
+                icon: '🔒',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
+            return;
+        }
+        if (!vendor) return;
+        
+        const vendorObj = {
+            id: vendor.id,
+            title: vendor.businessName || vendor.title,
+            rating: vendor.rating || 0,
+            reviews: vendor.reviews || 0,
+            location: vendor.location || vendor.address || '',
+            price: vendor.price || vendor.startingPrice || '',
+            category: vendor.category || vendor.vendorType || '',
+            image: vendor.images?.[0] || vendor.portfolioImages?.[0] || vendor.image || '',
+            description: vendor.description || '',
+            capacity: vendor.capacity || ''
+        };
+
+        if (isWishlistedGlobal) {
+            removeFromWishlist(vendor.id);
+            toast.success('Removed from wishlist');
+        } else {
+            addToWishlist(vendorObj);
+            toast.success('Added to wishlist!');
         }
     };
 
@@ -210,27 +274,29 @@ const VendorProfile: React.FC = () => {
     if (!vendor) return <div className="p-20 text-center text-gray-500 font-medium">Vendor not found</div>;
 
     return (
-        <div className="bg-white dark:bg-slate-950 min-h-screen text-slate-900 border-t border-gray-100">
-            {/* Hero & Banner */}
+        <div className="bg-white dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100 border-t border-gray-100">
+            {/* Cover Image Header */}
             <div className="relative h-[300px] md:h-[450px] w-full overflow-hidden">
                 <img
-                    src={vendor.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000'}
-                    className="w-full h-full object-cover"
-                    alt={vendor.businessName}
+                    src={selectedPackage?.images?.[0] || selectedPackage?.serviceImage || vendor.portfolioImages?.[0] || 
+                         (selectedPackage ? `https://images.unsplash.com/photo-${['1519167758481-83f550bb49b3', '1511578314322-379afb476865', '1530103862676-de8c9debad1d', '1519741497674-611481863552', '1515232389446-a17ce9ca7434', '1533174072545-7a4b6ad7a6c3'][Math.abs([...(selectedPackage.id || selectedPackage.name || '0')].reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 6]}?auto=format&fit=crop&q=80&w=2000` : 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000')
+                    }
+                    className="w-full h-full object-cover transition-opacity duration-500"
+                    alt={selectedPackage ? selectedPackage.name : vendor.businessName}
+                    key={selectedPackage ? selectedPackage.id : 'vendor-header'}
                 />
                 <div className="absolute inset-0 bg-black/30" />
 
-                <div className="absolute bottom-6 left-0 w-full px-4 sm:px-6 lg:px-8">
+                <div className="absolute bottom-20 left-0 w-full px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto flex justify-between items-end">
                         <div className="flex gap-4 items-center mb-2">
                             <Button
                                 onClick={handleToggleWishlist}
-                                disabled={wishlistLoading}
                                 size="sm"
                                 variant="secondary"
-                                className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all  ${isWishlisted ? 'text-red-500 fill-red-500' : ''}`}
+                                className={`rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-all cursor-pointer ${isWishlistedGlobal ? 'text-red-500 fill-red-500' : ''}`}
                             >
-                                <Heart size={18} className={isWishlisted ? 'fill-red-500 text-red-500' : ''} />
+                                <Heart size={18} className={isWishlistedGlobal ? 'fill-red-500 text-red-500' : ''} />
                             </Button>
                             <Button size="sm" variant="secondary" className="rounded-full w-9 h-9 p-0 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white border-none transition-transform ">
                                 <Share2 size={18} />
@@ -257,45 +323,52 @@ const VendorProfile: React.FC = () => {
                                             </Badge>
                                         )}
                                         <Badge className="bg-indigo-50 text-indigo-500 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1">
-                                            {vendor.category?.name || 'EXCLUSIVE PARTNER'}
+                                            {selectedPackage ? (selectedPackage.serviceTitle || 'Package') : (vendor.category?.name || 'EXCLUSIVE PARTNER')}
                                         </Badge>
                                     </div>
-                                    <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">
-                                        {vendor.businessName}
-                                    </h1>
-                                    <div className="flex flex-wrap items-center gap-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.15em]">
-                                        <div className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> {vendor.city || 'India'}</div>
-                                        <div className="flex items-center gap-2"><Star size={14} className="text-amber-400 fill-amber-400" /> {vendor.rating || '5.0'} <span className="text-[8px] text-slate-300">({vendor.totalReviews || 0})</span></div>
+                                    <div className="space-y-1">
+                                        <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-none uppercase">
+                                            {selectedPackage ? selectedPackage.name : vendor.businessName}
+                                        </h1>
+                                        <div className="flex flex-wrap items-center gap-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.15em]">
+                                            <div className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> {vendor.city || 'India'}</div>
+                                            <div className="flex items-center gap-2"><Star size={14} className="text-amber-400 fill-amber-400" /> {vendor.rating || '5.0'} <span className="text-[8px] text-slate-300">({vendor.totalReviews || 0})</span></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Button
                                         onClick={() => {
+                                            const cartItemId = selectedPackage?.id || id || vendor.id;
+                                            const cartItemName = selectedPackage?.name || vendor.businessName;
+                                            const cartItemImage = selectedPackage?.allImages?.[0] || vendor.portfolioImages?.[0] || '';
+                                            const cartItemPrice = Number(selectedPackage ? (selectedPackage.price || selectedPackage.basePrice || 0) : (vendor.averageBookingPrice || vendor.startingPrice || 50000));
+
                                             addToCart({
-                                                vendorId: id || vendor.id,
-                                                vendorName: vendor.businessName,
-                                                vendorImage: vendor.portfolioImages?.[0] || '',
-                                                vendorCategory: vendor.category?.name || 'Vendor',
-                                                vendorCity: vendor.city || '',
+                                                vendorId: cartItemId,
+                                                vendorName: cartItemName,
+                                                vendorImage: cartItemImage,
+                                                vendorCategory: vendor.businessName || 'Vendor',
+                                                vendorCity: vendor.city || 'India',
                                                 eventDate: '',
                                                 eventTime: '10:00',
                                                 guestCount: '50',
                                                 occasion: 'Wedding',
                                                 selectedPackage: 'Standard',
-                                                packagePrice: vendor.startingPrice || 50000,
+                                                packagePrice: cartItemPrice,
                                                 selectedAddons: [],
                                                 addOnServices: [],
                                                 specialInstructions: '',
                                             });
-                                            toast.success(`${vendor.businessName} added to booking cart!`);
+                                            toast.success(`${cartItemName} added to booking cart!`);
                                         }}
                                         className={`h-10 px-6 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all ${
-                                            isInCart(id || vendor.id)
+                                            isInCart(selectedPackage?.id || id || vendor.id)
                                                 ? 'bg-green-600 text-white'
                                                 : 'bg-red-600 text-white hover:bg-red-700'
                                         }`}
                                     >
-                                        {isInCart(id || vendor.id) ? '✓ In Cart' : '+ Add to Booking Cart'}
+                                        {isInCart(selectedPackage?.id || id || vendor.id) ? '✓ Added to Cart' : '+ Add to Cart'}
                                     </Button>
                                     <Button
                                         onClick={() => navigate('/booking-cart')}
@@ -311,99 +384,103 @@ const VendorProfile: React.FC = () => {
                         <section className="space-y-6">
                             <div className="flex items-center gap-3">
                                 <div className="w-1 h-3 bg-primary rounded-full"></div>
-                                <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Operational Narrative</h2>
+                                <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em]">Overview</h2>
                             </div>
-                            <p className="text-slate-500 font-bold leading-relaxed text-sm max-w-4xl">
-                                {vendor.businessDescription || "A professional service dedicated to providing high-quality experiences tailored to your events needs."}
+                            <p className="text-slate-500 dark:text-slate-400 font-bold leading-relaxed text-sm max-w-4xl">
+                                {selectedPackage ? selectedPackage.description : (vendor.businessDescription || "A professional service dedicated to providing high-quality experiences tailored to your events needs.")}
                             </p>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-                                <div className="p-5 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 flex flex-col justify-between h-24">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Tenure</span>
-                                    <span className="text-xl font-black text-slate-900">{vendor.yearsInBusiness || '5+'} <span className="text-[10px] text-slate-400 ml-1">YRS</span></span>
+                            {/* General Stats */}
+                            <div className="grid grid-cols-3 gap-4 mt-8">
+                                <div className="p-4 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 flex flex-col justify-between flex-1">
+                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Years in Business</span>
+                                    <span className="text-lg md:text-xl font-black text-slate-900 dark:text-white truncate">{vendor.yearsInBusiness || '5+'} <span className="text-[10px] text-slate-400 ml-1">YRS</span></span>
                                 </div>
-                                <div className="p-5 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 flex flex-col justify-between h-24">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Market Status</span>
-                                    <span className="text-xl font-black text-emerald-600 uppercase">ACTIVE</span>
+                                <div className="p-4 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 flex flex-col justify-between flex-1">
+                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</span>
+                                    <span className="text-lg md:text-xl font-black text-emerald-600 uppercase truncate">ACTIVE</span>
                                 </div>
-                                <div className="p-5 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 flex flex-col justify-between h-24">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Density Node</span>
-                                    <span className="text-xl font-black text-slate-900">10-20 <span className="text-[10px] text-slate-400 ml-1">PTR</span></span>
+                                <div className="p-4 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 flex flex-col justify-between flex-1">
+                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Events Handled</span>
+                                    <span className="text-lg md:text-xl font-black text-slate-900 dark:text-white truncate">10-20 <span className="text-[10px] text-slate-400 ml-1">PTR</span></span>
                                 </div>
-                                <div className="p-5 bg-gray-50/50 dark:bg-slate-900 rounded-xl border border-gray-100 flex flex-col justify-between h-24">
-                                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Entry Delta</span>
-                                    <span className="text-xl font-black text-slate-900">₹{Number(vendor.averageBookingPrice).toLocaleString()}</span>
+                            </div>
+                            
+                            {/* Highlight Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                                <div className="p-5 bg-gradient-to-br from-slate-900 to-black dark:from-slate-800 dark:to-slate-950 rounded-xl border border-slate-800 shadow-lg flex items-center justify-between group overflow-hidden relative">
+                                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all"></div>
+                                    <div className="relative z-10">
+                                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Starting Price</span>
+                                        <span className="text-2xl md:text-3xl font-black text-white truncate">₹{Number(selectedPackage ? (selectedPackage.price || selectedPackage.basePrice || 0) : (vendor.averageBookingPrice || 0)).toLocaleString()}</span>
+                                    </div>
+                                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/10 flex items-center justify-center shrink-0 relative z-10">
+                                        <Tag className="text-white w-4 h-4 sm:w-5 sm:h-5" />
+                                    </div>
+                                </div>
+                                <div className="p-5 bg-primary/10 dark:bg-primary/20 rounded-xl border border-primary/20 flex items-center justify-between group overflow-hidden relative">
+                                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-all"></div>
+                                    <div className="relative z-10">
+                                        <span className="block text-[10px] font-black text-primary uppercase tracking-widest mb-1">Max Guests</span>
+                                        <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white truncate">{selectedPackage ? (selectedPackage.guestCapacity || 'Custom') : (vendor.capacity || 'Custom')}</span>
+                                    </div>
+                                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 relative z-10">
+                                        <Users className="text-primary w-4 h-4 sm:w-5 sm:h-5" />
+                                    </div>
                                 </div>
                             </div>
                         </section>
 
-                        {/* Gallery Section */}
-                        <section className="space-y-6">
-                            <div className="flex items-center justify-between">
+                        {selectedPackage && selectedPackage.features && selectedPackage.features.length > 0 && (
+                            <section className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <div className="w-1 h-3 bg-primary rounded-full"></div>
-                                    <h2 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Work Portfolio</h2>
+                                    <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em]">Included Features</h2>
                                 </div>
-                                <Badge className="bg-slate-50 text-slate-400 border-none text-[9px] font-black uppercase tracking-widest">{vendor.portfolioImages?.length || 0} CELLS</Badge>
-                            </div>
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                {vendor.portfolioImages?.map((img: string, i: number) => (
-                                    <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border border-gray-100 group cursor-pointer shadow-sm  transition-all duration-500">
-                                        <img
-                                            src={img}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            alt={`Work ${i + 1}`}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {selectedPackage.features.map((feat: any, idx: number) => (
+                                        <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm">
+                                            <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                                            <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{feat.name || feat}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
 
-                        {/* Packages Section */}
-                        <section className="space-y-6">
-                            <h2 className="text-xl font-bold text-gray-900">Available Packages</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {(services?.[0]?.packages || [
-                                    { name: 'Silver', price: vendor.averageBookingPrice, description: 'Essential services for your event basics.' },
-                                    { name: 'Gold', price: Number(vendor.averageBookingPrice) * 1.5, isPopular: true, description: 'Premium tier with extended features.' },
-                                    { name: 'Platinum', price: Number(vendor.averageBookingPrice) * 2.5, description: 'The full luxury all-inclusive experience.' }
-                                ]).map((pkg: any) => (
-                                    <div key={pkg.name} className={`flex flex-col p-6 rounded-xl border bg-white relative transition-all duration-300 ${pkg.isPopular ? 'border-primary shadow-lg shadow-primary/5' : 'border-gray-100 shadow-sm'}`}>
-                                        {pkg.isPopular && (
-                                            <span className="absolute -top-3 left-6 bg-primary text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                                                Most Popular
-                                            </span>
-                                        )}
-                                        <div className="space-y-2 mb-6">
-                                            <h3 className="text-lg font-bold text-slate-900">{pkg.name}</h3>
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{pkg.description}</p>
-                                        </div>
-                                        <div className="flex items-baseline gap-1 mb-6">
-                                            <span className="text-2xl font-black text-slate-900">₹{Number(pkg.price).toLocaleString()}</span>
-                                            <span className="text-[10px] text-slate-400 font-bold">INR</span>
-                                        </div>
-                                        <div className="space-y-3 mb-8 flex-1">
-                                            {['Professional Staff', 'Premium Setup', 'Full Coverage'].map((feat) => (
-                                                <div key={feat} className="flex items-center gap-2 text-[11px] text-slate-600 font-bold italic">
-                                                    <CheckCircle2 size={12} className="text-emerald-500" />
-                                                    <span>{feat}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <Button variant={pkg.isPopular ? 'default' : 'outline'} className={`h-10 w-full rounded-lg text-xs font-black uppercase tracking-widest transition-soft ${pkg.isPopular ? 'bg-primary text-white shadow-md' : 'border-gray-100 text-slate-400 hover:text-primary '}`}>
-                                            BOOK {pkg.name}
-                                        </Button>
+                        {/* Gallery Section */}
+                        {((selectedPackage?.allImages?.length > 0) || (vendor.portfolioImages?.length > 0)) && (
+                            <section className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-1 h-3 bg-primary rounded-full"></div>
+                                        <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em]">{selectedPackage ? 'Package Gallery' : 'Work Portfolio'}</h2>
                                     </div>
-                                ))}
-                            </div>
-                        </section>
-
-                        {/* Product & Services List */}
+                                    <Badge className="bg-slate-50 text-slate-400 border-none text-[9px] font-black uppercase tracking-widest">{(selectedPackage?.allImages?.length > 0 ? selectedPackage.allImages : vendor.portfolioImages)?.length || 0} CELLS</Badge>
+                                </div>
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {(selectedPackage?.allImages?.length > 0 ? selectedPackage.allImages : vendor.portfolioImages)?.map((img: string, i: number) => (
+                                        <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border border-gray-100 group cursor-pointer shadow-sm  transition-all duration-500">
+                                            <img
+                                                src={img}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                alt={`Gallery ${i + 1}`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                         {services.length > 0 && (
                             <section className="space-y-6">
-                                <h2 className="text-xl font-bold text-gray-900">All Event Packages & Listings</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">All Event Packages & Listings</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {services.map((item: any) => (
-                                        <div key={item.id} onClick={() => navigate(`/events/${item.id}`)} className="flex flex-col bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                                        <div key={item.id} onClick={() => {
+                                            const name = item.title || item.name || 'package';
+                                            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                                            setSearchParams({ package: slug });
+                                            window.scrollTo(0, 0);
+                                        }} className="flex flex-col bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                                             <div className="h-40 w-full overflow-hidden relative">
                                                 <img src={item.images?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                 <Badge className="absolute top-3 right-3 bg-white/90 text-slate-900 border-none shadow-sm">{item.category?.name || 'Event'}</Badge>
@@ -411,8 +488,25 @@ const VendorProfile: React.FC = () => {
                                             <div className="p-5 flex flex-col flex-1">
                                                 <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h4>
                                                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
-                                                    <Users size={14} className="text-blue-500" /> {item.guestCapacity || 'Contact for capacity'}
+                                                    <Users size={14} className="text-blue-500" /> {item.guestCapacity ? `${item.guestCapacity} Guests` : 'Contact for capacity'}
                                                 </div>
+                                                {item.features && item.features.length > 0 && (
+                                                    <div className="mb-4">
+                                                        <ul className="space-y-1">
+                                                            {item.features.slice(0, 3).map((feat: any, idx: number) => (
+                                                                <li key={idx} className="flex items-start gap-2 text-[10px] font-bold text-gray-500 dark:text-slate-400">
+                                                                    <CheckCircle2 size={12} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                                    <span className="line-clamp-1">{feat.name || feat}</span>
+                                                                </li>
+                                                            ))}
+                                                            {item.features.length > 3 && (
+                                                                <li className="text-[10px] text-primary font-bold italic pl-5">
+                                                                    + {item.features.length - 3} more features
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
                                                 <div className="mt-auto flex justify-between items-end">
                                                     <div>
                                                         <p className="text-[10px] text-gray-400 font-bold uppercase">Starting price</p>
@@ -431,23 +525,20 @@ const VendorProfile: React.FC = () => {
 
                         {/* Awards & Certifications */}
                         <section className="space-y-6">
-                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                <Star className="text-amber-500" size={20} />
-                                Awards & Certifications
-                            </h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Awards & Certifications</h2>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div className="p-4 border border-gray-100 rounded-xl bg-amber-50/30 text-center">
-                                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
-                                        <ShieldCheck className="text-amber-600" size={20} />
+                                <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl bg-amber-50/30 dark:bg-amber-900/10 text-center">
+                                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mx-auto mb-3">
+                                        <ShieldCheck size={18} className="text-amber-600 dark:text-amber-400" />
                                     </div>
-                                    <h5 className="font-bold text-sm text-gray-900">Best Decor 2024</h5>
+                                    <h5 className="font-bold text-sm text-gray-900 dark:text-white">Best Decor 2024</h5>
                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Wedding Wire</p>
                                 </div>
-                                <div className="p-4 border border-gray-100 rounded-xl bg-amber-50/30 text-center">
-                                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
-                                        <Star className="text-amber-600" size={20} />
+                                <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl bg-amber-50/30 dark:bg-amber-900/10 text-center">
+                                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mx-auto mb-3">
+                                        <Star size={18} className="text-amber-600 dark:text-amber-400" />
                                     </div>
-                                    <h5 className="font-bold text-sm text-gray-900">Premium Partner</h5>
+                                    <h5 className="font-bold text-sm text-gray-900 dark:text-white">Premium Partner</h5>
                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Ease2Event</p>
                                 </div>
                             </div>
@@ -456,7 +547,7 @@ const VendorProfile: React.FC = () => {
                         {/* Reviews Section */}
                         <section className="space-y-8 pt-6">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-xl font-bold text-gray-900">Client Reviews</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Client Reviews</h2>
                                 <Button variant="ghost" className="text-sm text-primary font-bold hover:bg-primary/5 rounded-lg px-4 h-9">
                                     View All {reviews.length}
                                 </Button>
@@ -468,12 +559,14 @@ const VendorProfile: React.FC = () => {
                                     </div>
                                 ) : (
                                     reviews.map((rev) => (
-                                        <div key={rev.id} className="p-5 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 space-y-4">
+                                        <div key={rev.id} className="p-5 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 space-y-4">
                                             <div className="flex justify-between items-start">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-gray-200" />
+                                                    <div className="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-500 font-bold uppercase">
+                                                        {rev.userName?.charAt(0) || 'G'}
+                                                    </div>
                                                     <div>
-                                                        <h4 className="text-sm font-bold text-gray-900">{rev.userName || 'Verified Guest'}</h4>
+                                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{rev.userName || 'Verified Guest'}</h4>
                                                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{new Date(rev.createdAt).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
@@ -498,13 +591,13 @@ const VendorProfile: React.FC = () => {
                         <div className="sticky top-10 space-y-8">
 
                             {/* Visual Availability Calendar */}
-                            <div className="card-premium space-y-6 flex flex-col items-center text-center">
+                            <div className="bg-white dark:!bg-slate-900 rounded-3xl p-8 border border-gray-100 dark:!border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-6 flex flex-col items-center text-center">
                                 <div className="space-y-2">
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Availability Calendar</p>
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter italic">Select Your Date</h3>
+                                    <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tighter italic">Select Your Date</h3>
                                 </div>
 
-                                <div className="w-full flex justify-center bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                                <div className="w-full flex justify-center bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl p-4 border border-gray-100 dark:border-slate-800 shadow-sm">
                                     <DayPicker
                                         mode="single"
                                         selected={selectedDate}
@@ -519,22 +612,47 @@ const VendorProfile: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4 w-full">
-                                    <Button className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20  transition-soft">
+                                    <Button 
+                                        onClick={() => {
+                                            if (!selectedDate) {
+                                                toast.error('Please select a date from the calendar first.');
+                                                return;
+                                            }
+                                            addToCart({
+                                                vendorId: id || vendor?.id || '',
+                                                vendorName: vendor?.businessName || 'Vendor',
+                                                vendorImage: vendor?.portfolioImages?.[0] || '',
+                                                vendorCategory: vendor?.category?.name || 'Vendor',
+                                                vendorCity: vendor?.city || '',
+                                                eventDate: selectedDate.toISOString(),
+                                                eventTime: '10:00',
+                                                guestCount: '50',
+                                                occasion: 'Event',
+                                                selectedPackage: 'Standard',
+                                                packagePrice: vendor?.startingPrice || vendor?.basePrice || 50000,
+                                                selectedAddons: [],
+                                                addOnServices: [],
+                                                specialInstructions: '',
+                                            });
+                                            toast.success(`${vendor?.businessName || 'Vendor'} added for ${selectedDate.toLocaleDateString()}!`);
+                                            navigate('/booking-cart');
+                                        }}
+                                        className="w-full h-11 bg-primary text-white rounded-lg font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-red-700 transition-soft">
                                         {selectedDate ? `Book for ${selectedDate.toLocaleDateString()}` : 'Select a Date'}
                                     </Button>
                                     <Button 
-                                        onClick={() => navigate(`/inbox?vendorId=${id}`)}
+                                        onClick={() => navigate(`/dashboard/inbox?vendorId=${id}`)}
                                         variant="outline" 
-                                        className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft"
+                                        className="w-full h-11 border-gray-100 dark:border-slate-700 text-slate-400 dark:text-slate-300 dark:bg-transparent rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 dark:hover:bg-slate-800 transition-soft"
                                     >
                                         Chat with Vendor
                                     </Button>
                                     <Button 
                                         onClick={() => navigate(`/merchandise?vendorId=${id}`)}
                                         variant="outline" 
-                                        className="w-full h-11 border-gray-100 text-slate-400 rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 transition-soft flex gap-2 items-center justify-center"
+                                        className="w-full h-11 border-gray-100 dark:border-slate-700 text-slate-400 dark:text-slate-300 dark:bg-transparent rounded-lg font-bold text-xs uppercase tracking-tight hover:bg-gray-50 dark:hover:bg-slate-800 transition-soft"
                                     >
-                                        <Tag size={16} /> Visit Event Shop
+                                        <Tag size={14} className="mr-2" /> Visit Event Shop
                                     </Button>
                                 </div>
 
@@ -550,8 +668,8 @@ const VendorProfile: React.FC = () => {
                             </div>
 
                             {/* Info & Policy Card */}
-                            <div className="bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 p-6 space-y-4">
-                                <h4 className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-widest">
+                            <div className="bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-6 space-y-4">
+                                <h4 className="flex items-center gap-2 text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
                                     <Info size={14} className="text-primary" /> Store Policies
                                 </h4>
                                 <ul className="space-y-3">
@@ -560,7 +678,7 @@ const VendorProfile: React.FC = () => {
                                         'Free cancellation up to 14 days',
                                         'GST invoice provided for all bookings'
                                     ].map(p => (
-                                        <li key={p} className="flex items-start gap-2 text-xs text-gray-500 font-medium leading-relaxed">
+                                        <li key={p} className="flex items-start gap-2 text-xs text-gray-500 dark:text-slate-400 font-medium leading-relaxed">
                                             <CheckCircle2 size={12} className="text-emerald-500 mt-0.5" />
                                             {p}
                                         </li>
@@ -570,6 +688,9 @@ const VendorProfile: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+
+
             </main>
         </div>
     );

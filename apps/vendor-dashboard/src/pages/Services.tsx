@@ -306,15 +306,75 @@ const Services: React.FC = () => {
  />
  </div>
  <div className="space-y-3">
- <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Detailed Description</label>
+ <label className="text-sm font-bold text-[var(--ease2event-text-secondary)] tracking-[0.2em]">Description</label>
  <textarea
- rows={6}
+ rows={2}
  value={formData.description}
  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
- placeholder="Enter full service description..."
- className="w-full min-h-[180px] bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-3xl px-6 py-5 text-sm font-bold leading-relaxed outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
+ placeholder="Enter service description..."
+ className="w-full min-h-[60px] bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-3xl px-6 py-4 text-sm font-bold leading-relaxed outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
  />
  </div>
+ </div>
+ </div>
+
+ {/* Section: Features Hub */}
+ <div className="card-minimal p-6 space-y-6 bg-[var(--ease2event-bg-surface)]">
+ <div className="flex items-center gap-4 border-b border-[var(--ease2event-border-subtle)] pb-4">
+ <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl border border-purple-500/10">
+ <Sparkles size={16} />
+ </div>
+ <h3 className="text-lg font-bold text-[var(--ease2event-text-primary)]">Features Included</h3>
+ </div>
+ <div className="space-y-4">
+ <div className="flex gap-2">
+ <input
+ id="service-feature-input"
+ type="text"
+ placeholder="E.g. Free WiFi, Air Conditioning..."
+ className="flex-1 h-10 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-2xl px-4 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--ease2event-brand-primary)]/20 transition-all text-[var(--ease2event-text-primary)]"
+ onKeyDown={(e) => {
+ if (e.key === 'Enter') {
+ e.preventDefault();
+ const val = (e.target as HTMLInputElement).value.trim();
+ if (val && !formData.features.find(f => f.name.toLowerCase() === val.toLowerCase())) {
+ setFormData(prev => ({ ...prev, features: [...prev.features, { name: val, included: true }] }));
+ (e.target as HTMLInputElement).value = '';
+ }
+ }
+ }}
+ />
+ <Button
+ type="button"
+ onClick={() => {
+ const input = document.getElementById('service-feature-input') as HTMLInputElement;
+ const val = input?.value.trim();
+ if (val && !formData.features.find(f => f.name.toLowerCase() === val.toLowerCase())) {
+ setFormData(prev => ({ ...prev, features: [...prev.features, { name: val, included: true }] }));
+ input.value = '';
+ }
+ }}
+ className="h-10 px-6 rounded-2xl bg-[var(--ease2event-brand-primary)] text-white font-bold text-xs hover:opacity-90 transition-all"
+ >
+ Add
+ </Button>
+ </div>
+ {formData.features.length > 0 && (
+ <div className="flex flex-wrap gap-2 mt-4">
+ {formData.features.map((feature, i) => (
+ <div key={i} className="flex items-center gap-2 bg-[var(--ease2event-bg-elevated)] border border-[var(--ease2event-border-subtle)] px-3 py-1.5 rounded-full text-xs font-bold text-[var(--ease2event-text-primary)]">
+ <CheckCircle2 size={12} className="text-emerald-500" />
+ {feature.name}
+ <button 
+ onClick={() => setFormData(prev => ({ ...prev, features: prev.features.filter((_, idx) => idx !== i) }))}
+ className="text-gray-400 hover:text-rose-500 transition-colors ml-1"
+ >
+ <X size={12} />
+ </button>
+ </div>
+ ))}
+ </div>
+ )}
  </div>
  </div>
 
@@ -437,6 +497,13 @@ const Services: React.FC = () => {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+ {formData.packages.length === 0 && (
+ <div className="col-span-1 md:col-span-2 lg:col-span-3 card-minimal p-10 flex flex-col items-center justify-center text-center bg-gray-50/50 dark:bg-slate-900/50 border border-dashed border-[var(--ease2event-border-subtle)]">
+ <PackageIcon size={32} className="text-[var(--ease2event-text-muted)] mb-3 opacity-50" />
+ <h4 className="text-sm font-bold text-[var(--ease2event-text-secondary)]">No packages defined</h4>
+ <p className="text-xs text-[var(--ease2event-text-muted)] mt-1 max-w-sm">Create multi-tier pricing structures (e.g., Standard, Premium, Deluxe) to offer more options to your customers.</p>
+ </div>
+ )}
  {formData.packages.map((pkg, i) => (
  <div
  key={i}
@@ -517,10 +584,12 @@ const Services: React.FC = () => {
  </span>
  ))}
  </div>
+ <div className="flex gap-2">
  <input
+ id={`pkg-feature-input-${i}`}
  type="text"
- placeholder="Add feature & press Enter..."
- className="w-full h-10 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-xs font-bold outline-none text-[var(--ease2event-text-primary)]"
+ placeholder="Add feature..."
+ className="flex-1 h-10 bg-[var(--ease2event-bg-elevated)]/50 border border-[var(--ease2event-border-subtle)] rounded-xl px-4 text-xs font-bold outline-none text-[var(--ease2event-text-primary)]"
  onKeyDown={(e) => {
  if (e.key === 'Enter') {
  e.preventDefault();
@@ -533,6 +602,22 @@ const Services: React.FC = () => {
  }
  }}
  />
+ <Button
+ type="button"
+ onClick={() => {
+ const input = document.getElementById(`pkg-feature-input-${i}`) as HTMLInputElement;
+ const val = input?.value.trim();
+ if (val && !pkg.features.includes(val)) {
+ const next = [...pkg.features, val];
+ updatePackage(i, 'features', next);
+ input.value = '';
+ }
+ }}
+ className="h-10 px-4 rounded-xl bg-[var(--ease2event-brand-primary)] text-white font-bold text-[10px] hover:opacity-90 transition-all"
+ >
+ Add
+ </Button>
+ </div>
  </div>
 
  </div>

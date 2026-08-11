@@ -67,11 +67,16 @@ const VendorBookingCard: React.FC<{ item: any; onUpdate: (updates: any) => void;
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-neutral-200 dark:border-slate-800 overflow-hidden">
             {/* Header */}
             <div className="flex items-center gap-4 p-5 border-b border-neutral-100 dark:border-slate-800">
-                <img src={item.vendorImage} alt={item.vendorName} className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                <img 
+                    src={item.vendorImage || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'} 
+                    alt={item.vendorName} 
+                    className="w-16 h-16 rounded-xl object-cover shrink-0" 
+                    onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'; }}
+                />
                 <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-red-500 uppercase tracking-wider">{item.vendorCategory}</p>
                     <h3 className="font-black text-neutral-900 dark:text-white text-lg truncate">{item.vendorName}</h3>
-                    <p className="text-sm text-neutral-500 flex items-center gap-1"><MapPin size={12} />{item.vendorCity}</p>
+                    <p className="text-sm text-neutral-500 flex items-center gap-1"><MapPin size={12} />{item.vendorCity || 'India'}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                     <button onClick={() => setExpanded(e => !e)} className="p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-slate-800">
@@ -248,6 +253,8 @@ const BookingCart: React.FC = () => {
         addressType: 'Home',
     });
 
+    const [selectedCheckoutItem, setSelectedCheckoutItem] = useState<string | null>(null);
+
     // Payment
     const [paymentMethod, setPaymentMethod] = useState('upi');
     const [paymentSubOption, setPaymentSubOption] = useState('gpay');
@@ -260,9 +267,14 @@ const BookingCart: React.FC = () => {
     const [coupon, setCoupon] = useState('');
     const [couponApplied, setCouponApplied] = useState(false);
 
-    const advanceAmount = Math.round(cartTotal * 0.1);
-    const discountAmount = couponApplied ? Math.round(cartTotal * 0.05) : 0;
-    const payableAmount = (paymentMode === 'advance' ? advanceAmount : cartTotal) - discountAmount;
+    const activeItem = cartItems.find(i => i.vendorId === selectedCheckoutItem);
+    const activeItemTotal = activeItem 
+        ? (activeItem.packagePrice || 0) + (activeItem.selectedAddons?.reduce((sum, a) => sum + a.price, 0) || 0)
+        : 0;
+
+    const advanceAmount = Math.round(activeItemTotal * 0.1);
+    const discountAmount = couponApplied ? Math.round(activeItemTotal * 0.05) : 0;
+    const payableAmount = (paymentMode === 'advance' ? advanceAmount : activeItemTotal) - discountAmount;
 
     const validateForm = () => {
         if (!form.fullName || !form.phone || !form.addressLine1 || !form.city || !form.pincode) {
@@ -277,8 +289,8 @@ const BookingCart: React.FC = () => {
             toast.error('Please enter a valid 6-digit PIN code.');
             return false;
         }
-        if (cartItems.some(i => !i.eventDate)) {
-            toast.error('Please select an event date for all vendors.');
+        if (activeItem && !activeItem.eventDate) {
+            toast.error('Please select an event date.');
             return false;
         }
         return true;
@@ -309,7 +321,7 @@ const BookingCart: React.FC = () => {
             amount: payableAmount * 100,
             currency: 'INR',
             name: 'Ease2Event',
-            description: `Booking for ${cartItems.length} vendor${cartItems.length > 1 ? 's' : ''}`,
+            description: `Booking for ${activeItem?.vendorName || 'Vendor'}`,
             image: '/logo.png',
             prefill: {
                 name: form.fullName,
@@ -322,14 +334,14 @@ const BookingCart: React.FC = () => {
                 toast.loading('Processing your booking...', { id: 'booking-process' });
                 
                 try {
-                    // Create bookings on the backend for all vendors
-                    for (const item of cartItems) {
+                    if (activeItem) {
                         await createBooking({
-                            vendorId: item.vendorId,
-                            totalAmount: item.packagePrice,
-                            eventDate: item.eventDate,
-                            specialRequirements: item.specialInstructions,
+                            vendorId: activeItem.vendorId,
+                            totalAmount: activeItem.packagePrice,
+                            eventDate: activeItem.eventDate,
+                            specialRequirements: activeItem.specialInstructions,
                         });
+                        removeFromCart(activeItem.vendorId);
                     }
                     toast.success('Booking confirmed!', { id: 'booking-process' });
                 } catch (err: any) {
@@ -338,22 +350,21 @@ const BookingCart: React.FC = () => {
                     // Continue to confirmation page anyway since payment succeeded
                 }
 
-                clearCart();
                 navigate('/booking-confirmation', {
                     state: {
-                        eventName: cartItems.map(i => i.vendorName).join(', '),
-                        date: cartItems[0]?.eventDate || 'TBD',
-                        time: cartItems[0]?.eventTime || 'TBD',
-                        guests: cartItems[0]?.guestCount || '0',
-                        package: cartItems[0]?.selectedPackage || 'Standard',
-                        occasion: cartItems[0]?.occasion || 'Event',
-                        addons: cartItems[0]?.selectedAddons || [],
+                        eventName: activeItem?.vendorName || 'Event',
+                        date: activeItem?.eventDate || 'TBD',
+                        time: activeItem?.eventTime || 'TBD',
+                        guests: activeItem?.guestCount || '0',
+                        package: activeItem?.selectedPackage || 'Standard',
+                        occasion: activeItem?.occasion || 'Event',
+                        addons: activeItem?.selectedAddons || [],
                         total: payableAmount,
                         isEmi: paymentMethod === 'emi',
                         isMerchandise: false,
                         paymentMethod,
                         emiTenure: paymentMethod === 'emi' ? emiTenure : undefined,
-                        vendorCount: cartItems.length,
+                        vendorCount: 1,
                         isAdvancePayment: paymentMode === 'advance',
                         razorpayPaymentId: response.razorpay_payment_id,
                     }
@@ -393,54 +404,108 @@ const BookingCart: React.FC = () => {
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-slate-950 pt-20 pb-16 transition-colors">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
-                {/* Timeline Indicator */}
-                <div className="py-6 border-b border-neutral-100 dark:border-slate-800 mb-6">
-                    <div className="flex items-center gap-4 max-w-3xl mx-auto">
-                        <div className="flex items-center gap-2 text-red-600 dark:text-red-500 font-bold text-sm">
-                            <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">1</div>
-                            Cart & Customization
+                {!selectedCheckoutItem ? (
+                    <div>
+                        <div className="pb-8">
+                            <h1 className="text-3xl font-black text-neutral-900 dark:text-white mb-1">Your Booking Cart</h1>
+                            <p className="text-neutral-500 dark:text-slate-400 font-medium">
+                                {cartItems.length} vendor{cartItems.length > 1 ? 's' : ''} added • Select a package to checkout
+                            </p>
                         </div>
-                        <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
-                        <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
-                            <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">2</div>
-                            Payment
-                        </div>
-                        <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
-                        <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
-                            <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">3</div>
-                            Confirmation
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {cartItems.map(item => (
+                                <div key={item.vendorId} className="bg-white dark:bg-slate-900 rounded-2xl border border-neutral-200 dark:border-slate-800 p-5 flex flex-col justify-between shadow-sm">
+                                    <div className="flex items-center gap-4 border-b border-neutral-100 dark:border-slate-800 pb-4 mb-4">
+                                        <img 
+                                            src={item.vendorImage || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'} 
+                                            alt={item.vendorName} 
+                                            className="w-16 h-16 rounded-xl object-cover shrink-0" 
+                                            onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=400'; }}
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs font-bold text-red-500 uppercase tracking-wider">{item.vendorCategory}</p>
+                                            <h3 className="font-black text-neutral-900 dark:text-white text-lg truncate">{item.vendorName}</h3>
+                                            <p className="text-sm text-neutral-500 flex items-center gap-1"><MapPin size={12} />{item.vendorCity || 'India'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between mt-2">
+                                        <div>
+                                            <span className="block text-xs text-neutral-500 font-bold mb-1">Starting from</span>
+                                            <span className="font-black text-neutral-900 dark:text-white text-xl">₹{item.packagePrice.toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={async () => {
+                                                    const loadingId = toast.loading('Removing package...');
+                                                    try {
+                                                        await removeFromCart(item.vendorId);
+                                                        toast.success('Removed successfully', { id: loadingId });
+                                                    } catch (e) {
+                                                        toast.error('Failed to remove', { id: loadingId });
+                                                    }
+                                                }} 
+                                                className="w-10 h-10 flex items-center justify-center rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                            <button onClick={() => setSelectedCheckoutItem(item.vendorId)} className="h-10 px-6 rounded-xl bg-neutral-900 text-white font-bold text-sm hover:bg-neutral-800 transition-colors">
+                                                Checkout
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </div>
-
-                {/* Page Title */}
-                <div className="pb-8">
-                    <h1 className="text-3xl font-black text-neutral-900 dark:text-white mb-1">Your Booking Cart</h1>
-                    <p className="text-neutral-500 dark:text-slate-400 font-medium">
-                        {cartItems.length} vendor{cartItems.length > 1 ? 's' : ''} selected • Review and customize before paying
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8 items-start">
-                    {/* LEFT: Vendors + Address + Payment */}
-                    <div className="space-y-6">
-
-                        {/* Vendor Cards */}
-                        <section>
-                            <h2 className="text-lg font-black text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
-                                <Package size={20} className="text-red-500" /> Vendors ({cartItems.length})
-                            </h2>
-                            <div className="space-y-4">
-                                {cartItems.map(item => (
-                                    <VendorBookingCard
-                                        key={item.vendorId}
-                                        item={item}
-                                        onUpdate={updates => updateCartItem(item.vendorId, updates)}
-                                        onRemove={() => removeFromCart(item.vendorId)}
-                                    />
-                                ))}
+                ) : (
+                    <div>
+                        {/* Timeline Indicator */}
+                        <div className="py-6 border-b border-neutral-100 dark:border-slate-800 mb-6">
+                            <div className="flex items-center gap-4 max-w-3xl mx-auto">
+                                <div className="flex items-center gap-2 text-red-600 dark:text-red-500 font-bold text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">1</div>
+                                    Cart & Customization
+                                </div>
+                                <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
+                                <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">2</div>
+                                    Payment
+                                </div>
+                                <div className="flex-1 h-px bg-neutral-200 dark:bg-slate-700" />
+                                <div className="flex items-center gap-2 text-neutral-400 font-bold text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-neutral-100 dark:bg-slate-800 flex items-center justify-center">3</div>
+                                    Confirmation
+                                </div>
                             </div>
-                        </section>
+                        </div>
+
+                        <div className="pb-8">
+                            <button onClick={() => setSelectedCheckoutItem(null)} className="text-sm font-bold text-neutral-500 hover:text-neutral-900 dark:hover:text-white mb-4 flex items-center gap-2">
+                                ← Back to Cart Overview
+                            </button>
+                            <h1 className="text-3xl font-black text-neutral-900 dark:text-white mb-1">Checkout</h1>
+                            <p className="text-neutral-500 dark:text-slate-400 font-medium">Review and customize before paying</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8 items-start">
+                            {/* LEFT: Vendors + Address + Payment */}
+                            <div className="space-y-6">
+
+                                {/* Vendor Cards */}
+                                <section>
+                                    <h2 className="text-lg font-black text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+                                        <Package size={20} className="text-red-500" /> Selected Package
+                                    </h2>
+                                    <div className="space-y-4">
+                                        {activeItem && (
+                                            <VendorBookingCard
+                                                item={activeItem}
+                                                onUpdate={updates => updateCartItem(activeItem.vendorId, updates)}
+                                                onRemove={() => { removeFromCart(activeItem.vendorId); setSelectedCheckoutItem(null); }}
+                                            />
+                                        )}
+                                    </div>
+                                </section>
 
                         {/* Contact & Address */}
                         <section className="bg-white dark:bg-slate-900 rounded-2xl border border-neutral-200 dark:border-slate-800 p-6">
@@ -635,7 +700,7 @@ const BookingCart: React.FC = () => {
                                 >
                                     <p className={`text-xs font-black uppercase mb-1 ${paymentMode === 'full' ? 'text-red-600 dark:text-red-400' : 'text-neutral-500'}`}>Full Payment</p>
                                     <p className={`text-lg font-black ${paymentMode === 'full' ? 'text-red-600 dark:text-red-400' : 'text-neutral-900 dark:text-white'}`}>
-                                        ₹{cartTotal.toLocaleString()}
+                                        ₹{activeItemTotal.toLocaleString()}
                                     </p>
                                     <p className="text-[10px] text-neutral-400 mt-0.5">Pay 100% now</p>
                                 </button>
@@ -653,7 +718,7 @@ const BookingCart: React.FC = () => {
                             {paymentMode === 'advance' && (
                                 <div className="mt-3 flex items-start gap-2 bg-amber-50 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-200 dark:border-amber-500/20">
                                     <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
-                                    <p className="text-xs text-amber-700 dark:text-amber-400">Remaining ₹{(cartTotal - advanceAmount).toLocaleString()} to be paid 7 days before the event.</p>
+                                    <p className="text-xs text-amber-700 dark:text-amber-400">Remaining ₹{(activeItemTotal - advanceAmount).toLocaleString()} to be paid 7 days before the event.</p>
                                 </div>
                             )}
                         </div>
@@ -665,15 +730,15 @@ const BookingCart: React.FC = () => {
                             </h3>
 
                             <div className="space-y-3 mb-4">
-                                {cartItems.map(item => (
-                                    <div key={item.vendorId} className="flex justify-between items-center text-sm">
+                                {activeItem && (
+                                    <div key={activeItem.vendorId} className="flex justify-between items-center text-sm">
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-bold text-neutral-900 dark:text-white truncate">{item.vendorName}</p>
-                                            <p className="text-xs text-neutral-500">{item.selectedPackage} Package{item.eventDate ? ` • ${new Date(item.eventDate + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` : ''}</p>
+                                            <p className="font-bold text-neutral-900 dark:text-white truncate">{activeItem.vendorName}</p>
+                                            <p className="text-xs text-neutral-500">{activeItem.selectedPackage} Package{activeItem.eventDate ? ` • ${new Date(activeItem.eventDate + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` : ''}</p>
                                         </div>
-                                        <span className="font-bold text-neutral-900 dark:text-white ml-3">₹{item.packagePrice.toLocaleString()}</span>
+                                        <span className="font-bold text-neutral-900 dark:text-white ml-3">₹{activeItem.packagePrice.toLocaleString()}</span>
                                     </div>
-                                ))}
+                                )}
                             </div>
 
                             {/* Coupon */}
@@ -705,13 +770,13 @@ const BookingCart: React.FC = () => {
 
                             <div className="space-y-2 border-t border-neutral-100 dark:border-slate-800 pt-4">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-neutral-500 font-medium">Subtotal ({cartItems.length} vendors)</span>
-                                    <span className="font-bold text-neutral-900 dark:text-white">₹{cartTotal.toLocaleString()}</span>
+                                    <span className="text-neutral-500 font-medium">Subtotal</span>
+                                    <span className="font-bold text-neutral-900 dark:text-white">₹{activeItemTotal.toLocaleString()}</span>
                                 </div>
                                 {paymentMode === 'advance' && (
                                     <div className="flex justify-between text-sm">
                                         <span className="text-neutral-500 font-medium">Advance (10%)</span>
-                                        <span className="font-bold text-amber-600">-₹{(cartTotal - advanceAmount).toLocaleString()}</span>
+                                        <span className="font-bold text-amber-600">-₹{(activeItemTotal - advanceAmount).toLocaleString()}</span>
                                     </div>
                                 )}
                                 {couponApplied && (
@@ -752,6 +817,8 @@ const BookingCart: React.FC = () => {
                         </p>
                     </div>
                 </div>
+                </div>
+                )}
             </div>
         </div>
     );

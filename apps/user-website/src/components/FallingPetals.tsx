@@ -21,18 +21,25 @@ const FallingPetals: React.FC = () => {
             'text-rose-400/50'
         ];
         
-        // 50 individual petal elements, 5% edge padding
-        const generatedPetals = Array.from({ length: 50 }).map((_, i) => ({
+        const generatedPetals = Array.from({ length: 30 }).map((_, i) => ({
             id: i,
             left: 5 + Math.random() * 90, 
-            size: Math.random() * 15 + 10, // Small, delicate footprint (10px to 25px)
-            duration: Math.random() * 20 + 20, // 20s to 40s fall duration
-            delay: Math.random() * -40, // staggered start (negative to start pre-fallen)
-            sway: Math.random() * 40 - 20, // random sway breadth between -20 and 20
+            size: Math.random() * 15 + 10,
+            duration: Math.random() * 20 + 15,
+            delay: Math.random() * 20, // Use positive delay to prevent Framer Motion from freezing main thread calculating negative time
+            sway: Math.random() * 40 - 20,
             color: colors[Math.floor(Math.random() * colors.length)],
         }));
         setPetals(generatedPetals);
     }, []);
+
+    // Defer rendering by a tick to ensure page transition is instant
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) return null;
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Search, Check, X, AlertTriangle } from 'lucide-react';
+import { IndianRupee, Search, Check, X, AlertTriangle } from 'lucide-react';
 import { useAdminRefunds, useApproveRefund, useRejectRefund, useCompleteRefund } from '../hooks/useRefunds';
 
 const Refunds = () => {
@@ -38,7 +38,7 @@ const Refunds = () => {
             <div className="flex justify-between items-end mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                        <DollarSign className="text-amber-500" size={32} />
+                        <IndianRupee className="text-amber-500" size={32} />
                         Refund Management
                     </h1>
                     <p className="text-gray-500 mt-2">Approve or reject customer refund requests.</p>

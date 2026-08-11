@@ -332,4 +332,6 @@ export const askSupportAI = async (message: string) => {
 export const fetchProducts = async () => await api.get('/merchandise');
 export const fetchProductById = async (id: string) => await api.get(`/merchandise/${id}`);
 export const checkoutMerchandise = async (orderData: any) => await api.post('/merchandise/checkout', orderData);
+export const toggleProductWishlist = async (id: string) => await api.post(`/merchandise/${id}/wishlist`);
+export const fetchProductWishlist = async () => await api.get('/merchandise/wishlist/mine');
 

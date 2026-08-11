@@ -11,24 +11,19 @@ const Packages: React.FC = () => {
   const navigate = useNavigate();
 
   const { data: packages = [], isLoading, isError } = useQuery({
-    queryKey: ['service-packages'],
+    queryKey: ['services-as-packages'], // Changed queryKey to bust the previous cache
     queryFn: async () => {
       const res = await api.get('/services');
-      const services = res.data?.data || res.data || [];
-      
-      // Normalize and flatten ServicePackage data cleanly
-      const allPackages = services.flatMap((service: any) =>
-        (service.packages || []).map((pkg: any) => ({
-          ...pkg,
-          service: {
-            id: service.id,
-            title: service.title,
-            vendor: service.vendor,
-          }
-        }))
-      );
-      
-      return allPackages;
+      // Safely extract the array whether it's wrapped in data, success wraps, or directly returned
+      let services = [];
+      if (Array.isArray(res)) {
+        services = res;
+      } else if (res && Array.isArray(res.data)) {
+        services = res.data;
+      } else if (res && res.data && Array.isArray(res.data.data)) {
+        services = res.data.data;
+      }
+      return services;
     },
   });
 
@@ -101,57 +96,56 @@ const Packages: React.FC = () => {
                   transition={{ delay: i * 0.1 }}
                   className="flex flex-col bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
                 >
-                  <div className="bg-gradient-to-br from-slate-800 to-slate-950 p-6 text-white relative">
+                  <div className="h-56 relative overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0">
+                    {pkg.images?.[0] ? (
+                      <img src={pkg.images[0]} alt={pkg.title || pkg.name} className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center">
+                        <Crown size={48} className="text-[#c5a059] opacity-50" />
+                      </div>
+                    )}
                     {/* Badge */}
-                    <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
-                      {pkg.service?.vendor?.businessName || 'Premium Vendor'}
+                    <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest z-10 shadow-lg">
+                      {pkg.vendor?.businessName || 'Premium Vendor'}
                     </div>
+                  </div>
 
-                    <Crown size={24} className="text-[#c5a059] mb-4" />
+                  <div className="bg-gradient-to-br from-slate-800 to-slate-950 p-6 text-white relative">
                     <h3 className="text-2xl font-black mb-1 line-clamp-1">{pkg.title || pkg.name}</h3>
-                    <p className="text-white/60 text-sm font-medium line-clamp-1 mb-6">{pkg.service?.title}</p>
+                    <p className="text-white/60 text-sm font-medium line-clamp-1 mb-6">{pkg.category?.name || 'Package'}</p>
                     
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black">₹{Number(pkg.price || 0).toLocaleString()}</span>
+                      <span className="text-3xl font-black">₹{Number(pkg.basePrice || pkg.price || 0).toLocaleString()}</span>
                     </div>
                   </div>
 
                   <div className="p-6 flex-1 flex flex-col">
                     {pkg.description && (
-                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 line-clamp-3">
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 line-clamp-2">
                         {pkg.description}
+                        <span onClick={() => {
+                            const name = pkg.title || pkg.name || 'package';
+                            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            const vendorName = pkg.vendor?.businessName || 'vendor';
+                            const vendorSlug = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            const vendorId = pkg.vendorId || pkg.vendor?.id;
+                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}`);
+                        }} className="text-red-500 font-bold cursor-pointer hover:underline ml-2">
+                          see more...
+                        </span>
                       </p>
                     )}
 
-                    <div className="flex items-center gap-4 text-sm font-bold text-gray-700 dark:text-slate-300 mb-6 bg-gray-50 dark:bg-slate-800 p-4 rounded-2xl">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={16} className="text-red-500" />
-                        {pkg.deliveryDays ? `${pkg.deliveryDays} Days` : 'Standard'}
-                      </div>
-                      <div className="w-px h-4 bg-gray-300 dark:bg-slate-700" />
-                      <div className="flex items-center gap-2">
-                        <Users size={16} className="text-red-500" />
-                        Custom
-                      </div>
-                    </div>
-
-                    <div className="mb-8">
-                      <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Included Features</p>
-                      <ul className="space-y-3">
-                        {(pkg.features || []).slice(0, 5).map((f: string, idx: number) => (
-                          <li key={idx} className="flex items-start gap-3 text-sm text-gray-700 dark:text-slate-300">
-                            <div className="mt-1 bg-green-500/10 rounded-full p-0.5 shrink-0">
-                              <Check size={12} className="text-green-500" />
-                            </div>
-                            <span className="font-medium line-clamp-2">{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
                     <div className="mt-auto">
                       <button
-                        onClick={() => navigate(`/event/${pkg.service?.id}?package=${pkg.id}`)}
+                        onClick={() => {
+                            const name = pkg.title || pkg.name || 'package';
+                            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            const vendorName = pkg.vendor?.businessName || 'vendor';
+                            const vendorSlug = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                            const vendorId = pkg.vendorId || pkg.vendor?.id;
+                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}`);
+                        }}
                         className="w-full py-4 rounded-2xl font-black text-sm tracking-widest bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                       >
                         View Package <ArrowRight size={16} />

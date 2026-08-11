@@ -44,11 +44,7 @@ export const uploadImage = async (file: File) => {
     const fd = new FormData();
     fd.append('file', file, file.name);
     
-    return await api.post<any>('/uploads/image', fd, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
+    return await api.post<any>('/uploads/image', fd);
 };
 
 // Reviews

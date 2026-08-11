@@ -4,6 +4,7 @@ import { Repository, DataSource } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
+import { ProductWishlist } from './entities/product-wishlist.entity';
 
 @Injectable()
 export class MerchandiseService {
@@ -14,6 +15,8 @@ export class MerchandiseService {
         private readonly orderRepository: Repository<Order>,
         @InjectRepository(OrderItem)
         private readonly orderItemRepository: Repository<OrderItem>,
+        @InjectRepository(ProductWishlist)
+        private readonly productWishlistRepository: Repository<ProductWishlist>,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -238,5 +241,38 @@ export class MerchandiseService {
 
             return orderItem;
         });
+    }
+
+    async getUserWishlist(userId: string): Promise<ProductWishlist[]> {
+        return this.productWishlistRepository.find({
+            where: { userId },
+            relations: ['product'],
+            order: { createdAt: 'DESC' },
+        });
+    }
+
+    async checkIsWishlisted(userId: string, productId: string): Promise<boolean> {
+        const existing = await this.productWishlistRepository.findOne({
+            where: { userId, productId },
+        });
+        return !!existing;
+    }
+
+    async toggleWishlist(userId: string, productId: string): Promise<{ wishlisted: boolean }> {
+        const existing = await this.productWishlistRepository.findOne({
+            where: { userId, productId },
+        });
+
+        if (existing) {
+            await this.productWishlistRepository.remove(existing);
+            return { wishlisted: false };
+        } else {
+            const newWishlist = this.productWishlistRepository.create({
+                userId,
+                productId,
+            });
+            await this.productWishlistRepository.save(newWishlist);
+            return { wishlisted: true };
+        }
     }
 }

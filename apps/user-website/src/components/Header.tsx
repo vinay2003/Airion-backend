@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     User as UserIcon, Globe, Moon, Sun,
     ChevronDown, LayoutDashboard, LogOut,
-    Settings, ArrowRight, X, Menu, Bell, ShoppingCart, CalendarCheck
+    Settings, ArrowRight, X, Menu, Bell, ShoppingCart, CalendarCheck, Heart
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
@@ -11,6 +11,7 @@ import { useAuth, getPortalUrl } from '@ease2event/shared/auth';
 import { getSocket } from '@shared/auth/socket';
 import { useCart } from '../context/CartContext';
 import { useBookingCart } from '../context/BookingCartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 // ─────────────────────────────────────────────
 // UserProfileMenu — unchanged from original
@@ -131,6 +132,7 @@ const Header: React.FC = () => {
     const { user, isAuthenticated, logout } = useAuth();
     const { totalItems, setIsCartOpen } = useCart();
     const { cartCount } = useBookingCart();
+    const { productWishlistIds, wishlist } = useWishlist();
     const location = useLocation();
     const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -250,7 +252,7 @@ const Header: React.FC = () => {
             {/* ── Logo ── */}
             <Link
                 to="/"
-                className="z-50  transition-transform flex items-center gap-3 flex-shrink-0"
+                className="z-50 transition-transform flex items-center gap-3 flex-shrink-0 cursor-pointer"
             >
                 <img
                     src="/logo.svg"
@@ -371,6 +373,22 @@ const Header: React.FC = () => {
                     )
                 )}
                 <Link
+                    to="/wishlist"
+                    className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
+                    title="Wishlist"
+                >
+                    <Heart size={20} />
+                    { (productWishlistIds.length + wishlist.length) > 0 && (
+                        <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900"
+                        >
+                            {productWishlistIds.length + wishlist.length}
+                        </motion.span>
+                    )}
+                </Link>
+                <Link
                     to="/cart"
                     className="text-gray-700 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 relative"
                 >
@@ -436,6 +454,19 @@ const Header: React.FC = () => {
                 </button>
 
                 <Link
+                    to="/wishlist"
+                    className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
+                    aria-label="Wishlist"
+                >
+                    <Heart size={18} />
+                    { (productWishlistIds.length + wishlist.length) > 0 && (
+                        <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white dark:border-slate-900">
+                            {productWishlistIds.length + wishlist.length}
+                        </span>
+                    )}
+                </Link>
+
+                <Link
                     to="/cart"
                     className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 relative"
                     aria-label="Open cart"
@@ -499,7 +530,7 @@ const Header: React.FC = () => {
                         >
                             {/* Drawer Header - FORCED SOLID BACKGROUND */}
                             <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[120]">
-                                <div className="flex items-center gap-3">
+                                <Link to="/" onClick={toggleMenu} className="flex items-center gap-3 cursor-pointer">
                                     <img
                                         src="/logo.svg"
                                         alt="Ease2Event Logo"
@@ -509,7 +540,7 @@ const Header: React.FC = () => {
                                         <span className="text-xl font-black text-gray-900 dark:text-white leading-none">Ease<span className="text-red-500">2</span>Event</span>
                                         <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Ease2event Menu</span>
                                     </div>
-                                </div>
+                                </Link>
                                 <button
                                     onClick={toggleMenu}
                                     className="p-3 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white  transition-all active:scale-90"

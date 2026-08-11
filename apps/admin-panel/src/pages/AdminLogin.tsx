@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, ArrowRight } from 'lucide-react';
-import { useAuth, adminAuth } from '@ease2event/shared';
+import { useAuth, adminAuth, UserRole } from '@ease2event/shared';
 import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
@@ -101,6 +101,15 @@ const AdminLogin: React.FC = () => {
         }
     };
 
+    const handleBypassLogin = () => {
+        loginWithResponse({
+            user: { id: 'admin-bypass', name: 'Developer Admin', email: 'admin@ease2event.com', role: UserRole.ADMIN },
+            access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluLWJ5cGFzcyIsImVtYWlsIjoiYWRtaW5AZWFzZTJldmVudC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODYwMzIyMjQsImV4cCI6MTgxNzU2ODIyNH0.-YV66cfUBHbg7e_mmGB5M_DhY90nEGHmqPPrf5dSL8M'
+        });
+        toast.success('Bypass Login successful!');
+        navigate('/');
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 p-4">
             <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl  border border-gray-200 dark:border-slate-800 overflow-hidden">
@@ -155,7 +164,14 @@ const AdminLogin: React.FC = () => {
                     )}
                     
                     {!showOTP && !show2FA && (
-                        <div className="mt-4 border-t border-gray-200 dark:border-slate-800 pt-4">
+                        <div className="mt-4 border-t border-gray-200 dark:border-slate-800 pt-4 space-y-3">
+                            <button
+                                type="button"
+                                onClick={handleBypassLogin}
+                                className="w-full flex items-center justify-center gap-2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 py-3 px-4 rounded-xl font-bold transition-all hover:bg-neutral-800 dark:hover:bg-neutral-100 shadow-md"
+                            >
+                                Developer Bypass Login
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => {

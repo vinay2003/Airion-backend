@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart, Product } from '../context/CartContext';
-import { Star, ShieldCheck, Truck, RefreshCw, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { Star, ShieldCheck, Truck, RefreshCw, ShoppingCart, ArrowLeft, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { fetchProductById } from '../lib/api';
 import { useAuth } from '@ease2event/shared';
+import { useWishlist } from '../context/WishlistContext';
 
 const MOCK_PRODUCTS: Product[] = [
     {
@@ -93,6 +94,50 @@ const MOCK_PRODUCTS: Product[] = [
         image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600',
     }
 ];
+
+const WishlistButton: React.FC<{ productId: string }> = ({ productId }) => {
+    const { user } = useAuth();
+    const { isInProductWishlist, toggleProductWishlist } = useWishlist();
+    const [isProcessing, setIsProcessing] = useState(false);
+    
+    const isSaved = isInProductWishlist(productId);
+
+    const handleToggle = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user) {
+            toast('Please login or sign up for adding in wishlist.', {
+                icon: '❤️',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
+            return;
+        }
+        
+        setIsProcessing(true);
+        const success = await toggleProductWishlist(productId);
+        setIsProcessing(false);
+        if (success) {
+            toast.success('Added to wishlist');
+        } else {
+            toast.success('Removed from wishlist');
+        }
+    };
+
+    return (
+        <button
+            onClick={handleToggle}
+            disabled={isProcessing}
+            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-neutral-100 hover:bg-neutral-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer"
+            title={isSaved ? "Remove from Wishlist" : "Add to Wishlist"}
+        >
+            <Heart size={20} className={`transition-colors ${isSaved ? 'fill-red-500 text-red-500' : 'text-neutral-500 dark:text-neutral-300'}`} />
+        </button>
+    );
+};
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -292,6 +337,7 @@ const ProductDetails: React.FC = () => {
                                             )}
                                             {isAdding ? 'Adding...' : 'Add to Cart'}
                                         </button>
+                                        <WishlistButton productId={product.id} />
                                     </div>
                                 </>
                             )}

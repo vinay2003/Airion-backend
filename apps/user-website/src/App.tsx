@@ -50,6 +50,7 @@ import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart';
 import BookingCart from './pages/BookingCart';
+import Wishlist from './pages/Wishlist';
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -62,15 +63,15 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <ToastProvider>
         <Toaster position="top-right" toastOptions={{ duration: 5000, style: { background: '#171717', color: '#fff', borderRadius: '12px' }, success: { iconTheme: { primary: '#dc2626', secondary: '#fff' } } }} />
-        <WishlistProvider>
           <RecentlyViewedProvider>
             <CompareProvider>
               <Router>
                 <AuthProvider>
-                  <CartProvider>
-                    <BookingCartProvider>
-                      <ScrollToTop />
-                      <CartDrawer />
+                  <WishlistProvider>
+                    <CartProvider>
+                      <BookingCartProvider>
+                        <ScrollToTop />
+                        <CartDrawer />
                       <Routes>
                         {/* Full-screen routes – No Header/Footer */}
                         <Route path="/splash" element={<Suspense fallback={<PageLoader />}><SplashScreen /></Suspense>} />
@@ -120,6 +121,7 @@ const App: React.FC = () => {
                                   <Route path="/merchandise/:id" element={<ProductDetails />} />
                                   <Route path="/checkout" element={<Checkout />} />
                                   <Route path="/cart" element={<Cart />} />
+                                  <Route path="/wishlist" element={<Wishlist />} />
                                   <Route path="/about" element={<AboutUs />} />
                                   <Route path="/contact" element={<ContactUs />} />
                                   <Route path="/packages" element={<Packages />} />
@@ -134,13 +136,13 @@ const App: React.FC = () => {
                           </div>
                         } />
                       </Routes>
-                    </BookingCartProvider>
-                  </CartProvider>
+                      </BookingCartProvider>
+                    </CartProvider>
+                  </WishlistProvider>
                 </AuthProvider>
               </Router>
             </CompareProvider>
           </RecentlyViewedProvider>
-        </WishlistProvider>
       </ToastProvider>
     </ErrorBoundary>
   );

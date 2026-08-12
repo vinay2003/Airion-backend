@@ -278,9 +278,7 @@ const VendorProfile: React.FC = () => {
             {/* Cover Image Header */}
             <div className="relative h-[300px] md:h-[450px] w-full overflow-hidden">
                 <img
-                    src={selectedPackage?.images?.[0] || selectedPackage?.serviceImage || vendor.portfolioImages?.[0] || 
-                         (selectedPackage ? `https://images.unsplash.com/photo-${['1519167758481-83f550bb49b3', '1511578314322-379afb476865', '1530103862676-de8c9debad1d', '1519741497674-611481863552', '1515232389446-a17ce9ca7434', '1533174072545-7a4b6ad7a6c3'][Math.abs([...(selectedPackage.id || selectedPackage.name || '0')].reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 6]}?auto=format&fit=crop&q=80&w=2000` : 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000')
-                    }
+                    src={selectedPackage?.images?.[0] || selectedPackage?.serviceImage || vendor.portfolioImages?.[0] || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000'}
                     className="w-full h-full object-cover transition-opacity duration-500"
                     alt={selectedPackage ? selectedPackage.name : vendor.businessName}
                     key={selectedPackage ? selectedPackage.id : 'vendor-header'}
@@ -478,7 +476,7 @@ const VendorProfile: React.FC = () => {
                                         <div key={item.id} onClick={() => {
                                             const name = item.title || item.name || 'package';
                                             const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-                                            setSearchParams({ package: slug });
+                                            setSearchParams({ package: `${slug}-${item.id}` });
                                             window.scrollTo(0, 0);
                                         }} className="flex flex-col bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                                             <div className="h-40 w-full overflow-hidden relative">

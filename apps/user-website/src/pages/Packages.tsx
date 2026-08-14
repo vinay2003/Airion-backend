@@ -120,7 +120,7 @@ const Packages: React.FC = () => {
                   </div>
 
                   <div className="p-6 flex-1 flex flex-col">
-                    {pkg.description && (
+                        {pkg.description && (
                       <p className="text-sm text-gray-600 dark:text-slate-400 mb-6 line-clamp-2">
                         {pkg.description}
                         <span onClick={() => {
@@ -129,7 +129,7 @@ const Packages: React.FC = () => {
                             const vendorName = pkg.vendor?.businessName || 'vendor';
                             const vendorSlug = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
                             const vendorId = pkg.vendorId || pkg.vendor?.id;
-                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}`);
+                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}-${pkg.id}`);
                         }} className="text-red-500 font-bold cursor-pointer hover:underline ml-2">
                           see more...
                         </span>
@@ -144,7 +144,7 @@ const Packages: React.FC = () => {
                             const vendorName = pkg.vendor?.businessName || 'vendor';
                             const vendorSlug = vendorName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
                             const vendorId = pkg.vendorId || pkg.vendor?.id;
-                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}`);
+                            navigate(`/vendor/${vendorSlug}-${vendorId}?package=${slug}-${pkg.id}`);
                         }}
                         className="w-full py-4 rounded-2xl font-black text-sm tracking-widest bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
                       >
